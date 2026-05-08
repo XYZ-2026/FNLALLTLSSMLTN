@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Simplified — Counselling Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lexend:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand: #dc2626; --brand-soft: #fef2f2; --brand-ring: rgba(220, 38, 38, 0.15);
+            --ink: #111827; --muted: #6b7280; --bg: #fafafa; --white: #ffffff;
+            --card: #ffffff; --border: rgba(0, 0, 0, 0.08); --stroke: rgba(0, 0, 0, 0.08);
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        html, body { overflow-x: hidden; width: 100%; position: relative; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; padding-top: 64px; }
+
+        /* ── Hero ── */
+        .hero { padding: 100px 20px 60px; max-width: 1200px; margin: 0 auto; text-align: center; }
+        .badge { background: var(--brand-soft); color: var(--brand); padding: 8px 20px; border-radius: 100px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; display: inline-block; margin-bottom: 24px; border: 1px solid var(--brand-ring); }
+        h1 { font-family: 'Lexend', sans-serif; font-weight: 800; font-size: clamp(2.5rem, 6vw, 3.75rem); line-height: 1.1; margin-bottom: 20px; letter-spacing: -0.03em; }
+        h1 span { color: var(--brand); }
+        .hero p { color: var(--muted); font-size: 1.15rem; max-width: 600px; margin: 0 auto; line-height: 1.6; }
+
+        /* ── Grid ── */
+        .grid { max-width: 1200px; margin: 0 auto; padding: 0 20px 100px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 32px; }
+        .choice-card { background: var(--card); border: 1px solid var(--border); border-radius: 28px; padding: 40px; text-decoration: none; color: inherit; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 24px; }
+        .choice-card:hover { transform: translateY(-12px); box-shadow: var(--shadow-lg); border-color: var(--brand); }
+        .card-icon { width: 64px; height: 64px; background: var(--brand-soft); color: var(--brand); border-radius: 20px; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .choice-card:hover .card-icon { transform: scale(1.1); }
+        .choice-card h2 { font-family: 'Lexend', sans-serif; font-weight: 700; font-size: 24px; color: var(--ink); letter-spacing: -0.01em; }
+        .choice-card p { color: var(--muted); font-size: 15px; flex-grow: 1; line-height: 1.6; }
+        .card-footer { display: flex; align-items: center; justify-content: space-between; color: var(--brand); font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-top: 8px; }
+        .card-footer span { transition: transform 0.3s ease; }
+        .choice-card:hover .card-footer span { transform: translateX(8px); }
+
+        @media (max-width: 768px) {
+            .hero { padding: 80px 20px 40px; }
+            h1 { font-size: 1.75rem; }
+            .grid { padding-bottom: 60px; gap: 20px; grid-template-columns: 1fr; }
+            .choice-card { padding: 32px; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <section class="hero">
+            <div class="badge">Professional Counselling Platform</div>
+            <h1>Empowering Your <span>Admission Journey</span></h1>
+            <p>High-precision tools and data-driven predictors for engineering candidates across India.</p>
+        </section>
+
+        <section class="grid">
+            <a href="cet-landing.html" class="choice-card">
+                <div class="card-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg>
+                </div>
+                <div>
+                    <h2>MHT-CET Dashboard</h2>
+                    <p>Comprehensive predictors, percentile charts, and verified cutoff analysis for Maharashtra state colleges.</p>
+                </div>
+                <div class="card-footer">Explore CET Tools <span>→</span></div>
+            </a>
+
+            <a href="josaa-landing.html" class="choice-card">
+                <div class="card-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+                </div>
+                <div>
+                    <h2>JOSAA Explorer</h2>
+                    <p>Strategic counseling tools for national level institutes including NITs, IIITs and GFTIs.</p>
+                </div>
+                <div class="card-footer">Explore JOSAA <span>→</span></div>
+            </a>
+        </section>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="firebase_config.js"></script>
+    <script src="shared_auth.js"></script>
+    <script>
+        initAuth({ requireLogin: false });
+    </script>
+</body>
+</html>

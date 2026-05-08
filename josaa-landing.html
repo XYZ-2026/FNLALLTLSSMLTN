@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JOSAA Explorer — College Simplified</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lexend:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #dc2626; --ink: #111827; --muted: #6b7280; --bg: #fafafa;
+      --card: #ffffff; --stroke: rgba(0, 0, 0, 0.08);
+      --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+      --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1);
+      --brand-soft: #fef2f2; --brand-ring: rgba(220, 38, 38, 0.15);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html, body { overflow-x: hidden; width: 100%; position: relative; }
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);padding-top:64px;line-height:1.6}
+
+    .hero{padding:100px 20px 60px;text-align:center;max-width:900px;margin:0 auto}
+    .badge{background:var(--brand-soft);color:var(--brand);padding:8px 20px;border-radius:100px;font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;display:inline-block;margin-bottom:24px;border:1px solid var(--brand-ring)}
+    .hero h1{font-family:'Lexend',sans-serif;font-weight:800;font-size:clamp(2.5rem, 6vw, 3.75rem);line-height:1.1;margin-bottom:20px;letter-spacing:-0.03em}
+    .hero h1 span{color:var(--brand)}
+    .hero p{color:var(--muted);font-size:1.15rem;max-width:600px;margin:0 auto}
+
+    .wrap{max-width:1200px;margin:0 auto;padding:0 20px 100px;display:flex;flex-direction:column;gap:100px}
+    .section{animation:fadeUp 0.6s ease both}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+    .section-header{display:flex;align-items:flex-start;gap:24px;margin-bottom:48px}
+    .section-icon{width:64px;height:64px;background:var(--card);border:1px solid var(--stroke);border-radius:20px;display:grid;place-items:center;color:var(--brand);box-shadow:var(--shadow);flex-shrink:0}
+    .section-title{flex:1}
+    .section-title h2{font-family:'Lexend',sans-serif;font-weight:800;font-size:32px;color:var(--ink);margin-bottom:8px;letter-spacing:-0.02em}
+    .section-title p{color:var(--muted);font-size:16px;max-width:700px}
+    
+    .meta-badge{background:var(--bg);border:1.5px solid var(--stroke);color:var(--muted);padding:6px 14px;border-radius:100px;font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:8px;margin-top:12px}
+    .meta-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 3px var(--brand-ring)}
+
+    .grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 340px), 1fr));gap:32px}
+    .tool-card{background:var(--card);border:1px solid var(--stroke);border-radius:28px;padding:40px;text-decoration:none;transition:all 0.4s cubic-bezier(0.16, 1, 0.3, 1);display:flex;flex-direction:column;gap:24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+    .tool-card:hover{transform:translateY(-12px);box-shadow:var(--shadow-lg);border-color:var(--brand)}
+    
+    .tool-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1}
+    .tool-icon{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;font-size:28px;background:var(--bg);color:var(--muted);transition:all 0.3s;border:1px solid var(--stroke)}
+    .tool-card:hover .tool-icon{background:var(--white);color:var(--brand);border-color:var(--brand-ring);transform:scale(1.05)}
+    .arrow{width:36px;height:36px;border-radius:50%;background:var(--bg);display:grid;place-items:center;color:var(--muted);transition:all 0.3s;border:1px solid var(--stroke)}
+    .tool-card:hover .arrow{background:var(--brand);color:#fff;transform:rotate(-45deg);border-color:var(--brand)}
+
+    .tool-info h3{font-family:'Lexend',sans-serif;font-weight:700;font-size:20px;color:var(--ink);margin-bottom:12px}
+    .tool-info p{font-size:15px;color:var(--muted);line-height:1.6}
+    .tool-tag{display:inline-block;padding:6px 14px;border-radius:10px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;background:var(--bg);color:var(--muted);margin-top:8px}
+    .tool-card:hover .tool-tag{background:var(--brand-soft);color:var(--brand)}
+
+    @media (max-width: 768px) {
+      .section-header{flex-direction:column;gap:16px;margin-bottom:32px}
+      .section-icon{width:56px;height:56px;border-radius:16px}
+      .section-title h2{font-size:26px}
+      .grid{grid-template-columns:1fr;gap:20px}
+      .tool-card{padding:32px}
+      .hero{padding:80px 20px 40px}
+      .wrap{gap:60px}
+    }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <div class="badge">National Level Toolset</div>
+    <h1>Strategic <span>JOSAA</span> Counseling</h1>
+    <p>Premium tools for NIT, IIIT & GFTI admissions. Predict your rank, find your dream college, and access verified cutoff data.</p>
+  </div>
+
+  <div class="wrap">
+    <section class="section">
+      <div class="section-header">
+        <div class="section-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg>
+        </div>
+        <div class="section-title">
+          <h2>JOSAA Admissions Hub</h2>
+          <p>Comprehensive explorer for national-level engineering institutes. Master the JOSAA counseling process with data-driven predictions.</p>
+          <div class="meta-badge"><span class="dot"></span> 4 Specialized Tools</div>
+        </div>
+      </div>
+      <div class="grid">
+        <a class="tool-card" href="josaa_marks.html">
+          <div class="tool-top"><div class="tool-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8z"/></svg></div><div class="arrow">→</div></div>
+          <div class="tool-info"><h3>Marks vs Percentile</h3><p>Enter your JEE Mains marks and shift details to get your estimated percentile score instantly.</p><div class="tool-tag">JEE Metrics</div></div>
+        </a>
+        <a class="tool-card" href="josaa_rank.html">
+          <div class="tool-top"><div class="tool-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div><div class="arrow">→</div></div>
+          <div class="tool-info"><h3>Percentile to Rank</h3><p>Convert your JEE Mains percentile into an estimated All India Rank (AIR) based on current trends.</p><div class="tool-tag">Rank Prediction</div></div>
+        </a>
+        <a class="tool-card" href="josaa.html">
+          <div class="tool-top"><div class="tool-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></div><div class="arrow">→</div></div>
+          <div class="tool-info"><h3>College Predictor</h3><p>Find matching NITs, IIITs & GFTIs based on your rank, category, and home state preferences.</p><div class="tool-tag">Strategic Match</div></div>
+        </a>
+        <a class="tool-card" href="josaa_cutoff.html">
+          <div class="tool-top"><div class="tool-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div><div class="arrow">→</div></div>
+          <div class="tool-info"><h3>JOSAA Cutoff Checker</h3><p>Search any national institute to view opening and closing ranks across all counselling rounds.</p><div class="tool-tag">Official Data</div></div>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase_config.js"></script>
+  <script src="shared_auth.js"></script>
+  <script>
+    initAuth({ requireLogin: false });
+  </script>
+</body>
+</html>

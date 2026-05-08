@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>College Simplified — MHT-CET Cutoff Checker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase_config.js"></script>
+  <script src="shared_auth.js"></script>
+  <style>
+    /* ── VARIABLES ── */
+    :root {
+      --brand: #dc2626;
+      --brand-d: #991b1b;
+      --brand-soft: #fef2f2;
+      --brand-ring: rgba(220, 38, 38, .15);
+      --ink: #0f1117;
+      --ink2: #2d3240;
+      --muted: #6c7389;
+      --bg: #f5f6fa;
+      --card: #ffffff;
+      --stroke: #e4e6ef;
+      --row-hover: #f0f2fa;
+      --th: #f8f9fc;
+      --inp: #ffffff;
+      --ring: #c7d2fe;
+      --chip-bg: #eef2ff;
+      --chip: #3b5bdb;
+      --green-bg: #f0fdf4;
+      --green: #16a34a;
+      --orange-bg: #fff7ed;
+      --orange: #d97706;
+      --red-bg: #fff0f1;
+      --red: #e63946;
+      --blue-bg: #eff6ff;
+      --blue: #2563eb;
+      --shadow: 0 2px 16px rgba(15, 17, 23, .07);
+      --shadow-lg: 0 8px 32px rgba(15, 17, 23, .10);
+      --bar: #ffffff;
+      --radius: 14px;
+    }
+
+    [data-theme="dark"] {
+      --brand: #ff6b74;
+      --brand-d: #e63946;
+      --brand-soft: #2a1215;
+      --brand-ring: rgba(255, 107, 116, .15);
+      --ink: #f0f1f6;
+      --ink2: #c8cad8;
+      --muted: #8b90a8;
+      --bg: #0b0d14;
+      --card: #131620;
+      --stroke: #222636;
+      --row-hover: #1a1e2e;
+      --th: #0f1219;
+      --inp: #0f1219;
+      --ring: #2d3a6b;
+      --chip-bg: #1a2150;
+      --chip: #94b4ff;
+      --green-bg: #0a1f10;
+      --green: #4ade80;
+      --orange-bg: #1f1208;
+      --orange: #fb923c;
+      --red-bg: #1f0c0e;
+      --red: #ff6b74;
+      --blue-bg: #0e1a38;
+      --blue: #60a5fa;
+      --shadow: 0 2px 16px rgba(0, 0, 0, .3);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, .4);
+      --bar: #0f1219;
+    }
+
+    /* ── RESET ── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      transition: background .25s, color .25s;
+      padding-top: 80px;
+    }
+
+    /* ── PAGES ── */
+    .page {
+      display: none;
+      min-height: calc(100vh - 64px)
+    }
+
+    .page.active {
+      display: block
+    }
+
+    /* ── CUTOFF PAGE ── */
+    .wrap-md {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 20px 70px
+    }
+
+    /* ── HERO ── */
+    .cutoff-hero {
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand-d) 100%);
+      border-radius: 18px;
+      padding: 28px;
+      margin-bottom: 24px;
+      color: #fff;
+      position: relative;
+      overflow: visible;
+    }
+
+    .cutoff-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 18px;
+      background: radial-gradient(circle at 80% 50%, rgba(255, 255, 255, .06) 0%, transparent 60%);
+      pointer-events: none
+    }
+
+    .cutoff-hero h2 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(20px, 3.5vw, 28px);
+      color: #fff;
+      margin-bottom: 12px;
+      position: relative;
+      letter-spacing: -0.5px;
+    }
+
+    .cutoff-hero p {
+      opacity: .9;
+      font-size: 15px;
+      line-height: 1.6;
+      position: relative;
+      max-width: 640px;
+      font-weight: 400;
+    }
+
+    /* ── SEARCH ── */
+    .search-outer {
+      position: relative;
+      margin-top: 20px;
+      z-index: 9000
+    }
+
+    .search-input-wrap {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, .15);
+      border: 1.5px solid rgba(255, 255, 255, .3);
+      border-radius: 12px;
+      transition: background .2s, border-color .2s
+    }
+
+    .search-input-wrap:focus-within {
+      background: rgba(255, 255, 255, .22);
+      border-color: rgba(255, 255, 255, .55)
+    }
+
+    .search-icon {
+      padding: 0 14px;
+      color: rgba(255, 255, 255, .75);
+      font-size: 18px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center
+    }
+
+    .search-input-wrap input {
+      flex: 1;
+      padding: 14px 4px;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 15px;
+      font-family: 'Outfit', sans-serif;
+      outline: none;
+      box-shadow: none !important
+    }
+
+    .search-input-wrap input::placeholder {
+      color: rgba(255, 255, 255, .6)
+    }
+
+    .search-clear-btn {
+      padding: 8px 14px;
+      color: rgba(255, 255, 255, .7);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 17px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .search-clear-btn.show {
+      display: flex
+    }
+
+    /* ── DROPDOWN ── */
+    .suggestions-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      background: var(--card);
+      border: 1.5px solid var(--stroke);
+      border-radius: 14px;
+      box-shadow: 0 16px 56px rgba(0, 0, 0, .22);
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 99999;
+      display: none;
+    }
+
+    .suggestions-dropdown.open {
+      display: block;
+      animation: suggIn .15s ease
+    }
+
+    @keyframes suggIn {
+      from {
+        opacity: 0;
+        transform: translateY(-8px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .sugg-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 18px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--stroke);
+      transition: background .15s;
+    }
+
+    .sugg-row:last-child {
+      border-bottom: none;
+    }
+
+    .sugg-row:hover,
+    .sugg-row.hl {
+      background: var(--brand-soft);
+    }
+
+    .sugg-ico {
+      width: 44px;
+      height: 32px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      color: var(--muted);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      border: 1px solid var(--stroke);
+    }
+
+    .sugg-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .sugg-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
+    }
+
+    .sugg-meta {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+    }
+
+    mark {
+      background: var(--brand-soft);
+      color: var(--brand);
+      border-radius: 2px;
+      padding: 0 1px;
+      font-style: normal
+    }
+
+    /* ── FILTERS ── */
+    .filters-section {
+      background: var(--card);
+      border: 1.5px solid var(--stroke);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      margin-bottom: 18px;
+      display: none
+    }
+
+    .filters-section.show {
+      display: block
+    }
+
+    .filters-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--ink2);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .filter-group label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      color: var(--muted);
+      margin-bottom: 6px
+    }
+
+    .flt-sel {
+      width: 100%;
+      padding: 10px 36px 10px 13px;
+      border-radius: 10px;
+      border: 1.5px solid var(--stroke);
+      background: var(--inp);
+      color: var(--ink);
+      font-family: 'Outfit', sans-serif;
+      font-size: 13.5px;
+      font-weight: 500;
+      outline: none;
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: border-color .2s
+    }
+
+    .flt-sel:focus {
+      border-color: #93c5fd;
+      box-shadow: 0 0 0 3px var(--ring)
+    }
+
+    .seat-note {
+      font-size: 12px;
+      color: var(--orange);
+      background: var(--orange-bg);
+      border: 1px solid var(--orange);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-top: 12px;
+      line-height: 1.5;
+      display: none
+    }
+
+    .seat-note.show {
+      display: block
+    }
+
+    /* Exam tabs */
+    .exam-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px
+    }
+
+    .exam-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .exam-tab {
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1.5px solid var(--stroke);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--inp);
+      color: var(--muted);
+      transition: all .15s;
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .exam-tab:hover {
+      background: var(--row-hover)
+    }
+
+    .exam-tab.act-all {
+      background: var(--th);
+      border-color: var(--ink2);
+      color: var(--ink)
+    }
+
+    .exam-tab.act-mht {
+      background: var(--brand-soft);
+      border-color: var(--brand);
+      color: var(--brand)
+    }
+
+    .exam-tab.act-jee {
+      background: var(--blue-bg);
+      border-color: var(--blue);
+      color: var(--blue)
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0
+    }
+
+    .dot-r {
+      background: var(--brand)
+    }
+
+    .dot-b {
+      background: var(--blue)
+    }
+
+    /* Stats pills */
+    .stats-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .stat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--ink2)
+    }
+
+    .sp-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%
+    }
+
+    /* Results */
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
+      gap: 14px
+    }
+
+    .cutoff-card {
+      background: var(--card);
+      border: 1.5px solid var(--stroke);
+      border-radius: var(--radius);
+      padding: 18px;
+      transition: box-shadow .2s, transform .15s;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      animation: cardIn .25s ease both
+    }
+
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .cutoff-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px)
+    }
+
+    .cutoff-card.mhtcet {
+      border-left: 4px solid var(--brand)
+    }
+
+    .cutoff-card.jee {
+      border-left: 4px solid var(--blue)
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px
+    }
+
+    .card-name {
+      font-weight: 700;
+      font-size: 13.5px;
+      line-height: 1.4;
+      flex: 1;
+      color: var(--ink)
+    }
+
+    .card-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+      white-space: nowrap;
+      flex-shrink: 0
+    }
+
+    .badge-mht {
+      background: var(--brand-soft);
+      color: var(--brand)
+    }
+
+    .badge-jee {
+      background: var(--blue-bg);
+      color: var(--blue)
+    }
+
+    .card-branch {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.4
+    }
+
+    .card-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--chip-bg);
+      color: var(--chip);
+      white-space: nowrap
+    }
+
+    .chip-gray {
+      background: var(--th);
+      color: var(--muted)
+    }
+
+    .chip-blue {
+      background: var(--blue-bg);
+      color: var(--blue)
+    }
+
+    .chip-orange {
+      background: var(--orange-bg);
+      color: var(--orange)
+    }
+
+    /* Initial Tiles */
+    .initial-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .long-tile {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--card);
+      border: 1.5px solid var(--stroke);
+      border-radius: 14px;
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .long-tile:hover {
+      border-color: var(--brand);
+      background: var(--brand-soft);
+      transform: translateX(4px);
+    }
+
+    .tile-code {
+      width: 60px;
+      height: 32px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--muted);
+      border: 1px solid var(--stroke);
+      flex-shrink: 0;
+    }
+
+    .tile-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .load-more-btn {
+      width: 100%;
+      padding: 14px;
+      background: transparent;
+      border: 1.5px dashed var(--stroke);
+      color: var(--muted);
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: 0.2s;
+    }
+
+    .load-more-btn:hover {
+      background: var(--brand-soft);
+      border-color: var(--brand);
+      color: var(--brand);
+    }
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .stat-box {
+      background: var(--bg);
+      border-radius: 9px;
+      padding: 10px 13px;
+      flex: 1;
+      min-width: 90px;
+      border: 1px solid var(--stroke)
+    }
+
+    .stat-label {
+      font-size: 9.5px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 3px
+    }
+
+    .stat-val {
+      font-size: 16px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums
+    }
+
+    .val-red {
+      color: var(--brand)
+    }
+
+    .val-blue {
+      color: var(--blue)
+    }
+
+    .card-link {
+      font-size: 11.5px;
+      color: var(--blue);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: opacity .15s;
+      margin-top: -2px
+    }
+
+    .card-link:hover {
+      opacity: .7
+    }
+
+    /* Loading */
+    .loading-state {
+      text-align: center;
+      padding: 60px 24px;
+      color: var(--muted);
+      grid-column: 1/-1
+    }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--stroke);
+      border-top-color: var(--brand);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin: 0 auto 16px
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    /* Empty */
+    .empty-state {
+      text-align: center;
+      padding: 60px 24px;
+      color: var(--muted);
+      grid-column: 1/-1
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 14px
+    }
+
+    .hero {
+      background: linear-gradient(135deg, var(--brand), var(--brand-d));
+      padding: 64px 20px;
+      text-align: left;
+      color: #fff;
+      border-radius: 32px;
+      margin: 20px auto 40px;
+      max-width: 1200px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 40px var(--brand-ring);
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%; width: 200%; height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: drift 20s linear infinite;
+    }
+    @keyframes drift { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    .hero h1 {
+      font-family: 'Lexend', sans-serif;
+      font-size: 42px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: -1px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero p {
+      font-size: 16px;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 0 32px;
+      line-height: 1.6;
+      position: relative;
+      z-index: 2;
+    }
+
+    .search-box {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      max-width: 700px;
+      position: relative;
+      z-index: 2;
+      transition: all 0.3s;
+    }
+    .search-box:focus-within {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .search-box svg {
+      color: #fff;
+      opacity: 0.8;
+      width: 20px;
+      height: 20px;
+    }
+
+    .search-box input {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      width: 100%;
+      outline: none;
+      font-family: inherit;
+    }
+    .search-box input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    } 
+
+    .empty-state h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--ink2);
+      margin-bottom: 6px
+    }
+
+    .empty-state p {
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 360px;
+      margin: 0 auto
+    }
+
+    /* Toast */
+    .toast-wrap {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      pointer-events: none;
+      max-width: calc(100vw - 40px)
+    }
+
+    .toast {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 10px;
+      padding: 11px 16px;
+      font-size: 13.5px;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      pointer-events: all;
+      animation: tIn .25s ease;
+      color: var(--ink);
+      max-width: 360px
+    }
+
+    .toast-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0
+    }
+
+    .t-ok .toast-dot {
+      background: var(--green)
+    }
+
+    .t-err .toast-dot {
+      background: var(--red)
+    }
+
+    .t-info .toast-dot {
+      background: var(--chip)
+    }
+
+    @keyframes tIn {
+      from {
+        transform: translateX(110%);
+        opacity: 0
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1
+      }
+    }
+
+    /* Responsive */
+    @media(max-width:640px) {
+      .wrap-md {
+        padding: 16px 12px 50px
+      }
+
+      .cutoff-hero {
+        padding: 18px 16px
+      }
+
+      .filters-grid {
+        grid-template-columns: 1fr
+      }
+
+      .results-grid {
+        grid-template-columns: 1fr
+      }
+
+      .field-row {
+        grid-template-columns: 1fr
+      }
+
+      .auth-card {
+        padding: 24px 18px
+      }
+
+      .exam-bar {
+        flex-direction: column;
+        align-items: flex-start
+      }
+    }
+
+    @media(max-width:600px) {
+      .brand-name {
+        display: none
+      }
+    }
+
+    @media(max-width:480px) {
+      .nav-btn .back-text {
+        display: none;
+      }
+    }
+
+    @media(max-width:400px) {
+      .topbar-right {
+        gap: 5px;
+      }
+      #authArea span {
+        display: none;
+      }
+      .nav-btn {
+        padding: 7px 10px;
+      }
+      .topbar-inner {
+        padding: 13px 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="toolArea">
+
+
+  <!-- ══ CUTOFF PAGE ══ -->
+  <div id="page-cutoff" class="page">
+    <div class="wrap-md">
+
+      <div class="cutoff-hero">
+        <h2>College Cutoff Checker</h2>
+        <p>Comprehensive analytical tool for MHT-CET and JEE Mains cutoffs across all engineering branches and seat types.</p>
+        <div class="search-outer" id="searchOuter">
+          <div class="search-input-wrap">
+            <span class="search-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            </span>
+            <input type="text" id="cutoffSrch" placeholder="Search college name or institute code (e.g. 6271, COEP)..."
+              oninput="onSearchInput()" onkeydown="onSearchKey(event)" autocomplete="off">
+            <button class="search-clear-btn" id="clearBtn" onclick="clearSearch()">&times;</button>
+          </div>
+          <div class="suggestions-dropdown" id="suggDrop"></div>
+        </div>
+      </div>
+
+      <div class="exam-bar">
+        <div class="exam-tabs">
+          <div class="exam-tab act-all" onclick="setTab('all')" data-tab="all">All Predictions</div>
+          <div class="exam-tab" onclick="setTab('mhtcet')" data-tab="mhtcet"><span class="dot dot-r"></span>MHT-CET</div>
+          <div class="exam-tab" onclick="setTab('jee')" data-tab="jee"><span class="dot dot-b"></span>JEE Mains</div>
+        </div>
+        <div class="stats-row" id="statsRow"></div>
+      </div>
+
+      <div class="filters-section" id="filtersSection">
+        <div class="filters-title">Filter Results</div>
+        <div class="filters-grid">
+          <div class="filter-group" id="seatFilterGroup">
+            <label>Seat Type (MHT-CET)</label>
+            <select class="flt-sel" id="filterSeat" onchange="applyFilters()">
+              <option value="">All Seat Types</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Branch / Programme</label>
+            <select class="flt-sel" id="filterBranch" onchange="applyFilters()">
+              <option value="">All Branches</option>
+            </select>
+          </div>
+        </div>
+        <div class="seat-note" id="seatNote">
+          Information: Seat type filter groups similar categories. The exact seat type is displayed on each result card.
+        </div>
+      </div>
+
+      <div id="cutoffResults">
+        <div class="results-grid">
+          <div class="empty-state">
+            <div class="empty-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+            <h3>Search a college to begin</h3>
+            <p>Enter a college name or institute code above to access detailed cutoff data for the current admission cycle.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    </div>
+  </div>
+
+  <script>
+    'use strict';
+
+    var MHT_DATA = [];
+    var JEE_DATA = [];
+
+    // ── APP STATE ──
+    var EXAM_TAB = 'all';
+    var SEL_COLLEGE = null;
+    var ALL_MHT = [];
+    var ALL_JEE = [];
+    var CUR_MHT = [];
+    var CUR_JEE = [];
+    var SUGG_MATCHES = [];
+    var HL_IDX = -1;
+    var DATA_READY = false;
+
+    // ── UTILS ──
+    function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+    function gv(id) { var el = document.getElementById(id); return el ? el.value : ''; }
+    function fP(v) { return parseFloat(v) || 0; }
+    function fI(v) { return parseInt(v) || 0; }
+    function fR(n) { return fI(n).toLocaleString('en-IN'); }
+    function se(id, m) { var el = document.getElementById(id); if (el) { el.textContent = m; el.style.display = m ? 'block' : 'none'; } }
+    function hide(id) { var el = document.getElementById(id); if (el) el.style.display = 'none'; }
+
+    function showEmptyState() {
+      document.getElementById('cutoffResults').innerHTML =
+        '<div class="results-grid"><div class="empty-state">' +
+        '<div class="empty-icon">&#127979;</div>' +
+        '<h3>Search a college to begin</h3>' +
+        '<p>Type at least 2 characters of a college name above to see MHT-CET and JEE Mains cutoff data.</p>' +
+        '</div></div>';
+    }
+
+    // ── PAGE ROUTING ──
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(function (p) { p.classList.remove('active'); });
+      var target = document.getElementById('page-' + id);
+      if (target) target.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ── LOAD DATA FILES ──
+    function loadDataFiles() {
+      var mhtDone = false;
+      var jeeDone = false;
+
+      function tryFinish() {
+        if (!mhtDone || !jeeDone) return;
+        initData();
+        DATA_READY = true;
+        displayInitialList();
+      }
+
+      fetch('data.json')
+        .then(function (r) {
+          if (!r.ok) throw new Error('data.json not found (HTTP ' + r.status + ')');
+          return r.json();
+        })
+        .then(function (json) {
+          MHT_DATA = Array.isArray(json) ? json : (json[Object.keys(json)[0]] || []);
+          console.log('MHT Data Loaded:', MHT_DATA.length, 'rows');
+          mhtDone = true;
+          tryFinish();
+        })
+        .catch(function (err) {
+          console.error('MHT data load error:', err);
+          toast('Could not load MHT data. Check data.json.', 'err');
+          mhtDone = true;
+          tryFinish();
+        });
+
+      fetch('jee_data.json')
+        .then(function (r) {
+          if (!r.ok) throw new Error('jee_data.json not found (HTTP ' + r.status + ')');
+          return r.json();
+        })
+        .then(function (json) {
+          JEE_DATA = Array.isArray(json) ? json : (json[Object.keys(json)[0]] || []);
+          console.log('JEE Data Loaded:', JEE_DATA.length, 'rows');
+          jeeDone = true;
+          tryFinish();
+        })
+        .catch(function (err) {
+          console.error('JEE data load error:', err);
+          toast('Could not load JEE data. Check jee_data.json.', 'err');
+          jeeDone = true;
+          tryFinish();
+        });
+    }
+
+    // ── DATA INIT ──
+    function initData() {
+      MHT_DATA.forEach(function (row) {
+        row.Institute = (row.Institute || '').trim();
+        row._pct = fP(row.Percentile);
+        row._rank = fI(row.Rank);
+      });
+      ALL_MHT = [];
+      var mhtSeen = {};
+      MHT_DATA.forEach(function (r) {
+        var n = r.Institute;
+        if (n && !mhtSeen[n.toLowerCase()]) { 
+          mhtSeen[n.toLowerCase()] = true; 
+          ALL_MHT.push({ name: n, code: String(r['Institute Code'] || '') }); 
+        }
+      });
+      ALL_MHT.sort(function(a, b) { return a.name.localeCompare(b.name); });
+
+      JEE_DATA.forEach(function (row) {
+        row['Institute Name'] = (row['Institute Name'] || '').trim();
+        row._instituteName = row['Institute Name'].replace(/^\d+\s*-\s*/, '').trim();
+        row._branchName = (row['Branch Name'] || '').replace(/\n/g, ' ').trim();
+        row._pct = fP(row['JEE Percentile'] || 0);
+        row._air = row['All India Merit'] || '';
+      });
+      ALL_JEE = [];
+      var jeeSeen = {};
+      JEE_DATA.forEach(function (r) {
+        var n = r._instituteName;
+        if (n && !jeeSeen[n.toLowerCase()]) { 
+          jeeSeen[n.toLowerCase()] = true; 
+          ALL_JEE.push({ name: n, code: '' }); 
+        }
+      });
+      ALL_JEE.sort(function(a, b) { return a.name.localeCompare(b.name); });
+      console.log('Data Initialized. MHT Colleges:', ALL_MHT.length, 'JEE Colleges:', ALL_JEE.length);
+    }
+
+    function allColleges() {
+      var list = [];
+      var seen = {};
+      [].concat(ALL_MHT, ALL_JEE).forEach(function(c) {
+        var k = c.name.toLowerCase();
+        if (seen[k]) {
+          if (c.code && !seen[k].code) seen[k].code = c.code;
+          return;
+        }
+        seen[k] = c;
+        list.push(c);
+      });
+      // Sort by code (numeric if possible), then name
+      return list.sort(function(a, b) {
+        var aCode = parseInt(a.code) || 999999;
+        var bCode = parseInt(b.code) || 999999;
+        if (aCode !== bCode) return aCode - bCode;
+        return a.name.localeCompare(b.name);
+      });
+    }
+
+    var LIST_LIMIT = 20;
+
+    // ── SEAT CLUSTERING ──
+    function clusterSeat(st) {
+      return (st || '').replace(/[HSO]$/, '').trim();
+    }
+
+    // ── SEARCH ──
+    function onSearchInput() {
+      var q = (gv('cutoffSrch') || '').trim();
+      var clr = document.getElementById('clearBtn');
+      clr.className = 'search-clear-btn' + (q ? ' show' : '');
+
+      if (!q) { 
+        hideSugg(); 
+        if (SEL_COLLEGE) resetCutoff(); 
+        else displayInitialList();
+        return; 
+      }
+
+      if (SEL_COLLEGE && q.toLowerCase() !== SEL_COLLEGE.toLowerCase()) {
+        SEL_COLLEGE = null;
+        document.getElementById('filtersSection').classList.remove('show');
+        document.getElementById('cutoffResults').innerHTML = '<div class="results-grid"></div>';
+        document.getElementById('statsRow').innerHTML = '';
+      }
+      if (!DATA_READY) { toast('Data is still loading...', 'info'); return; }
+      showSugg(q);
+    }
+
+    function showSugg(q) {
+      var lower = q.toLowerCase();
+      var colleges = allColleges();
+      
+      var matches = colleges.filter(function(c) {
+        return c.name.toLowerCase().includes(lower) || c.code.includes(lower);
+      });
+
+      matches.sort(function(a, b) {
+        var aStarts = a.name.toLowerCase().startsWith(lower) || a.code.startsWith(lower);
+        var bStarts = b.name.toLowerCase().startsWith(lower) || b.code.startsWith(lower);
+        if (aStarts && !bStarts) return -1;
+        if (!aStarts && bStarts) return 1;
+        return a.name.localeCompare(b.name);
+      });
+
+      matches = matches.slice(0, 10);
+      SUGG_MATCHES = matches.map(function(c){ return c.name; });
+      HL_IDX = -1;
+
+      var drop = document.getElementById('suggDrop');
+      if (!matches.length) { drop.classList.remove('open'); return; }
+
+      var re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+
+      drop.innerHTML = matches.map(function (c, i) {
+        var hi = esc(c.name).replace(re, '<mark>$1</mark>');
+        var hasJee = JEE_DATA.some(function (r) { return (r._instituteName || '').toLowerCase() === c.name.toLowerCase(); });
+        var hasMht = MHT_DATA.some(function (r) { return (r.Institute || '').toLowerCase() === c.name.toLowerCase(); });
+        var tags = '';
+        if (hasMht) tags += '<span style="font-size:10px;font-weight:800;color:var(--brand)">MHT-CET</span>';
+        if (hasJee) tags += '<span style="font-size:10px;font-weight:800;color:var(--blue);margin-left:8px">JEE</span>';
+        
+        return '<div class="sugg-row" data-idx="' + i + '" data-name="' + esc(c.name) + '">' +
+          '<div class="sugg-ico">' + (c.code ? '<span style="font-size:10px;font-weight:800">' + c.code + '</span>' : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>') + '</div>' +
+          '<div class="sugg-text">' +
+          '<div class="sugg-name">' + hi + '</div>' +
+          '<div class="sugg-meta">' + (c.code ? 'Institute Code: ' + c.code + ' &nbsp;·&nbsp; ' : '') + tags + '</div>' +
+          '</div></div>';
+      }).join('');
+
+      // Attach listeners safely via JS instead of inline onmousedown
+      drop.querySelectorAll('.sugg-row').forEach(function (row) {
+        row.addEventListener('mousedown', function (e) {
+          e.preventDefault(); // prevent input blur before pick fires
+          pickCollege(row.getAttribute('data-name'));
+        });
+      });
+
+      drop.classList.add('open');
+    }
+
+    function hideSugg() {
+      document.getElementById('suggDrop').classList.remove('open');
+      HL_IDX = -1;
+    }
+
+    function onSearchKey(e) {
+      var drop = document.getElementById('suggDrop');
+      var rows = drop.querySelectorAll('.sugg-row');
+      if (e.key === 'ArrowDown') { e.preventDefault(); HL_IDX = Math.min(HL_IDX + 1, rows.length - 1); hlRow(rows); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); HL_IDX = Math.max(HL_IDX - 1, -1); hlRow(rows); }
+      else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (HL_IDX >= 0 && SUGG_MATCHES[HL_IDX]) pickCollege(SUGG_MATCHES[HL_IDX]);
+        else if (SUGG_MATCHES.length > 0) pickCollege(SUGG_MATCHES[0]);
+      }
+      else if (e.key === 'Escape') hideSugg();
+    }
+
+    function hlRow(rows) {
+      rows.forEach(function (r, i) { r.classList.toggle('hl', i === HL_IDX); });
+    }
+
+    function pickCollege(name) {
+      SEL_COLLEGE = name;
+      document.getElementById('cutoffSrch').value = name;
+      document.getElementById('clearBtn').className = 'search-clear-btn show';
+      hideSugg();
+      loadCollege(name);
+    }
+
+    function clearSearch() {
+      document.getElementById('cutoffSrch').value = '';
+      document.getElementById('clearBtn').className = 'search-clear-btn';
+      hideSugg();
+      resetCutoff();
+    }
+
+    function resetCutoff() {
+      SEL_COLLEGE = null; CUR_MHT = []; CUR_JEE = [];
+      document.getElementById('filtersSection').classList.remove('show');
+      document.getElementById('statsRow').innerHTML = '';
+      LIST_LIMIT = 20;
+      displayInitialList();
+    }
+
+    function displayInitialList() {
+      var all = allColleges();
+      var colleges = all.slice(0, LIST_LIMIT);
+      var res = document.getElementById('cutoffResults');
+      if (!colleges.length) { showEmptyState(); return; }
+
+      var html = '<div style="margin-bottom:16px;font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Browse All Institutes (By Code)</div>';
+      html += '<div class="initial-grid">';
+      colleges.forEach(function(c) {
+        html += '<div class="long-tile" onclick="pickCollege(\'' + esc(c.name) + '\')">';
+        html += '<div class="tile-code">' + (c.code || 'N/A') + '</div>';
+        html += '<div class="tile-name">' + esc(c.name) + '</div>';
+        html += '<div style="font-size:10px;font-weight:700;color:var(--brand)">View →</div>';
+        html += '</div>';
+      });
+      html += '</div>';
+      
+      if (all.length > LIST_LIMIT) {
+        html += '<button class="load-more-btn" onclick="loadMoreColleges()">Load More Institutes (' + (all.length - LIST_LIMIT) + ' remaining)</button>';
+      }
+      
+      res.innerHTML = html;
+    }
+
+    function loadMoreColleges() {
+      LIST_LIMIT += 30;
+      displayInitialList();
+    }
+
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('#searchOuter')) hideSugg();
+    });
+
+    // ── LOAD COLLEGE ──
+    function loadCollege(name) {
+      var lower = name.toLowerCase();
+      CUR_MHT = MHT_DATA.filter(function (r) { return (r.Institute || '').toLowerCase() === lower; });
+      CUR_JEE = JEE_DATA.filter(function (r) { return (r._instituteName || '').toLowerCase() === lower; });
+      buildFilters();
+      document.getElementById('filterSeat').value = '';
+      document.getElementById('filterBranch').value = '';
+      applyFilters();
+    }
+
+    // ── BUILD FILTERS ──
+    function buildFilters() {
+      var seatClusters = {};
+      CUR_MHT.forEach(function (r) {
+        var actual = (r['Seat Type'] || '').trim();
+        var clustered = clusterSeat(actual);
+        if (!seatClusters[clustered]) seatClusters[clustered] = [];
+        if (!seatClusters[clustered].includes(actual)) seatClusters[clustered].push(actual);
+      });
+      var clusterKeys = Object.keys(seatClusters).sort();
+
+      document.getElementById('filterSeat').innerHTML =
+        '<option value="">All Seat Types</option>' +
+        clusterKeys.map(function (k) { return '<option value="' + esc(k) + '">' + esc(k) + '</option>'; }).join('');
+
+      var branchSet = {};
+      CUR_MHT.forEach(function (r) { var b = (r.Branch || '').trim(); if (b) branchSet[b] = 1; });
+      CUR_JEE.forEach(function (r) { var b = (r._branchName || '').trim(); if (b) branchSet[b] = 1; });
+      var branches = Object.keys(branchSet).sort();
+
+      document.getElementById('filterBranch').innerHTML =
+        '<option value="">All Branches</option>' +
+        branches.map(function (b) { return '<option value="' + esc(b) + '">' + esc(b) + '</option>'; }).join('');
+
+      document.getElementById('seatFilterGroup').style.display = (EXAM_TAB === 'jee') ? 'none' : '';
+
+      var hasClustered = clusterKeys.some(function (k) {
+        return CUR_MHT.some(function (r) { return clusterSeat(r['Seat Type'] || '') === k && (r['Seat Type'] || '') !== k; });
+      });
+      document.getElementById('seatNote').className = 'seat-note' + (hasClustered && EXAM_TAB !== 'jee' ? ' show' : '');
+      document.getElementById('filtersSection').classList.add('show');
+    }
+
+    // ── EXAM TAB ──
+    function setTab(tab) {
+      EXAM_TAB = tab;
+      document.querySelectorAll('.exam-tab').forEach(function (el) {
+        el.className = 'exam-tab';
+        if (el.dataset.tab === tab) {
+          if (tab === 'mhtcet') el.classList.add('act-mht');
+          else if (tab === 'jee') el.classList.add('act-jee');
+          else el.classList.add('act-all');
+        }
+      });
+      if (SEL_COLLEGE) {
+        document.getElementById('seatFilterGroup').style.display = (tab === 'jee') ? 'none' : '';
+        document.getElementById('seatNote').className = 'seat-note' + (tab !== 'jee' ? ' show' : '');
+        document.getElementById('filterSeat').value = '';
+        document.getElementById('filterBranch').value = '';
+        applyFilters();
+      }
+    }
+
+    // ── APPLY FILTERS ──
+    function applyFilters() {
+      if (!SEL_COLLEGE) return;
+      var seatF = gv('filterSeat') || '';
+      var branchF = gv('filterBranch') || '';
+
+      var mhtRows = CUR_MHT.slice();
+      if (seatF) mhtRows = mhtRows.filter(function (r) { return clusterSeat(r['Seat Type'] || '') === seatF; });
+      if (branchF) mhtRows = mhtRows.filter(function (r) { return (r.Branch || '').trim() === branchF; });
+      mhtRows.sort(function (a, b) { return b._pct - a._pct; });
+
+      var jeeRows = CUR_JEE.slice();
+      if (branchF) jeeRows = jeeRows.filter(function (r) { return (r._branchName || '').trim() === branchF; });
+      jeeRows.sort(function (a, b) { return b._pct - a._pct; });
+
+      if (EXAM_TAB === 'mhtcet') jeeRows = [];
+      if (EXAM_TAB === 'jee') mhtRows = [];
+
+      renderStats(mhtRows.length, jeeRows.length);
+      renderCards(mhtRows, jeeRows);
+    }
+
+    // ── RENDER STATS ──
+    function renderStats(mht, jee) {
+      var total = mht + jee;
+      var sr = document.getElementById('statsRow');
+      if (!total) { sr.innerHTML = ''; return; }
+      sr.innerHTML =
+        '<div class="stat-pill"><span class="sp-dot" style="background:var(--ink2)"></span>' + total + ' result' + (total !== 1 ? 's' : '') + '</div>' +
+        (mht ? '<div class="stat-pill"><span class="sp-dot" style="background:var(--brand)"></span>' + mht + ' MHT-CET</div>' : '') +
+        (jee ? '<div class="stat-pill"><span class="sp-dot" style="background:var(--blue)"></span>' + jee + ' JEE Mains</div>' : '');
+    }
+
+    // ── RENDER CARDS ──
+    function renderCards(mhtRows, jeeRows) {
+      var res = document.getElementById('cutoffResults');
+      if (!mhtRows.length && !jeeRows.length) {
+        res.innerHTML =
+          '<div class="results-grid"><div class="empty-state">' +
+          '<div class="empty-icon">&#128270;</div>' +
+          '<h3>No results match your filters</h3>' +
+          '<p>Try changing the seat type or branch filter, or switch exam tabs.</p>' +
+          '</div></div>';
+        return;
+      }
+
+      var html = '<div class="results-grid">';
+
+      mhtRows.forEach(function (r, i) {
+        var actual = (r['Seat Type'] || '').trim();
+        var clustered = clusterSeat(actual);
+        html += '<div class="cutoff-card mhtcet" style="animation-delay:' + (i * 25) + 'ms">';
+        html += '<div class="card-header"><div class="card-name">' + esc(r.Institute) + '</div><span class="card-badge badge-mht">MHT-CET</span></div>';
+        html += '<div class="card-branch">' + esc(r.Branch) + '</div>';
+        html += '<div class="card-chips">';
+        html += '<span class="chip chip-gray">' + esc(actual) + '</span>';
+        if (clustered !== actual) html += '<span class="chip chip-orange">Group: ' + esc(clustered) + '</span>';
+        html += '<span class="chip">Code: ' + esc(r['Institute Code']) + '</span>';
+        html += '</div>';
+        html += '<div class="card-stats">';
+        html += '<div class="stat-box"><div class="stat-label">Cutoff Percentile</div><div class="stat-val val-red">' + r._pct.toFixed(4) + '</div></div>';
+        html += '<div class="stat-box"><div class="stat-label">Cutoff Rank</div><div class="stat-val">' + fR(r._rank) + '</div></div>';
+        html += '</div></div>';
+      });
+
+      jeeRows.forEach(function (r, i) {
+        html += '<div class="cutoff-card jee" style="animation-delay:' + ((mhtRows.length + i) * 25) + 'ms">';
+        html += '<div class="card-header"><div class="card-name">' + esc(r._instituteName) + '</div><span class="card-badge badge-jee">JEE Mains</span></div>';
+        html += '<div class="card-branch">' + esc(r._branchName) + '</div>';
+        html += '<div class="card-chips">';
+        if (r['Seat Type']) html += '<span class="chip chip-blue">' + esc(r['Seat Type']) + '</span>';
+        if (r['Region']) html += '<span class="chip">' + esc(r['Region']) + '</span>';
+        if (r['Type']) html += '<span class="chip chip-gray">' + esc(r['Type']) + '</span>';
+        html += '</div>';
+        html += '<div class="card-stats">';
+        html += '<div class="stat-box"><div class="stat-label">JEE Percentile</div><div class="stat-val val-blue">' + r._pct.toFixed(4) + '</div></div>';
+        if (r._air) html += '<div class="stat-box"><div class="stat-label">All India Merit</div><div class="stat-val" style="font-size:13px">' + esc(r._air) + '</div></div>';
+        html += '</div>';
+        if (r['College Url']) html += '<a class="card-link" href="' + esc(r['College Url']) + '" target="_blank" rel="noopener"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-top:2px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> MahaCET Portal</a>';
+        html += '</div>';
+      });
+
+      html += '</div>';
+      res.innerHTML = html;
+    }
+
+    // ── TOAST ──
+    function toast(msg, type) {
+      type = type || 'info';
+      var w = document.getElementById('toastWrap');
+      var t = document.createElement('div');
+      t.className = 'toast t-' + type;
+      t.innerHTML = '<div class="toast-dot"></div>' + esc(msg);
+      w.appendChild(t);
+      setTimeout(function () {
+        t.style.opacity = '0'; t.style.transition = 'opacity .3s';
+        setTimeout(function () { t.remove(); }, 300);
+      }, type === 'err' ? 5000 : 3000);
+    }
+
+    // ── BOOT ──
+    function boot() {
+      if (!initAuth({ requireLogin: true, toolContainerId: 'toolArea' })) return;
+
+      showPage('cutoff');
+      document.getElementById('cutoffResults').innerHTML =
+        '<div class="results-grid"><div class="loading-state">' +
+        '<div class="spinner"></div>' +
+        '<p>Loading college data...</p>' +
+        '</div></div>';
+      loadDataFiles();
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+    else boot();
+  </script>
+</body>
+
+</html>

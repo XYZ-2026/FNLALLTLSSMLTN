@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seed Admin — College Simplified</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand: #dc2626;
+            --bg: #fafafa;
+            --card: #ffffff;
+            --stroke: rgba(0, 0, 0, 0.08);
+            --ink: #111827;
+            --muted: #6b7280;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .seed-card {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid var(--stroke);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+        h1 {
+            font-family: 'Lexend', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            text-align: left;
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--stroke);
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        input:focus {
+            border-color: var(--brand);
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: none;
+            background: var(--brand);
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: opacity 0.2s;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        #status {
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .success { color: #16a34a; }
+        .error { color: #dc2626; }
+    </style>
+</head>
+<body>
+    <div class="seed-card">
+        <h1>Bootstrap Admin</h1>
+        <p>Enter the email you want to promote to Admin. This will update the user's role in the database.</p>
+        
+        <div class="form-group">
+            <label>Admin Email</label>
+            <input type="email" id="adminEmail" value="hareshsambad1@gmail.com" placeholder="email@example.com">
+        </div>
+        
+        <button id="seedBtn" onclick="seedAdmin()">Promote to Admin</button>
+        <div id="status"></div>
+        
+        <div style="margin-top: 1.5rem; font-size: 0.75rem; color: var(--muted);">
+            After clicking, the user will have access to the <a href="admin.html" style="color: var(--brand);">Admin Panel</a>.
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="firebase_config.js"></script>
+    <script src="shared_auth.js"></script>
+    <script>
+        async function seedAdmin() {
+            const email = document.getElementById('adminEmail').value.trim();
+            const btn = document.getElementById('seedBtn');
+            const status = document.getElementById('status');
+            
+            if (!email) return alert('Enter an email');
+            
+            btn.disabled = true;
+            btn.textContent = 'Processing...';
+            status.textContent = '';
+            
+            try {
+                // Note: The 'updateUser' action in Code.gs should handle role updates.
+                // If it doesn't, this will at least try to ping the API.
+                // For seeding, we often need to call a specific action or manually edit the sheet.
+                // Assuming our refined Code.gs supports 'updateUser' with role.
+                
+                const res = await authApi('updateUser', {
+                    email: email,
+                    role: 'admin'
+                });
+                
+                if (res.ok) {
+                    status.innerHTML = '<span class="success">Successfully promoted ' + email + ' to Admin!</span>';
+                } else {
+                    status.innerHTML = '<span class="error">Error: ' + (res.error || 'User not found. Make sure they are registered first.') + '</span>';
+                }
+            } catch (e) {
+                status.innerHTML = '<span class="error">Failed to connect to API.</span>';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Promote to Admin';
+            }
+        }
+    </script>
+</body>
+</html>

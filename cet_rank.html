@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MHT-CET — Percentile to Rank Predictor — College Simplified</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #dc2626; --brand-soft: #fef2f2; --ink: #111827; --muted: #6b7280; --bg: #f4f6fb; --card: #ffffff; --stroke: #e5e7eb;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html, body { overflow-x: hidden; width: 100%; position: relative; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); padding-top: 64px; }
+    
+    .wrap { max-width: 600px; margin: 0 auto; padding: 40px 20px 80px; }
+    .page-hero { background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); border-radius: 24px; padding: 32px; margin-bottom: 32px; color: #fff; box-shadow: 0 10px 30px rgba(220, 38, 38, 0.2); }
+    .page-hero h1 { font-family: 'Poppins', sans-serif; font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+    .page-hero p { font-size: 14px; opacity: 0.9; line-height: 1.6; }
+
+    .card { background: var(--card); border: 1px solid var(--stroke); border-radius: 20px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+    label { display: block; font-weight: 700; font-size: 13px; color: var(--ink); margin: 16px 0 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    label:first-child { margin-top: 0; }
+    input { width: 100%; padding: 12px 16px; border: 1.5px solid var(--stroke); border-radius: 12px; font-family: inherit; font-size: 14px; outline: none; transition: 0.2s; }
+    input:focus { border-color: var(--brand); box-shadow: 0 0 0 4px var(--brand-soft); }
+
+    .btn { width: 100%; padding: 14px; background: var(--brand); color: #fff; border: none; border-radius: 14px; font-weight: 800; font-size: 14px; cursor: pointer; margin-top: 24px; transition: 0.3s; box-shadow: 0 8px 20px rgba(220, 38, 38, 0.15); }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(220, 38, 38, 0.25); }
+
+    .result-card { display: none; margin-top: 24px; background: #fff; border: 2px solid var(--brand); border-radius: 20px; padding: 32px; text-align: center; animation: fadeUp 0.4s ease; }
+    .result-card.show { display: block; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .res-label { font-size: 12px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .res-val { font-family: 'Poppins', sans-serif; font-size: 48px; font-weight: 800; color: var(--brand); line-height: 1; }
+    .res-sub { font-size: 14px; color: var(--muted); margin-top: 12px; font-weight: 500; line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div id="toolArea">
+      <div class="page-hero">
+        <h1>Percentile vs Rank</h1>
+        <p>Estimate your state-level rank based on your MHT-CET percentile and historical candidate data.</p>
+      </div>
+
+      <div class="card">
+        <label>Your CET Percentile</label>
+        <input type="number" id="inPercentile" placeholder="e.g. 96.50" step="0.01" min="0" max="100">
+        
+        <button class="btn" onclick="calcRank()">Calculate Rank</button>
+      </div>
+
+      <div class="result-card" id="resultCard">
+        <div class="res-label">Estimated State Rank</div>
+        <div class="res-val" id="resRank">—</div>
+        <div class="res-sub" id="resSub"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase_config.js"></script>
+  <script src="shared_auth.js"></script>
+  <script>
+    'use strict';
+
+    function calcRank() {
+      var pct = parseFloat(document.getElementById('inPercentile').value);
+      if (isNaN(pct) || pct < 0 || pct > 100) return alert('Enter a valid percentile (0-100)');
+      
+      var total = 520000; 
+      var rank = Math.max(1, Math.round((100 - pct) / 100 * total));
+      document.getElementById('resRank').textContent = rank.toLocaleString('en-IN');
+      
+      var tier = '';
+      if (rank <= 1000) tier = 'Top Tier — Dream colleges like COEP, VJTI and SPIT are highly likely.';
+      else if (rank <= 5000) tier = 'Excellent — High chances for premium branches in top-tier colleges.';
+      else if (rank <= 15000) tier = 'Very Good — Strong options across reputed government and private institutes.';
+      else tier = 'Good — Multiple quality options available across the state.';
+      
+      document.getElementById('resSub').textContent = tier;
+      document.getElementById('resultCard').classList.add('show');
+    }
+
+    function boot() {
+      if (!initAuth({ requireLogin: true, toolContainerId: 'toolArea' })) return;
+
+      // Handle URL params
+      var params = new URLSearchParams(window.location.search);
+      var pct = params.get('percentile');
+      if (pct) {
+        document.getElementById('inPercentile').value = pct;
+        calcRank();
+      }
+    }
+
+    window.calcRank = calcRank;
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+    else boot();
+  </script>
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JOSAA College Predictor — College Simplified</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #dc2626; --brand-d: #991b1b; --brand-soft: #fef2f2; --brand-ring: rgba(220, 38, 38, 0.15);
+      --ink: #0f172a; --ink2: #475569; --muted: #94a3b8; --bg: #f8fafc; --card: #ffffff; --stroke: #e2e8f0;
+      --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; padding-top: 80px; }
+    
+    .wrap { max-width: 900px; margin: 0 auto; padding: 40px 24px 100px; }
+    
+    .page-hero { 
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand-d) 100%); 
+      border-radius: 32px; padding: 48px 40px; margin-bottom: 40px; color: #fff; 
+      box-shadow: 0 20px 40px var(--brand-ring); position: relative; overflow: hidden;
+    }
+    .page-hero h1 { font-family: 'Lexend', sans-serif; font-size: 30px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px; position: relative; }
+    .page-hero p { font-size: 16px; opacity: 0.9; line-height: 1.6; max-width: 580px; position: relative; }
+
+    .card { background: var(--card); border: 1px solid var(--stroke); border-radius: 32px; padding: 40px; box-shadow: var(--shadow-lg); }
+    
+    .form-group { margin-bottom: 24px; }
+    .form-label { display: block; font-weight: 700; font-size: 13px; color: var(--ink2); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+    
+    .input-wrap { position: relative; }
+    .input-wrap svg { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+    
+    input, select { 
+      width: 100%; padding: 14px 20px 14px 48px; border: 2px solid var(--stroke); border-radius: 16px; 
+      font-family: inherit; font-size: 15px; font-weight: 500; outline: none; transition: all 0.2s; background: var(--bg);
+    }
+    input:focus, select:focus { border-color: var(--brand); background: #fff; box-shadow: 0 0 0 5px var(--brand-ring); }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+
+    .btn { 
+      width: 100%; padding: 18px; background: linear-gradient(135deg, var(--brand), var(--brand-d)); color: #fff; border: none; border-radius: 20px; 
+      font-family: 'Lexend', sans-serif; font-weight: 800; font-size: 16px; cursor: pointer; margin-top: 12px; transition: 0.3s; 
+      box-shadow: 0 10px 25px var(--brand-ring); display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 15px 35px var(--brand-ring); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .loader-wrap { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 13px; font-weight: 600; margin-top: 12px; justify-content: center; }
+    .spinner { width: 18px; height: 18px; border: 3px solid var(--stroke); border-top-color: var(--brand); border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .results-table { width: 100%; border-collapse: collapse; margin-top: 24px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-lg); border: 1px solid var(--stroke); }
+    .results-table th { background: var(--bg); padding: 16px 20px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); border-bottom: 1px solid var(--stroke); }
+    .results-table td { padding: 16px 20px; font-size: 13px; border-bottom: 1px solid var(--stroke); }
+    .results-table tr:last-child td { border-bottom: none; }
+
+    .type-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 12px; margin-top: 12px; }
+    .type-pill { 
+      padding: 12px; border: 2px solid var(--stroke); border-radius: 16px; font-size: 13px; font-weight: 700; text-align: center; cursor: pointer; transition: 0.2s; background: var(--bg); display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .type-pill:hover { border-color: var(--muted); }
+    .type-pill.active { background: var(--brand-soft); border-color: var(--brand); color: var(--brand); }
+    .type-pill input { display: none; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div id="toolArea">
+      <div class="page-hero">
+        <h1>JOSAA Predictor</h1>
+        <p>Expert college prediction for NITs, IIITs, and GFTIs based on your JEE Mains rank and preferences.</p>
+      </div>
+
+      <div class="card">
+        <form id="pForm" onsubmit="handlePredict(event)">
+          <div class="form-group">
+            <label class="form-label">All India Rank (JEE Mains)</label>
+            <div class="input-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <input type="number" id="inRank" placeholder="e.g. 15400" required>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <div class="input-wrap">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <select id="inCategory">
+                  <option value="OPEN">OPEN</option>
+                  <option value="OBC-NCL">OBC-NCL</option>
+                  <option value="SC">SC</option>
+                  <option value="ST">ST</option>
+                  <option value="EWS">EWS</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Gender Pool</label>
+              <div class="input-wrap">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/><path d="M9 10a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0z"/><path d="M12 13v3"/><path d="M10 16h4"/></svg>
+                <select id="inGender">
+                  <option value="Gender-Neutral">Gender-Neutral</option>
+                  <option value="Female-only (including Supernumerary)">Female-only</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Category-wise Branch Interest</label>
+            <div class="input-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              <select id="inBranch">
+                <optgroup label="Software & IT">
+                  <option value="computer">Computer Science & IT</option>
+                  <option value="ai">AI & Machine Learning</option>
+                </optgroup>
+                <optgroup label="Hardware & Signals">
+                  <option value="electronics">Electronics & Communication</option>
+                  <option value="electrical">Electrical Engineering</option>
+                </optgroup>
+                <optgroup label="Traditional Core">
+                  <option value="mechanical">Mechanical Engineering</option>
+                  <option value="civil">Civil Engineering</option>
+                  <option value="chemical">Chemical Engineering</option>
+                </optgroup>
+                <option value="all">All Branches</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Preferred Institute Types</label>
+            <div class="type-grid">
+              <label class="type-pill active" id="pill-NIT">
+                <input type="checkbox" name="instType" value="National Institute of Technology" checked onchange="togglePill(this)"> NIT
+              </label>
+              <label class="type-pill active" id="pill-IIIT">
+                <input type="checkbox" name="instType" value="Indian Institute of Information Technology" checked onchange="togglePill(this)"> IIIT
+              </label>
+              <label class="type-pill" id="pill-GFTI">
+                <input type="checkbox" name="instType" value="Other Central Government" onchange="togglePill(this)"> GFTI
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" class="btn" id="predictBtn" disabled>
+            Analyze Admission Chances
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+          <div id="dataLoader" class="loader-wrap">
+            <div class="spinner"></div>
+            <span>Synchronizing JoSAA Round 6 seat matrix...</span>
+          </div>
+        </form>
+      </div>
+
+      <div id="resultsSection" class="results-section">
+        <h2 style="font-family:'Lexend'; font-size:20px; font-weight:800; margin-bottom:20px">Detailed Institute Allotments</h2>
+        <div style="overflow-x:auto">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>Institute</th>
+                <th>Program</th>
+                <th>Quota</th>
+                <th>Category</th>
+                <th>Gender</th>
+                <th>Opening</th>
+                <th>Closing</th>
+              </tr>
+            </thead>
+            <tbody id="resultsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase_config.js"></script>
+  <script src="shared_auth.js"></script>
+  <script>
+    'use strict';
+    let josaaData = [];
+
+    function handlePredict(e) {
+      if (e) e.preventDefault();
+      const rank = parseInt(document.getElementById('inRank').value);
+      const cat = document.getElementById('inCategory').value;
+      const gen = document.getElementById('inGender').value;
+      const branch = document.getElementById('inBranch').value;
+      
+      const selectedTypes = Array.from(document.querySelectorAll('input[name="instType"]:checked')).map(i => i.value);
+      
+      if (!josaaData.length) return alert("Data is still loading...");
+
+      let filtered = josaaData.filter(r => 
+        r["Seat Type"] === cat && 
+        r.Gender === gen && 
+        parseInt(r["Closing Rank"]) >= rank
+      );
+
+      // Institute Type Filter
+      if (selectedTypes.length > 0) {
+        filtered = filtered.filter(r => selectedTypes.some(t => r.Institute.includes(t)));
+      }
+
+      if (branch !== 'all') {
+        const branchKeywords = {
+          'computer': ['Computer', 'IT', 'Information', 'Software'],
+          'ai': ['Artificial', 'Intelligence', 'Data Science', 'Machine'],
+          'electronics': ['Electronics', 'Communication', 'Telecommunication'],
+          'electrical': ['Electrical Engineering'],
+          'mechanical': ['Mechanical'],
+          'civil': ['Civil'],
+          'chemical': ['Chemical']
+        };
+        const keywords = branchKeywords[branch] || [];
+        filtered = filtered.filter(r => keywords.some(k => r["Academic Program Name"].includes(k)));
+      }
+
+      filtered.sort((a,b) => parseInt(a["Closing Rank"]) - parseInt(b["Closing Rank"]));
+      
+      const tbody = document.getElementById('resultsTableBody');
+      tbody.innerHTML = filtered.slice(0, 100).map(r => `
+        <tr>
+          <td style="font-weight:700; min-width:200px">${r.Institute}</td>
+          <td style="color:var(--ink2); min-width:200px">${r["Academic Program Name"]}</td>
+          <td style="font-weight:600">${r.Quota}</td>
+          <td style="font-weight:600">${r["Seat Type"]}</td>
+          <td style="font-size:12px">${r.Gender}</td>
+          <td style="font-weight:700; color:var(--muted)">${r["Opening Rank"]}</td>
+          <td style="font-weight:800; color:var(--brand)">${r["Closing Rank"]}</td>
+        </tr>
+      `).join('');
+
+      if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px; color:var(--muted)">No institutes found matching your rank and category.</td></tr>';
+      }
+
+      document.getElementById('resultsSection').style.display = 'block';
+      window.scrollTo({top: document.getElementById('resultsSection').offsetTop - 60, behavior: 'smooth'});
+    }
+
+    function boot() {
+      if (!initAuth({ requireLogin: true, toolContainerId: 'toolArea' })) return;
+      fetch('josaa.json').then(r => r.json()).then(json => {
+        josaaData = json["JOSAA DATA"] || json["JOSAA_Round_6_Cutoffs"] || [];
+        document.getElementById('predictBtn').disabled = false;
+        document.getElementById('dataLoader').style.display = 'none';
+      }).catch(err => {
+        console.error("Data load fail:", err);
+        document.getElementById('dataLoader').innerHTML = '<span style="color:var(--brand)">Sync failed. Please refresh.</span>';
+      });
+    }
+
+    window.handlePredict = handlePredict;
+
+    function togglePill(input) {
+      const pill = input.parentElement;
+      if (input.checked) pill.classList.add('active');
+      else pill.classList.remove('active');
+    }
+    window.togglePill = togglePill;
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+    else boot();
+  </script>
+</body>
+</html>

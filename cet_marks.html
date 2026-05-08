@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MHT-CET — Marks to Percentile Predictor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=DM+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --brand: #dc2626;
+      --brand-soft: #fef2f2;
+      --ink: #111827;
+      --muted: #6b7280;
+      --bg: #f4f6fb;
+      --card: #ffffff;
+      --stroke: #e5e7eb;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html,
+    body {
+      overflow-x: hidden;
+      width: 100%;
+      position: relative;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      padding-top: 64px;
+    }
+
+    .wrap {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    .page-hero {
+      background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+      border-radius: 24px;
+      padding: 32px;
+      margin-bottom: 32px;
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(220, 38, 38, 0.2);
+    }
+
+    .page-hero h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .page-hero p {
+      font-size: 14px;
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--ink);
+      margin: 16px 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    label:first-child {
+      margin-top: 0;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--stroke);
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 4px var(--brand-soft);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--brand);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 24px;
+      transition: 0.3s;
+      box-shadow: 0 8px 20px rgba(220, 38, 38, 0.15);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(220, 38, 38, 0.25);
+    }
+
+    .result-card {
+      display: none;
+      margin-top: 24px;
+      background: #fff;
+      border: 2px solid var(--brand);
+      border-radius: 20px;
+      padding: 32px;
+      text-align: center;
+      animation: fadeUp 0.4s ease;
+    }
+
+    .result-card.show {
+      display: block;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .res-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .res-val {
+      font-family: 'Poppins', sans-serif;
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--brand);
+      line-height: 1;
+    }
+
+    .res-range {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 12px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div id="toolArea">
+      <div class="page-hero">
+        <h1>Marks vs Percentile</h1>
+        <p>Estimate your MHT-CET percentile based on historical trends and shift difficulty levels.</p>
+      </div>
+
+      <div class="card">
+        <label>Total Marks (Out of 200)</label>
+        <input type="number" id="inMarks" placeholder="e.g. 145" min="0" max="200">
+
+        <label>Shift Difficulty</label>
+        <select id="inDifficulty">
+          <option value="moderate">Moderate (Standard)</option>
+          <option value="easy">Easy (High Competition)</option>
+          <option value="difficult">Difficult (Low Cutoff)</option>
+        </select>
+
+        <button class="btn" onclick="predict()">Calculate Percentile</button>
+      </div>
+
+      <div class="result-card" id="resultCard">
+        <div class="res-label">Estimated Percentile</div>
+        <div class="res-val" id="resPercentile">—</div>
+        <div class="res-range" id="resRange"></div>
+        <a id="rankLink" href="cet_rank.html" class="btn"
+          style="margin-top:24px;text-decoration:none;display:block">Predict Rank Now →</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase_config.js"></script>
+  <script src="shared_auth.js"></script>
+  <script>
+    'use strict';
+    var CET_DATA = [];
+
+    function predict() {
+      var marks = parseFloat(document.getElementById('inMarks').value);
+      var diff = document.getElementById('inDifficulty').value;
+      if (isNaN(marks) || marks < 0 || marks > 200) return alert('Enter valid marks (0-200)');
+
+      var row = CET_DATA.find(r => marks >= r.min && marks <= r.max);
+      var pct = row ? (row.low + row.high) / 2 : (marks / 200) * 90;
+      if (diff === 'easy') pct -= 0.6; if (diff === 'difficult') pct += 0.6;
+      pct = Math.min(99.99, Math.max(0.01, pct));
+
+      var resPct = pct.toFixed(2);
+      document.getElementById('resPercentile').textContent = resPct + '%';
+      document.getElementById('resRange').textContent = 'Expected Range: ' + (row ? row.low : (pct - 1)).toFixed(2) + '% — ' + (row ? row.high : (pct + 1)).toFixed(2) + '%';
+
+      document.getElementById('rankLink').href = 'cet_rank.html?percentile=' + resPct;
+      document.getElementById('resultCard').classList.add('show');
+    }
+
+    function boot() {
+      if (!initAuth({ requireLogin: true, toolContainerId: 'toolArea' })) return;
+      fetch('MHT CET marks vs percentile.json')
+        .then(r => r.json())
+        .then(json => {
+          var rows = json["MHT CET marks vs percentile"] || [];
+          CET_DATA = rows.map(row => {
+            var parts = (row["Marks"] || "").split('-');
+            var pPercent = (row["Percentile (%)"] || "").replace(/\+/g, '');
+            var pParts = pPercent.split('-').map(s => parseFloat(s.trim()));
+            return { min: parseFloat(parts[0]), max: parseFloat(parts[1]), low: pParts[0], high: pParts.length > 1 ? pParts[1] : pParts[0] };
+          });
+        });
+    }
+
+    window.predict = predict;
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+    else boot();
+  </script>
+</body>
+
+</html>

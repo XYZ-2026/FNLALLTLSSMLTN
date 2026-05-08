@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JOSAA Cutoff Checker — College Simplified</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #dc2626; --brand-soft: #fef2f2; --ink: #111827; --muted: #6b7280; --bg: #f4f6fb; --card: #ffffff; --stroke: #e5e7eb;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html, body { overflow-x: hidden; width: 100%; position: relative; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); padding-top: 64px; }
+    
+    .wrap { max-width: 900px; margin: 0 auto; padding: 40px 20px 80px; }
+    .page-hero { background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%); border-radius: 24px; padding: 32px; margin-bottom: 32px; color: #fff; box-shadow: 0 10px 30px rgba(220, 38, 38, 0.2); }
+    .page-hero h1 { font-family: 'Poppins', sans-serif; font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+    .page-hero p { font-size: 14px; opacity: 0.9; line-height: 1.6; }
+
+    .search-card { background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.3); border-radius: 14px; padding: 4px 16px; display: flex; align-items: center; gap: 12px; margin-top: 24px; }
+    .search-card input { background: transparent; border: none; color: #fff; padding: 12px 0; font-size: 15px; width: 100%; outline: none; }
+    .search-card input::placeholder { color: rgba(255,255,255,0.7); }
+
+    .sugg-panel { position: absolute; z-index: 1000; background: #fff; border: 1px solid var(--stroke); border-radius: 14px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); max-height: 400px; overflow-y: auto; width: 100%; display: none; margin-top: 8px; left: 0; right: 0; }
+    .sugg-panel.open { display: block; }
+    .sugg-item { padding: 12px 16px; border-bottom: 1px solid #f3f4f6; cursor: pointer; transition: 0.2s; }
+    .sugg-item:hover { background: #f9fafb; }
+    .sugg-name { font-weight: 700; font-size: 13px; color: var(--ink); }
+    .sugg-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    .filters-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .filter-group label { display: block; font-weight: 700; font-size: 12px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; }
+    .filter-group select { width: 100%; padding: 10px 12px; border: 1.5px solid var(--stroke); border-radius: 10px; background: #fff; font-size: 13px; outline: none; }
+
+    .cutoff-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+    .cutoff-card { background: #fff; border: 1px solid var(--stroke); border-radius: 16px; padding: 20px; transition: 0.3s; border-left: 4px solid var(--brand); }
+    .cutoff-card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+    .c-program { font-weight: 800; font-size: 14px; margin-bottom: 12px; line-height: 1.4; color: var(--ink); }
+    .c-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .stat-box { background: var(--bg); padding: 10px; border-radius: 10px; text-align: center; }
+    .stat-val { font-weight: 800; font-size: 16px; color: var(--brand); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div id="toolArea">
+      <div class="page-hero">
+        <h1>JOSAA Cutoff Checker</h1>
+        <p>Explore official Round 6 opening and closing ranks for all NITs, IIITs, and GFTIs.</p>
+        
+        <div style="position:relative">
+          <div class="search-card">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" id="instSearch" placeholder="Search institute name (e.g. NIT Trichy)..." oninput="handleSearch()">
+          </div>
+          <div id="suggPanel" class="sugg-panel"></div>
+        </div>
+      </div>
+
+      <div id="resultsArea">
+        <div class="filters-grid" style="background:var(--card); padding:24px; border-radius:20px; border:1px solid var(--stroke); margin-bottom:32px">
+          <div class="filter-group">
+            <label>Category</label>
+            <select id="fCat" onchange="resetAndRender()">
+              <option value="OPEN">OPEN</option>
+              <option value="OBC-NCL">OBC-NCL</option>
+              <option value="SC">SC</option>
+              <option value="ST">ST</option>
+              <option value="EWS">EWS</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Seat Pool</label>
+            <select id="fPool" onchange="resetAndRender()">
+              <option value="Gender-Neutral">Gender-Neutral</option>
+              <option value="Female-only (including Supernumerary)">Female-only</option>
+            </select>
+          </div>
+        </div>
+        <div id="cutoffGrid" class="cutoff-grid"></div>
+        <div id="loadMoreArea" style="text-align:center; margin-top:40px; display:none">
+          <button class="btn" style="width:auto; padding:14px 40px" onclick="loadMore()">Load More Institutes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase_config.js"></script>
+  <script src="shared_auth.js"></script>
+  <script>
+    'use strict';
+    let josaaData = [];
+    let uniqueInst = [];
+    let selectedInst = null;
+    let displayLimit = 50;
+
+    function resetAndRender() {
+      displayLimit = 50;
+      renderResults();
+    }
+
+    function loadMore() {
+      displayLimit += 50;
+      renderResults();
+    }
+
+    function handleSearch() {
+      const q = document.getElementById('instSearch').value.toLowerCase();
+      const panel = document.getElementById('suggPanel');
+      if (q.length < 2) { panel.classList.remove('open'); return; }
+      
+      const matches = uniqueInst.filter(i => i.toLowerCase().includes(q)).slice(0, 15);
+      panel.innerHTML = matches.map(m => `<div class="sugg-item" onclick="selectInst('${m.replace(/'/g, "\\'")}')"><div class="sugg-name">${m}</div></div>`).join('');
+      panel.classList.toggle('open', matches.length > 0);
+    }
+
+    function selectInst(inst) {
+      selectedInst = inst;
+      document.getElementById('instSearch').value = inst;
+      document.getElementById('suggPanel').classList.remove('open');
+      resetAndRender();
+    }
+
+    function renderResults() {
+      const cat = document.getElementById('fCat').value;
+      const pool = document.getElementById('fPool').value;
+      const searchQ = document.getElementById('instSearch').value.toLowerCase();
+
+      let filtered = josaaData.filter(r => r['Seat Type'] === cat && r['Gender'] === pool);
+      
+      if (selectedInst) {
+        filtered = filtered.filter(r => r.Institute === selectedInst);
+      } else if (searchQ) {
+        filtered = filtered.filter(r => r.Institute.toLowerCase().includes(searchQ));
+      }
+
+      const totalFound = filtered.length;
+      const paginated = filtered.slice(0, displayLimit);
+      
+      const grid = document.getElementById('cutoffGrid');
+      if (!paginated.length) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)">No cutoffs found matching these filters.</div>';
+        document.getElementById('loadMoreArea').style.display = 'none';
+        return;
+      }
+
+      grid.innerHTML = paginated.map(r => `
+        <div class="cutoff-card">
+          <div style="font-size:10px;font-weight:800;color:var(--brand);text-transform:uppercase;margin-bottom:8px">${r.Institute}</div>
+          <div class="c-program">${r.Quota} — ${r['Academic Program Name']}</div>
+          <div class="c-stats">
+            <div class="stat-box">
+              <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px">Opening</div>
+              <div class="stat-val">${r['Opening Rank']}</div>
+            </div>
+            <div class="stat-box">
+              <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px">Closing</div>
+              <div class="stat-val">${r['Closing Rank']}</div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('loadMoreArea').style.display = totalFound > displayLimit ? 'block' : 'none';
+    }
+
+    function boot() {
+      if (!initAuth({ requireLogin: true, toolContainerId: 'toolArea' })) return;
+
+      fetch('josaa.json').then(r => r.json()).then(json => {
+        josaaData = json["JOSAA DATA"] || json["JOSAA_Round_6_Cutoffs"] || [];
+        uniqueInst = [...new Set(josaaData.map(r => r.Institute))].sort();
+        renderResults();
+      }).catch(err => console.error("Error loading JoSAA data:", err));
+    }
+
+    window.selectInst = selectInst;
+    window.handleSearch = handleSearch;
+    window.renderResults = renderResults;
+    window.resetAndRender = resetAndRender;
+    window.loadMore = loadMore;
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+    else boot();
+  </script>
+</body>
+</html>

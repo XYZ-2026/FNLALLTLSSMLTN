@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preference List Builder — College Simplified</title>
+  <meta name="description" content="Build your optimal MHT-CET counselling preference list with smart college matching and drag-drop reordering.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lexend:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="preference-builder.css">
+</head>
+<body>
+  <div class="pb-wrap" id="toolArea">
+
+    <!-- HERO -->
+    <div class="pb-hero">
+      <div class="pb-premium-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Premium Tool
+      </div>
+      <h1>Preference List Builder</h1>
+      <p>Build your optimal MHT-CET counselling preference list with AI-powered college matching, smart suggestions, and one-click PDF export.</p>
+    </div>
+
+    <!-- STEPPER -->
+    <div class="stepper">
+      <div class="step-item active" onclick="goStep(1)">
+        <div class="step-circle">1</div><div class="step-text">Profile</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-item" onclick="goStep(2)">
+        <div class="step-circle">2</div><div class="step-text">Branches</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-item" onclick="goStep(3)">
+        <div class="step-circle">3</div><div class="step-text">Colleges</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-item" onclick="goStep(4)">
+        <div class="step-circle">4</div><div class="step-text">Final List</div>
+      </div>
+    </div>
+
+    <!-- PANEL 1: PROFILE -->
+    <div class="panel active" id="panel1">
+      <div class="panel-card">
+        <div class="panel-title">Your CET Profile</div>
+        <div class="panel-desc">Enter your MHT-CET details to find the best matching colleges.</div>
+
+        <div class="fg-row">
+          <div class="fg">
+            <label class="fg-label">CET Percentile *</label>
+            <input type="number" class="fg-input" id="inPct" placeholder="e.g. 92.45" step="0.0001" min="0" max="100">
+          </div>
+          <div class="fg">
+            <label class="fg-label">CET Rank *</label>
+            <input type="number" class="fg-input" id="inRank" placeholder="e.g. 25000" min="1">
+          </div>
+        </div>
+
+        <div class="fg">
+          <label class="fg-label">Candidate Category *</label>
+          <select class="fg-select" id="inCategory">
+            <option value="OPEN">OPEN / General</option>
+            <option value="OBC">OBC</option>
+            <option value="SC">SC</option>
+            <option value="ST">ST</option>
+            <option value="VJ/DT">VJ / DT / NT-A</option>
+            <option value="NT1">NT-B</option>
+            <option value="NT2">NT-C</option>
+            <option value="NT3">NT-D</option>
+            <option value="EWS">EWS</option>
+            <option value="TFWS">TFWS</option>
+          </select>
+        </div>
+
+        <div class="fg">
+          <label class="fg-label">Desired Region <span class="fg-optional">Optional</span></label>
+          <input type="text" class="fg-input" id="inRegion" placeholder="e.g. Mumbai, Pune, Nagpur...">
+          <div class="fg-hint">Filter colleges by city or region name</div>
+        </div>
+
+        <div class="fg-row">
+          <div class="fg">
+            <label class="fg-label">College Type <span class="fg-optional">Optional</span></label>
+            <select class="fg-select" id="inColType">
+              <option value="">All Types</option>
+              <option value="Government">Government</option>
+              <option value="Aided">Government-Aided</option>
+              <option value="Autonomous">Autonomous</option>
+              <option value="Un-Aided">Un-Aided / Private</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label class="fg-label">Minority Pref <span class="fg-optional">Optional</span></label>
+            <select class="fg-select" id="inMinority">
+              <option value="">No Preference</option>
+              <option value="Muslim">Religious — Muslim</option>
+              <option value="Christian">Religious — Christian</option>
+              <option value="Jain">Religious — Jain</option>
+              <option value="Gujarathi">Linguistic — Gujarathi</option>
+              <option value="Hindi">Linguistic — Hindi</option>
+              <option value="Sindhi">Linguistic — Sindhi</option>
+              <option value="Tamil">Linguistic — Tamil</option>
+              <option value="Malyalam">Linguistic — Malayalam</option>
+              <option value="Punjabi">Linguistic — Punjabi</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pb-actions">
+          <a href="cet-landing.html" class="pb-btn pb-btn-ghost">← Back to Dashboard</a>
+          <button class="pb-btn pb-btn-primary" onclick="goStep(2)" id="predictBtn" disabled>
+            Next: Select Branches
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+
+        <div id="dataLoader" class="pb-loader">
+          <div class="pb-spinner"></div>
+          <span>Loading seat matrix data...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 2: BRANCHES -->
+    <div class="panel" id="panel2">
+      <div class="panel-card">
+        <div class="panel-title">Select Branch Preferences</div>
+        <div class="panel-desc">Choose branches categorized by field. Use "Select All" to pick entire categories at once.</div>
+
+        <div id="branchChips" class="branch-chips"></div>
+        <div id="branchContainer" class="branch-cats"></div>
+
+        <div class="pb-actions">
+          <button class="pb-btn pb-btn-ghost" onclick="goStep(1)">← Back</button>
+          <button class="pb-btn pb-btn-primary" onclick="goStep(3)">
+            Next: Find Colleges
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 3: COLLEGES -->
+    <div class="panel" id="panel3">
+      <div class="panel-card">
+        <div class="panel-title">Best Fit Colleges</div>
+        <div class="panel-desc">Select colleges for your preference list. 6 aspirational colleges (above your percentile) are auto-added to protect against auto-locking.</div>
+
+        <div class="filter-bar">
+          <button class="filter-chip active" data-f="all" onclick="filterColleges('all',this)">All</button>
+          <button class="filter-chip" data-f="reachable" onclick="filterColleges('reachable',this)">Reachable</button>
+          <button class="filter-chip" data-f="aspirational" onclick="filterColleges('aspirational',this)">Aspirational</button>
+          <button class="filter-chip" data-f="government" onclick="filterColleges('government',this)">Government</button>
+          <button class="filter-chip" data-f="autonomous" onclick="filterColleges('autonomous',this)">Autonomous</button>
+        </div>
+        <div class="results-count" id="matchCount">0 colleges found</div>
+        <div class="college-grid" id="collegeGrid"></div>
+
+        <div class="pb-actions">
+          <button class="pb-btn pb-btn-ghost" onclick="goStep(2)">← Back</button>
+          <button class="pb-btn pb-btn-primary" onclick="goStep(4)">
+            Build Preference List
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 4: FINAL LIST -->
+    <div class="panel" id="panel4">
+      <div class="panel-card" style="padding:0;overflow:visible;background:transparent;border:none;box-shadow:none">
+
+        <div class="sidebar-tab" style="padding:0 4px">
+          <button class="sidebar-tab-btn active" data-tab="list" onclick="switchSideTab('list')">Preference List</button>
+          <button class="sidebar-tab-btn" data-tab="aspirational" onclick="switchSideTab('aspirational')">Edit Aspirational</button>
+        </div>
+
+        <!-- TAB: Main List -->
+        <div class="sidebar-content active" id="side-list">
+          <div class="pref-container">
+            <div class="pref-list-wrap">
+              <div class="pref-list-head">
+                <h3>Your Preference Order</h3>
+                <span id="prefCount" style="font-size:12px;color:var(--muted);font-weight:700">0 colleges</span>
+              </div>
+              <ul class="pref-list" id="prefListUl"></ul>
+            </div>
+            <div class="sugg-panel">
+              <div class="sugg-head">💡 Suggestions</div>
+              <div id="suggList"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: Edit Aspirational -->
+        <div class="sidebar-content" id="side-aspirational">
+          <div class="panel-card">
+            <div class="panel-title" style="font-size:18px">Edit Aspirational Colleges</div>
+            <div class="panel-desc">These 6 colleges are above your percentile and added as safety against auto-locking. You can swap them out.</div>
+            <div id="aspGrid" class="college-grid"></div>
+          </div>
+        </div>
+
+        <!-- Export -->
+        <div class="export-section">
+          <h3>Export Your Final List</h3>
+          <p>Download your preference list as a printable PDF with institute codes, branch names, and cutoff data.</p>
+          <div class="export-btns">
+            <button class="pb-btn pb-btn-primary" onclick="exportPDF()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export as PDF
+            </button>
+            <button class="pb-btn pb-btn-ghost" onclick="goStep(3)">← Edit Selection</button>
+          </div>
+        </div>
+
+        <div class="pb-actions" style="margin-top:16px">
+          <button class="pb-btn pb-btn-ghost" onclick="goStep(3)">← Back to Colleges</button>
+          <a href="cet-landing.html" class="pb-btn pb-btn-success">
+            Done — Return to Dashboard
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase_config.js"></script>
+  <script src="shared_auth.js"></script>
+  <script src="preference-builder.js"></script>
+</body>
+</html>

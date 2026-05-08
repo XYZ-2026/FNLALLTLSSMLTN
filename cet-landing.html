@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MHT-CET Dashboard — College Simplified</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lexend:wght@400;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --brand: #dc2626;
+      --brand-soft: #fef2f2;
+      --brand-ring: rgba(220, 38, 38, 0.15);
+      --ink: #111827;
+      --muted: #6b7280;
+      --bg: #fafafa;
+      --card: #ffffff;
+      --stroke: rgba(0, 0, 0, 0.08);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html,
+    body {
+      overflow-x: hidden;
+      width: 100%;
+      position: relative;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      padding-top: 64px;
+      line-height: 1.6
+    }
+
+    .hero {
+      padding: 100px 20px 60px;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto
+    }
+
+    .badge {
+      background: var(--brand-soft);
+      color: var(--brand);
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      display: inline-block;
+      margin-bottom: 24px;
+      border: 1px solid var(--brand-ring)
+    }
+
+    .hero h1 {
+      font-family: 'Lexend', sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.5rem, 6vw, 3.75rem);
+      line-height: 1.1;
+      margin-bottom: 20px;
+      letter-spacing: -0.03em
+    }
+
+    .hero h1 span {
+      color: var(--brand)
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.15rem;
+      max-width: 600px;
+      margin: 0 auto
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px 100px;
+      display: flex;
+      flex-direction: column;
+      gap: 100px
+    }
+
+    .section {
+      animation: fadeUp 0.6s ease both
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 48px
+    }
+
+    .section-icon {
+      width: 64px;
+      height: 64px;
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      color: var(--brand);
+      box-shadow: var(--shadow);
+      flex-shrink: 0
+    }
+
+    .section-title {
+      flex: 1
+    }
+
+    .section-title h2 {
+      font-family: 'Lexend', sans-serif;
+      font-weight: 800;
+      font-size: 32px;
+      color: var(--ink);
+      margin-bottom: 8px;
+      letter-spacing: -0.02em
+    }
+
+    .section-title p {
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 700px
+    }
+
+    .meta-badge {
+      background: var(--bg);
+      border: 1.5px solid var(--stroke);
+      color: var(--muted);
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px
+    }
+
+    .meta-badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--brand);
+      box-shadow: 0 0 0 3px var(--brand-ring)
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+      gap: 32px
+    }
+
+    .tool-card {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 28px;
+      padding: 40px;
+      text-decoration: none;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden
+    }
+
+    .tool-card:hover {
+      transform: translateY(-12px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--brand)
+    }
+
+    .tool-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      position: relative;
+      z-index: 1
+    }
+
+    .tool-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      font-size: 28px;
+      background: var(--bg);
+      color: var(--muted);
+      transition: all 0.3s;
+      border: 1px solid var(--stroke)
+    }
+
+    .tool-card:hover .tool-icon {
+      background: var(--white);
+      color: var(--brand);
+      border-color: var(--brand-ring);
+      transform: scale(1.05)
+    }
+
+    .arrow {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg);
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      transition: all 0.3s;
+      border: 1px solid var(--stroke)
+    }
+
+    .tool-card:hover .arrow {
+      background: var(--brand);
+      color: #fff;
+      transform: rotate(-45deg);
+      border-color: var(--brand)
+    }
+
+    .tool-info h3 {
+      font-family: 'Lexend', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--ink);
+      margin-bottom: 12px
+    }
+
+    .tool-info p {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.6
+    }
+
+    .tool-tag {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: var(--bg);
+      color: var(--muted);
+      margin-top: 8px
+    }
+
+    .tool-card:hover .tool-tag {
+      background: var(--brand-soft);
+      color: var(--brand)
+    }
+
+    @media (max-width: 768px) {
+      .section-header {
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 32px
+      }
+
+      .section-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px
+      }
+
+      .section-title h2 {
+        font-size: 26px
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 20px
+      }
+
+      .tool-card {
+        padding: 32px
+      }
+
+      .hero {
+        padding: 80px 20px 40px
+      }
+
+      .wrap {
+        gap: 60px
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="hero">
+    <div class="badge">Professional Counselling Platform</div>
+    <h1>Master Your <span>Counselling</span> Journey</h1>
+    <p>Premium tools for MHT-CET and JEE Mains All India admissions. Predict colleges, check cutoffs, and build your
+      perfect preference list.</p>
+  </div>
+
+  <div class="wrap">
+    <!-- CET SECTION -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+            <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
+          </svg>
+        </div>
+        <div class="section-title">
+          <h2>MHT-CET Form Simulation</h2>
+          <p>Complete toolkit for Maharashtra state-level counselling. Predict your percentile, estimate rank, and find
+            matching colleges.</p>
+          <div class="meta-badge"><span class="dot"></span> 3 Professional Tools</div>
+        </div>
+      </div>
+      <div class="grid">
+        <a class="tool-card" href="cet_marks.html">
+          <div class="tool-top">
+            <div class="tool-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m7.5 4.27 9 5.15" />
+                <path d="M21 8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8z" />
+              </svg></div>
+            <div class="arrow">→</div>
+          </div>
+          <div class="tool-info">
+            <h3>Marks vs Percentile</h3>
+            <p>Enter your MHT-CET marks to get an estimated percentile score based on shift difficulty.</p>
+            <div class="tool-tag">CET Metrics</div>
+          </div>
+        </a>
+        <a class="tool-card" href="cet_rank.html">
+          <div class="tool-top">
+            <div class="tool-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="20" x2="18" y2="10" />
+                <line x1="12" y1="20" x2="12" y2="4" />
+                <line x1="6" y1="20" x2="6" y2="14" />
+              </svg></div>
+            <div class="arrow">→</div>
+          </div>
+          <div class="tool-info">
+            <h3>Percentile vs Rank</h3>
+            <p>Convert your MHT-CET percentile into an estimated state-level rank for better round planning.</p>
+            <div class="tool-tag">Rank Predictor</div>
+          </div>
+        </a>
+        <a class="tool-card" href="cutoff_checker.html">
+          <div class="tool-top">
+            <div class="tool-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg></div>
+            <div class="arrow">→</div>
+          </div>
+          <div class="tool-info">
+            <h3>CET Cutoff Checker</h3>
+            <p>Search any MHT-CET college to view cutoff percentiles across all branches and seat types.</p>
+            <div class="tool-tag">Official Data</div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- JEE SECTION -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+          </svg>
+        </div>
+        <div class="section-title">
+          <h2>JEE Mains All India Seats</h2>
+          <p>Strategic tools for candidates targeting Maharashtra state-level counselling via the JEE Mains All India
+            quota.</p>
+          <div class="meta-badge"><span class="dot"></span> 3 Professional Tools</div>
+        </div>
+      </div>
+      <div class="grid">
+        <a class="tool-card" href="air.html">
+          <div class="tool-top">
+            <div class="tool-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <polyline points="22 4 12 14.01 9 11.01" />
+              </svg></div>
+            <div class="arrow">→</div>
+          </div>
+          <div class="tool-info">
+            <h3>Eligibility Checker</h3>
+            <p>Check if your JEE percentile qualifies you for specific colleges and branches in the MHT-CET rounds.</p>
+            <div class="tool-tag">Admission Logic</div>
+          </div>
+        </a>
+        <a class="tool-card" href="percentile_vs_college_predictor.html">
+          <div class="tool-top">
+            <div class="tool-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <path d="m16 10-4 4-2-2" />
+              </svg></div>
+            <div class="arrow">→</div>
+          </div>
+          <div class="tool-info">
+            <h3>College Predictor</h3>
+            <p>Enter your JEE percentile to see which colleges & branches you can target based on historical data.</p>
+            <div class="tool-tag">Data Powered</div>
+          </div>
+        </a>
+        <a class="tool-card" href="cutoff_checker.html">
+          <div class="tool-top">
+            <div class="tool-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+              </svg></div>
+            <div class="arrow">→</div>
+          </div>
+          <div class="tool-info">
+            <h3>AI Cutoff Checker</h3>
+            <p>Search any college to view MHT-CET & JEE Mains cutoffs across all branches and seat types.</p>
+            <div class="tool-tag">Full Analysis</div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- PREMIUM SECTION -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-icon" style="background:linear-gradient(135deg,#fef9e7,#fdf2e9);border-color:rgba(184,134,11,0.2);color:#b8860b">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+          </svg>
+        </div>
+        <div class="section-title">
+          <h2>Premium Counselling Tools</h2>
+          <p>Advanced tools exclusively for premium members. Build your perfect preference list with AI-powered matching and smart suggestions.</p>
+          <div class="meta-badge" style="background:#fef9e7;border-color:rgba(184,134,11,0.2);color:#b8860b"><span class="dot" style="background:#b8860b;box-shadow:0 0 0 3px rgba(184,134,11,0.15)"></span> Premium Only</div>
+        </div>
+      </div>
+      <div class="grid">
+        <a class="tool-card" href="preference-builder.html" style="border:2px solid rgba(184,134,11,0.2);background:linear-gradient(145deg,#fff,#fef9e7)">
+          <div class="tool-top">
+            <div class="tool-icon" style="background:linear-gradient(135deg,#fef9e7,#fdf2e9);color:#b8860b;border-color:rgba(184,134,11,0.2)">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+                <polyline points="10 9 9 9 8 9" />
+              </svg>
+            </div>
+            <div class="arrow" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#fff;border:none">→</div>
+          </div>
+          <div class="tool-info">
+            <h3>Preference List Builder</h3>
+            <p>Smart 4-step wizard to build your MHT-CET counselling preference list with college matching, drag-and-drop reordering, and PDF export.</p>
+            <div class="tool-tag" style="background:linear-gradient(135deg,#fef9e7,#fdf2e9);color:#b8860b;border:1px solid rgba(184,134,11,0.2)">Premium Feature</div>
+          </div>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase_config.js"></script>
+  <script src="shared_auth.js"></script>
+  <script>
+    initAuth({ requireLogin: false });
+  </script>
+</body>
+
+</html>
