@@ -97,16 +97,62 @@
       window.downloadPDF = function() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF('l', 'pt', 'a4');
-        doc.text("College Simplified - Prediction Results", 40, 40);
+        const metaRaw = localStorage.getItem("searchMeta");
+        let meta = { percentile: '—', exam: '—', category: '—', minority: '—' };
+        try { if(metaRaw) meta = JSON.parse(metaRaw); } catch(e) {}
+
+        const isRank = meta.exam.includes('Rank');
+
+        doc.setFontSize(22);
+        doc.setTextColor(220, 38, 38);
+        doc.text("College Simplified - Prediction Report", 40, 50);
+        
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.text(`Input: ${isRank ? 'Rank' : meta.percentile + '%'} | Exam: ${meta.exam} | Category: ${meta.category} | Minority: ${meta.minority}`, 40, 75);
+        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 40, 90);
+
         doc.autoTable({
-          startY: 60,
-          head: [['#', 'Code', 'Institute', 'Branch', 'Cutoff']],
-          body: results.map((r, i) => [i+1, r["College Code"]||'—', r["Institute Name"]||r.Institute||'—', r["Branch Name"]||r["Academic Program Name"]||'—', r["All India Merit"]||r["Closing Rank"]||'—']),
+          startY: 110,
+          head: [['#', 'Code', 'Institute Name', 'Branch', 'Category/Pool', isRank ? 'Cutoff Rank' : 'Cutoff %']],
+          body: results.map((r, i) => [
+            i + 1, 
+            r.code || '—', 
+            r.name || '—', 
+            r.branch || '—', 
+            r.seatType || '—',
+            isRank ? (r.meritRank || '—') : (r.percentile ? r.percentile.toFixed(2) : '—')
+          ]),
           theme: 'grid',
-          styles: { fontSize: 8 }
+          styles: { fontSize: 8 },
+          headStyles: { fillColor: [220, 38, 38] }
         });
-        doc.save("College_Simplified_Results.pdf");
+        doc.save("College_Simplified_Prediction.pdf");
       };
+
+      // DYNAMIC UI TABLE HEADER
+      const metaRaw = localStorage.getItem("searchMeta");
+      try {
+        if(metaRaw) {
+          const meta = JSON.parse(metaRaw);
+          if (meta.exam.includes('Rank')) {
+            document.querySelector('#resultsTable thead th:nth-child(6)').textContent = 'Cutoff Rank';
+            tbody.innerHTML = results.map((r, i) => `
+              <tr>
+                <td style="color:var(--muted)">${i + 1}</td>
+                <td><span class="college-code">${r.code || '—'}</span></td>
+                <td style="font-weight:600; max-width:300px;">${r.name || '—'}</td>
+                <td style="color:var(--muted)">${r.branch || '—'}</td>
+                <td>${r.seatType || '—'}</td>
+                <td style="font-weight:800; color:var(--brand)">${r.meritRank || '—'}</td>
+                <td>
+                  <a href="https://fe2025.mahacet.org/StaticPages/frmInstituteSummary?InstituteCode=${String(r.code || '').padStart(5, '0')}" target="_blank" style="color:var(--brand); text-decoration:none; font-weight:700; font-size:12px;">Visit Portal →</a>
+                </td>
+              </tr>
+            `).join('');
+          }
+        }
+      } catch(e) {}
     }
   </script>
 </body>

@@ -308,6 +308,8 @@
       .event-item { font-size: 10px; padding: 2px 4px; }
       .month-display { font-size: 16px; min-width: 140px; }
     }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 
@@ -373,6 +375,11 @@
       initAuth();
       await fetchEvents();
       renderCalendar();
+    }
+
+    function toggleCap(btn) {
+      btn.classList.toggle('active');
+      btn.nextElementSibling.classList.toggle('active');
     }
 
     async function fetchEvents() {

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MHT-CET College Predictor — College Simplified</title>
+  <title>AI Powered College Predictor — College Simplified</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -40,42 +40,87 @@
     input:focus, select:focus { border-color: var(--brand); background: #fff; box-shadow: 0 0 0 5px var(--brand-ring); }
 
     .btn { 
-      width: 100%; padding: 18px; background: linear-gradient(135deg, var(--brand), var(--brand-d)); color: #fff; border: none; border-radius: 20px; 
-      font-family: 'Lexend', sans-serif; font-weight: 800; font-size: 16px; cursor: pointer; margin-top: 12px; transition: 0.3s; 
+      width: 100%; padding: 16px; background: linear-gradient(135deg, var(--brand), var(--brand-d)); color: #fff; border: none; border-radius: 16px; 
+      font-family: 'Lexend', sans-serif; font-weight: 800; font-size: 15px; cursor: pointer; transition: 0.3s; 
       box-shadow: 0 10px 25px var(--brand-ring); display: flex; align-items: center; justify-content: center; gap: 10px;
     }
     .btn:hover { transform: translateY(-2px); box-shadow: 0 15px 35px var(--brand-ring); }
     .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-ghost { background: transparent; border: 2px solid var(--stroke); color: var(--muted); box-shadow: none; }
+    .btn-ghost:hover { border-color: var(--ink2); color: var(--ink); }
 
-    .greeting { background: var(--brand-soft); color: var(--brand); padding: 16px 20px; border-radius: 16px; margin-bottom: 24px; font-size: 14px; font-weight: 700; border: 1px solid var(--brand-ring); display: none; }
-    
-    .loader-wrap { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 13px; font-weight: 600; margin-top: 12px; justify-content: center; }
-    .spinner { width: 18px; height: 18px; border: 3px solid var(--stroke); border-top-color: var(--brand); border-radius: 50%; animation: spin 1s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    /* STEPPER */
+    .steps { display: flex; justify-content: center; gap: 40px; margin-bottom: 32px; }
+    .step { display: flex; flex-direction: column; align-items: center; gap: 8px; position: relative; opacity: 0.4; transition: 0.3s; }
+    .step.active { opacity: 1; }
+    .step-num { width: 32px; height: 32px; border-radius: 50%; background: var(--stroke); color: var(--ink); display: grid; place-items: center; font-weight: 800; font-size: 14px; }
+    .step.active .step-num { background: var(--brand); color: #fff; box-shadow: 0 0 0 4px var(--brand-ring); }
+    .step-lbl { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
 
-    .branch-trigger { 
-      width: 100%; padding: 14px 20px 14px 48px; border: 2px solid var(--stroke); border-radius: 16px; 
-      font-size: 15px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; 
-      background: var(--bg); transition: 0.2s;
-    }
-    .branch-trigger:hover { border-color: var(--muted); }
-    
+    .panel { display: none; }
+    .panel.active { display: block; animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .branch-trigger { display: none; } /* No longer need trigger, panel is always visible in step 2 */
     .branch-panel { 
-      display: none; position: absolute; z-index: 1000; background: #fff; border: 1px solid var(--stroke); 
-      border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); max-height: 400px; overflow-y: auto; width: 100%; margin-top: 8px; 
+      display: block; position: relative; z-index: 1; background: #fff; border: none; 
+      border-radius: 0; box-shadow: none; max-height: none; width: 100%; margin-top: 0; 
+      padding: 0;
     }
-    .branch-panel.open { display: block; }
     
-    .panel-hdr { padding: 12px 20px; background: var(--bg); font-weight: 800; font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 1px; border-bottom: 1px solid var(--stroke); }
+    /* BRANCH SYSTEM CSS PORT */
+    .branch-cats{display:flex;flex-direction:column;gap:12px}
+    .branch-cat{border:1px solid var(--stroke);border-radius:18px;overflow:hidden;background:var(--card)}
+    .branch-cat-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--bg);cursor:pointer;border-bottom:1px solid var(--stroke);transition:background 0.2s}
+    .branch-cat-head:hover{background:#eef2ff}
+    .branch-cat-name{font-weight:800;font-size:14px;display:flex;align-items:center;gap:10px; color: var(--ink)}
+    .branch-cat-name svg{color:var(--muted);flex-shrink:0}
+    .branch-cat-count{font-size:11px;color:var(--muted);font-weight:600;background:var(--bg);padding:2px 10px;border-radius:100px;border:1px solid var(--stroke)}
+    .branch-cat-toggle{font-size:12px;font-weight:700;color:var(--brand);cursor:pointer;background:var(--brand-soft);padding:5px 14px;border-radius:100px;border:none;font-family:inherit;transition:0.2s}
+    .branch-cat-toggle:hover{background:var(--brand);color:#fff}
+    .branch-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:4px;padding:12px}
+    .branch-opt{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;cursor:pointer;transition:all 0.15s;font-size:12px;font-weight:600;color:var(--ink2);border:1.5px solid transparent}
+    .branch-opt:hover{background:var(--bg);border-color:var(--stroke)}
+    .branch-opt.selected{background:var(--brand-soft);border-color:var(--brand-ring);color:var(--brand)}
+    .branch-chk{width:18px;height:18px;border-radius:5px;border:2px solid var(--stroke);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s;font-size:10px}
+    .branch-opt.selected .branch-chk{background:var(--brand);border-color:var(--brand);color:#fff}
+    .branch-select-all{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--brand-soft);border:1px solid var(--brand-ring);border-radius:14px;margin-bottom:16px;cursor:pointer;transition:0.2s;font-weight:700;font-size:13px;color:var(--brand)}
+    .branch-select-all:hover{background:#fde2e2}
     
-    .branch-option { padding: 12px 20px; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--bg); transition: 0.2s; }
-    .branch-option:hover { background: var(--bg); }
-    .branch-option.selected { background: var(--brand-soft); color: var(--brand); font-weight: 700; }
-
     .chips-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-    .chip { background: var(--brand-soft); color: var(--brand); padding: 6px 14px; border-radius: 100px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 8px; border: 1px solid var(--brand-ring); }
+    .chip { background: var(--brand-soft); color: var(--brand); padding: 6px 14px; border-radius: 100px; font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 8px; border: 1px solid var(--brand-ring); }
     .chip-remove { cursor: pointer; font-size: 16px; opacity: 0.6; }
     .chip-remove:hover { opacity: 1; }
+
+    /* MOBILE OPTIMIZATIONS */
+    @media (max-width: 600px) {
+      .wrap { padding: 20px 16px; }
+      .card { padding: 24px 18px; border-radius: 20px; }
+      .steps { gap: 20px; margin-bottom: 24px; }
+      .step-num { width: 28px; height: 28px; font-size: 12px; }
+      .step-lbl { font-size: 10px; }
+      .branch-list { grid-template-columns: 1fr; }
+      .branch-opt { padding: 12px 14px; }
+      .branch-cat-head { padding: 14px 16px; }
+      .branch-cat-toggle { padding: 4px 12px; font-size: 11px; }
+    }
+
+    .greeting { 
+      background: linear-gradient(to right, var(--brand-soft), #fff); 
+      color: var(--ink); 
+      padding: 16px 24px; 
+      border-radius: 16px; 
+      margin-bottom: 32px; 
+      font-size: 15px; 
+      font-weight: 600; 
+      border: 1px solid var(--stroke); 
+      border-left: 5px solid var(--brand);
+      display: none; 
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    }
+    .greeting b { color: var(--brand); font-weight: 800; }
   </style>
 </head>
 <body>
@@ -84,65 +129,109 @@
       <div id="helloBanner" class="greeting"></div>
       
       <div class="page-hero">
-        <h1>College Predictor</h1>
-        <p>Find the best engineering colleges matching your MHT-CET or JEE percentile based on historical seat allotment data.</p>
+        <div style="display:inline-block; background:rgba(255,255,255,0.2); padding:4px 12px; border-radius:100px; font-size:11px; font-weight:800; margin-bottom:12px; letter-spacing:1px; border:1px solid rgba(255,255,255,0.3)">AI POWERED</div>
+        <h1>AI College Predictor</h1>
+        <p>Advanced AI engine analyzing 1,00,000+ data points to predict your best engineering college matches instantly.</p>
       </div>
 
       <div class="card">
-        <div class="form-group">
-          <label class="form-label">Exam Type</label>
-          <div class="input-wrap">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
-            <select id="examType">
-              <option value="MHT-CET">MHT-CET (Maharashtra State)</option>
-              <option value="JEE">JEE Mains (All India Quota)</option>
-            </select>
+        <!-- STEP INDICATOR -->
+        <div class="steps">
+          <div class="step active" id="step1">
+            <div class="step-num">1</div>
+            <div class="step-lbl">Profile</div>
+          </div>
+          <div class="step" id="step2">
+            <div class="step-num">2</div>
+            <div class="step-lbl">Branches</div>
           </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label">Your Percentile</label>
-          <div class="input-wrap">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            <input type="number" id="inPercentile" placeholder="e.g. 97.45" step="0.0001" min="0" max="100">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Candidate Category</label>
-          <div class="input-wrap">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            <select id="inCategory">
-              <option value="OPEN">OPEN / General</option>
-              <option value="OBC">OBC</option>
-              <option value="SC">SC</option>
-              <option value="ST">ST</option>
-              <option value="VJ/DT">VJ / DT / NT-A</option>
-              <option value="NT1">NT-B</option>
-              <option value="NT2">NT-C</option>
-              <option value="NT3">NT-D</option>
-              <option value="EWS">EWS</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Preferred Branches</label>
-          <div style="position:relative">
-            <div class="branch-trigger" id="branchTrigger">
-              <svg style="position:absolute; left:18px" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-              <span id="triggerText" style="margin-left:30px">All Branches Selected</span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        <!-- STEP 1: PROFILE -->
+        <div class="panel active" id="panel1">
+          <div class="form-group">
+            <label class="form-label">Exam Type</label>
+            <div class="input-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+              <select id="examType">
+                <option value="MHT-CET">MHT-CET (Maharashtra State)</option>
+                <option value="JEE">JEE Mains (All India Quota)</option>
+              </select>
             </div>
-            <div class="branch-panel" id="branchPanel"></div>
           </div>
-          <div class="chips-row" id="branchChips"></div>
+
+          <div class="form-group">
+            <label class="form-label">Your Percentile</label>
+            <div class="input-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <input type="number" id="inPercentile" placeholder="e.g. 97.45" step="0.0001" min="0" max="100">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Candidate Category</label>
+            <div class="input-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <select id="inCategory">
+                <option value="OPEN">OPEN / General</option>
+                <option value="OBC">OBC</option>
+                <option value="SC">SC</option>
+                <option value="ST">ST</option>
+                <option value="VJ/DT">VJ / DT / NT-A</option>
+                <option value="NT1">NT-B</option>
+                <option value="NT2">NT-C</option>
+                <option value="NT3">NT-D</option>
+                <option value="EWS">EWS</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Minority Preference</label>
+            <div class="input-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <select id="inMinority">
+                <option value="">None (All Colleges)</option>
+                <option value="Muslim">Religious Minority - Muslim</option>
+                <option value="Jain">Religious Minority - Jain</option>
+                <option value="Christian">Religious Minority - Christian</option>
+                <option value="Roman Catholics">Religious Minority - Roman Catholics</option>
+                <option value="Sikh">Religious Minority - Sikh</option>
+                <option value="Buddhist">Religious Minority - Buddhist</option>
+                <option value="Gujarathi">Linguistic Minority - Gujarathi</option>
+                <option value="Hindi">Linguistic Minority - Hindi</option>
+                <option value="Sindhi">Linguistic Minority - Sindhi</option>
+                <option value="Kannada">Linguistic Minority - Kannada</option>
+                <option value="Malyalam">Linguistic Minority - Malyalam</option>
+                <option value="Punjabi">Linguistic Minority - Punjabi</option>
+                <option value="Tamil">Linguistic Minority - Tamil</option>
+              </select>
+            </div>
+          </div>
+
+          <button class="btn" onclick="goStep(2)">
+            Continue to Branches
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
         </div>
 
-        <button class="btn" id="predictBtn" onclick="predict()" disabled>
-          Generate Preference List
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </button>
+        <!-- STEP 2: BRANCHES -->
+        <div class="panel" id="panel2">
+          <div class="form-group">
+            <label class="form-label">Select Preferred Branches</label>
+            <div class="branch-panel" id="branchPanel"></div>
+            <div class="chips-row" id="branchChips"></div>
+          </div>
+
+          <div style="display:flex; gap:12px; margin-top:24px">
+            <button class="btn btn-ghost" onclick="goStep(1)" style="flex:1">Back</button>
+            <button class="btn" id="predictBtn" onclick="predict()" disabled style="flex:2">
+              Generate Predictor Results
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+        </div>
+
         <div id="dataLoader" class="loader-wrap">
           <div class="spinner"></div>
           <span>Synchronizing seat matrix...</span>
@@ -165,12 +254,23 @@
       if (!pctVal || isNaN(pct)) return alert('Enter a valid percentile');
       const exam = document.getElementById('examType').value;
       const cat = document.getElementById('inCategory').value;
+      const minorityPref = document.getElementById('inMinority').value;
 
       if (!allData.length) return alert("Data is loading, please wait...");
 
       let filtered = allData.filter(r => r.exam === (exam === 'JEE' ? 'JEE' : 'MHT-CET'));
       
-      filtered = filtered.filter(r => r.percentile <= pct).sort((a,b) => b.percentile - a.percentile);
+      // Filter by Percentile
+      filtered = filtered.filter(r => r.percentile <= pct);
+
+      // Minority Filter
+      if (minorityPref) {
+        filtered = filtered.filter(r => {
+          const meta = collegeMetadata.find(m => m.code === parseInt(r.code));
+          if (!meta || !meta.status) return false;
+          return meta.status.toLowerCase().includes(minorityPref.toLowerCase());
+        });
+      }
 
       if (exam === 'MHT-CET') {
         const catMap = {
@@ -187,8 +287,6 @@
         const searchKey = catMap[cat] || cat;
         filtered = filtered.filter(r => (r.seatType||'').includes(searchKey));
       } else {
-        // For JEE, typically All India (AI) seats are used
-        // We only filter if specific AI reserved seats exist, otherwise show all AI
         const hasReservedAI = filtered.some(r => (r.seatType||'').includes(cat));
         if (hasReservedAI) {
           filtered = filtered.filter(r => (r.seatType||'').includes(cat));
@@ -197,102 +295,123 @@
         }
       }
 
-      if (!selectedBranches.has('__all__')) {
-        filtered = filtered.filter(r => selectedBranches.has(r.branch.trim()));
+      if (!selectedBranches.has('__all__') && selectedBranches.size > 0) {
+        filtered = filtered.filter(r => {
+          const b = r.branch.trim().toUpperCase();
+          return Array.from(selectedBranches).some(sb => b.includes(sb.toUpperCase()));
+        });
       }
 
-      localStorage.setItem("results", JSON.stringify(filtered.slice(0, 80)));
+      filtered.sort((a,b) => b.percentile - a.percentile);
+
+      localStorage.setItem("results", JSON.stringify(filtered.slice(0, 100)));
+      localStorage.setItem("searchMeta", JSON.stringify({
+        percentile: pct,
+        exam: exam,
+        category: cat,
+        minority: minorityPref || 'None'
+      }));
       window.location.href = "results.html";
     }
 
-    let selectedBranches = new Set(['__all__']);
+    let selectedBranches = new Set();
     let allBranchNames = [];
+    let collegeMetadata = [];
 
-    const COMPUTER_KEYWORDS = ['COMPUTER', 'INFORMATION TECHNOLOGY', 'AI', 'ARTIFICIAL', 'DATA SCIENCE', 'MACHINE LEARNING', 'SOFTWARE', 'CYBER', 'ROBOTICS', 'CS', 'IT'];
-    const CORE_KEYWORDS = ['MECHANICAL', 'CIVIL', 'ELECTRICAL', 'CHEMICAL', 'PRODUCTION', 'METALLURGY', 'AUTOMOBILE', 'TEXTILE'];
-    const ELECTRONICS_KEYWORDS = ['ELECTRONICS', 'TELECOMMUNICATION', 'ENTC', 'COMMUNICATION', 'INSTRUMENTATION'];
-    const BIOTECH_KEYWORDS = ['BIOTECHNOLOGY', 'BIO-MEDICAL', 'BIO MEDICAL', 'FOOD', 'AGRICULTURE', 'PHARMACEUTICAL'];
+    const CATS = {
+      'Computer & IT': ['COMPUTER', 'INFORMATION TECHNOLOGY', 'AI', 'ARTIFICIAL', 'DATA SCIENCE', 'MACHINE LEARNING', 'SOFTWARE', 'CYBER', 'ROBOTICS'],
+      'Electronics & Telecom': ['ELECTRONICS', 'TELECOMMUNICATION', 'ENTC', 'COMMUNICATION', 'INSTRUMENTATION'],
+      'Core Engineering': ['MECHANICAL', 'CIVIL', 'ELECTRICAL', 'CHEMICAL', 'PRODUCTION', 'METALLURGY', 'AUTOMOBILE', 'TEXTILE', 'MINING'],
+      'Biotech & Allied': ['BIOTECHNOLOGY', 'BIO-MEDICAL', 'BIO MEDICAL', 'FOOD', 'AGRICULTURE', 'PHARMACEUTICAL'],
+      'Other Branches': []
+    };
+
+    function categorizeBranch(b) {
+      const u = b.toUpperCase();
+      for (const [cat, kws] of Object.entries(CATS)) {
+        if (cat === 'Other Branches') continue;
+        if (kws.some(k => { const re = new RegExp('\\b' + k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'); return re.test(u) })) return cat;
+      }
+      return 'Other Branches';
+    }
 
     function renderBranchPanel() {
       const panel = document.getElementById('branchPanel');
-      let html = `<div class="panel-hdr" style="display:flex; justify-content:space-between; align-items:center">
-        <span>Quick Select</span>
-        <span onclick="clearAllBranches()" style="color:var(--brand); cursor:pointer; font-size:10px; text-decoration:underline">Clear All</span>
+      const grouped = {};
+      Object.keys(CATS).forEach(c => grouped[c] = []);
+      allBranchNames.forEach(b => { const cat = categorizeBranch(b); grouped[cat].push(b) });
+
+      let html = `<div class="branch-select-all" onclick="toggleAllBranches()">
+        <div class="branch-chk" id="chkAll">${selectedBranches.size === allBranchNames.length ? '✓' : ''}</div> 
+        Select All Branches (${allBranchNames.length})
       </div>`;
-      html += `<div class="branch-option ${selectedBranches.has('__all__')?'selected':''}" onclick="toggleBranch('__all__')">
-        <div style="flex:1">
-          <div style="font-weight:700">All Branches</div>
-          <div style="font-size:11px; opacity:0.7">Include every available engineering stream</div>
-        </div>
-      </div>`;
-      html += `<div class="branch-option" onclick="toggleCluster('COMPUTER')">
-        <div style="flex:1">
-          <div style="font-weight:700">All Computer-related</div>
-          <div style="font-size:11px; opacity:0.7">CS, IT, AI, Data Science, Machine Learning, etc.</div>
-        </div>
-      </div>`;
-      html += `<div class="branch-option" onclick="toggleCluster('ELECTRONICS')">
-        <div style="flex:1">
-          <div style="font-weight:700">Electronics & ENTC</div>
-          <div style="font-size:11px; opacity:0.7">ENTC, Electronics, Telecomm, Instrumentation, etc.</div>
-        </div>
-      </div>`;
-      html += `<div class="branch-option" onclick="toggleCluster('CORE')">
-        <div style="flex:1">
-          <div style="font-weight:700">All Core-engineering</div>
-          <div style="font-size:11px; opacity:0.7">Mech, Civil, Electrical, Chem, Production, etc.</div>
-        </div>
-      </div>`;
-      html += `<div class="branch-option" onclick="toggleCluster('BIOTECH')">
-        <div style="flex:1">
-          <div style="font-weight:700">Biotech & Life Sciences</div>
-          <div style="font-size:11px; opacity:0.7">Biotechnology, Bio-medical, Food, Agriculture, etc.</div>
-        </div>
-      </div>`;
-      
-      html += `<div class="panel-hdr">Individual Branches</div>`;
-      allBranchNames.forEach(b => {
-        html += `<div class="branch-option ${selectedBranches.has(b)?'selected':''}" onclick="toggleBranch('${b.replace(/'/g, "\\'")}')">${b}</div>`;
+
+      html += '<div class="branch-cats">';
+      Object.entries(grouped).forEach(([cat, branches]) => {
+        if (!branches.length) return;
+        const selInCat = branches.filter(b => selectedBranches.has(b)).length;
+        const isAllInCat = selInCat === branches.length;
+
+        html += `<div class="branch-cat">
+          <div class="branch-cat-head" onclick="toggleCatCollapse(this)">
+            <div class="branch-cat-name">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              ${cat}
+            </div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <span class="branch-cat-count">${selInCat}/${branches.length}</span>
+              <button class="branch-cat-toggle" onclick="event.stopPropagation();toggleCategory('${cat}')">
+                ${isAllInCat ? 'Deselect' : 'Select All'}
+              </button>
+            </div>
+          </div>
+          <div class="branch-list" style="display:none">`;
+        
+        branches.forEach(b => {
+          const sel = selectedBranches.has(b) ? 'selected' : '';
+          html += `<div class="branch-opt ${sel}" onclick="toggleBranch('${b.replace(/'/g, "\\'")}')">
+            <div class="branch-chk">${sel ? '✓' : ''}</div>
+            <span>${b}</span>
+          </div>`;
+        });
+        
+        html += '</div></div>';
       });
+      html += '</div>';
+
       panel.innerHTML = html;
       renderChips();
     }
 
+    function toggleCatCollapse(el) {
+      const list = el.nextElementSibling;
+      list.style.display = list.style.display === 'none' ? 'grid' : 'none';
+    }
+
     function clearAllBranches() {
       selectedBranches.clear();
-      selectedBranches.add('__all__');
       renderBranchPanel();
     }
 
     function toggleBranch(b) {
-      if (b === '__all__') { selectedBranches.clear(); selectedBranches.add('__all__'); }
-      else { 
-        selectedBranches.delete('__all__'); 
-        if (selectedBranches.has(b)) selectedBranches.delete(b); 
-        else selectedBranches.add(b); 
-      }
-      if (selectedBranches.size === 0) selectedBranches.add('__all__');
+      if (selectedBranches.has(b)) selectedBranches.delete(b);
+      else selectedBranches.add(b);
       renderBranchPanel();
     }
 
-    function toggleCluster(type) {
-      selectedBranches.delete('__all__');
-      let keywords = [];
-      if (type === 'COMPUTER') keywords = COMPUTER_KEYWORDS;
-      else if (type === 'CORE') keywords = CORE_KEYWORDS;
-      else if (type === 'ELECTRONICS') keywords = ELECTRONICS_KEYWORDS;
-      else if (type === 'BIOTECH') keywords = BIOTECH_KEYWORDS;
-      
-      allBranchNames.forEach(b => {
-        const branchUpper = b.toUpperCase();
-        const match = keywords.some(k => {
-          // Use regex with word boundaries for short keywords or specific matches
-          const escaped = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-          const regex = new RegExp(`\\b${escaped}\\b|${escaped}(?=[^A-Z])|(?<=[^A-Z])${escaped}`, 'i');
-          return regex.test(branchUpper);
-        });
-        if (match) selectedBranches.add(b);
-      });
+    function toggleCategory(cat) {
+      const grouped = {};
+      Object.keys(CATS).forEach(c => grouped[c] = []);
+      allBranchNames.forEach(b => { grouped[categorizeBranch(b)].push(b) });
+      const branches = grouped[cat] || [];
+      const allSel = branches.every(b => selectedBranches.has(b));
+      branches.forEach(b => { if (allSel) selectedBranches.delete(b); else selectedBranches.add(b) });
+      renderBranchPanel();
+    }
+
+    function toggleAllBranches() {
+      if (selectedBranches.size === allBranchNames.length) { selectedBranches.clear() }
+      else { allBranchNames.forEach(b => selectedBranches.add(b)) }
       renderBranchPanel();
     }
 
@@ -300,10 +419,27 @@
       const row = document.getElementById('branchChips');
       if (!row) return;
       row.innerHTML = '';
-      selectedBranches.forEach(b => {
-        row.innerHTML += `<span class="chip">${b === '__all__' ? 'All Branches' : b} <span class="chip-remove" onclick="toggleBranch('${b.replace(/'/g, "\\'")}')">×</span></span>`;
+      if (selectedBranches.size > 0) {
+        row.innerHTML = `<span class="chip">${selectedBranches.size} branches selected</span>`;
+        if (selectedBranches.size <= 5) {
+          row.innerHTML = Array.from(selectedBranches).map(b => `<span class="chip">${b} <span class="chip-remove" onclick="toggleBranch('${b.replace(/'/g, "\\'")}')">×</span></span>`).join('');
+        }
+      }
+    }
+
+    let currentStep = 1;
+    function goStep(n) {
+      if (n === 2) {
+        const p = document.getElementById('inPercentile').value;
+        if (!p || isNaN(parseFloat(p))) return alert('Please enter your percentile first');
+      }
+      currentStep = n;
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel' + n).classList.add('active');
+      document.querySelectorAll('.step').forEach((s, i) => {
+        if (i + 1 <= n) s.classList.add('active');
+        else s.classList.remove('active');
       });
-      document.getElementById('triggerText').textContent = selectedBranches.has('__all__') ? 'All Branches' : `${selectedBranches.size} Branches Selected`;
     }
 
     async function boot() {
@@ -313,8 +449,8 @@
       const loaderTxt = document.querySelector('#dataLoader span');
       const user = getSession();
       if (user && banner) { 
-        banner.textContent = `Hi ${user.name}, let's analyze your chances for the best engineering colleges.`; 
-        banner.style.display = 'block'; 
+        banner.innerHTML = `<span>👋</span> Hi <b>${user.name}</b>, your AI Prediction profile is ready for analysis.`; 
+        banner.style.display = 'flex'; 
       }
 
       let mhtData = [], jeeData = [];
@@ -353,6 +489,16 @@
         console.log("JEE Loaded:", jeeData.length);
       } catch(e) { console.error("JEE Load Fail:", e); }
 
+      try {
+        const rm = await fetch('college-data.json');
+        const jm = await rm.json();
+        const rawMeta = jm["college-data"] || [];
+        collegeMetadata = rawMeta.map(m => ({
+          code: parseInt(m["Institute Code"]),
+          status: m["Status"] || ""
+        }));
+      } catch(e) { console.error("Meta Load Fail:", e); }
+
       allData = mhtData.concat(jeeData);
       
       if (allData.length > 0) {
@@ -366,19 +512,14 @@
       } else {
         document.getElementById('dataLoader').innerHTML = '<span style="color:var(--brand)">Failed to load data matrix. Please refresh.</span>';
       }
-
-      document.getElementById('branchTrigger').onclick = () => document.getElementById('branchPanel').classList.toggle('open');
-      document.addEventListener('click', e => { 
-        const trigger = document.getElementById('branchTrigger');
-        const panel = document.getElementById('branchPanel');
-        if (!trigger || !panel) return;
-        if (!e.target.closest('#branchTrigger') && !e.target.closest('#branchPanel')) panel.classList.remove('open'); 
-      });
     }
 
     window.predict = predict;
+    window.goStep = goStep;
     window.toggleBranch = toggleBranch;
-    window.toggleCluster = toggleCluster;
+    window.toggleCategory = toggleCategory;
+    window.toggleAllBranches = toggleAllBranches;
+    window.toggleCatCollapse = toggleCatCollapse;
     window.clearAllBranches = clearAllBranches;
 
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

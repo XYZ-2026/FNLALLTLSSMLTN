@@ -14,7 +14,7 @@
     :root {
       --brand: #dc2626;
       /* Same Red as Landing */
-      --brand-d: #991b1b;
+        --brand-d: #991b1b;
       --brand-soft: #fef2f2;
       --brand-ring: rgba(220, 38, 38, 0.15);
       --ink: #111827;
@@ -399,12 +399,46 @@
       background: var(--brand-soft)
     }
 
-    table { width: 100%; border-collapse: separate; border-spacing: 0 10px; margin-top: -10px; }
-    th { padding: 12px 24px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); font-weight: 800; text-align: left; }
-    td { padding: 16px 24px; background: var(--card); border-top: 1px solid var(--stroke); border-bottom: 1px solid var(--stroke); vertical-align: middle; }
-    td:first-child { border-left: 1px solid var(--stroke); border-radius: 20px 0 0 20px; }
-    td:last-child { border-right: 1px solid var(--stroke); border-radius: 0 20px 20px 0; }
-    tr:hover td { border-color: var(--brand-ring); background: var(--brand-soft); transition: all 0.2s; }
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 10px;
+      margin-top: -10px;
+    }
+
+    th {
+      padding: 12px 24px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      font-weight: 800;
+      text-align: left;
+    }
+
+    td {
+      padding: 16px 24px;
+      background: var(--card);
+      border-top: 1px solid var(--stroke);
+      border-bottom: 1px solid var(--stroke);
+      vertical-align: middle;
+    }
+
+    td:first-child {
+      border-left: 1px solid var(--stroke);
+      border-radius: 20px 0 0 20px;
+    }
+
+    td:last-child {
+      border-right: 1px solid var(--stroke);
+      border-radius: 0 20px 20px 0;
+    }
+
+    tr:hover td {
+      border-color: var(--brand-ring);
+      background: var(--brand-soft);
+      transition: all 0.2s;
+    }
 
     .user-cell {
       display: flex;
@@ -822,21 +856,87 @@
       opacity: 0.3
     }
 
-    /* Admin Calendar Grid Styles */
+    /* 📅 Calendar Management */
+    .calendar-admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .cal-nav-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-today-admin {
+      padding: 8px 16px;
+      border-radius: 12px;
+      border: 1.5px solid var(--stroke);
+      background: var(--card);
+      color: var(--ink);
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-today-admin:hover {
+      border-color: var(--brand);
+      color: var(--brand);
+      background: var(--brand-soft);
+    }
+
+    .cal-arrows {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-arrow {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      border: 1.5px solid var(--stroke);
+      background: var(--card);
+      color: var(--muted);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-arrow:hover {
+      border-color: var(--brand);
+      color: var(--brand);
+      background: var(--brand-soft);
+    }
+
+    .month-display-admin {
+      font-family: 'Lexend', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--ink);
+      min-width: 140px;
+    }
+
     .calendar-admin-wrapper {
       background: var(--card);
       border: 1px solid var(--stroke);
-      border-radius: 20px;
+      border-radius: 24px;
       overflow: hidden;
-      margin-top: 20px;
       box-shadow: var(--shadow);
     }
+
     .weekdays-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       background: var(--bg);
       border-bottom: 1px solid var(--stroke);
     }
+
     .weekday-label {
       padding: 14px;
       text-align: center;
@@ -846,11 +946,13 @@
       text-transform: uppercase;
       letter-spacing: 1px;
     }
-    .admin-days-grid {
+
+    #adminDaysGrid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      grid-auto-rows: minmax(110px, 1fr);
+      grid-auto-rows: minmax(100px, 1fr);
     }
+
     .admin-day {
       border-right: 1px solid var(--stroke);
       border-bottom: 1px solid var(--stroke);
@@ -858,29 +960,46 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
-      transition: background 0.2s ease;
+      min-height: 100px;
+      transition: background 0.2s;
+      cursor: pointer;
     }
+
     .admin-day:nth-child(7n) { border-right: none; }
-    .admin-day.off-month { background: var(--bg); opacity: 0.4; }
+    .admin-day:hover { background: var(--bg); }
+
+    .admin-day.off-month {
+      background: var(--bg);
+      opacity: 0.4;
+    }
+
+    .admin-day.today {
+      background: var(--brand-soft);
+    }
+
     .admin-day-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 4px;
     }
+
     .admin-day-num {
       width: 26px;
       height: 26px;
       display: grid;
       place-items: center;
-      font-size: 12px;
       font-weight: 700;
-      border-radius: 50%;
+      font-size: 13px;
+      border-radius: 8px;
+      color: var(--ink2);
     }
+
     .admin-day.today .admin-day-num {
       background: var(--brand);
       color: #fff;
     }
+
     .admin-event-bar {
       font-size: 10px;
       font-weight: 700;
@@ -888,28 +1007,123 @@
       background: var(--brand-soft);
       color: var(--brand);
       border-radius: 6px;
-      cursor: pointer;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      border: 1px solid var(--brand-ring);
+    }
+
+    .add-event-btn {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      border: none;
+      background: var(--brand-soft);
+      color: var(--brand);
+      font-size: 14px;
+      font-weight: 800;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      opacity: 0;
       transition: all 0.2s;
     }
-    .admin-event-bar:hover {
-      background: var(--brand);
-      color: #fff;
-      transform: translateX(2px);
-    }
-    .add-event-btn {
-      opacity: 0;
-      background: none;
-      border: none;
-      color: var(--brand);
-      cursor: pointer;
-      font-size: 18px;
-      padding: 0 4px;
-      transition: opacity 0.2s;
-    }
     .admin-day:hover .add-event-btn { opacity: 1; }
+    .add-event-btn:hover { background: var(--brand); color: #fff; }
+
+    @media (max-width: 768px) {
+      #adminDaysGrid { grid-auto-rows: minmax(70px, 1fr); }
+      .admin-day { min-height: 70px; padding: 6px; }
+      .admin-day-num { width: 22px; height: 22px; font-size: 11px; }
+      .admin-event-bar { font-size: 9px; padding: 2px 4px; }
+      .month-display-admin { font-size: 15px; min-width: 120px; }
+    }
+
+    /* 📄 Non-CAP Admissions Styling */
+    .cap-admin-card {
+      background: var(--card);
+      border: 1.5px solid var(--stroke);
+      border-radius: 24px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+    }
+
+    .cap-admin-card:hover {
+      border-color: var(--brand-ring);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .cap-admin-card-hdr {
+      background: var(--bg);
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--stroke);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cap-admin-card-hdr h3 {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--ink);
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: 'Lexend', sans-serif;
+    }
+
+    .cap-admin-year-box {
+      padding: 24px;
+      border-bottom: 1px solid var(--stroke);
+    }
+
+    .cap-admin-year-box:last-child {
+      border-bottom: none;
+    }
+
+    .cap-admin-year-hdr {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .cap-admin-item {
+      background: var(--bg);
+      border: 1px solid var(--stroke);
+      border-radius: 16px;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      transition: all 0.2s;
+    }
+
+    .cap-admin-item:hover {
+      border-color: var(--brand);
+      background: var(--card);
+      transform: translateX(4px);
+    }
+
+    .cap-admin-item-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--ink2);
+    }
+
+    .cap-admin-item-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .cap-admin-item-actions .btn-sm {
+      padding: 6px 14px;
+      font-size: 12px;
+      border-radius: 10px;
+    }
   </style>
 </head>
 
@@ -933,6 +1147,13 @@
           <!-- STATS SECTION -->
           <div class="stat-grid" id="statsGrid"></div>
 
+          <!-- EDIT REQUESTS PANEL -->
+          <div class="panel" id="panel-requests">
+            <div id="requestsList">
+              <div class="empty">Scanning for pending requests...</div>
+            </div>
+          </div>
+
           <!-- USERS PANEL -->
           <div class="panel active" id="panel-users">
             <div class="panel-header" style="justify-content:space-between;gap:20px;flex-wrap:wrap">
@@ -945,14 +1166,21 @@
                   placeholder="Search by name, email, city, state..." oninput="filterUsers()">
               </div>
               <div style="display:flex;gap:12px;align-items:center">
-                <select id="csvFilter" class="form-control" style="width:140px;height:44px;font-size:13px;border-radius:12px">
+                <select id="csvFilter" class="form-control"
+                  style="width:140px;height:44px;font-size:13px;border-radius:12px">
                   <option value="all">All Time</option>
                   <option value="today">Today</option>
                   <option value="week">Past Week</option>
                   <option value="month">Past Month</option>
                 </select>
-                <button class="btn btn-primary" onclick="downloadUsersCSV()" style="height:44px;white-space:nowrap;display:flex;align-items:center">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <button class="btn btn-primary" onclick="downloadUsersCSV()"
+                  style="height:44px;white-space:nowrap;display:flex;align-items:center">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    style="margin-right:8px">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
                   Export CSV
                 </button>
               </div>
@@ -1019,30 +1247,89 @@
             </div>
           </div>
 
+          <!-- NON-CAP ADMISSIONS PANEL -->
+          <div class="panel" id="panel-nonCap">
+            <div class="card-section" style="max-width:1000px">
+              <h3>Post Admission Notice</h3>
+              <div class="cap-form-grid">
+                <div class="form-group">
+                  <label class="form-label">College Selection Mode</label>
+                  <div style="display:flex;gap:12px;margin-bottom:12px">
+                    <label
+                      style="flex:1; padding:10px; border:1.5px solid var(--stroke); border-radius:10px; cursor:pointer; display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700">
+                      <input type="radio" name="colMode" value="existing" checked onchange="switchColMode('existing')">
+                      Existing
+                    </label>
+                    <label
+                      style="flex:1; padding:10px; border:1.5px solid var(--stroke); border-radius:10px; cursor:pointer; display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700">
+                      <input type="radio" name="colMode" value="new" onchange="switchColMode('new')"> New
+                    </label>
+                  </div>
+                  <div id="colExistingWrap">
+                    <select id="capCollegeSelect" class="form-control"></select>
+                  </div>
+                  <div id="colNewWrap" style="display:none">
+                    <input type="text" id="capCollegeNew" class="form-control" placeholder="e.g. COEP, Pune">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Academic Year</label>
+                  <select id="capYear" class="form-control">
+                    <option value="2024">2024</option>
+                    <option value="2025" selected>2025</option>
+                    <option value="2026">2026</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Notice Title</label>
+                <input type="text" id="capTitle" class="form-control" placeholder="e.g. Spot Round Instructions">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Drive / Document Link</label>
+                <input type="text" id="capLink" class="form-control" placeholder="https://drive.google.com/...">
+              </div>
+              <button class="btn btn-primary" onclick="saveNonCap()" style="width:100%">Post Admission Notice</button>
+
+              <hr style="margin:40px 0; border:none; border-top:1px solid var(--stroke)">
+
+              <h3>Active Notices</h3>
+              <div id="nonCapList">
+                <div class="empty">Loading notices...</div>
+              </div>
+            </div>
+          </div>
+
           <!-- CALENDAR PANEL -->
           <div class="panel" id="panel-calendar">
-            <div class="panel-header">
-              <div class="calendar-controls">
-                <button class="btn btn-outline" onclick="setToday()">Today</button>
-                <div style="display:flex;gap:4px">
-                  <button class="btn btn-outline" style="padding:8px" onclick="prevMonth()">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+            <div class="calendar-admin-header">
+              <div class="cal-nav-group">
+                <button class="btn-today-admin" onclick="setToday()">Today</button>
+                <div class="cal-arrows">
+                  <button class="btn-arrow" onclick="prevMonth()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <polyline points="15 18 9 12 15 6" />
+                    </svg>
                   </button>
-                  <button class="btn btn-outline" style="padding:8px" onclick="nextMonth()">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                  <button class="btn-arrow" onclick="nextMonth()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <polyline points="9 18 15 12 9 6" />
+                    </svg>
                   </button>
                 </div>
-                <div class="month-display" id="monthDisplay" style="font-family:'Lexend';font-weight:700;font-size:18px;min-width:160px"></div>
+                <div class="month-display-admin" id="monthDisplay">May 2026</div>
               </div>
               <button class="btn btn-primary" onclick="openEventModal()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                   <line x1="12" y1="5" x2="12" y2="19" />
                   <line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
-                Add Event
+                <span>Add Event</span>
               </button>
             </div>
-            
+
             <div class="calendar-admin-wrapper">
               <div class="weekdays-grid">
                 <div class="weekday-label">Sun</div>
@@ -1053,9 +1340,7 @@
                 <div class="weekday-label">Fri</div>
                 <div class="weekday-label">Sat</div>
               </div>
-              <div class="admin-days-grid" id="adminDaysGrid">
-                <!-- Days injected here -->
-              </div>
+              <div id="adminDaysGrid"></div>
             </div>
           </div>
         </div>
@@ -1089,13 +1374,16 @@
         <label class="form-label">CTA Link (Optional)</label>
         <input type="text" id="evLink" class="form-control" placeholder="https://example.com/apply">
       </div>
-       <div class="form-group" style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <div class="form-group" style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
         <input type="checkbox" id="evNotify" style="width:18px;height:18px;accent-color:var(--brand)">
-        <label for="evNotify" style="font-weight:600;font-size:14px;cursor:pointer">Send broadcast notification now</label>
+        <label for="evNotify" style="font-weight:600;font-size:14px;cursor:pointer">Send broadcast notification
+          now</label>
       </div>
       <div class="form-group" style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-        <input type="checkbox" id="evReminder" style="width:18px;height:18px;accent-color:var(--brand)" onchange="document.getElementById('reminderConfig').style.display=this.checked?'block':'none'">
-        <label for="evReminder" style="font-weight:600;font-size:14px;cursor:pointer">Schedule automatic reminder</label>
+        <input type="checkbox" id="evReminder" style="width:18px;height:18px;accent-color:var(--brand)"
+          onchange="document.getElementById('reminderConfig').style.display=this.checked?'block':'none'">
+        <label for="evReminder" style="font-weight:600;font-size:14px;cursor:pointer">Schedule automatic
+          reminder</label>
       </div>
       <div id="reminderConfig" style="display:none;margin-left:28px;margin-bottom:16px">
         <label class="form-label" style="font-size:12px">Reminder Time</label>
@@ -1148,7 +1436,7 @@
         return;
       }
       document.getElementById('adminGate').style.display = 'block';
-      
+
       // Inject Admin Tabs into Global Sidebar
       injectAdminNav();
 
@@ -1162,8 +1450,10 @@
       var html = `
         <div class="sidebar-label" style="color:var(--brand)">Admin Controls</div>
         <a href="#" class="sidebar-link admin-tab-btn active" data-tab="users" onclick="switchPanel('users', this);closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Users Database</a>
+        <a href="#" class="sidebar-link admin-tab-btn" data-tab="requests" onclick="switchPanel('requests', this);closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit Requests</a>
         <a href="#" class="sidebar-link admin-tab-btn" data-tab="notifSend" onclick="switchPanel('notifSend', this);closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> Send Alert</a>
         <a href="#" class="sidebar-link admin-tab-btn" data-tab="notifHistory" onclick="switchPanel('notifHistory', this);closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Alert History</a>
+        <a href="#" class="sidebar-link admin-tab-btn" data-tab="nonCap" onclick="switchPanel('nonCap', this);closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Non-CAP Admissions</a>
         <a href="#" class="sidebar-link admin-tab-btn" data-tab="calendar" onclick="switchPanel('calendar', this);closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Manage Events</a>
       `;
       nav.insertAdjacentHTML('beforeend', html);
@@ -1180,32 +1470,33 @@
     }
 
     // ── Tabs ──
-    function switchPanel(id, btn) {
-      if (btn && btn.tagName === 'A') event.preventDefault();
-      
-      document.querySelectorAll('.panel').forEach(function (p) { p.classList.remove('active') });
-      document.querySelectorAll('.admin-tab-btn').forEach(function (b) { b.classList.remove('active') });
+    function switchPanel(panelId) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      var target = document.getElementById('panel-' + panelId);
+      if (target) target.classList.add('active');
 
-      document.getElementById('panel-' + id).classList.add('active');
-
-      if (btn) btn.classList.add('active');
-      else {
-        var target = document.querySelector('.admin-tab-btn[data-tab="' + id + '"]');
-        if (target) target.classList.add('active');
-      }
+      // Update Sidebar Links
+      document.querySelectorAll('.admin-tab-btn').forEach(l => l.classList.remove('active'));
+      var sideLink = document.querySelector(`.admin-tab-btn[data-tab="${panelId}"]`);
+      if (sideLink) sideLink.classList.add('active');
 
       var titles = {
         'users': 'Users Management',
         'notifSend': 'Compose Notification',
         'notifHistory': 'Notification History',
-        'calendar': 'Calendar Management'
+        'nonCap': 'NON-CAP Admissions',
+        'calendar': 'Calendar Management',
+        'requests': 'Edit Quota Requests'
       };
-      document.getElementById('pageTitle').textContent = titles[id] || 'Admin Panel';
-      
+      var headerTitle = document.getElementById('pageTitle');
+      if (headerTitle) headerTitle.textContent = titles[panelId] || 'Admin Panel';
+
       // Auto-refresh data when switching tabs
-      if (id === 'notifHistory') loadNotifications();
-      if (id === 'users') loadUsers();
-      if (id === 'calendar') loadEvents();
+      if (panelId === 'notifHistory') loadNotifications();
+      if (panelId === 'users') loadUsers();
+      if (panelId === 'calendar') loadEvents();
+      if (panelId === 'nonCap') loadNonCap();
+      if (panelId === 'requests') loadRequests();
     }
 
     // ── USERS ──
@@ -1242,7 +1533,7 @@
           if (ts >= monthStart) regMonth++;
         });
 
-        grid.innerHTML = 
+        grid.innerHTML =
           '<div class="stat-card">' +
           '<div class="stat-icon users"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>' +
           '<div class="stat-info"><div class="val">' + allUsers.length + '</div><div class="lbl">Total Users</div><div style="font-size:11px;color:var(--muted);margin-top:4px">+' + regToday + ' Today / +' + regWeek + ' Week</div></div>' +
@@ -1268,7 +1559,7 @@
       else if (filter === 'week') cutoff = now.getTime() - (7 * 24 * 60 * 60 * 1000);
       else if (filter === 'month') cutoff = now.getTime() - (30 * 24 * 60 * 60 * 1000);
 
-      var filtered = allUsers.filter(function(u) {
+      var filtered = allUsers.filter(function (u) {
         if (filter === 'all') return true;
         var dt = u.createdAt ? (u.createdAt.toDate ? u.createdAt.toDate() : new Date(u.createdAt)) : null;
         return dt && dt.getTime() >= cutoff;
@@ -1277,7 +1568,7 @@
       if (!filtered.length) return toast('No users found for this range.', 'err');
 
       var headers = ['Name', 'Email', 'Phone', 'State', 'City', 'Joined Date'];
-      var rows = filtered.map(function(u) {
+      var rows = filtered.map(function (u) {
         var dt = u.createdAt ? (u.createdAt.toDate ? u.createdAt.toDate() : new Date(u.createdAt)) : new Date();
         return [
           '"' + (u.name || '').replace(/"/g, '""') + '"',
@@ -1303,7 +1594,7 @@
     function renderUsers(list) {
       var tb = document.getElementById('usersTbody');
       if (!list.length) { tb.innerHTML = '<tr><td colspan="5" class="empty"><div class="empty-icon">👥</div>No users found.</td></tr>'; return; }
-      
+
       tb.innerHTML = list.map(function (u, i) {
         var initial = (u.name || 'U').charAt(0).toUpperCase();
         var dt = u.createdAt ? (u.createdAt.toDate ? u.createdAt.toDate() : new Date(u.createdAt)) : null;
@@ -1449,22 +1740,22 @@
         return;
       }
       if (!allNotifs || !allNotifs.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">🔔</div>No notifications sent yet.</div>'; return; }
-      
+
       try {
         el.innerHTML = allNotifs.map(function (n) {
           var targetLabel = n.target === 'all' ? '<span class="badge-sm b-blue">All Users</span>' : '<span class="badge-sm b-green">' + escAuth(n.target) + '</span>';
           var linkHtml = n.link ? '<a href="' + escAuth(n.link) + '" target="_blank" style="color:var(--blue);font-weight:600;text-decoration:none;font-size:12px">View Link →</a>' : '';
-          
+
           var dateStr = 'TBA';
           if (n.createdAt) {
             var dt = n.createdAt.toDate ? n.createdAt.toDate() : new Date(n.createdAt);
             dateStr = dt.toLocaleString();
           }
-          
+
           var schedLabel = '';
           if (n.scheduledAt) {
             var isPast = new Date(n.scheduledAt) <= new Date();
-            schedLabel = '<span class="badge-sm ' + (isPast?'b-green':'b-blue') + '" style="margin-left:8px">' + (isPast?'Delivered':'Scheduled: ' + new Date(n.scheduledAt).toLocaleString()) + '</span>';
+            schedLabel = '<span class="badge-sm ' + (isPast ? 'b-green' : 'b-blue') + '" style="margin-left:8px">' + (isPast ? 'Delivered' : 'Scheduled: ' + new Date(n.scheduledAt).toLocaleString()) + '</span>';
           }
 
           return '<div class="notif-item">' +
@@ -1505,14 +1796,14 @@
     function renderCalendar() {
       var year = currentCalDate.getFullYear();
       var month = currentCalDate.getMonth();
-      
+
       var display = document.getElementById('monthDisplay');
       if (display) display.textContent = currentCalDate.toLocaleString('default', { month: 'long', year: 'numeric' });
 
       var firstDay = new Date(year, month, 1).getDay();
       var lastDay = new Date(year, month + 1, 0).getDate();
       var prevLastDay = new Date(year, month, 0).getDate();
-      
+
       var grid = document.getElementById('adminDaysGrid');
       if (!grid) return;
       grid.innerHTML = '';
@@ -1529,7 +1820,7 @@
       for (var i = 1; i <= lastDay; i++) {
         var isToday = isTodayMonth && today.getDate() === i;
         var dateStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(i).padStart(2, '0');
-        var dayEvents = allEvents.filter(function(e) { return e.date === dateStr; });
+        var dayEvents = allEvents.filter(function (e) { return e.date === dateStr; });
         grid.appendChild(createAdminDayEl(i, false, isToday, dayEvents, dateStr));
       }
 
@@ -1547,7 +1838,7 @@
 
       var header = document.createElement('div');
       header.className = 'admin-day-header';
-      
+
       var numSpan = document.createElement('span');
       numSpan.className = 'admin-day-num';
       numSpan.textContent = num;
@@ -1557,18 +1848,18 @@
         var addBtn = document.createElement('button');
         addBtn.className = 'add-event-btn';
         addBtn.innerHTML = '+';
-        addBtn.onclick = function() { openEventModal(undefined, dateStr); };
+        addBtn.onclick = function () { openEventModal(undefined, dateStr); };
         header.appendChild(addBtn);
       }
 
       div.appendChild(header);
 
       if (events) {
-        events.forEach(function(ev) {
+        events.forEach(function (ev) {
           var evDiv = document.createElement('div');
           evDiv.className = 'admin-event-bar';
           evDiv.textContent = ev.title;
-          evDiv.onclick = function(e) {
+          evDiv.onclick = function (e) {
             e.stopPropagation();
             openEventModal(allEvents.indexOf(ev));
           };
@@ -1594,7 +1885,7 @@
       document.getElementById('evReminder').checked = false;
       document.getElementById('reminderConfig').style.display = 'none';
       document.getElementById('evNotify').parentElement.style.display = editingEvent ? 'none' : 'flex';
-      
+
       // Add delete button if editing
       var footer = document.querySelector('#eventModal .modal-actions');
       var delBtn = document.getElementById('modalDelBtn');
@@ -1605,7 +1896,7 @@
           delBtn.className = 'btn btn-danger';
           delBtn.style.marginRight = 'auto';
           delBtn.textContent = 'Delete';
-          delBtn.onclick = function() { deleteEvent(editingEvent.id); closeEventModal(); };
+          delBtn.onclick = function () { deleteEvent(editingEvent.id); closeEventModal(); };
           footer.prepend(delBtn);
         }
       } else {
@@ -1673,15 +1964,201 @@
       btn.disabled = false; btn.textContent = 'Save Event';
     }
 
-    async function deleteEvent(id) {
-      if (!confirm('Delete this event permanently?')) return;
-      var res = await authApi('deleteEvent', { id: id });
-      if (res.ok) {
-        toast('Event deleted.', 'ok');
-        loadEvents();
-      } else {
-        toast('Error: ' + (res.error || 'Failed'), 'err');
+    // ── QUOTA REQUESTS ──
+    async function loadRequests() {
+      var listEl = document.getElementById('requestsList');
+      var res = await authApi('getEditRequests', {});
+      if (!res.ok) return listEl.innerHTML = '<div class="empty">Error loading requests.</div>';
+      var data = res.data || [];
+      
+      var pending = data.filter(r => r.status === 'pending');
+      var history = data.filter(r => r.status !== 'pending');
+
+      var html = '';
+
+      if (pending.length > 0) {
+        html += '<h4 style="margin-bottom:16px; font-weight:800; font-family:Lexend; color:var(--brand)">Active Pending Requests</h4>';
+        html += pending.map(r => `
+          <div class="notif-item" style="border-left:4px solid var(--brand); flex-direction:column; align-items:flex-start; gap:16px">
+            <div style="display:flex; justify-content:space-between; width:100%; align-items:center">
+              <div class="n-body">
+                <div class="n-title" style="display:flex;align-items:center;gap:8px">${escAuth(r.userName)} <span class="badge-sm b-blue">${escAuth(r.userEmail)}</span></div>
+                <div class="n-msg">Requested at: ${new Date(r.createdAt.toDate ? r.createdAt.toDate() : r.createdAt).toLocaleString()}</div>
+                ${r.message ? `<div style="font-size:12px; color:var(--muted); margin-top:8px; font-style:italic">"${escAuth(r.message)}"</div>` : ''}
+              </div>
+            </div>
+            <div style="width:100%">
+              <input type="text" id="msg-${r.id}" class="form-control" placeholder="Optional message to user..." style="font-size:12px; padding:10px; margin-bottom:12px">
+              <div class="n-actions" style="display:flex; gap:10px; justify-content:flex-end">
+                <button class="btn btn-danger" style="padding:10px 20px;font-size:12px;border-radius:14px" onclick="handleRequest('${r.id}', '${r.userId}', '${r.userEmail}', 'rejected')">Reject</button>
+                <button class="btn btn-primary" style="padding:10px 20px;font-size:12px;border-radius:14px" onclick="handleRequest('${r.id}', '${r.userId}', '${r.userEmail}', 'approved')">Approve & Reset</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
       }
+
+      if (history.length > 0) {
+        if (pending.length > 0) html += '<hr style="margin:40px 0; border:none; border-top:1.5px dashed var(--stroke)">';
+        html += '<h4 style="margin-bottom:16px; font-weight:800; font-family:Lexend; color:var(--muted)">Request History (Past Actions)</h4>';
+        html += history.map(r => {
+          var isApp = r.status === 'approved';
+          return `
+            <div class="notif-item" style="border-left:4px solid ${isApp ? 'var(--green)' : 'var(--muted)'}; opacity:0.75">
+              <div class="n-body">
+                <div class="n-title" style="display:flex;align-items:center;gap:8px">
+                  ${escAuth(r.userName)} <span class="badge-sm b-blue">${escAuth(r.userEmail)}</span>
+                  <span class="badge-sm ${isApp ? 'b-green' : 'b-blue'}" style="margin-left:auto">${r.status.toUpperCase()}</span>
+                </div>
+                <div class="n-msg" style="font-size:11px">Resolved at: ${new Date(r.respondedAt ? (r.respondedAt.toDate ? r.respondedAt.toDate() : r.respondedAt) : Date.now()).toLocaleString()}</div>
+                ${r.adminMessage ? `<div style="font-size:12px; color:var(--ink2); margin-top:8px">Admin Note: "${escAuth(r.adminMessage)}"</div>` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      if (!pending.length && !history.length) {
+        listEl.innerHTML = '<div class="empty"><div class="empty-icon">📝</div>No requests found in the system.</div>';
+      } else {
+        listEl.innerHTML = html;
+      }
+    }
+
+    async function handleRequest(id, userId, email, status) {
+      var msg = document.getElementById('msg-' + id).value.trim();
+      if (status === 'rejected' && !msg) {
+        if (!confirm('Reject without a message? It is better to tell the user why.')) return;
+      }
+      
+      if (!confirm('Are you sure you want to ' + status + ' this request?')) return;
+
+      var btn = event.target;
+      btn.disabled = true;
+
+      try {
+        if (status === 'approved') {
+          // 1. Reset the limit
+          var resetRes = await authApi('resetPrefEdits', { userId: userId });
+          if (!resetRes.ok) throw new Error('Reset failed: ' + resetRes.error);
+        }
+
+        // 2. Resolve the request
+        var finalMsg = msg || (status === 'approved' ? 'Your edit limit has been reset.' : 'Your request for additional edits was declined.');
+        var resolveRes = await authApi('respondEditRequest', { 
+          requestId: id, 
+          status: status, 
+          adminMessage: finalMsg 
+        });
+        if (!resolveRes.ok) throw new Error('Update failed: ' + resolveRes.error);
+
+        // 3. Send Notification to User
+        await authApi('sendNotificationToUser', {
+          email: email,
+          title: status === 'approved' ? 'Quota Reset Approved' : 'Quota Reset Request',
+          message: finalMsg,
+          link: 'preference-builder.html'
+        });
+
+        toast(status.charAt(0).toUpperCase() + status.slice(1) + ' successful!', 'ok');
+        loadRequests();
+      } catch (err) {
+        toast('Error: ' + err.message, 'err');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // ── NON-CAP ADMISSIONS ──
+    function switchColMode(mode) {
+      document.getElementById('colExistingWrap').style.display = mode === 'existing' ? 'block' : 'none';
+      document.getElementById('colNewWrap').style.display = mode === 'new' ? 'block' : 'none';
+    }
+
+    async function saveNonCap() {
+      var mode = document.querySelector('input[name="colMode"]:checked').value;
+      var college = mode === 'existing' ? document.getElementById('capCollegeSelect').value : document.getElementById('capCollegeNew').value.trim();
+      var year = document.getElementById('capYear').value;
+      var title = document.getElementById('capTitle').value.trim();
+      var link = document.getElementById('capLink').value.trim();
+
+      if (!college || !title || !link) return toast('All fields required.', 'err');
+
+      var res = await authApi('saveNonCapAdmission', { college, year, title, link });
+      if (res.ok) {
+        toast('Notice posted!', 'ok');
+        document.getElementById('capTitle').value = '';
+        document.getElementById('capLink').value = '';
+        loadNonCap();
+      } else {
+        toast('Error: ' + res.error, 'err');
+      }
+    }
+
+    async function loadNonCap() {
+      var listEl = document.getElementById('nonCapList');
+      var res = await authApi('getNonCapAdmissions', {});
+      if (!res.ok) return listEl.innerHTML = '<div class="empty">Error loading notices.</div>';
+
+      var data = res.data || [];
+      if (!data.length) return listEl.innerHTML = '<div class="empty">No notices found.</div>';
+
+      // Grouping logic
+      var groups = {};
+      var collegeSet = new Set();
+      data.forEach(n => {
+        collegeSet.add(n.college);
+        if (!groups[n.college]) groups[n.college] = {};
+        if (!groups[n.college][n.year]) groups[n.college][n.year] = [];
+        groups[n.college][n.year].push(n);
+      });
+
+      // Update College Select
+      var select = document.getElementById('capCollegeSelect');
+      var currentVal = select.value;
+      select.innerHTML = Array.from(collegeSet).sort().map(c => `<option value="${c}">${c}</option>`).join('');
+      if (currentVal) select.value = currentVal;
+
+      listEl.innerHTML = Object.keys(groups).sort().map(college => `
+        <div class="cap-admin-card">
+          <div class="cap-admin-card-hdr">
+            <h3>${college}</h3>
+          </div>
+          ${Object.keys(groups[college]).sort((a, b) => b - a).map(year => `
+            <div class="cap-admin-year-box">
+              <div class="cap-admin-year-hdr">
+                <span style="font-weight:700;font-size:14px;color:var(--brand)">AY ${year}</span>
+                <button class="btn btn-outline btn-sm" onclick="prefillCap('${college.replace(/'/g, "\\'")}', '${year}')">+ Add More</button>
+              </div>
+              ${groups[college][year].map(n => `
+                <div class="cap-admin-item">
+                  <div class="cap-admin-item-title">${n.title}</div>
+                  <div class="cap-admin-item-actions">
+                    <a href="${n.link}" target="_blank" class="btn btn-outline btn-sm" style="padding:6px 10px">View</a>
+                    <button class="btn btn-danger btn-sm" style="padding:6px 10px" onclick="deleteNonCap('${n.id}')">Del</button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          `).join('')}
+        </div>
+      `).join('');
+    }
+
+    function prefillCap(college, year) {
+      document.querySelector('input[name="colMode"][value="existing"]').checked = true;
+      switchColMode('existing');
+      document.getElementById('capCollegeSelect').value = college;
+      document.getElementById('capYear').value = year;
+      document.getElementById('capTitle').focus();
+      toast('Form pre-filled for ' + college, 'ok');
+    }
+
+    async function deleteNonCap(id) {
+      if (!confirm('Delete this notice?')) return;
+      var res = await authApi('deleteNonCapAdmission', { id });
+      if (res.ok) { toast('Deleted!', 'ok'); loadNonCap(); }
+      else { toast('Error: ' + res.error, 'err'); }
     }
   </script>
 </body>

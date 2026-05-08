@@ -1,100 +1,219 @@
 'use strict';
 
 /* ══════ STATE ══════ */
-let cutoffData=[], collegeMetadata=[], selectedBranches=new Set(), matchedColleges=[], selectedColleges=[], prefList=[], allBranchNames=[];
-const CATS={
-  'Computer & IT':['COMPUTER','INFORMATION TECHNOLOGY','AI','ARTIFICIAL','DATA SCIENCE','MACHINE LEARNING','SOFTWARE','CYBER','ROBOTICS'],
-  'Electronics & Telecom':['ELECTRONICS','TELECOMMUNICATION','ENTC','COMMUNICATION','INSTRUMENTATION'],
-  'Core Engineering':['MECHANICAL','CIVIL','ELECTRICAL','CHEMICAL','PRODUCTION','METALLURGY','AUTOMOBILE','TEXTILE','MINING'],
-  'Biotech & Allied':['BIOTECHNOLOGY','BIO-MEDICAL','BIO MEDICAL','FOOD','AGRICULTURE','PHARMACEUTICAL'],
-  'Other Branches':[]
+let cutoffData = [], collegeMetadata = [], selectedBranches = new Set(), matchedColleges = [], selectedColleges = [], prefList = [], allBranchNames = [];
+let prefEditCount = 0;
+let prefLocked = false;
+let prefDataLoaded = false;
+let currentFormId = null;
+let allForms = [];
+let currentUserId = null;
+const CATS = {
+  'Computer & IT': ['COMPUTER', 'INFORMATION TECHNOLOGY', 'AI', 'ARTIFICIAL', 'DATA SCIENCE', 'MACHINE LEARNING', 'SOFTWARE', 'CYBER', 'ROBOTICS'],
+  'Electronics & Telecom': ['ELECTRONICS', 'TELECOMMUNICATION', 'ENTC', 'COMMUNICATION', 'INSTRUMENTATION'],
+  'Core Engineering': ['MECHANICAL', 'CIVIL', 'ELECTRICAL', 'CHEMICAL', 'PRODUCTION', 'METALLURGY', 'AUTOMOBILE', 'TEXTILE', 'MINING'],
+  'Biotech & Allied': ['BIOTECHNOLOGY', 'BIO-MEDICAL', 'BIO MEDICAL', 'FOOD', 'AGRICULTURE', 'PHARMACEUTICAL'],
+  'Other Branches': []
 };
 
 /* ══════ STEPPER ══════ */
-let currentStep=1;
-function goStep(n){
-  if(n<1||n>4)return;
-  if(n===2&&!validateStep1())return;
-  if(n===3&&selectedBranches.size===0){pbToast('Select at least one branch');return}
-  if(n===3)generateMatches();
-  if(n===4)buildPrefList();
-  currentStep=n;
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('panel'+n).classList.add('active');
-  document.querySelectorAll('.step-item').forEach((s,i)=>{
-    s.classList.remove('active','done');
-    if(i+1<n)s.classList.add('done');
-    else if(i+1===n)s.classList.add('active');
-  });
-  document.querySelectorAll('.step-line').forEach((l,i)=>{
-    l.classList.toggle('done',i+1<n);
-  });
-  window.scrollTo({top:0,behavior:'smooth'});
+let currentStep = 1;
+function goStep(n) {
+  if (n < 0 || n > 4) return;
+  if (n === 2) {
+    if (!validateStep1()) return;
+    saveNonLockedData();
+  }
+  if (n === 3 && selectedBranches.size === 0) { pbToast('Select at least one branch'); return }
+  if (n === 3) {
+    generateMatches();
+    // Restore checkbox selections from keys if available
+    if (window._tempKeys && window._tempKeys.length > 0) {
+      selectedColleges = [];
+      window._tempKeys.forEach(key => {
+        const idx = matchedColleges.findIndex(c => (c.code + '|' + c.branch) === key);
+        if (idx >= 0) selectedColleges.push(idx);
+      });
+      delete window._tempKeys;
+      renderColleges('all');
+    }
+  }
+  if (n === 4) buildPrefList();
+  
+  // Save progress on every step transition
+  if (n > 0) saveNonLockedData();
+  
+  currentStep = n;
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  const targetPanel = document.getElementById('panel' + n);
+  if (targetPanel) targetPanel.classList.add('active');
+  
+  // Manage Stepper
+  const stepper = document.getElementById('pbStepper');
+  if (n === 0) {
+    if (stepper) stepper.style.display = 'none';
+  } else {
+    if (stepper) stepper.style.display = 'flex';
+    document.querySelectorAll('.step-item').forEach((s, i) => {
+      s.classList.remove('active', 'done');
+      if (i + 1 < n) s.classList.add('done');
+      else if (i + 1 === n) s.classList.add('active');
+    });
+    document.querySelectorAll('.step-line').forEach((l, i) => {
+      l.classList.toggle('done', i + 1 < n);
+    });
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function validateStep1(){
-  const p=document.getElementById('inPct').value, r=document.getElementById('inRank').value;
-  if(!p||isNaN(parseFloat(p))){pbToast('Enter valid percentile');return false}
-  if(!r||isNaN(parseInt(r))){pbToast('Enter valid rank');return false}
+function startNewForm() {
+  currentFormId = null;
+  prefList = [];
+  selectedColleges = [];
+  selectedBranches = new Set(); // Clear branch selections
+  
+  if (prefLocked) lockProfileFields();
+  else unlockProfileFields();
+  
+  renderEditStatus();
+  goStep(1);
+}
+
+function loadForm(formId, step = 1) {
+  const form = allForms.find(f => f.id === formId);
+  if (!form) return;
+  currentFormId = formId;
+  document.getElementById('inPct').value = form.percentile || '';
+  document.getElementById('inRank').value = form.rank || '';
+  document.getElementById('inCategory').value = form.category || 'OPEN';
+  document.getElementById('inRegion').value = form.region || '';
+  prefList = form.prefList || [];
+  selectedBranches = new Set(form.selectedBranches || []);
+  window._tempKeys = form.selectedCollegeKeys || [];
+  
+  if (form.colType) document.getElementById('inColType').value = form.colType;
+  if (form.minority) document.getElementById('inMinority').value = form.minority;
+  
+  if (prefLocked) lockProfileFields();
+  else unlockProfileFields();
+  
+  renderBranches();
+  renderEditStatus();
+  
+  // Use saved step if not explicitly provided
+  const targetStep = step || form.currentStep || 1;
+  goStep(targetStep);
+}
+
+async function deleteForm(formId) {
+  if (!confirm('Are you sure you want to delete this preference list? This action cannot be undone.')) return;
+  const res = await authApi('deleteForm', { userId: currentUserId, formId });
+  if (res.ok) {
+    pbToast('Form deleted successfully');
+    loadSavedPrefData();
+  } else {
+    pbToast('Error: ' + res.error);
+  }
+}
+
+function returnToDashboard() {
+  loadSavedPrefData(); // Refresh list
+}
+
+async function saveNonLockedData() {
+  if (!currentUserId) return;
+  const pct = document.getElementById('inPct').value;
+  const rank = document.getElementById('inRank').value;
+  const cat = document.getElementById('inCategory').value;
+  const region = document.getElementById('inRegion').value;
+  
+  const res = await authApi('savePrefData', { 
+    userId: currentUserId, 
+    formId: currentFormId,
+    percentile: pct, 
+    rank: rank, 
+    category: cat, 
+    region: region, 
+    prefList: prefList,
+    selectedBranches: Array.from(selectedBranches),
+    selectedCollegeKeys: selectedColleges.map(idx => matchedColleges[idx] ? matchedColleges[idx].code + '|' + matchedColleges[idx].branch : '').filter(Boolean),
+    currentStep: currentStep,
+    colType: document.getElementById('inColType').value,
+    minority: document.getElementById('inMinority').value,
+    skipEditCount: true 
+  });
+  if (res.ok && res.data.formId) currentFormId = res.data.formId;
+}
+
+let autoTid = null;
+function triggerAutosave() {
+  clearTimeout(autoTid);
+  autoTid = setTimeout(saveNonLockedData, 1000);
+}
+
+function validateStep1() {
+  const p = document.getElementById('inPct').value, r = document.getElementById('inRank').value;
+  if (!p || isNaN(parseFloat(p))) { pbToast('Enter valid percentile'); return false }
+  if (!r || isNaN(parseInt(r))) { pbToast('Enter valid rank'); return false }
   return true;
 }
 
 /* ══════ DATA LOADING ══════ */
-async function loadData(){
-  const loader=document.getElementById('dataLoader');
-  try{
-    loader.innerHTML='<div class="pb-spinner"></div><span>Loading cutoff data (12MB)...</span>';
-    const r1=await fetch('data.json');const j1=await r1.json();
-    const raw1=j1['MHT-CET College Data']||j1[Object.keys(j1)[0]]||[];
-    cutoffData=raw1.map(r=>({
-      code:String(r['Institute Code']||''),name:r['Institute']||r['Institute Name']||'',
-      branch:(r['Branch']||r['Branch Name']||'').trim(),
-      seatType:r['Seat Type']||'',rank:parseInt(r['Rank'])||0,
-      percentile:parseFloat(r['Percentile'])||0
+async function loadData() {
+  const loader = document.getElementById('dataLoader');
+  try {
+    loader.innerHTML = '<div class="pb-spinner"></div><span>Loading cutoff data (12MB)...</span>';
+    const r1 = await fetch('data.json'); const j1 = await r1.json();
+    const raw1 = j1['MHT-CET College Data'] || j1[Object.keys(j1)[0]] || [];
+    cutoffData = raw1.map(r => ({
+      code: String(r['Institute Code'] || ''), name: r['Institute'] || r['Institute Name'] || '',
+      branch: (r['Branch'] || r['Branch Name'] || '').trim(),
+      seatType: r['Seat Type'] || '', rank: parseInt(r['Rank']) || 0,
+      percentile: parseFloat(r['Percentile']) || 0
     }));
 
-    loader.querySelector('span').textContent='Loading college metadata...';
-    const r2=await fetch('college-data.json');const j2=await r2.json();
-    collegeMetadata=(j2['college-data']||[]).map(c=>({
-      code:String(c['Institute Code']||''),name:c['Institute Name']||'',
-      status:c['Status']||'',intake:c['Total Intake']||0
+    loader.querySelector('span').textContent = 'Loading college metadata...';
+    const r2 = await fetch('college-data.json'); const j2 = await r2.json();
+    collegeMetadata = (j2['college-data'] || []).map(c => ({
+      code: String(c['Institute Code'] || ''), name: c['Institute Name'] || '',
+      status: c['Status'] || '', intake: c['Total Intake'] || 0
     }));
 
     // Extract branches
-    const bSet=new Set();
-    cutoffData.forEach(r=>{if(r.branch)bSet.add(r.branch)});
-    allBranchNames=Array.from(bSet).sort();
+    const bSet = new Set();
+    cutoffData.forEach(r => { if (r.branch) bSet.add(r.branch) });
+    allBranchNames = Array.from(bSet).sort();
     renderBranches();
-    loader.style.display='none';
-    document.getElementById('predictBtn').disabled=false;
-  }catch(e){
+    loader.style.display = 'none';
+    document.getElementById('predictBtn').disabled = false;
+  } catch (e) {
     console.error(e);
-    loader.innerHTML='<span style="color:var(--brand)">Failed to load data. Please refresh.</span>';
+    loader.innerHTML = '<span style="color:var(--brand)">Failed to load data. Please refresh.</span>';
   }
 }
 
 /* ══════ BRANCH RENDERING ══════ */
-function categorizeBranch(b){
-  const u=b.toUpperCase();
-  for(const[cat,kws]of Object.entries(CATS)){
-    if(cat==='Other Branches')continue;
-    if(kws.some(k=>{const re=new RegExp('\\b'+k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'i');return re.test(u)}))return cat;
+function categorizeBranch(b) {
+  const u = b.toUpperCase();
+  for (const [cat, kws] of Object.entries(CATS)) {
+    if (cat === 'Other Branches') continue;
+    if (kws.some(k => { const re = new RegExp('\\b' + k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'); return re.test(u) })) return cat;
   }
   return 'Other Branches';
 }
 
-function renderBranches(){
-  const container=document.getElementById('branchContainer');
-  const grouped={};
-  Object.keys(CATS).forEach(c=>grouped[c]=[]);
-  allBranchNames.forEach(b=>{const cat=categorizeBranch(b);grouped[cat].push(b)});
+function renderBranches() {
+  const container = document.getElementById('branchContainer');
+  const grouped = {};
+  Object.keys(CATS).forEach(c => grouped[c] = []);
+  allBranchNames.forEach(b => { const cat = categorizeBranch(b); grouped[cat].push(b) });
 
-  let html='<div class="branch-select-all" onclick="toggleAllBranches()"><div class="branch-chk" id="chkAll">✓</div> Select All Branches ('+allBranchNames.length+')</div>';
+  let html = '<div class="branch-select-all" onclick="toggleAllBranches()"><div class="branch-chk" id="chkAll">✓</div> Select All Branches (' + allBranchNames.length + ')</div>';
 
-  Object.entries(grouped).forEach(([cat,branches])=>{
-    if(!branches.length)return;
-    const selCount=branches.filter(b=>selectedBranches.has(b)).length;
-    html+=`<div class="branch-cat">
+  Object.entries(grouped).forEach(([cat, branches]) => {
+    if (!branches.length) return;
+    const selCount = branches.filter(b => selectedBranches.has(b)).length;
+    html += `<div class="branch-cat">
       <div class="branch-cat-head" onclick="toggleCatCollapse(this)">
         <div class="branch-cat-name"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>${cat}</div>
         <div style="display:flex;align-items:center;gap:8px">
@@ -103,383 +222,854 @@ function renderBranches(){
         </div>
       </div>
       <div class="branch-list" style="display:none">`;
-    branches.forEach(b=>{
-      const sel=selectedBranches.has(b)?'selected':'';
-      html+=`<div class="branch-opt ${sel}" onclick="toggleBranch('${b.replace(/'/g,"\\'")}')"><div class="branch-chk">${sel?'✓':''}</div><span>${b}</span></div>`;
+    branches.forEach(b => {
+      const sel = selectedBranches.has(b) ? 'selected' : '';
+      html += `<div class="branch-opt ${sel}" onclick="toggleBranch('${b.replace(/'/g, "\\'")}')"><div class="branch-chk">${sel ? '✓' : ''}</div><span>${b}</span></div>`;
     });
-    html+='</div></div>';
+    html += '</div></div>';
   });
 
-  container.innerHTML=html;
+  container.innerHTML = html;
   renderBranchChips();
   updateAllChk();
 }
 
-function toggleCatCollapse(el){
-  const list=el.nextElementSibling;
-  list.style.display=list.style.display==='none'?'grid':'none';
+function toggleCatCollapse(el) {
+  const list = el.nextElementSibling;
+  list.style.display = list.style.display === 'none' ? 'grid' : 'none';
 }
 
-function toggleBranch(b){
-  if(selectedBranches.has(b))selectedBranches.delete(b);
+function toggleBranch(b) {
+  if (selectedBranches.has(b)) selectedBranches.delete(b);
   else selectedBranches.add(b);
   renderBranches();
+  triggerAutosave();
 }
 
-function toggleCategory(cat){
-  const grouped={};
-  Object.keys(CATS).forEach(c=>grouped[c]=[]);
-  allBranchNames.forEach(b=>{grouped[categorizeBranch(b)].push(b)});
-  const branches=grouped[cat]||[];
-  const allSel=branches.every(b=>selectedBranches.has(b));
-  branches.forEach(b=>{if(allSel)selectedBranches.delete(b);else selectedBranches.add(b)});
+function toggleCategory(cat) {
+  const grouped = {};
+  Object.keys(CATS).forEach(c => grouped[c] = []);
+  allBranchNames.forEach(b => { grouped[categorizeBranch(b)].push(b) });
+  const branches = grouped[cat] || [];
+  const allSel = branches.every(b => selectedBranches.has(b));
+  branches.forEach(b => { if (allSel) selectedBranches.delete(b); else selectedBranches.add(b) });
   renderBranches();
 }
 
-function toggleAllBranches(){
-  if(selectedBranches.size===allBranchNames.length){selectedBranches.clear()}
-  else{allBranchNames.forEach(b=>selectedBranches.add(b))}
+function toggleAllBranches() {
+  if (selectedBranches.size === allBranchNames.length) { selectedBranches.clear() }
+  else { allBranchNames.forEach(b => selectedBranches.add(b)) }
   renderBranches();
 }
 
-function updateAllChk(){
-  const el=document.getElementById('chkAll');
-  if(el)el.textContent=selectedBranches.size===allBranchNames.length?'✓':'';
+function updateAllChk() {
+  const el = document.getElementById('chkAll');
+  if (el) el.textContent = selectedBranches.size === allBranchNames.length ? '✓' : '';
 }
 
-function renderBranchChips(){
-  const row=document.getElementById('branchChips');
-  if(!row)return;
-  if(selectedBranches.size===0){row.innerHTML='<span style="color:var(--muted);font-size:12px">No branches selected</span>';return}
-  if(selectedBranches.size>8){row.innerHTML=`<span class="bchip">${selectedBranches.size} branches selected</span>`;return}
-  row.innerHTML=Array.from(selectedBranches).map(b=>`<span class="bchip">${b}<span class="bchip-x" onclick="toggleBranch('${b.replace(/'/g,"\\'")}')">×</span></span>`).join('');
+function renderBranchChips() {
+  const row = document.getElementById('branchChips');
+  if (!row) return;
+  if (selectedBranches.size === 0) { row.innerHTML = '<span style="color:var(--muted);font-size:12px">No branches selected</span>'; return }
+  if (selectedBranches.size > 8) { row.innerHTML = `<span class="bchip">${selectedBranches.size} branches selected</span>`; return }
+  row.innerHTML = Array.from(selectedBranches).map(b => `<span class="bchip">${b}<span class="bchip-x" onclick="toggleBranch('${b.replace(/'/g, "\\'")}')">×</span></span>`).join('');
 }
 
 /* ══════ COLLEGE MATCHING (Step 3) ══════ */
-function generateMatches(){
-  const pct=parseFloat(document.getElementById('inPct').value);
-  const rank=parseInt(document.getElementById('inRank').value);
-  const region=document.getElementById('inRegion').value;
-  const colType=document.getElementById('inColType').value;
-  const minority=document.getElementById('inMinority').value;
-  const category=document.getElementById('inCategory').value;
+function generateMatches() {
+  const pct = parseFloat(document.getElementById('inPct').value);
+  const rank = parseInt(document.getElementById('inRank').value);
+  const region = document.getElementById('inRegion').value;
+  const colType = document.getElementById('inColType').value;
+  const minority = document.getElementById('inMinority').value;
+  const category = document.getElementById('inCategory').value;
 
   // Build category seat filter
-  const catMap={'OPEN':'OPEN','OBC':'OBC','SC':'SC','ST':'ST','VJ/DT':'VJ','NT1':'NT1','NT2':'NT2','NT3':'NT3','EWS':'EWS','TFWS':'TFWS'};
-  const searchCat=catMap[category]||'OPEN';
+  const catMap = { 'OPEN': 'OPEN', 'OBC': 'OBC', 'SC': 'SC', 'ST': 'ST', 'VJ/DT': 'VJ', 'NT1': 'NT1', 'NT2': 'NT2', 'NT3': 'NT3', 'EWS': 'EWS', 'TFWS': 'TFWS' };
+  const searchCat = catMap[category] || 'OPEN';
 
   // Filter cutoff data
-  let filtered=cutoffData.filter(r=>{
-    if(!selectedBranches.has(r.branch))return false;
-    if(searchCat!=='OPEN'&&!(r.seatType||'').includes(searchCat))return false;
-    if(searchCat==='OPEN'&&!(r.seatType||'').includes('OPEN'))return false;
+  let filtered = cutoffData.filter(r => {
+    if (!selectedBranches.has(r.branch)) return false;
+    if (searchCat !== 'OPEN' && !(r.seatType || '').includes(searchCat)) return false;
+    if (searchCat === 'OPEN' && !(r.seatType || '').includes('OPEN')) return false;
     return true;
   });
 
   // Group by institute+branch, pick closest percentile
-  const groups={};
-  filtered.forEach(r=>{
-    const key=r.code+'|'+r.branch;
-    if(!groups[key]||Math.abs(r.percentile-pct)<Math.abs(groups[key].percentile-pct)){
-      groups[key]=r;
+  const groups = {};
+  filtered.forEach(r => {
+    const key = r.code + '|' + r.branch;
+    if (!groups[key] || Math.abs(r.percentile - pct) < Math.abs(groups[key].percentile - pct)) {
+      groups[key] = r;
     }
   });
 
-  let results=Object.values(groups);
+  let results = Object.values(groups);
 
   // Enrich with college metadata
-  const metaMap={};
-  collegeMetadata.forEach(c=>metaMap[c.code]=c);
+  const metaMap = {};
+  collegeMetadata.forEach(c => metaMap[c.code] = c);
 
-  results=results.map(r=>{
-    const meta=metaMap[r.code]||{};
-    const status=(meta.status||'').toLowerCase();
-    return{
-      ...r, instituteName:meta.name||r.name,
-      status:meta.status||'', intake:meta.intake||0,
-      isGov:status.includes('government'),
-      isAided:status.includes('aided'),
-      isAuto:status.includes('autonomous'),
-      isMinority:status.includes('minority'),
-      minorityType:extractMinority(meta.status||''),
-      diff:r.percentile-pct
+  results = results.map(r => {
+    const meta = metaMap[r.code] || {};
+    const status = (meta.status || '').toLowerCase();
+    return {
+      ...r, instituteName: meta.name || r.name,
+      status: meta.status || '', intake: meta.intake || 0,
+      isGov: status.includes('government'),
+      isAided: status.includes('aided'),
+      isAuto: status.includes('autonomous'),
+      isMinority: status.includes('minority'),
+      minorityType: extractMinority(meta.status || ''),
+      diff: r.percentile - pct
     };
   });
 
-  // Apply optional filters
-  if(colType){
-    results=results.filter(r=>{
-      if(colType==='Government')return r.isGov;
-      if(colType==='Aided')return r.isAided;
-      if(colType==='Autonomous')return r.isAuto;
-      if(colType==='Un-Aided')return !r.isGov&&!r.isAided;
+  // Apply reachable filters (ColType, Minority, Region)
+  let reachableList = results;
+  if (colType) {
+    reachableList = reachableList.filter(r => {
+      if (colType === 'Government') return r.isGov;
+      if (colType === 'Aided') return r.isAided;
+      if (colType === 'Autonomous') return r.isAuto;
+      if (colType === 'Un-Aided') return !r.isGov && !r.isAided;
       return true;
     });
   }
-  if(minority){
-    results=results.filter(r=>r.isMinority&&r.minorityType.toLowerCase().includes(minority.toLowerCase()));
+  if (minority) {
+    reachableList = reachableList.filter(r => r.isMinority && r.minorityType.toLowerCase().includes(minority.toLowerCase()));
   }
-  if(region){
-    results=results.filter(r=>(r.instituteName||'').toLowerCase().includes(region.toLowerCase()));
+  if (region) {
+    reachableList = reachableList.filter(r => (r.instituteName || '').toLowerCase().includes(region.toLowerCase()));
+  }
+
+  // Apply aspirational filters (IGNORE minority filter)
+  let aspirationalList = results;
+  if (colType) {
+    aspirationalList = aspirationalList.filter(r => {
+      if (colType === 'Government') return r.isGov;
+      if (colType === 'Aided') return r.isAided;
+      if (colType === 'Autonomous') return r.isAuto;
+      if (colType === 'Un-Aided') return !r.isGov && !r.isAided;
+      return true;
+    });
+  }
+  // User said: dont consider minority in aspirational ones
+  if (region) {
+    aspirationalList = aspirationalList.filter(r => (r.instituteName || '').toLowerCase().includes(region.toLowerCase()));
   }
 
   // Split: reachable vs aspirational
-  const reachable=results.filter(r=>r.percentile<=pct).sort((a,b)=>b.percentile-a.percentile);
-  const aspirational=results.filter(r=>r.percentile>pct).sort((a,b)=>a.percentile-b.percentile).slice(0,6);
+  const reachable = reachableList.filter(r => r.percentile <= pct).sort((a, b) => b.percentile - a.percentile).slice(0, 34);
 
-  aspirational.forEach(r=>r.isAspirational=true);
-  matchedColleges=[...aspirational,...reachable];
+  // For aspirational, we take from the list that IGNORES minority status
+  const aspirational = aspirationalList
+    .filter(r => r.percentile > pct)
+    .sort((a, b) => a.percentile - b.percentile)
+    .slice(0, 6); // Select exactly 6 aspirational colleges as requested
+
+  aspirational.forEach(r => r.isAspirational = true);
+  matchedColleges = [...aspirational, ...reachable];
+
+  // Suggestion pool: branch+cat+region+colType matching colleges that were filtered out by minority
+  // (Or any other colleges the user might want to see as suggestions)
+  suggestionPool = results.filter(r => {
+    // Ignore minority filter
+    if (colType) {
+      const status = (r.status || '').toLowerCase();
+      if (colType === 'Government' && !status.includes('government')) return false;
+      if (colType === 'Aided' && !status.includes('aided')) return false;
+      if (colType === 'Autonomous' && !status.includes('autonomous')) return false;
+      if (colType === 'Un-Aided' && (status.includes('government') || status.includes('aided'))) return false;
+    }
+    if (region && !(r.instituteName || '').toLowerCase().includes(region.toLowerCase())) return false;
+
+    // Don't include what's already in matchedColleges
+    if (matchedColleges.some(m => m.code === r.code && m.branch === r.branch)) return false;
+
+    return true;
+  }).sort((a, b) => Math.abs(a.percentile - pct) - Math.abs(b.percentile - pct));
 
   // Auto-select reachable + aspirational
-  selectedColleges=matchedColleges.map((_,i)=>i);
+  selectedColleges = matchedColleges.map((_, i) => i);
   renderColleges();
 }
 
-function extractMinority(status){
-  const m=status.match(/(Religious Minority\s*-\s*\w+|Linguistic Minority\s*-\s*\w+)/i);
-  return m?m[1]:'';
+let suggestionPool = [];
+
+function extractMinority(status) {
+  const m = status.match(/(Religious Minority\s*-\s*\w+|Linguistic Minority\s*-\s*\w+)/i);
+  return m ? m[1] : '';
 }
 
-function renderColleges(filter='all'){
-  const grid=document.getElementById('collegeGrid');
-  const countEl=document.getElementById('matchCount');
-  let items=matchedColleges;
+function renderColleges(filter = 'all') {
+  const grid = document.getElementById('collegeGrid');
+  const countEl = document.getElementById('matchCount');
+  let items = matchedColleges;
 
-  if(filter==='aspirational')items=matchedColleges.filter(r=>r.isAspirational);
-  else if(filter==='reachable')items=matchedColleges.filter(r=>!r.isAspirational);
-  else if(filter==='government')items=matchedColleges.filter(r=>r.isGov);
-  else if(filter==='autonomous')items=matchedColleges.filter(r=>r.isAuto);
+  if (filter === 'aspirational') items = matchedColleges.filter(r => r.isAspirational);
+  else if (filter === 'reachable') items = matchedColleges.filter(r => !r.isAspirational);
+  else if (filter === 'government') items = matchedColleges.filter(r => r.isGov);
+  else if (filter === 'autonomous') items = matchedColleges.filter(r => r.isAuto);
 
-  countEl.textContent=items.length+' colleges found ('+selectedColleges.length+' selected)';
+  countEl.textContent = items.length + ' colleges found (' + selectedColleges.length + ' selected)';
 
-  if(!items.length){
-    grid.innerHTML='<div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><h3>No Matches</h3><p>Try adjusting your filters or branch preferences.</p></div>';
+  if (!items.length) {
+    const minority = document.getElementById('inMinority').value;
+    const region = document.getElementById('inRegion').value;
+    let msg = 'Try adjusting your filters or branch preferences.';
+    if (minority) msg = `no colleges found !! for ${minority} ${region ? 'in ' + region : ''}`;
+
+    grid.innerHTML = `<div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><h3>No Matches</h3><p>${msg}</p></div>`;
     return;
   }
 
-  grid.innerHTML=items.map((c,idx)=>{
-    const realIdx=matchedColleges.indexOf(c);
-    const sel=selectedColleges.includes(realIdx);
-    const asp=c.isAspirational?'aspirational':'';
-    const tags=[];
-    if(c.isGov)tags.push('<span class="col-tag gov">Government</span>');
-    if(c.isAuto)tags.push('<span class="col-tag auto">Autonomous</span>');
-    if(c.isMinority)tags.push('<span class="col-tag minority">'+escH(c.minorityType||'Minority')+'</span>');
-    if(c.isAided)tags.push('<span class="col-tag">Aided</span>');
+  grid.innerHTML = items.map((c, idx) => {
+    const realIdx = matchedColleges.indexOf(c);
+    const sel = selectedColleges.includes(realIdx);
+    const asp = c.isAspirational ? 'aspirational' : '';
+    const tags = [];
+    if (c.isGov) tags.push('<span class="col-tag gov">Government</span>');
+    if (c.isAuto) tags.push('<span class="col-tag auto">Autonomous</span>');
+    if (c.isMinority) tags.push('<span class="col-tag minority">' + escH(c.minorityType || 'Minority') + '</span>');
+    if (c.isAided) tags.push('<span class="col-tag">Aided</span>');
 
-    return`<div class="col-card ${sel?'selected':''} ${asp}" onclick="toggleCollege(${realIdx})">
-      <div class="col-chk">${sel?'✓':''}</div>
+    return `<div class="col-card ${sel ? 'selected' : ''} ${asp}" onclick="toggleCollege(${realIdx})">
+      <div class="col-chk">${sel ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg>' : ''}</div>
       <div class="col-name">${escH(c.instituteName)}</div>
-      <div class="col-meta">${tags.join('')}<span class="col-tag">${escH(c.branch)}</span></div>
-      <div class="col-pct">${c.percentile.toFixed(2)}%<small>Cutoff | Code: ${c.code}</small></div>
+      <div class="col-meta">
+        ${tags.join('')}
+        <span class="col-tag branch-tag">${escH(c.branch)}</span>
+        ${c.intake ? `<span class="col-tag intake">Intake: ${c.intake}</span>` : ''}
+      </div>
+      <div class="col-pct"><strong>${c.percentile.toFixed(2)}%</strong> <small>Cutoff | Code: ${c.code}</small></div>
     </div>`;
   }).join('');
 }
 
-function toggleCollege(idx){
-  const i=selectedColleges.indexOf(idx);
-  if(i>=0)selectedColleges.splice(i,1);else selectedColleges.push(idx);
-  renderColleges(document.querySelector('.filter-chip.active')?.dataset.f||'all');
+function toggleCollege(idx) {
+  const i = selectedColleges.indexOf(idx);
+  if (i >= 0) selectedColleges.splice(i, 1); else selectedColleges.push(idx);
+  renderColleges(document.querySelector('.filter-chip.active')?.dataset.f || 'all');
+  triggerAutosave();
 }
 
-function filterColleges(f,el){
-  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+function filterColleges(f, el) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
   renderColleges(f);
 }
 
 /* ══════ PREFERENCE LIST (Step 4) ══════ */
-function buildPrefList(){
-  prefList=selectedColleges.map(idx=>({...matchedColleges[idx],idx}));
+function buildPrefList() {
+  prefList = selectedColleges.map(idx => ({ ...matchedColleges[idx], idx }));
   renderPrefList();
   renderSuggestions();
   renderAspirational();
 }
 
 /* ══════ ASPIRATIONAL TAB ══════ */
-function renderAspirational(){
-  const grid=document.getElementById('aspGrid');
-  if(!grid)return;
-  const pct=parseFloat(document.getElementById('inPct').value)||0;
-  // Get ALL colleges above percentile (not just 6)
-  const allAsp=matchedColleges.filter(r=>r.isAspirational);
-  // Also find more aspirational candidates from full results
-  const metaMap={};
-  collegeMetadata.forEach(c=>metaMap[c.code]=c);
-  const extraAsp=cutoffData.filter(r=>{
-    if(!selectedBranches.has(r.branch))return false;
-    if(r.percentile<=pct)return false;
-    if(r.percentile>pct+10)return false;
-    if(allAsp.some(a=>a.code===r.code&&a.branch===r.branch))return false;
-    return true;
-  }).slice(0,20).map(r=>{
-    const meta=metaMap[r.code]||{};
-    const status=(meta.status||'').toLowerCase();
-    return{...r,instituteName:meta.name||r.name,status:meta.status||'',
-      isGov:status.includes('government'),isAuto:status.includes('autonomous'),
-      isMinority:status.includes('minority'),minorityType:extractMinority(meta.status||''),
-      isAided:status.includes('aided'),isAspirational:true,diff:r.percentile-pct};
-  });
-  const combined=[...allAsp,...extraAsp];
-  // Deduplicate
-  const seen=new Set();
-  const unique=combined.filter(c=>{const k=c.code+'|'+c.branch;if(seen.has(k))return false;seen.add(k);return true});
-  unique.sort((a,b)=>a.percentile-b.percentile);
+function renderAspirational() {
+  const grid = document.getElementById('aspGrid');
+  const suggGrid = document.getElementById('aspSuggestions');
+  if (!grid) return;
+  const pct = parseFloat(document.getElementById('inPct').value) || 0;
 
-  if(!unique.length){
-    grid.innerHTML='<div class="empty-state"><h3>No Aspirational Colleges</h3><p>No colleges found above your percentile for selected branches.</p></div>';
-    return;
-  }
-  const inPref=new Set(prefList.map(p=>p.code+'|'+p.branch));
-  grid.innerHTML=unique.map(c=>{
-    const key=c.code+'|'+c.branch;
-    const inList=inPref.has(key);
-    const tags=[];
-    if(c.isGov)tags.push('<span class="col-tag gov">Government</span>');
-    if(c.isAuto)tags.push('<span class="col-tag auto">Autonomous</span>');
-    if(c.isMinority)tags.push('<span class="col-tag minority">'+escH(c.minorityType||'Minority')+'</span>');
-    return`<div class="col-card ${inList?'selected':''} aspirational" onclick="toggleAspirational('${c.code}','${c.branch.replace(/'/g,"\\'")}')">
-      <div class="col-chk">${inList?'✓':''}</div>
+  // 1. Current Aspirational in Pref List
+  const allAsp = prefList.filter(c => c.isAspirational);
+  grid.innerHTML = allAsp.map(c => {
+    const tags = [];
+    if (c.isGov) tags.push('<span class="col-tag gov">Government</span>');
+    if (c.isAuto) tags.push('<span class="col-tag auto">Autonomous</span>');
+    return `<div class="col-card selected aspirational" onclick="toggleAspirational('${c.code}','${c.branch.replace(/'/g, "\\'")}')">
+      <div class="col-chk"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></div>
       <div class="col-name">${escH(c.instituteName)}</div>
-      <div class="col-meta">${tags.join('')}<span class="col-tag">${escH(c.branch)}</span></div>
-      <div class="col-pct">${c.percentile.toFixed(2)}%<small>Cutoff (${(c.percentile-pct).toFixed(2)}% above yours) | Code: ${c.code}</small></div>
+      <div class="col-meta">${tags.join('')}<span class="col-tag branch-tag">${escH(c.branch)}</span></div>
+      <div class="col-pct"><strong>${c.percentile.toFixed(2)}%</strong> <small>Code: ${c.code}</small></div>
     </div>`;
   }).join('');
+
+  if (!allAsp.length) grid.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">No aspirational colleges added</div>';
+
+  // 2. Aspirational Suggestions (from suggestionPool)
+  if (suggGrid) {
+    const inPref = new Set(prefList.map(p => p.code + '|' + p.branch));
+    const pool = suggestionPool.filter(c => !inPref.has(c.code + '|' + c.branch) && c.percentile > pct).slice(0, 8);
+    suggGrid.innerHTML = pool.map(c => `<div class="col-card aspirational" onclick="toggleAspirational('${c.code}','${c.branch.replace(/'/g, "\\'")}')">
+      <div class="col-chk"></div>
+      <div class="col-name">${escH(c.instituteName)}</div>
+      <div class="col-meta"><span class="col-tag">${escH(c.branch)}</span></div>
+      <div class="col-pct">${c.percentile.toFixed(2)}%<small>Code: ${c.code}</small></div>
+    </div>`).join('');
+    if (!pool.length) suggGrid.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">No more suggestions</div>';
+  }
 }
 
-function toggleAspirational(code,branch){
-  const key=code+'|'+branch;
-  const idx=prefList.findIndex(p=>p.code===code&&p.branch===branch);
-  if(idx>=0){
-    prefList.splice(idx,1);
+let searchTimeout = null;
+function searchManualColleges() {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(async () => {
+    const query = (document.getElementById('manualSearchInput').value || '').toLowerCase().trim();
+    const resDiv = document.getElementById('manualSearchResults');
+    if (!query) { resDiv.innerHTML = ''; return; }
+    resDiv.innerHTML = '<div class="pb-spinner" style="margin:20px auto"></div>';
+    const results = cutoffData.filter(r => r.code.includes(query) || (r.name || '').toLowerCase().includes(query) || (r.branch || '').toLowerCase().includes(query)).slice(0, 15);
+    if (!results.length) { resDiv.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">No colleges found</div>'; return; }
+
+    const metaMap = {}; collegeMetadata.forEach(c => metaMap[c.code] = c);
+    const inPref = new Set(prefList.map(p => p.code + '|' + p.branch));
+
+    resDiv.innerHTML = results.map(r => {
+      const meta = metaMap[r.code] || {};
+      const status = (meta.status || '').toLowerCase();
+      const isSel = inPref.has(r.code + '|' + r.branch);
+      const tags = [];
+      if (status.includes('government')) tags.push('<span class="col-tag gov">Government</span>');
+      if (status.includes('autonomous')) tags.push('<span class="col-tag auto">Autonomous</span>');
+
+      return `<div class="col-card ${isSel ? 'selected' : ''}" style="margin-bottom:12px; cursor: default">
+        <div class="col-name" style="padding-right:50px">${escH(meta.name || r.name)}</div>
+        <div class="col-meta">
+          ${tags.join('')}
+          <span class="col-tag branch-tag">${escH(r.branch)}</span>
+        </div>
+        <div class="col-pct"><strong>${r.percentile.toFixed(2)}%</strong> <small>Cutoff | Code: ${r.code}</small></div>
+        <button class="pb-btn pb-btn-primary" onclick="handleAddSuggestion('${r.code}','${r.branch.replace(/'/g, "\\'")}')" style="position:absolute; right:12px; top:12px; width:34px; height:34px; padding:0; border-radius:10px; display:flex; align-items:center; justify-content:center; box-shadow: none">
+          ${isSel ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>'}
+        </button>
+      </div>`;
+    }).join('');
+  }, 300);
+}
+
+let searchListTimeout = null;
+function searchManualCollegesList() {
+  clearTimeout(searchListTimeout);
+  searchListTimeout = setTimeout(async () => {
+    const query = (document.getElementById('manualSearchInputList').value || '').toLowerCase().trim();
+    const resDiv = document.getElementById('manualSearchResultsList');
+    if (!query) { resDiv.innerHTML = ''; return; }
+    resDiv.innerHTML = '<div class="pb-spinner" style="margin:20px auto"></div>';
+    const results = cutoffData.filter(r => r.code.includes(query) || (r.name || '').toLowerCase().includes(query) || (r.branch || '').toLowerCase().includes(query)).slice(0, 15);
+    if (!results.length) { resDiv.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">No colleges found</div>'; return; }
+
+    const metaMap = {}; collegeMetadata.forEach(c => metaMap[c.code] = c);
+    const inPref = new Set(prefList.map(p => p.code + '|' + p.branch));
+
+    resDiv.innerHTML = results.map(r => {
+      const meta = metaMap[r.code] || {};
+      const status = (meta.status || '').toLowerCase();
+      const isSel = inPref.has(r.code + '|' + r.branch);
+      const tags = [];
+      if (status.includes('government')) tags.push('<span class="col-tag gov">Government</span>');
+      if (status.includes('autonomous')) tags.push('<span class="col-tag auto">Autonomous</span>');
+
+      return `<div class="col-card ${isSel ? 'selected' : ''}" style="margin-bottom:12px; cursor: default">
+        <div class="col-name" style="padding-right:50px">${escH(meta.name || r.name)}</div>
+        <div class="col-meta">
+          ${tags.join('')}
+          <span class="col-tag branch-tag">${escH(r.branch)}</span>
+        </div>
+        <div class="col-pct"><strong>${r.percentile.toFixed(2)}%</strong> <small>Cutoff | Code: ${r.code}</small></div>
+        <button class="pb-btn pb-btn-primary" onclick="handleAddSuggestion('${r.code}','${r.branch.replace(/'/g, "\\'")}')" style="position:absolute; right:12px; top:12px; width:34px; height:34px; padding:0; border-radius:10px; display:flex; align-items:center; justify-content:center; box-shadow: none">
+          ${isSel ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>'}
+        </button>
+      </div>`;
+    }).join('');
+  }, 300);
+}
+
+function sortPrefList() {
+  prefList.sort((a, b) => b.percentile - a.percentile);
+  renderPrefList();
+  pbToast('List sorted by cutoff percentile');
+}
+
+function toggleAspirational(code, branch) {
+  const key = code + '|' + branch;
+  const idx = prefList.findIndex(p => p.code === code && p.branch === branch);
+  if (idx >= 0) {
+    prefList.splice(idx, 1);
     pbToast('Removed from preference list');
   } else {
-    const c=matchedColleges.find(r=>r.code===code&&r.branch===branch);
-    if(c){prefList.push({...c});pbToast('Added to preference list');}
+    const c = matchedColleges.find(r => r.code === code && r.branch === branch);
+    if (c) { prefList.push({ ...c }); pbToast('Added to preference list'); }
   }
-  renderPrefList();renderAspirational();renderSuggestions();
+  renderPrefList(); renderAspirational(); renderSuggestions();
+  triggerAutosave();
 }
 
-function renderPrefList(){
-  const list=document.getElementById('prefListUl');
-  const count=document.getElementById('prefCount');
-  count.textContent=prefList.length+' colleges';
-
-  if(!prefList.length){
-    list.innerHTML='<div class="empty-state" style="padding:40px"><h3>No colleges added</h3><p>Go back and select colleges.</p></div>';
-    return;
-  }
-
-  list.innerHTML=prefList.map((c,i)=>`<li class="pref-item ${c.isAspirational?'asp-item':''}" draggable="true" data-idx="${i}" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="dropItem(event)" ondragend="dragEnd(event)">
+function renderPrefList() {
+  const list = document.getElementById('prefListUl');
+  const count = document.getElementById('prefCount');
+  if (!count) return;
+  count.textContent = prefList.length + ' colleges';
+  if (!prefList.length) { list.innerHTML = '<div class="empty-state" style="padding:40px"><h3>No colleges added</h3><p>Go back and select colleges.</p></div>'; return; }
+  list.innerHTML = prefList.map((c, i) => `<li class="pref-item ${c.isAspirational ? 'asp-item' : ''}" draggable="true" data-idx="${i}" 
+    ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="dropItem(event)" ondragend="dragEnd(event)"
+    ontouchstart="handleTouchStart(event)" ontouchmove="handleTouchMove(event)" ontouchend="handleTouchEnd(event)">
     <div class="pref-grip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="5" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="19" r="1"/></svg></div>
-    <div class="pref-num">${i+1}</div>
-    <div class="pref-info"><div class="pref-name">${escH(c.instituteName||c.name)}</div><div class="pref-branch">${escH(c.branch)} <span class="pref-code">${c.code}</span></div></div>
+    <div class="pref-num">${i + 1}</div>
+    <div class="pref-info">
+      <div class="pref-name">${escH(c.instituteName || c.name)}</div>
+      <div class="pref-branch">${escH(c.branch)} <span class="pref-code">${c.code}</span></div>
+      <div class="pref-cutoff" style="font-size:11px; color:var(--muted); margin-top:4px">Cutoff: <strong>${c.percentile.toFixed(2)}%</strong></div>
+    </div>
     <button class="pref-remove" onclick="removePref(${i})" title="Remove">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </li>`).join('');
 }
 
-function removePref(i){prefList.splice(i,1);renderPrefList()}
+function removePref(i) { prefList.splice(i, 1); renderPrefList(); triggerAutosave(); }
 
 /* ══════ DRAG & DROP ══════ */
-let dragIdx=null;
-function dragStart(e){dragIdx=+e.target.closest('.pref-item').dataset.idx;e.target.closest('.pref-item').classList.add('dragging')}
-function dragOver(e){e.preventDefault();const item=e.target.closest('.pref-item');if(item)item.classList.add('drag-over')}
-function dropItem(e){
+let dragIdx = null;
+function dragStart(e) { dragIdx = +e.target.closest('.pref-item').dataset.idx; e.target.closest('.pref-item').classList.add('dragging') }
+function dragOver(e) { e.preventDefault(); const item = e.target.closest('.pref-item'); if (item) item.classList.add('drag-over') }
+function dropItem(e) {
   e.preventDefault();
-  document.querySelectorAll('.pref-item').forEach(el=>el.classList.remove('drag-over'));
-  const targetIdx=+e.target.closest('.pref-item').dataset.idx;
-  if(dragIdx===null||dragIdx===targetIdx)return;
-  const [moved]=prefList.splice(dragIdx,1);
-  prefList.splice(targetIdx,0,moved);
+  document.querySelectorAll('.pref-item').forEach(el => el.classList.remove('drag-over'));
+  const targetIdx = +e.target.closest('.pref-item').dataset.idx;
+  if (dragIdx === null || dragIdx === targetIdx) return;
+  const [moved] = prefList.splice(dragIdx, 1);
+  prefList.splice(targetIdx, 0, moved);
   renderPrefList();
+  triggerAutosave();
 }
-function dragEnd(e){dragIdx=null;document.querySelectorAll('.pref-item').forEach(el=>el.classList.remove('dragging','drag-over'))}
+function dragEnd(e) { dragIdx = null; document.querySelectorAll('.pref-item').forEach(el => el.classList.remove('dragging', 'drag-over')) }
+
+// Mobile Touch Support
+let touchElement = null;
+function handleTouchStart(e) {
+  touchElement = e.target.closest('.pref-item');
+  if (!touchElement) return;
+  dragIdx = parseInt(touchElement.dataset.idx);
+  touchElement.classList.add('dragging');
+}
+function handleTouchMove(e) {
+  if (!touchElement) return;
+  const touch = e.touches[0];
+  const target = document.elementFromPoint(touch.clientX, touch.clientY);
+  const targetItem = target ? target.closest('.pref-item') : null;
+  document.querySelectorAll('.pref-item').forEach(el => el.classList.remove('drag-over'));
+  if (targetItem && targetItem !== touchElement) targetItem.classList.add('drag-over');
+  e.preventDefault();
+}
+function handleTouchEnd(e) {
+  if (!touchElement) return;
+  const touch = e.changedTouches[0];
+  const target = document.elementFromPoint(touch.clientX, touch.clientY);
+  const targetItem = target ? target.closest('.pref-item') : null;
+  if (targetItem) {
+    const targetIdx = parseInt(targetItem.dataset.idx);
+    if (dragIdx !== null && dragIdx !== targetIdx) {
+      const [moved] = prefList.splice(dragIdx, 1);
+      prefList.splice(targetIdx, 0, moved);
+      renderPrefList();
+    }
+  }
+  document.querySelectorAll('.pref-item').forEach(el => el.classList.remove('dragging', 'drag-over'));
+  touchElement = null; dragIdx = null;
+}
 
 /* ══════ SUGGESTIONS ══════ */
-function renderSuggestions(){
-  const panel=document.getElementById('suggList');
-  const prefCodes=new Set(prefList.map(c=>c.code+'|'+c.branch));
-  const suggs=matchedColleges.filter(c=>!prefCodes.has(c.code+'|'+c.branch)).slice(0,10);
+function renderSuggestions() {
+  const panel = document.getElementById('suggList');
+  if (!panel) return;
+  const prefCodes = new Set(prefList.map(c => c.code + '|' + c.branch));
 
-  if(!suggs.length){panel.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">No more suggestions</div>';return}
+  // Combine matchedColleges (not in pref) and suggestionPool (not in pref)
+  const currentMatches = matchedColleges.filter(c => !prefCodes.has(c.code + '|' + c.branch));
+  const poolMatches = suggestionPool.filter(c => !prefCodes.has(c.code + '|' + c.branch));
 
-  panel.innerHTML=suggs.map((c,i)=>`<div class="sugg-item">
-    <div class="sugg-info"><div class="sugg-name">${escH(c.instituteName||c.name)}</div><div class="sugg-sub">${escH(c.branch)} | ${c.percentile.toFixed(2)}%</div></div>
-    <button class="sugg-add" onclick="addSuggestion(${matchedColleges.indexOf(c)})">+ Add</button>
+  const suggs = [...currentMatches, ...poolMatches].slice(0, 12);
+
+  if (!suggs.length) { panel.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">No more suggestions</div>'; return }
+
+  panel.innerHTML = suggs.map((c, i) => `<div class="sugg-item">
+    <div class="sugg-info">
+      <div class="sugg-name">${escH(c.instituteName || c.name)}</div>
+      <div class="sugg-sub">${escH(c.branch)} | ${c.percentile.toFixed(2)}%</div>
+      ${c.isMinority ? `<div style="font-size:10px; color:var(--brand); font-weight:600">${escH(c.minorityType)}</div>` : ''}
+    </div>
+    <button class="sugg-add" onclick="handleAddSuggestion('${c.code}','${c.branch.replace(/'/g, "\\'")}')">+ Add</button>
   </div>`).join('');
 }
 
-function addSuggestion(idx){
-  const c=matchedColleges[idx];
-  if(!c)return;
-  if(prefList.some(p=>p.code===c.code&&p.branch===c.branch)){pbToast('Already in list');return}
-  prefList.push({...c,idx});
-  renderPrefList();renderSuggestions();
-  pbToast('Added to preference list');
+function handleAddSuggestion(code, branch) {
+  // Search in matched pool first
+  let c = [...matchedColleges, ...suggestionPool].find(r => r.code === code && r.branch === branch);
+
+  // If not found (manual search), enrich from cutoffData and metadata
+  if (!c) {
+    const raw = cutoffData.find(r => r.code === code && r.branch === branch);
+    if (raw) {
+      const metaMap = {}; collegeMetadata.forEach(m => metaMap[m.code] = m);
+      const meta = metaMap[code] || {};
+      const status = (meta.status || '').toLowerCase();
+      c = {
+        ...raw, instituteName: meta.name || raw.name, status: meta.status || '',
+        isGov: status.includes('government'), isAuto: status.includes('autonomous'),
+        isMinority: status.includes('minority'), minorityType: extractMinority(meta.status || ''),
+        isAided: status.includes('aided')
+      };
+    }
+  }
+
+  if (c) {
+    if (!prefList.some(p => p.code === c.code && p.branch === c.branch)) {
+      prefList.push({ ...c });
+      pbToast('Added to preference list');
+      renderPrefList(); renderAspirational(); renderSuggestions();
+      // Update manual search UIs if visible
+      if (document.getElementById('manualSearchInput')) searchManualColleges();
+      if (document.getElementById('manualSearchInputList')) searchManualCollegesList();
+      triggerAutosave();
+    } else {
+      pbToast('Already in list');
+    }
+  }
 }
 
 /* ══════ PDF EXPORT ══════ */
-function exportPDF(){
-  if(!prefList.length){pbToast('Add colleges to export');return}
-  const pct=document.getElementById('inPct').value;
-  const rank=document.getElementById('inRank').value;
-  const cat=document.getElementById('inCategory').value;
+function exportPDF(formId = null) {
+  let list = prefList;
+  let pct = document.getElementById('inPct').value;
+  let rank = document.getElementById('inRank').value;
+  let cat = document.getElementById('inCategory').value;
+  let reg = document.getElementById('inRegion').value || 'All Regions';
+  let type = document.getElementById('inColType').value || 'All Types';
+  let mino = document.getElementById('inMinority').value || 'None';
+  let userName = 'Premium User';
+  if (typeof getSession === 'function') {
+    const session = getSession();
+    if (session && session.name) userName = session.name;
+  }
 
-  const w=window.open('','_blank');
+  if (formId) {
+    const form = allForms.find(f => f.id === formId);
+    if (form) {
+      list = form.prefList || [];
+      pct = form.percentile || '';
+      rank = form.rank || '';
+      cat = form.category || '';
+      reg = form.region || 'All Regions';
+      type = form.colType || 'All Types';
+      mino = form.minority || 'None';
+    }
+  }
+
+  if (!list.length) { pbToast('Add colleges to export'); return }
+
+  const w = window.open('', '_blank');
   w.document.write(`<!DOCTYPE html><html><head><title>MHT-CET Preference List</title>
   <style>
-    body{font-family:Arial,sans-serif;padding:40px;color:#111;max-width:800px;margin:0 auto}
-    h1{font-size:22px;margin-bottom:4px}h2{font-size:14px;color:#666;margin-bottom:24px;font-weight:normal}
-    .info{display:flex;gap:32px;margin-bottom:24px;font-size:13px;flex-wrap:wrap}
-    .info div{background:#f8f8f8;padding:10px 16px;border-radius:8px}.info strong{color:#dc2626}
-    table{width:100%;border-collapse:collapse;font-size:12px;margin-top:12px}
-    th{background:#f1f1f1;padding:10px 12px;text-align:left;font-weight:700;border:1px solid #ddd}
-    td{padding:9px 12px;border:1px solid #ddd}tr:nth-child(even){background:#fafafa}
-    .asp{background:#fff7ed;font-style:italic}.footer{margin-top:32px;font-size:11px;color:#999;text-align:center}
-    @media print{body{padding:20px}}
+    body{font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;padding:30px;color:#111;max-width:1100px;margin:0 auto}
+    .header-row{display:flex;justify-content:space-between;align-items:start;margin-bottom:32px;border-bottom:2px solid #dc2626;padding-bottom:16px}
+    h1{font-size:24px;margin:0;color:#dc2626}
+    .user-tag{background:#fef2f2;color:#dc2626;padding:6px 14px;border-radius:8px;font-weight:800;font-size:12px;border:1px solid #fee2e2}
+    .info-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:12px;margin-bottom:32px}
+    .info-item{background:#f8fafc;padding:12px 16px;border-radius:10px;border:1px solid #e2e8f0;font-size:12px}
+    .info-item strong{color:#dc2626;float:right}
+    table{width:100%;border-collapse:collapse;font-size:10.5px;margin-top:20px}
+    th{background:#f8fafc;padding:12px 8px;text-align:left;font-weight:700;border:1px solid #cbd5e1;color:#475569;text-transform:uppercase;letter-spacing:0.5px}
+    td{padding:10px 8px;border:1px solid #cbd5e1;line-height:1.3;vertical-align:top}tr:nth-child(even){background:#fbfcfe}
+    .footer{margin-top:40px;font-size:11px;color:#94a3b8;text-align:center;border-top:1px solid #e2e8f0;padding-top:20px}
+    @media print{body{padding:0} .info-item{border:1px solid #ddd}}
   </style></head><body>
-  <h1>MHT-CET Counselling — Preference List</h1>
-  <h2>Generated by College Simplified on ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}</h2>
-  <div class="info">
-    <div>Percentile: <strong>${pct}%</strong></div>
-    <div>Rank: <strong>${rank}</strong></div>
-    <div>Category: <strong>${cat}</strong></div>
-    <div>Total Preferences: <strong>${prefList.length}</strong></div>
+  <div class="header-row">
+    <div>
+      <h1>MHT-CET Preference List</h1>
+      <div style="font-size:12px;color:#64748b;margin-top:4px">Generated on ${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+    </div>
+    <div class="user-tag">User: ${userName}</div>
   </div>
-  <table><thead><tr><th>#</th><th>Institute Code</th><th>Institute Name</th><th>Branch</th><th>Cutoff %ile</th><th>Type</th></tr></thead><tbody>
-  ${prefList.map((c,i)=>`<tr class="${c.isAspirational?'asp':''}"><td>${i+1}</td><td>${c.code}</td><td>${escH(c.instituteName||c.name)}</td><td>${escH(c.branch)}</td><td>${c.percentile.toFixed(2)}</td><td>${c.isAspirational?'Aspirational':'Reachable'}</td></tr>`).join('')}
+  
+  <div class="info-grid">
+    <div class="info-item">Percentile <strong>${pct}%</strong></div>
+    <div class="info-item">Merit Rank <strong>#${rank}</strong></div>
+    <div class="info-item">Category <strong>${cat}</strong></div>
+    <div class="info-item">Target Region <strong>${reg}</strong></div>
+    <div class="info-item">College Type <strong>${type}</strong></div>
+    <div class="info-item">Minority Preference <strong>${mino}</strong></div>
+  </div>
+
+  <table><thead><tr>
+    <th style="width:30px">#</th>
+    <th style="width:50px">Code</th>
+    <th>Institute Name</th>
+    <th style="width:150px">Branch</th>
+    <th style="width:150px">Institute Status</th>
+    <th style="width:120px">Minority</th>
+    <th style="width:60px">Cutoff</th>
+  </tr></thead><tbody>
+  ${list.map((c, i) => `<tr>
+    <td style="text-align:center;font-weight:700">${i + 1}</td>
+    <td>${c.code}</td>
+    <td style="font-weight:700">${escH(c.instituteName || c.name)}</td>
+    <td>${escH(c.branch)}</td>
+    <td>${escH(c.status || 'Non-Autonomous')}</td>
+    <td>${escH(c.minorityType || 'N/A')}</td>
+    <td style="font-weight:700;text-align:right">${c.percentile.toFixed(2)}</td>
+  </tr>`).join('')}
   </tbody></table>
-  <div class="footer">This is a system-generated preference list. Please verify all details with official MHT-CET CAP portal before final submission.<br>© College Simplified ${new Date().getFullYear()}</div>
+  
+  <div class="footer">
+    This document is intended for counselling reference only. Please verify all choices on the official portal.<br>
+    <strong>© College Simplified ${new Date().getFullYear()} — Premium Counselling Tool</strong>
+  </div>
   </body></html>`);
   w.document.close();
-  setTimeout(()=>w.print(),500);
+  setTimeout(() => w.print(), 500);
 }
 
 /* ══════ SIDEBAR TABS ══════ */
-function switchSideTab(tab){
-  document.querySelectorAll('.sidebar-tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
-  document.querySelectorAll('.sidebar-content').forEach(c=>c.classList.toggle('active',c.id==='side-'+tab));
+function switchSideTab(tab) {
+  document.querySelectorAll('.sidebar-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.sidebar-content').forEach(c => c.classList.toggle('active', c.id === 'side-' + tab));
 }
 
 /* ══════ UTILS ══════ */
-function escH(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-function pbToast(msg){
-  let t=document.getElementById('pbToast');
-  if(!t){t=document.createElement('div');t.id='pbToast';t.className='pb-toast';document.body.appendChild(t)}
-  t.textContent=msg;t.style.display='flex';
-  clearTimeout(t._tid);t._tid=setTimeout(()=>t.style.display='none',3000);
+function escH(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;') }
+function pbToast(msg) {
+  let t = document.getElementById('pbToast');
+  if (!t) { t = document.createElement('div'); t.id = 'pbToast'; t.className = 'pb-toast'; document.body.appendChild(t) }
+  t.textContent = msg; t.style.display = 'flex';
+  clearTimeout(t._tid); t._tid = setTimeout(() => t.style.display = 'none', 3000);
+}
+
+/* ══════ PREF DATA SAVE/LOAD ══════ */
+async function loadSavedPrefData() {
+  if (!currentUserId) return;
+  const res = await authApi('getPrefData', { userId: currentUserId });
+  if (res.ok && res.data) {
+    prefDataLoaded = true;
+    prefEditCount = res.data.editCount || 0;
+    prefLocked = prefEditCount >= 3;
+    allForms = res.data.forms || [];
+
+    // Pre-fill fields from the most recent form for convenience
+    if (allForms.length > 0) {
+      const latest = allForms[0];
+      document.getElementById('inPct').value = latest.percentile || '';
+      document.getElementById('inRank').value = latest.rank || '';
+      if (latest.category) document.getElementById('inCategory').value = latest.category;
+      if (latest.region) document.getElementById('inRegion').value = latest.region;
+    }
+
+    renderEditStatus();
+    
+    // Show Dashboard
+    const dashSec = document.getElementById('dashboardDrafts');
+    const dashList = document.getElementById('dashboardDraftsList');
+    if (dashSec && dashList) {
+      if (allForms.length > 0) {
+        dashSec.style.display = 'block';
+        dashList.innerHTML = allForms.map(form => {
+          const date = form.updatedAt ? new Date(form.updatedAt.toDate ? form.updatedAt.toDate() : form.updatedAt).toLocaleDateString('en-IN', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}) : 'Recently';
+          return `<div class="col-card dashboard-form-card" style="text-align: left; border: 1px solid var(--stroke); padding: 20px; cursor: default; margin-bottom: 12px">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px; flex-wrap: wrap; gap: 8px">
+              <div>
+                <div style="font-weight: 800; color: var(--brand); font-size: 17px">Preference List</div>
+                <div style="font-size: 11px; color: var(--muted); margin-top: 2px; display: flex; align-items: center; gap: 4px">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  ${date}
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center">
+                <div style="background: var(--brand-soft); color: var(--brand); padding: 3px 10px; border-radius: 6px; font-size: 9px; font-weight: 800; border: 1px solid var(--brand-ring); text-transform: uppercase">ID: ${form.id.slice(-4)}</div>
+                <button onclick="deleteForm('${form.id}')" style="background: none; border: none; color: #ef4444; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center" title="Delete Draft">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </div>
+            </div>
+            
+            <div class="dash-card-stats" style="margin-bottom: 20px; padding: 16px; background: #f8fafc; border-radius: 16px; border: 1px solid var(--stroke); display: flex; flex-direction: column; gap: 12px">
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px">
+                <span style="font-weight: 800; color: var(--ink)">${form.percentile || '??'}% Percentile</span>
+                <span style="font-weight: 700; color: var(--brand); font-size: 11px">Strategy: ${form.colType || 'All Colleges'}</span>
+              </div>
+              <div style="font-size: 12px; font-weight: 600; color: var(--ink2); padding-top: 8px; border-top: 1px dashed var(--stroke); display: flex; justify-content: space-between">
+                <span>Category: ${
+                  form.category === 'OBC' ? 'Other Backward Class' :
+                  form.category === 'SC' ? 'Scheduled Caste' :
+                  form.category === 'ST' ? 'Scheduled Tribe' :
+                  form.category === 'VJ/DT' ? 'VJ / DT / NT-A' :
+                  form.category === 'EWS' ? 'EWS Section' :
+                  form.category === 'TFWS' ? 'TFWS Scheme' :
+                  form.category || 'Open Category'
+                }</span>
+                ${form.minority ? `<span style="color:var(--gold)">${form.minority} Minority</span>` : ''}
+              </div>
+            </div>
+
+            <div class="dash-card-actions" style="display: flex; gap: 10px">
+              <button class="pb-btn pb-btn-primary" onclick="loadForm('${form.id}')" style="flex: 1.5; padding: 10px; justify-content: center; font-size: 13px">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Resume
+              </button>
+              <button class="pb-btn pb-btn-ghost" onclick="exportPDF('${form.id}')" style="flex: 1; padding: 10px; justify-content: center; font-size: 13px">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                PDF
+              </button>
+            </div>
+          </div>`;
+        }).join('');
+      } else {
+        dashSec.style.display = 'none';
+      }
+    }
+    goStep(0); 
+  } else {
+    renderEditStatus();
+    goStep(1);
+  }
+}
+
+function renderEditStatus() {
+  let wrap = document.getElementById('editStatusWrap');
+  if (!wrap) return;
+  const remaining = 3 - prefEditCount;
+
+  if (prefLocked) {
+    wrap.innerHTML = `<div class="edit-status locked">
+      <div class="edit-status-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+      <div class="edit-status-text">
+        <strong>Edit Limit Reached (3/3)</strong>
+        <span>All edits used. Request admin to unlock your profile.</span>
+      </div>
+      <button class="pb-btn pb-btn-report" onclick="openReportModal()">
+        Report to Admin
+      </button>
+    </div>`;
+  } else if (prefDataLoaded) {
+    const cls = remaining <= 1 ? 'critical' : remaining <= 2 ? 'warning' : 'ok';
+    wrap.innerHTML = `<div class="edit-status ${cls}">
+      <div class="edit-status-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+      <div class="edit-status-text">
+        <strong>Profile Saved (Edited ${prefEditCount}/3 times)</strong>
+        <span>${remaining} edit${remaining !== 1 ? 's' : ''} remaining. ${remaining === 1 ? '<b>[Warning: Last chance!]</b>' : ''}</span>
+      </div>
+      <button class="pb-btn pb-btn-edit" onclick="enableEditing()" id="enableEditBtn">
+        Edit Profile
+      </button>
+    </div>`;
+    lockProfileFields();
+  } else {
+    wrap.innerHTML = `<div class="edit-status info">
+      <div class="edit-status-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>
+      <div class="edit-status-text">
+        <strong>New Profile (0/3 Edits)</strong>
+        <span>Fill your CET details to start. You get 3 edits total.</span>
+      </div>
+    </div>`;
+    unlockProfileFields(); // Allow first time filling
+    let saveWrap = document.getElementById('saveProfileWrap');
+    if (saveWrap) saveWrap.style.display = 'flex';
+  }
+}
+
+function lockProfileFields() {
+  ['inPct', 'inRank'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.disabled = true; el.style.opacity = '0.6'; el.style.cursor = 'not-allowed'; }
+  });
+}
+
+function unlockProfileFields() {
+  ['inPct', 'inRank'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.disabled = false; el.style.opacity = '1'; el.style.cursor = ''; }
+  });
+}
+
+function enableEditing() {
+  const remaining = 3 - prefEditCount;
+  if (remaining <= 0) { pbToast('No edits remaining'); return; }
+
+  const msg = remaining === 1 ?
+    '⚠️ WARNING: This is your LAST edit! After saving, you will be locked out. Are you sure?' :
+    `You have used ${prefEditCount}/3 edits. Are you sure you want to use another edit?`;
+
+  if (!confirm(msg)) return;
+
+  unlockProfileFields();
+  // Show save button
+  let saveWrap = document.getElementById('saveProfileWrap');
+  if (saveWrap) saveWrap.style.display = 'flex';
+  document.getElementById('editStatusWrap').style.opacity = '0.4'; // Dim status while editing
+}
+
+async function saveProfileData() {
+  if (!validateStep1()) return;
+  const pct = document.getElementById('inPct').value;
+  const rank = document.getElementById('inRank').value;
+  const cat = document.getElementById('inCategory').value;
+  const region = document.getElementById('inRegion').value;
+  const saveBtn = document.getElementById('saveProfileBtn');
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving...'; }
+  const res = await authApi('savePrefData', { 
+    userId: currentUserId, 
+    formId: currentFormId,
+    percentile: pct, 
+    rank: rank, 
+    category: cat, 
+    region: region,
+    prefList: prefList,
+    incrementEdit: true 
+  });
+  if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save & Lock'; }
+  if (res.ok) {
+    if (res.data.formId) currentFormId = res.data.formId;
+    prefEditCount = res.data.editCount;
+    prefDataLoaded = true;
+    prefLocked = prefEditCount >= 3;
+    document.getElementById('editStatusWrap').style.opacity = '1';
+    renderEditStatus();
+    lockProfileFields();
+    let saveWrap = document.getElementById('saveProfileWrap');
+    if (saveWrap) saveWrap.style.display = 'none';
+    pbToast('Profile saved! ' + (3 - prefEditCount) + ' edits remaining.');
+  } else {
+    pbToast(res.error || 'Failed to save');
+  }
+}
+
+function openReportModal() {
+  let modal = document.getElementById('reportModal');
+  if (modal) modal.classList.add('show');
+}
+
+function closeReportModal() {
+  let modal = document.getElementById('reportModal');
+  if (modal) modal.classList.remove('show');
+}
+
+async function submitEditRequest() {
+  const user = getSession();
+  if (!user) return;
+  const msg = (document.getElementById('reportMessage').value || '').trim() || 'Please unlock my preference list edits.';
+  const btn = document.getElementById('submitReportBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+  const res = await authApi('submitEditRequest', { userId: currentUserId, userName: user.name, userEmail: user.email, message: msg });
+  if (btn) { btn.disabled = false; btn.textContent = 'Send Request'; }
+  if (res.ok) {
+    pbToast('Request sent! Admin will review it shortly.');
+    closeReportModal();
+  } else {
+    pbToast(res.error || 'Failed to send request');
+  }
 }
 
 /* ══════ BOOT ══════ */
-async function boot(){
-  const session=initAuth({requireLogin:true,toolContainerId:'toolArea'});
-  if(!session)return;
-  // Premium check
-  const user=getSession();
-  if(user&&user.role!=='admin'&&user.role!=='premium'){
-    document.getElementById('toolArea').innerHTML=`<div style="text-align:center;padding:100px 20px">
+async function boot() {
+  const session = initAuth({ requireLogin: true, toolContainerId: 'toolArea' });
+  if (!session) return;
+  const user = getSession();
+  if (user && user.role !== 'admin' && user.role !== 'premium') {
+    document.getElementById('toolArea').innerHTML = `<div style="text-align:center;padding:100px 20px">
       <div style="color:var(--gold);margin-bottom:20px"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
       <h2 style="font-family:Lexend,sans-serif;font-weight:800;font-size:28px;margin-bottom:12px">Premium Feature</h2>
       <p style="color:var(--muted);max-width:420px;margin:0 auto 32px;line-height:1.6">The Preference List Builder is available exclusively for Premium members. Upgrade to unlock smart counselling tools.</p>
@@ -487,16 +1077,30 @@ async function boot(){
     </div>`;
     return;
   }
+  if (user) currentUserId = user.id;
   await loadData();
+  await loadSavedPrefData();
 }
 
 // Expose globals
-window.goStep=goStep;window.toggleBranch=toggleBranch;window.toggleCategory=toggleCategory;
-window.toggleAllBranches=toggleAllBranches;window.toggleCatCollapse=toggleCatCollapse;
-window.toggleCollege=toggleCollege;window.filterColleges=filterColleges;
-window.removePref=removePref;window.addSuggestion=addSuggestion;
-window.exportPDF=exportPDF;window.switchSideTab=switchSideTab;
-window.dragStart=dragStart;window.dragOver=dragOver;window.dropItem=dropItem;window.dragEnd=dragEnd;
-window.toggleAspirational=toggleAspirational;
+window.goStep = goStep; window.toggleBranch = toggleBranch; window.toggleCategory = toggleCategory;
+window.toggleAllBranches = toggleAllBranches; window.toggleCatCollapse = toggleCatCollapse;
+window.toggleCollege = toggleCollege; window.filterColleges = filterColleges;
+window.removePref = removePref; window.handleAddSuggestion = handleAddSuggestion;
+window.returnToDashboard = returnToDashboard;
+window.exportPDF = exportPDF; window.switchSideTab = switchSideTab;
+window.deleteForm = deleteForm;
+window.dragStart = dragStart; window.dragOver = dragOver; window.dropItem = dropItem; window.dragEnd = dragEnd;
+window.toggleAspirational = toggleAspirational;
+window.enableEditing = enableEditing; window.saveProfileData = saveProfileData;
+window.openReportModal = openReportModal; window.closeReportModal = closeReportModal;
+window.submitEditRequest = submitEditRequest;
+window.searchManualColleges = searchManualColleges;
+window.searchManualCollegesList = searchManualCollegesList;
+window.sortPrefList = sortPrefList;
+window.handleTouchStart = handleTouchStart;
+window.handleTouchMove = handleTouchMove;
+window.handleTouchEnd = handleTouchEnd;
 
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+

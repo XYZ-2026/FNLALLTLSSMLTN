@@ -195,6 +195,179 @@ async function fireApi(action, payload) {
         return { ok: true };
       }
 
+      // ── PREFERENCE BUILDER DATA ─────────
+      case 'savePrefData': {
+        const { userId, percentile, rank, category, formId, prefList } = payload;
+        if (!userId) return { ok: false, error: 'Missing user ID.' };
+
+        // 1. Check global edit limit (Skip for Premium)
+        const userRef = db.collection('users').doc(userId);
+        const userSnap = await userRef.get();
+        const userData = userSnap.exists ? userSnap.data() : {};
+        const isPremium = userData.role === 'premium';
+
+        const globalRef = db.collection('preferenceData').doc(userId);
+        const globalSnap = await globalRef.get();
+        let editCount = 0;
+        if (globalSnap.exists) {
+          const globalData = globalSnap.data();
+          editCount = payload.incrementEdit ? (globalData.editCount || 0) + 1 : (globalData.editCount || 0);
+          if (editCount > 3) return { ok: false, error: 'Edit limit reached. You have used all 3 edits. Please contact admin to reset your limit.' };
+          await globalRef.update({ editCount, lastEditedAt: firebase.firestore.FieldValue.serverTimestamp() });
+        } else {
+          await globalRef.set({ editCount: 0, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+        }
+
+        // 2. Save form data
+        const formsColl = globalRef.collection('forms');
+        let formRef;
+        if (formId) {
+          formRef = formsColl.doc(formId);
+          await formRef.update({
+            percentile: parseFloat(percentile),
+            rank: parseInt(rank),
+            category: category || 'OPEN',
+            region: payload.region || '',
+            prefList: prefList || [],
+            selectedBranches: payload.selectedBranches || [],
+            selectedCollegeKeys: payload.selectedCollegeKeys || [],
+            currentStep: payload.currentStep || 1,
+            colType: payload.colType || '',
+            minority: payload.minority || '',
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        } else {
+          formRef = await formsColl.add({
+            percentile: parseFloat(percentile),
+            rank: parseInt(rank),
+            category: category || 'OPEN',
+            region: payload.region || '',
+            prefList: prefList || [],
+            selectedBranches: payload.selectedBranches || [],
+            selectedCollegeKeys: payload.selectedCollegeKeys || [],
+            currentStep: payload.currentStep || 1,
+            colType: payload.colType || '',
+            minority: payload.minority || '',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
+        return { ok: true, data: { formId: formRef.id, editCount } };
+      }
+
+      case 'deleteForm': {
+        const { userId, formId } = payload;
+        if (!userId || !formId) return { ok: false, error: 'Missing details.' };
+        await db.collection('preferenceData').doc(userId).collection('forms').doc(formId).delete();
+        return { ok: true };
+      }
+
+      case 'getPrefData': {
+        const { userId: pUserId } = payload;
+        if (!pUserId) return { ok: false, error: 'Missing user ID.' };
+        
+        // Get global edit count
+        const gSnap = await db.collection('preferenceData').doc(pUserId).get();
+        const editCount = gSnap.exists ? (gSnap.data().editCount || 0) : 0;
+
+        // Get all forms
+        const formsSnap = await db.collection('preferenceData').doc(pUserId).collection('forms')
+          .orderBy('updatedAt', 'desc').get();
+        const forms = formsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        return { ok: true, data: { editCount, forms } };
+      }
+
+      case 'resetPrefEdits': {
+        const { userId: resetUserId } = payload;
+        if (!resetUserId) return { ok: false, error: 'Missing user ID.' };
+        const resetRef = db.collection('preferenceData').doc(resetUserId);
+        const resetSnap = await resetRef.get();
+        if (resetSnap.exists) {
+          await resetRef.update({ editCount: 0 });
+        }
+        return { ok: true };
+      }
+
+      // ── EDIT REQUESTS ─────────────────
+      case 'submitEditRequest': {
+        const { userId: reqUserId, userName, userEmail, message } = payload;
+        if (!reqUserId) return { ok: false, error: 'Missing user ID.' };
+        // Check for existing pending request
+        const existingReq = await db.collection('editRequests')
+          .where('userId', '==', reqUserId).where('status', '==', 'pending').limit(1).get();
+        if (!existingReq.empty) return { ok: false, error: 'You already have a pending request.' };
+        await db.collection('editRequests').add({
+          userId: reqUserId,
+          userName: userName || '',
+          userEmail: userEmail || '',
+          message: message || 'Please unlock my preference list edits.',
+          status: 'pending',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        return { ok: true };
+      }
+
+      case 'getEditRequests': {
+        const reqSnap = await db.collection('editRequests')
+          .orderBy('createdAt', 'desc').limit(100).get();
+        const requests = reqSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        return { ok: true, data: requests };
+      }
+
+      case 'respondEditRequest': {
+        const { requestId, status: reqStatus, adminMessage } = payload;
+        if (!requestId) return { ok: false, error: 'Missing request ID.' };
+        await db.collection('editRequests').doc(requestId).update({
+          status: reqStatus || 'resolved',
+          adminMessage: adminMessage || '',
+          respondedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        return { ok: true };
+      }
+
+      // ── NON-CAP ADMISSIONS ────────────
+      case 'saveNonCapAdmission': {
+        const { college, year, title, link } = payload;
+        await db.collection('nonCapAdmissions').add({
+          college, year, title, link,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        return { ok: true };
+      }
+
+      case 'getNonCapAdmissions': {
+        const capSnap = await db.collection('nonCapAdmissions')
+          .orderBy('college', 'asc').get();
+        let capList = capSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        // Secondary sort by year (desc) in memory to avoid index requirement
+        capList.sort((a, b) => {
+          if (a.college !== b.college) return 0; // Already sorted by college
+          return (b.year || 0) - (a.year || 0);
+        });
+        return { ok: true, data: capList };
+      }
+
+      case 'deleteNonCapAdmission': {
+        const capId = payload.id;
+        if (!capId) return { ok: false, error: 'Missing ID.' };
+        await db.collection('nonCapAdmissions').doc(capId).delete();
+        return { ok: true };
+      }
+
+      case 'sendNotificationToUser': {
+        const { email: notifEmail, title: notifTitle, message: notifMsg, link: notifLink } = payload;
+        if (!notifEmail) return { ok: false, error: 'Missing email.' };
+        await db.collection('notifications').add({
+          title: notifTitle || '',
+          message: notifMsg || '',
+          link: notifLink || '',
+          target: notifEmail,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        return { ok: true };
+      }
+
       default:
         return { ok: false, error: 'Unknown action: ' + action };
     }

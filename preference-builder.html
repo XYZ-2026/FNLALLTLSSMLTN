@@ -24,7 +24,7 @@
     </div>
 
     <!-- STEPPER -->
-    <div class="stepper">
+    <div class="stepper" id="pbStepper" style="display:none">
       <div class="step-item active" onclick="goStep(1)">
         <div class="step-circle">1</div><div class="step-text">Profile</div>
       </div>
@@ -41,13 +41,50 @@
         <div class="step-circle">4</div><div class="step-text">Final List</div>
       </div>
     </div>
+    <!-- PANEL 0: DASHBOARD -->
+    <div class="panel active" id="panel0">
+      <div class="panel-card dashboard-hero-card">
+        <div style="width: 64px; height: 64px; background: rgba(220, 38, 38, 0.1); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+        </div>
+        <h2 style="font-size: 28px; margin-bottom: 8px">Preference Builder Dashboard</h2>
+        <p style="color: var(--muted); margin-bottom: 40px">Manage your college preference lists and drafts.</p>
 
+        <div id="dashboardDrafts" style="margin-bottom: 32px; display: none">
+          <div style="background: #fff9f0; border: 1px solid #ffedd5; padding: 16px; border-radius: 16px; margin-bottom: 24px; display: flex; gap: 12px; align-items: start; text-align: left">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5" style="flex-shrink: 0; margin-top: 2px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <div style="font-size: 13px; color: #92400e; line-height: 1.5">
+              <strong style="display: block; margin-bottom: 2px">Important Note:</strong>
+              If you update your percentile in any form, the latest value will be considered for all lists. Always ensure your profile details are accurate before finalizing your preferences.
+            </div>
+          </div>
+
+          <div class="sugg-head" style="margin-bottom: 16px; border-bottom: none; justify-content: center">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right: 8px; color: var(--gold)"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+            Your Saved Preference Lists
+          </div>
+          <div id="dashboardDraftsList" class="dashboard-grid"></div>
+        </div>
+
+        <div style="display: flex; gap: 16px; justify-content: center">
+          <button class="pb-btn pb-btn-primary" onclick="startNewForm()" style="padding: 16px 32px; font-size: 16px">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right: 10px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Create New Preference List
+          </button>
+        </div>
+      </div>
+    </div>
     <!-- PANEL 1: PROFILE -->
-    <div class="panel active" id="panel1">
+    <div class="panel" id="panel1">
       <div class="panel-card">
         <div class="panel-title">Your CET Profile</div>
         <div class="panel-desc">Enter your MHT-CET details to find the best matching colleges.</div>
 
+
+
+        <!-- Locked Section: Percentile & Rank -->
+        <div id="editStatusWrap" style="margin-bottom:20px"></div>
+        
         <div class="fg-row">
           <div class="fg">
             <label class="fg-label">CET Percentile *</label>
@@ -59,6 +96,18 @@
           </div>
         </div>
 
+        <!-- Save Profile Button (specifically for Pct/Rank) -->
+        <div id="saveProfileWrap" class="save-profile-wrap" style="display:none; margin-top:10px">
+          <button class="pb-btn pb-btn-save" id="saveProfileBtn" onclick="saveProfileData()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Save & Lock
+          </button>
+          <span class="save-hint">⚠️ Uses 1 edit for Pct/Rank</span>
+        </div>
+
+        <div style="margin: 24px 0; border-top: 1px dashed var(--stroke)"></div>
+
+        <!-- Editable Section -->
         <div class="fg">
           <label class="fg-label">Candidate Category *</label>
           <select class="fg-select" id="inCategory">
@@ -77,8 +126,16 @@
 
         <div class="fg">
           <label class="fg-label">Desired Region <span class="fg-optional">Optional</span></label>
-          <input type="text" class="fg-input" id="inRegion" placeholder="e.g. Mumbai, Pune, Nagpur...">
-          <div class="fg-hint">Filter colleges by city or region name</div>
+          <select class="fg-select" id="inRegion">
+            <option value="">All Regions</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Pune">Pune</option>
+            <option value="Nashik">Nashik</option>
+            <option value="Aurangabad">Aurangabad</option>
+            <option value="Amravati">Amravati</option>
+            <option value="Nagpur">Nagpur</option>
+          </select>
+          <div class="fg-hint">Select a specific region to filter colleges</div>
         </div>
 
         <div class="fg-row">
@@ -110,10 +167,13 @@
         </div>
 
         <div class="pb-actions">
-          <a href="cet-landing.html" class="pb-btn pb-btn-ghost">← Back to Dashboard</a>
+          <button onclick="returnToDashboard()" class="pb-btn pb-btn-ghost">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:8px"><path d="m15 18-6-6 6-6"/></svg>
+            Back to Dashboard
+          </button>
           <button class="pb-btn pb-btn-primary" onclick="goStep(2)" id="predictBtn" disabled>
             Next: Select Branches
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:8px"><path d="m9 18 6-6-6-6"/></svg>
           </button>
         </div>
 
@@ -134,10 +194,13 @@
         <div id="branchContainer" class="branch-cats"></div>
 
         <div class="pb-actions">
-          <button class="pb-btn pb-btn-ghost" onclick="goStep(1)">← Back</button>
+          <button class="pb-btn pb-btn-ghost" onclick="goStep(1)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:8px"><path d="m15 18-6-6 6-6"/></svg>
+            Back
+          </button>
           <button class="pb-btn pb-btn-primary" onclick="goStep(3)">
             Next: Find Colleges
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:8px"><path d="m9 18 6-6-6-6"/></svg>
           </button>
         </div>
       </div>
@@ -160,10 +223,13 @@
         <div class="college-grid" id="collegeGrid"></div>
 
         <div class="pb-actions">
-          <button class="pb-btn pb-btn-ghost" onclick="goStep(2)">← Back</button>
+          <button class="pb-btn pb-btn-ghost" onclick="goStep(2)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:8px"><path d="m15 18-6-6 6-6"/></svg>
+            Back
+          </button>
           <button class="pb-btn pb-btn-primary" onclick="goStep(4)">
             Build Preference List
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:8px"><path d="m9 18 6-6-6-6"/></svg>
           </button>
         </div>
       </div>
@@ -182,51 +248,121 @@
         <div class="sidebar-content active" id="side-list">
           <div class="pref-container">
             <div class="pref-list-wrap">
-              <div class="pref-list-head">
-                <h3>Your Preference Order</h3>
-                <span id="prefCount" style="font-size:12px;color:var(--muted);font-weight:700">0 colleges</span>
+              <div class="pref-list-head" style="display:flex; justify-content:space-between; align-items:center">
+                <div style="display:flex; align-items:baseline; gap:12px">
+                  <h3>Your Preference Order</h3>
+                  <span id="prefCount" style="font-size:12px;color:var(--muted);font-weight:700">0 colleges</span>
+                </div>
+                <button class="pb-btn pb-btn-ghost" onclick="sortPrefList()" style="padding:6px 12px; font-size:12px; border-radius:8px">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:4px"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>
+                  Sort by Cutoff
+                </button>
               </div>
               <ul class="pref-list" id="prefListUl"></ul>
             </div>
             <div class="sugg-panel">
-              <div class="sugg-head">💡 Suggestions</div>
+              <div class="sugg-head">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:8px; color:var(--gold)"><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 6a6 6 0 0 0-6 6c0 3.31 2.69 6 6 6s6-2.69 6-6a6 6 0 0 0-6-6Z"/></svg>
+                Suggestions
+              </div>
               <div id="suggList"></div>
             </div>
           </div>
-        </div>
+
+          <div class="panel-card" style="margin-top:24px; padding:24px">
+            <div class="sugg-head" style="margin-bottom:16px; border-bottom:none">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:8px; color:var(--brand)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              Search & Add Manually
+            </div>
+            <div class="fg" style="margin-bottom:20px; max-width:600px">
+              <div style="display:flex; gap:8px">
+                <input type="text" class="fg-input" id="manualSearchInputList" placeholder="Search by name or code..." oninput="searchManualCollegesList()">
+                <button class="pb-btn pb-btn-primary" onclick="searchManualCollegesList()" style="padding:10px 24px">Search</button>
+              </div>
+            </div>
+            <div id="manualSearchResultsList" class="college-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:16px; max-height:400px; overflow-y:auto; padding-right:8px"></div>
+          </div>
+        </div> <!-- CLOSE side-list -->
 
         <!-- TAB: Edit Aspirational -->
         <div class="sidebar-content" id="side-aspirational">
           <div class="panel-card">
             <div class="panel-title" style="font-size:18px">Edit Aspirational Colleges</div>
-            <div class="panel-desc">These 6 colleges are above your percentile and added as safety against auto-locking. You can swap them out.</div>
-            <div id="aspGrid" class="college-grid"></div>
+            <div class="panel-desc">We've added 6 high-ranking colleges as a safety net. You can manually search and add any other college below.</div>
+            
+            <!-- Manual Search -->
+            <div class="fg" style="margin-bottom:20px">
+              <label class="fg-label">Search Any College</label>
+              <div style="display:flex; gap:8px">
+                <input type="text" class="fg-input" id="manualSearchInput" placeholder="Enter college name or code..." oninput="searchManualColleges()">
+                <button class="pb-btn pb-btn-primary" onclick="searchManualColleges()" style="padding:10px 20px">Search</button>
+              </div>
+            </div>
+            
+            <div id="manualSearchResults" class="college-grid" style="margin-bottom:24px; max-height:240px; overflow-y:auto"></div>
+
+            <div id="aspGrid" class="college-grid" style="margin-bottom:24px"></div>
+
+            <div class="sugg-panel" style="margin-top:32px">
+              <div class="sugg-head">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:8px; color:var(--gold)"><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 6a6 6 0 0 0-6 6c0 3.31 2.69 6 6 6s6-2.69 6-6a6 6 0 0 0-6-6Z"/></svg>
+                More Aspirational Suggestions
+              </div>
+              <div id="aspSuggestions" class="college-grid" style="display:grid; grid-template-columns:1fr; gap:12px"></div>
+            </div>
           </div>
         </div>
 
-        <!-- Export -->
-        <div class="export-section">
-          <h3>Export Your Final List</h3>
-          <p>Download your preference list as a printable PDF with institute codes, branch names, and cutoff data.</p>
-          <div class="export-btns">
-            <button class="pb-btn pb-btn-primary" onclick="exportPDF()">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <!-- Export Section -->
+        <div class="panel-card export-section" style="margin-top:32px; background:linear-gradient(135deg, #fff, #f8fafc); border:2px solid var(--stroke); text-align:center; padding:40px">
+          <h3 style="font-size:24px; margin-bottom:12px">Export Your Final List</h3>
+          <p style="color:var(--muted); margin-bottom:32px; max-width:500px; margin-left:auto; margin-right:auto">Your preference list is ready. Download it as a printable PDF with institute codes, branch names, and cutoff data.</p>
+          <div class="export-btns" style="display:flex; gap:16px; justify-content:center">
+            <button class="pb-btn pb-btn-primary" onclick="exportPDF()" style="padding:16px 32px; font-size:16px">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:10px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Export as PDF
             </button>
-            <button class="pb-btn pb-btn-ghost" onclick="goStep(3)">← Edit Selection</button>
+            <button class="pb-btn pb-btn-ghost" onclick="goStep(3)" style="padding:16px 32px; font-size:16px">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:10px"><path d="m15 18-6-6 6-6"/></svg>
+              Edit Selection
+            </button>
           </div>
         </div>
 
         <div class="pb-actions" style="margin-top:16px">
-          <button class="pb-btn pb-btn-ghost" onclick="goStep(3)">← Back to Colleges</button>
-          <a href="cet-landing.html" class="pb-btn pb-btn-success">
+          <button class="pb-btn pb-btn-ghost" onclick="goStep(3)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:8px"><path d="m15 18-6-6 6-6"/></svg>
+            Back to Colleges
+          </button>
+          <button onclick="returnToDashboard()" class="pb-btn pb-btn-success">
             Done — Return to Dashboard
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-          </a>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:8px"><path d="M20 6 9 17 4 12"/></svg>
+          </button>
         </div>
       </div>
     </div>
 
+  </div>
+
+  <!-- REPORT MODAL -->
+  <div class="pb-modal" id="reportModal">
+    <div class="pb-modal-card">
+      <div class="pb-modal-head">
+        <h3>Report to Admin</h3>
+        <button class="pb-modal-close" onclick="closeReportModal()">&times;</button>
+      </div>
+      <div class="pb-modal-body">
+        <p>Your edit limit has been reached. Please send a message to the admin to request an unlock or report an issue.</p>
+        <div class="fg">
+          <label class="fg-label">Message to Admin</label>
+          <textarea class="fg-input" id="reportMessage" style="min-height:120px; resize:vertical" placeholder="Describe why you need an unlock..."></textarea>
+        </div>
+      </div>
+      <div class="pb-modal-foot">
+        <button class="pb-btn pb-btn-ghost" onclick="closeReportModal()">Cancel</button>
+        <button class="pb-btn pb-btn-primary" id="submitReportBtn" onclick="submitEditRequest()">Send Request</button>
+      </div>
+    </div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
