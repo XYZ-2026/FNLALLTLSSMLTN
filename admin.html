@@ -605,6 +605,17 @@
       position: relative
     }
 
+    @media (max-width: 600px) {
+      .modal-card {
+        padding: 24px;
+        border-radius: 24px;
+      }
+      .modal-grid {
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+      }
+    }
+
     @keyframes fadeIn {
       from {
         opacity: 0
@@ -1037,6 +1048,20 @@
       .admin-day-num { width: 22px; height: 22px; font-size: 11px; }
       .admin-event-bar { font-size: 9px; padding: 2px 4px; }
       .month-display-admin { font-size: 15px; min-width: 120px; }
+      .weekday-label { padding: 8px 4px; font-size: 10px; }
+    }
+
+    @media (max-width: 480px) {
+      #adminDaysGrid { grid-auto-rows: minmax(60px, 1fr); }
+      .admin-day { min-height: 60px; padding: 4px; gap: 2px; }
+      .admin-day-num { width: 18px; height: 18px; font-size: 9px; border-radius: 4px; }
+      .admin-event-bar { font-size: 8px; padding: 1px 3px; border-radius: 4px; }
+      .calendar-admin-header { gap: 10px; margin-bottom: 16px; }
+      .cal-nav-group { gap: 8px; width: 100%; justify-content: space-between; }
+      .month-display-admin { font-size: 14px; min-width: auto; flex: 1; text-align: center; }
+      .btn-arrow { width: 32px; height: 32px; }
+      .btn-today-admin { padding: 6px 12px; font-size: 11px; }
+      .calendar-admin-wrapper { border-radius: 16px; }
     }
 
     /* 📄 Non-CAP Admissions Styling */
@@ -1360,7 +1385,7 @@
         <label class="form-label">Description</label>
         <textarea id="evDesc" class="form-control" placeholder="Detailed information about the event..."></textarea>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="modal-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
         <div class="form-group">
           <label class="form-label">Date</label>
           <input type="date" id="evDate" class="form-control">
@@ -1884,7 +1909,6 @@
       document.getElementById('evNotify').checked = false;
       document.getElementById('evReminder').checked = false;
       document.getElementById('reminderConfig').style.display = 'none';
-      document.getElementById('evNotify').parentElement.style.display = editingEvent ? 'none' : 'flex';
 
       // Add delete button if editing
       var footer = document.querySelector('#eventModal .modal-actions');
