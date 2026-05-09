@@ -1642,7 +1642,10 @@
           '<div class="user-avatar" style="background:var(--brand-soft);color:var(--brand);box-shadow:none;border:1px solid var(--brand-ring)">' + initial + '</div>' +
           '<div>' +
           '<div style="font-weight:800;color:var(--ink);font-size:15px">' + escAuth(u.name) + '</div>' +
-          '<div style="font-size:12px;color:var(--muted);margin-top:2px">' + escAuth(u.email) + '</div>' +
+          '<div style="display:flex;align-items:center;gap:6px;margin-top:2px">' +
+            '<div style="font-size:12px;color:var(--muted)">' + escAuth(u.email) + '</div>' +
+            (u.role === 'premium' ? '<span class="badge-sm" style="background:#fff7ed;color:#c2410c;border:1px solid #ffedd5;padding:2px 6px;font-size:9px">Premium</span>' : '') +
+          '</div>' +
           '</div>' +
           '</div>' +
           '</td>' +
@@ -1679,7 +1682,16 @@
       var html = fields.map(function (f) {
         return '<div class="form-group"><label class="form-label">' + f.charAt(0).toUpperCase() + f.slice(1) + '</label><input type="text" class="form-control" id="edit_' + f + '" value="' + escAuth(editingUser[f] || '') + '"></div>';
       }).join('');
-      document.getElementById('editFields').innerHTML = html;
+      document.getElementById('editFields').innerHTML = html + `
+        <div class="form-group">
+          <label class="form-label">User Role</label>
+          <select class="form-control" id="edit_role">
+            <option value="user" ${editingUser.role === 'user' ? 'selected' : ''}>Standard User</option>
+            <option value="premium" ${editingUser.role === 'premium' ? 'selected' : ''}>Premium Member</option>
+            <option value="admin" ${editingUser.role === 'admin' ? 'selected' : ''}>Administrator</option>
+          </select>
+        </div>
+      `;
       document.getElementById('editModal').classList.add('show');
     }
 
@@ -1691,7 +1703,7 @@
     async function saveUserEdit() {
       if (!editingUser) return;
       var payload = { id: editingUser.id };
-      ['name', 'email', 'phone', 'state', 'city'].forEach(function (f) {
+      ['name', 'email', 'phone', 'state', 'city', 'role'].forEach(function (f) {
         var el = document.getElementById('edit_' + f);
         if (el) payload[f] = el.value.trim();
       });
