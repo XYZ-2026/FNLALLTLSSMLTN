@@ -88,6 +88,11 @@
       document.getElementById('resRank').textContent = rank.toLocaleString('en-IN');
       let tier = rank <= 10000 ? 'Top Tier — Excellent chances for Top NITs & IIITs.' : (rank <= 50000 ? 'Good — Strong possibilities in established NITs and IIITs.' : 'Average — Good chances in newer IIITs and premium GFTIs.');
       document.getElementById('resSub').textContent = tier;
+
+      // Update college prediction button
+      const collegeBtn = document.querySelector('#resultCard .btn');
+      if (collegeBtn) collegeBtn.setAttribute('onclick', `window.location.href='josaa.html?rank=${rank}'`);
+
       document.getElementById('resultCard').classList.add('show');
     }
 
@@ -95,6 +100,14 @@
       if (!initAuth({ requireLogin: true, toolContainerId: 'toolArea' })) return;
       fetch('josaa_percentile_vs_rank.json').then(r => r.json()).then(data => {
         rankData = Array.isArray(data) ? data : (Object.values(data)[0] || []);
+        
+        // Check for URL parameter
+        const params = new URLSearchParams(window.location.search);
+        const urlPct = params.get('percentile');
+        if (urlPct) {
+          document.getElementById('inPercentile').value = urlPct;
+          calcRank();
+        }
       });
     }
 

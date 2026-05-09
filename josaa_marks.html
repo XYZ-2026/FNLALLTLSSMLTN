@@ -107,6 +107,11 @@
         const pct = (pParts[0] + pParts[1]) / 2;
         document.getElementById('resPercentile').textContent = pct.toFixed(2) + '%';
         document.getElementById('resRange').textContent = `Expected Range: ${pParts[0].toFixed(2)}% — ${pParts[1].toFixed(2)}%`;
+        
+        // Update rank button to carry percentile
+        const rankBtn = document.querySelector('#resultCard .btn');
+        if (rankBtn) rankBtn.setAttribute('onclick', `window.location.href='josaa_rank.html?percentile=${pct.toFixed(4)}'`);
+        
         document.getElementById('resultCard').classList.add('show');
       }
     }
