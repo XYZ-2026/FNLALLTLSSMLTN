@@ -734,96 +734,7 @@ function handleAddSuggestion(code, branch) {
 }
 
 /* ══════ PDF EXPORT ══════ */
-function exportPDF(formId = null) {
-  let list = prefList;
-  let pct = document.getElementById('inPct').value;
-  let rank = document.getElementById('inRank').value;
-  let cat = document.getElementById('inCategory').value;
-  let reg = document.getElementById('inRegion').value || 'All Regions';
-  let type = document.getElementById('inColType').value || 'All Types';
-  let mino = document.getElementById('inMinority').value || 'None';
-  let userName = 'Premium User';
-  if (typeof getSession === 'function') {
-    const session = getSession();
-    if (session && session.name) userName = session.name;
-  }
 
-  if (formId) {
-    const form = allForms.find(f => f.id === formId);
-    if (form) {
-      list = form.prefList || [];
-      pct = form.percentile || '';
-      rank = form.rank || '';
-      cat = form.category || '';
-      reg = form.region || 'All Regions';
-      type = form.colType || 'All Types';
-      mino = form.minority || 'None';
-    }
-  }
-
-  if (!list.length) { pbToast('Add colleges to export'); return }
-
-  const w = window.open('', '_blank');
-  w.document.write(`<!DOCTYPE html><html><head><title>MHT-CET Preference List</title>
-  <style>
-    body{font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;padding:30px;color:#111;max-width:1100px;margin:0 auto}
-    .header-row{display:flex;justify-content:space-between;align-items:start;margin-bottom:32px;border-bottom:2px solid #dc2626;padding-bottom:16px}
-    h1{font-size:24px;margin:0;color:#dc2626}
-    .user-tag{background:#fef2f2;color:#dc2626;padding:6px 14px;border-radius:8px;font-weight:800;font-size:12px;border:1px solid #fee2e2}
-    .info-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:12px;margin-bottom:32px}
-    .info-item{background:#f8fafc;padding:12px 16px;border-radius:10px;border:1px solid #e2e8f0;font-size:12px}
-    .info-item strong{color:#dc2626;float:right}
-    table{width:100%;border-collapse:collapse;font-size:10.5px;margin-top:20px}
-    th{background:#f8fafc;padding:12px 8px;text-align:left;font-weight:700;border:1px solid #cbd5e1;color:#475569;text-transform:uppercase;letter-spacing:0.5px}
-    td{padding:10px 8px;border:1px solid #cbd5e1;line-height:1.3;vertical-align:top}tr:nth-child(even){background:#fbfcfe}
-    .footer{margin-top:40px;font-size:11px;color:#94a3b8;text-align:center;border-top:1px solid #e2e8f0;padding-top:20px}
-    @media print{body{padding:0} .info-item{border:1px solid #ddd}}
-  </style></head><body>
-  <div class="header-row">
-    <div>
-      <h1>MHT-CET Preference List</h1>
-      <div style="font-size:12px;color:#64748b;margin-top:4px">Generated on ${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
-    </div>
-    <div class="user-tag">User: ${userName}</div>
-  </div>
-  
-  <div class="info-grid">
-    <div class="info-item">Percentile <strong>${pct}%</strong></div>
-    <div class="info-item">Merit Rank <strong>#${rank}</strong></div>
-    <div class="info-item">Category <strong>${cat}</strong></div>
-    <div class="info-item">Target Region <strong>${reg}</strong></div>
-    <div class="info-item">College Type <strong>${type}</strong></div>
-    <div class="info-item">Minority Preference <strong>${mino}</strong></div>
-  </div>
-
-  <table><thead><tr>
-    <th style="width:30px">#</th>
-    <th style="width:50px">Code</th>
-    <th>Institute Name</th>
-    <th style="width:150px">Branch</th>
-    <th style="width:150px">Institute Status</th>
-    <th style="width:120px">Minority</th>
-    <th style="width:60px">Cutoff</th>
-  </tr></thead><tbody>
-  ${list.map((c, i) => `<tr>
-    <td style="text-align:center;font-weight:700">${i + 1}</td>
-    <td>${c.code}</td>
-    <td style="font-weight:700">${escH(c.instituteName || c.name)}</td>
-    <td>${escH(c.branch)}</td>
-    <td>${escH(c.status || 'Non-Autonomous')}</td>
-    <td>${escH(c.minorityType || 'N/A')}</td>
-    <td style="font-weight:700;text-align:right">${c.percentile.toFixed(2)}</td>
-  </tr>`).join('')}
-  </tbody></table>
-  
-  <div class="footer">
-    This document is intended for counselling reference only. Please verify all choices on the official portal.<br>
-    <strong>© College Simplified ${new Date().getFullYear()} — Premium Counselling Tool</strong>
-  </div>
-  </body></html>`);
-  w.document.close();
-  setTimeout(() => w.print(), 500);
-}
 
 /* ══════ SIDEBAR TABS ══════ */
 function switchSideTab(tab) {
@@ -905,16 +816,10 @@ async function loadSavedPrefData() {
               </div>
             </div>
 
-            <div class="dash-card-actions" style="display: flex; gap: 10px">
-              <button class="pb-btn pb-btn-primary" onclick="loadForm('${form.id}')" style="flex: 1.5; padding: 10px; justify-content: center; font-size: 13px">
+              <button class="pb-btn pb-btn-primary" onclick="loadForm('${form.id}')" style="flex: 1; padding: 10px; justify-content: center; font-size: 13px">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                Resume
+                Resume List
               </button>
-              <button class="pb-btn pb-btn-ghost" onclick="exportPDF('${form.id}')" style="flex: 1; padding: 10px; justify-content: center; font-size: 13px">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                PDF
-              </button>
-            </div>
           </div>`;
         }).join('');
       } else {

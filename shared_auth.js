@@ -145,8 +145,8 @@ function injectGlobalUI() {
             <a href="cet_marks.html" class="sidebar-sub-link">Marks vs Percentile</a>
             <a href="cet_rank.html" class="sidebar-sub-link">Percentile vs Rank</a>
             <a href="cutoff_checker.html" class="sidebar-sub-link">CET Cutoff Checker</a>
-            <a href="percentile_vs_college_predictor.html" class="sidebar-sub-link">College Predictor</a>
-            <a href="jee_ai_eligibilty_checker.html" class="sidebar-sub-link">AI Eligibility Checker</a>
+            <a href="mht_cet_college_predictor.html" class="sidebar-sub-link">MHT CET College Predictor</a>
+            <a href="percentile_vs_college_predictor.html" class="sidebar-sub-link">JEE AI Predictor</a>
           </div>
         </div>
 

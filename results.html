@@ -6,8 +6,7 @@
   <title>Prediction Results — College Simplified</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
   <style>
     :root {
       --brand: #dc2626; --brand-soft: #fef2f2; --ink: #111827; --muted: #6b7280; --bg: #f4f6fb; --card: #ffffff; --stroke: #e5e7eb;
@@ -27,8 +26,7 @@
     td { padding: 14px 16px; font-size: 13px; color: var(--ink); border-bottom: 1px solid var(--stroke); }
     tr:hover { background: #f9fafb; }
     
-    .btn-pdf { background: var(--brand); color: #fff; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
-    .btn-pdf:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2); }
+
     
     .college-code { font-family: monospace; background: var(--brand-soft); color: var(--brand); padding: 2px 6px; border-radius: 4px; font-weight: 700; }
   </style>
@@ -41,9 +39,7 @@
           <h1>Prediction Results</h1>
           <p id="resultCount" style="color:var(--muted); font-size:14px; margin-top:4px;">0 colleges matching your profile</p>
         </div>
-        <button class="btn-pdf" onclick="downloadPDF()">
-          Download Report
-        </button>
+
       </div>
 
       <div class="table-card">
@@ -94,41 +90,7 @@
         </tr>
       `).join('');
 
-      window.downloadPDF = function() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('l', 'pt', 'a4');
-        const metaRaw = localStorage.getItem("searchMeta");
-        let meta = { percentile: '—', exam: '—', category: '—', minority: '—' };
-        try { if(metaRaw) meta = JSON.parse(metaRaw); } catch(e) {}
 
-        const isRank = meta.exam.includes('Rank');
-
-        doc.setFontSize(22);
-        doc.setTextColor(220, 38, 38);
-        doc.text("College Simplified - Prediction Report", 40, 50);
-        
-        doc.setFontSize(10);
-        doc.setTextColor(100);
-        doc.text(`Input: ${isRank ? 'Rank' : meta.percentile + '%'} | Exam: ${meta.exam} | Category: ${meta.category} | Minority: ${meta.minority}`, 40, 75);
-        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 40, 90);
-
-        doc.autoTable({
-          startY: 110,
-          head: [['#', 'Code', 'Institute Name', 'Branch', 'Category/Pool', isRank ? 'Cutoff Rank' : 'Cutoff %']],
-          body: results.map((r, i) => [
-            i + 1, 
-            r.code || '—', 
-            r.name || '—', 
-            r.branch || '—', 
-            r.seatType || '—',
-            isRank ? (r.meritRank || '—') : (r.percentile ? r.percentile.toFixed(2) : '—')
-          ]),
-          theme: 'grid',
-          styles: { fontSize: 8 },
-          headStyles: { fillColor: [220, 38, 38] }
-        });
-        doc.save("College_Simplified_Prediction.pdf");
-      };
 
       // DYNAMIC UI TABLE HEADER
       const metaRaw = localStorage.getItem("searchMeta");

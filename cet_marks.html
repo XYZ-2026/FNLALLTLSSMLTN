@@ -224,21 +224,37 @@
     var CET_DATA = [];
 
     function predict() {
+      var btn = document.querySelector('.card .btn');
       var marks = parseFloat(document.getElementById('inMarks').value);
       var diff = document.getElementById('inDifficulty').value;
       if (isNaN(marks) || marks < 0 || marks > 200) return alert('Enter valid marks (0-200)');
 
-      var row = CET_DATA.find(r => marks >= r.min && marks <= r.max);
-      var pct = row ? (row.low + row.high) / 2 : (marks / 200) * 90;
-      if (diff === 'easy') pct -= 0.6; if (diff === 'difficult') pct += 0.6;
-      pct = Math.min(99.99, Math.max(0.01, pct));
+      var originalText = btn.textContent;
+      btn.textContent = 'Calculating...';
+      btn.disabled = true;
 
-      var resPct = pct.toFixed(2);
-      document.getElementById('resPercentile').textContent = resPct + '%';
-      document.getElementById('resRange').textContent = 'Expected Range: ' + (row ? row.low : (pct - 1)).toFixed(2) + '% — ' + (row ? row.high : (pct + 1)).toFixed(2) + '%';
+      setTimeout(function() {
+        var row = CET_DATA.find(r => marks >= r.min && marks <= r.max);
+        var pct = row ? (row.low + row.high) / 2 : (marks / 200) * 90;
+        if (diff === 'easy') pct -= 0.6; if (diff === 'difficult') pct += 0.6;
+        pct = Math.min(99.99, Math.max(0.01, pct));
 
-      document.getElementById('rankLink').href = 'cet_rank.html?percentile=' + resPct;
-      document.getElementById('resultCard').classList.add('show');
+        var resPct = pct.toFixed(2);
+        var resCard = document.getElementById('resultCard');
+        resCard.classList.remove('show');
+
+        setTimeout(function() {
+          document.getElementById('resPercentile').textContent = resPct + '%';
+          document.getElementById('resRange').textContent = 'Expected Range: ' + (row ? row.low : (pct - 1)).toFixed(2) + '% — ' + (row ? row.high : (pct + 1)).toFixed(2) + '%';
+
+          document.getElementById('rankLink').href = 'cet_rank.html?percentile=' + resPct;
+          resCard.classList.add('show');
+          resCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          
+          btn.textContent = originalText;
+          btn.disabled = false;
+        }, 100);
+      }, 300);
     }
 
     function boot() {

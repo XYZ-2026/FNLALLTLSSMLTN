@@ -78,9 +78,15 @@
     const FILE_MAP = { easy_to_moderate: 'easy_moderate_marks.json', moderate: 'moderate_marks.json', moderate_to_difficult: 'moderate_difficult_marks.json', difficult: 'difficult_marks.json' };
 
     async function predict() {
+      const btn = document.querySelector('.card .btn');
       const marks = parseFloat(document.getElementById('inMarks').value);
       const shift = document.getElementById('inShift').value;
-      if (isNaN(marks)) return alert('Enter valid marks');
+      
+      if (isNaN(marks) || marks < 0 || marks > 300) return alert('Enter valid marks (0-300)');
+
+      const originalBtnText = btn.textContent;
+      btn.textContent = 'Calculating...';
+      btn.disabled = true;
 
       let rows = cache[shift];
       if (!rows) {
@@ -89,6 +95,8 @@
           const json = await res.json();
           rows = cache[shift] = json[Object.keys(json)[0]] || [];
         } catch (e) {
+          btn.textContent = originalBtnText;
+          btn.disabled = false;
           return alert("Error loading data. Please try again.");
         }
       }
@@ -103,16 +111,34 @@
 
       if (bestRow) {
         const pParts = (bestRow.Percentile||"").replace(/\s/g,'').split(/[-–]/).map(parseFloat);
-        if (pParts.length < 2) return;
+        if (pParts.length < 2) {
+          btn.textContent = originalBtnText;
+          btn.disabled = false;
+          return;
+        }
         const pct = (pParts[0] + pParts[1]) / 2;
-        document.getElementById('resPercentile').textContent = pct.toFixed(2) + '%';
-        document.getElementById('resRange').textContent = `Expected Range: ${pParts[0].toFixed(2)}% — ${pParts[1].toFixed(2)}%`;
         
-        // Update rank button to carry percentile
-        const rankBtn = document.querySelector('#resultCard .btn');
-        if (rankBtn) rankBtn.setAttribute('onclick', `window.location.href='josaa_rank.html?percentile=${pct.toFixed(4)}'`);
+        // Hide and show to re-trigger animation
+        const resCard = document.getElementById('resultCard');
+        resCard.classList.remove('show');
         
-        document.getElementById('resultCard').classList.add('show');
+        setTimeout(() => {
+          document.getElementById('resPercentile').textContent = pct.toFixed(2) + '%';
+          document.getElementById('resRange').textContent = `Expected Range: ${pParts[0].toFixed(2)}% — ${pParts[1].toFixed(2)}%`;
+          
+          const rankBtn = document.querySelector('#resultCard .btn');
+          if (rankBtn) rankBtn.setAttribute('onclick', `window.location.href='josaa_rank.html?percentile=${pct.toFixed(4)}'`);
+          
+          resCard.classList.add('show');
+          resCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          
+          btn.textContent = originalBtnText;
+          btn.disabled = false;
+        }, 100);
+      } else {
+        btn.textContent = originalBtnText;
+        btn.disabled = false;
+        alert("No matching data found for these marks.");
       }
     }
 
