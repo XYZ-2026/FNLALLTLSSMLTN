@@ -1,35 +1,217 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Elite Explorer — Coming Soon</title>
+  <title>Coming Soon — College Simplified</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=Outfit:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700;800;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --brand: #dc2626; --brand-soft: #fef2f2; --ink: #111827; --muted: #6b7280; --bg: #ffffff;
+      --brand: #dc2626;
+      --brand-d: #991b1b;
+      --brand-soft: #fef2f2;
+      --ink: #0f172a;
+      --ink2: #334155;
+      --muted: #64748b;
+      --bg: #fafafa;
     }
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body { font-family: 'Outfit', sans-serif; background-color: var(--bg); color: var(--ink); display: flex; align-items: center; justify-content: center; min-height: 100vh; text-align: center; padding: 20px; padding-top: 84px; }
-    
-    .container { max-width: 800px; animation: fadeIn 1s ease-out; }
-    .status-badge { display: inline-block; padding: 8px 20px; background: var(--brand-soft); color: var(--brand); border-radius: 100px; font-weight: 800; font-size: 12px; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 1.5px; }
-    h1 { font-family: 'Poppins', sans-serif; font-weight: 900; font-size: clamp(2.5rem, 8vw, 4.5rem); line-height: 1.1; margin-bottom: 24px; letter-spacing: -2px; }
-    p { font-size: 1.15rem; color: var(--muted); margin-bottom: 40px; line-height: 1.6; max-width: 600px; margin-left: auto; margin-right: auto; }
-    .btn { display: inline-flex; align-items: center; gap: 12px; padding: 16px 32px; background-color: #111827; color: white; text-decoration: none; border-radius: 16px; font-weight: 700; transition: 0.3s; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-    .btn:hover { background-color: var(--brand); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(220,38,38,0.2); }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 84px 24px 24px;
+      overflow-x: hidden;
+    }
+
+    /* ── Background Animations ── */
+    .bg-blobs {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .blob {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: var(--brand-soft);
+      filter: blur(100px);
+      border-radius: 50%;
+      opacity: 0.6;
+      animation: float 20s infinite alternate ease-in-out;
+    }
+
+    .blob-1 { top: -10%; left: -10%; }
+    .blob-2 { bottom: -10%; right: -10%; background: #e0f2fe; }
+
+    @keyframes float {
+      from { transform: translate(0, 0) scale(1); }
+      to { transform: translate(50px, 50px) scale(1.1); }
+    }
+
+    .content-card {
+      max-width: 800px;
+      width: 100%;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 80px 40px;
+      border-radius: 48px;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.05);
+      animation: cardIn 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(40px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      background: var(--brand-soft);
+      color: var(--brand);
+      border-radius: 100px;
+      font-weight: 800;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 32px;
+      border: 1px solid var(--brand-ring);
+    }
+
+    h1 {
+      font-family: 'Lexend', sans-serif;
+      font-weight: 900;
+      font-size: clamp(40px, 8vw, 72px);
+      line-height: 0.95;
+      letter-spacing: -3px;
+      margin-bottom: 24px;
+      color: var(--ink);
+    }
+
+    h1 span {
+      background: linear-gradient(135deg, var(--brand), #ef4444);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      font-size: 18px;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 540px;
+      margin: 0 auto 48px;
+      font-weight: 400;
+    }
+
+    .btn-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 18px 36px;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 15px;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Lexend', sans-serif;
+    }
+
+    .btn-primary {
+      background: var(--ink);
+      color: #fff;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+
+    .btn-primary:hover {
+      background: var(--brand);
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px var(--brand-ring);
+    }
+
+    .btn-secondary {
+      background: #fff;
+      color: var(--ink);
+      border: 1.5px solid var(--stroke);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--brand);
+      color: var(--brand);
+      transform: translateY(-5px);
+    }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 60px;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    @media (max-width: 600px) {
+      .content-card { padding: 60px 24px; border-radius: 32px; }
+      h1 { font-size: 48px; }
+      p { font-size: 16px; }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="status-badge">Phase II Development</div>
-    <h1>JOSAA Elite<br>Coming Soon</h1>
-    <p>We are engineering a premium analytical engine for India's top institutes. Stay tuned for a smarter way to navigate your career.</p>
-    <a href="cet-landing.html" class="btn">Explore MHT-CET Hub →</a>
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
   </div>
 
+  <div class="content-card">
+    <div class="badge">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Optimizing for 2026
+    </div>
+    <h1>Exciting<br><span>Features</span> Ahead</h1>
+    <p>Our engineering team is fine-tuning the 2026 admission algorithms. The <b>Preference List Builder</b> will be available shortly.</p>
+    
+    <div class="btn-group">
+      <a href="cet-landing.html" class="btn btn-primary">
+        MHT-CET Dashboard
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="index.html" class="btn btn-secondary">
+        Home
+      </a>
+    </div>
+
+    <div class="footer">
+      &copy; 2026 College Simplified &bull; Professional Admissions Hub
+    </div>
+  </div>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="firebase_config.js"></script>

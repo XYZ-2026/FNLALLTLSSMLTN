@@ -199,6 +199,21 @@
             </div>
           </div>
           <div class="form-group">
+            <label class="form-label">College Region</label>
+            <div class="input-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <select id="inRegion">
+                <option value="all">All Regions</option>
+                <option value="1">Amravati Region</option>
+                <option value="2">Aurangabad Region</option>
+                <option value="3">Mumbai Region</option>
+                <option value="4">Nagpur Region</option>
+                <option value="5">Nashik Region</option>
+                <option value="6">Pune Region</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
             <label class="form-label">Candidate Category</label>
             <div class="input-wrap">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
@@ -327,6 +342,7 @@
       const cat = document.getElementById('inCategory').value;
       const gender = document.getElementById('inGender').value;
       const univ = document.getElementById('inUniversity').value;
+      const region = document.getElementById('inRegion').value;
       const minorityPref = document.getElementById('inMinority').value;
 
       if (!pctVal && !rankVal) return alert('Enter at least Percentile or Rank');
@@ -355,6 +371,11 @@
           const s = r.seatType || '';
           return s.endsWith('H') || s.endsWith('O') || s.endsWith('S');
         });
+      }
+      
+      // Region Filter
+      if (region !== 'all') {
+        filtered = filtered.filter(r => String(r.code || '').startsWith(region));
       }
 
       // Category matching
@@ -386,6 +407,7 @@
         category: cat,
         gender: gender === 'G' ? 'General' : 'Ladies',
         university: univ === 'H' ? 'Home University' : (univ === 'O' ? 'Other Than Home' : 'State Level'),
+        region: region === 'all' ? 'All Regions' : (region === '1' ? 'Amravati' : (region === '2' ? 'Aurangabad' : (region === '3' ? 'Mumbai' : (region === '4' ? 'Nagpur' : (region === '5' ? 'Nashik' : 'Pune'))))),
         minority: minorityPref || 'None'
       }));
       window.location.href = "results.html";

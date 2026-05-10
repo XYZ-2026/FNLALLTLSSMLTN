@@ -193,6 +193,26 @@
                 padding: 32px;
             }
         }
+
+        /* ── Latest Notices ── */
+        .notices-section { max-width: 1200px; margin: 0 auto 100px; padding: 0 20px; scroll-margin-top: 100px; }
+        .section-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
+        .section-hdr h2 { font-family: 'Lexend', sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.02em; }
+        
+        .notices-grid { display: grid; gap: 16px; }
+        .notice-item { background: var(--card); border: 1px solid var(--stroke); border-radius: 20px; padding: 24px; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; overflow: hidden; }
+        .notice-item:hover { border-color: var(--brand); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .notice-item-hdr { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+        .notice-item-title { font-weight: 700; font-size: 17px; color: var(--ink); display: flex; align-items: center; gap: 10px; }
+        .notice-item-title::before { content:''; width:8px; height:8px; background:var(--brand); border-radius:50%; flex-shrink:0; }
+        .notice-item-date { font-size: 12px; color: var(--muted); font-weight: 600; white-space: nowrap; }
+        .notice-item-body { max-height: 0; overflow: hidden; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); opacity: 0; }
+        .notice-item.expanded { border-color: var(--brand); box-shadow: var(--shadow-lg); border-left: 5px solid var(--brand); }
+        .notice-item.expanded .notice-item-body { max-height: 800px; opacity: 1; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--stroke); }
+        .notice-item-desc { font-size: 14.5px; color: var(--ink2); line-height: 1.7; margin-bottom: 24px; white-space: pre-wrap; }
+        
+        .btn-notice { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: var(--ink); color: #fff; border-radius: 14px; text-decoration: none; font-weight: 700; font-size: 13px; transition: 0.2s; }
+        .btn-notice:hover { transform: scale(1.05); background: var(--brand); box-shadow: 0 8px 20px var(--brand-ring); }
     </style>
 </head>
 
@@ -236,6 +256,15 @@
                 <div class="card-footer">Explore JOSAA <span>→</span></div>
             </a>
         </section>
+
+        <section class="notices-section" id="latest-notices">
+            <div class="section-hdr">
+                <h2>Latest Notifications & Updates</h2>
+            </div>
+            <div class="notices-grid" id="noticesContainer">
+                <div style="text-align:center; padding:40px; color:var(--muted)">Syncing with server...</div>
+            </div>
+        </section>
     </main>
 
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -244,6 +273,38 @@
     <script src="shared_auth.js"></script>
     <script>
         initAuth({ requireLogin: false });
+
+        async function loadNotices() {
+            const container = document.getElementById('noticesContainer');
+            if (!container) return;
+            const res = await authApi('getNotices');
+            if (res.ok) {
+                const data = res.data || [];
+                if (!data.length) {
+                    container.innerHTML = '<div style="text-align:center;padding:60px;color:var(--muted);font-weight:600">No active notices at the moment.</div>';
+                    return;
+                }
+                container.innerHTML = data.map(n => {
+                    const dt = n.createdAt ? (n.createdAt.toDate ? n.createdAt.toDate() : new Date(n.createdAt)).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) : '';
+                    return `
+                        <div class="notice-item" onclick="this.classList.toggle('expanded')">
+                            <div class="notice-item-hdr">
+                                <div class="notice-item-title">${escAuth(n.title)}</div>
+                                <div class="notice-item-date">${dt}</div>
+                            </div>
+                            <div class="notice-item-body">
+                                <div class="notice-item-desc">${escAuth(n.description)}</div>
+                                ${n.link ? `<a href="${escAuth(n.link)}" target="_blank" class="btn-notice" onclick="event.stopPropagation()">Download / View Document <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--brand)">Failed to connect to notices server.</div>';
+            }
+        }
+        
+        loadNotices();
     </script>
 </body>
 

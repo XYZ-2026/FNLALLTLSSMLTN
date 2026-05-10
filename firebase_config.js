@@ -368,6 +368,28 @@ async function fireApi(action, payload) {
         return { ok: true };
       }
 
+      // ── LATEST NOTICES ────────────────
+      case 'getNotices': {
+        const snap = await db.collection('notices').orderBy('createdAt', 'desc').limit(20).get();
+        return { ok: true, data: snap.docs.map(d => ({ id: d.id, ...d.data() })) };
+      }
+
+      case 'addNotice': {
+        await db.collection('notices').add({
+          title: payload.title || '',
+          description: payload.description || '',
+          link: payload.link || '',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        return { ok: true };
+      }
+
+      case 'deleteNotice': {
+        if (!payload.id) return { ok: false, error: 'Missing ID' };
+        await db.collection('notices').doc(payload.id).delete();
+        return { ok: true };
+      }
+
       default:
         return { ok: false, error: 'Unknown action: ' + action };
     }

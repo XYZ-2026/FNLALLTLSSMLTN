@@ -8,6 +8,7 @@ let prefDataLoaded = false;
 let currentFormId = null;
 let allForms = [];
 let currentUserId = null;
+let expandedCategories = new Set();
 const CATS = {
   'Computer & IT': ['COMPUTER', 'INFORMATION TECHNOLOGY', 'AI', 'ARTIFICIAL', 'DATA SCIENCE', 'MACHINE LEARNING', 'SOFTWARE', 'CYBER', 'ROBOTICS'],
   'Electronics & Telecom': ['ELECTRONICS', 'TELECOMMUNICATION', 'ENTC', 'COMMUNICATION', 'INSTRUMENTATION'],
@@ -15,6 +16,14 @@ const CATS = {
   'Biotech & Allied': ['BIOTECHNOLOGY', 'BIO-MEDICAL', 'BIO MEDICAL', 'FOOD', 'AGRICULTURE', 'PHARMACEUTICAL'],
   'Other Branches': []
 };
+const FIXED_ASPIRATIONAL = [
+  { code: '16006', instituteName: 'COEP Technological University', branch: 'Computer Engineering', percentile: 99.98, isFixed: true, isAspirational: true },
+  { code: '3012', instituteName: 'Veermata Jijabai Technological Institute (VJTI)', branch: 'Computer Engineering', percentile: 99.95, isFixed: true, isAspirational: true },
+  { code: '3012', instituteName: 'Veermata Jijabai Technological Institute (VJTI)', branch: 'Information Technology', percentile: 99.92, isFixed: true, isAspirational: true },
+  { code: '16006', instituteName: 'COEP Technological University', branch: 'Artificial Intelligence and Machine Learning', percentile: 99.88, isFixed: true, isAspirational: true },
+  { code: '3215', instituteName: 'Sardar Patel Institute of Technology (SPIT)', branch: 'Computer Science and Engineering', percentile: 99.85, isFixed: true, isAspirational: true },
+  { code: '3215', instituteName: 'Sardar Patel Institute of Technology (SPIT)', branch: 'Computer Engineering', percentile: 99.82, isFixed: true, isAspirational: true }
+];
 
 /* ══════ STEPPER ══════ */
 let currentStep = 1;
@@ -68,7 +77,7 @@ function goStep(n) {
 
 function startNewForm() {
   currentFormId = null;
-  prefList = [];
+  prefList = [...FIXED_ASPIRATIONAL];
   selectedColleges = [];
   selectedBranches = new Set(); // Clear branch selections
   
@@ -88,6 +97,14 @@ function loadForm(formId, step = 1) {
   document.getElementById('inCategory').value = form.category || 'OPEN';
   document.getElementById('inRegion').value = form.region || '';
   prefList = form.prefList || [];
+  
+  // Ensure Fixed Aspirational are present even in old forms
+  FIXED_ASPIRATIONAL.forEach(fa => {
+    if (!prefList.some(p => p.code === fa.code && p.branch === fa.branch)) {
+      prefList.unshift(fa);
+    }
+  });
+
   selectedBranches = new Set(form.selectedBranches || []);
   window._tempKeys = form.selectedCollegeKeys || [];
   
@@ -221,7 +238,7 @@ function renderBranches() {
           <button class="branch-cat-toggle" onclick="event.stopPropagation();toggleCategory('${cat}')">Select All</button>
         </div>
       </div>
-      <div class="branch-list" style="display:none">`;
+      <div class="branch-list" style="display:${expandedCategories.has(cat) ? 'grid' : 'none'}">`;
     branches.forEach(b => {
       const sel = selectedBranches.has(b) ? 'selected' : '';
       html += `<div class="branch-opt ${sel}" onclick="toggleBranch('${b.replace(/'/g, "\\'")}')"><div class="branch-chk">${sel ? '✓' : ''}</div><span>${b}</span></div>`;
@@ -236,7 +253,10 @@ function renderBranches() {
 
 function toggleCatCollapse(el) {
   const list = el.nextElementSibling;
-  list.style.display = list.style.display === 'none' ? 'grid' : 'none';
+  const cat = el.querySelector('.branch-cat-name').textContent.trim();
+  const isOpen = list.style.display === 'none';
+  list.style.display = isOpen ? 'grid' : 'none';
+  if (isOpen) expandedCategories.add(cat); else expandedCategories.delete(cat);
 }
 
 function toggleBranch(b) {
@@ -463,7 +483,17 @@ function filterColleges(f, el) {
 
 /* ══════ PREFERENCE LIST (Step 4) ══════ */
 function buildPrefList() {
-  prefList = selectedColleges.map(idx => ({ ...matchedColleges[idx], idx }));
+  const userAspirational = matchedColleges.filter((c, i) => selectedColleges.includes(i) && c.isAspirational);
+  const userNormal = matchedColleges.filter((c, i) => selectedColleges.includes(i) && !c.isAspirational);
+  
+  // Sort normal by percentile desc
+  userNormal.sort((a, b) => b.percentile - a.percentile);
+
+  // Filter out any user selected that are already in FIXED
+  const filteredUserAsp = userAspirational.filter(ua => !FIXED_ASPIRATIONAL.some(fa => fa.code === ua.code && fa.branch === ua.branch));
+
+  // Combine: Fixed -> User Aspirational -> User Normal
+  prefList = [...FIXED_ASPIRATIONAL, ...filteredUserAsp, ...userNormal];
   renderPrefList();
   renderSuggestions();
   renderAspirational();
@@ -590,6 +620,8 @@ function toggleAspirational(code, branch) {
   const key = code + '|' + branch;
   const idx = prefList.findIndex(p => p.code === code && p.branch === branch);
   if (idx >= 0) {
+    // Prevent removing fixed aspirational
+    if (prefList[idx].isFixed) return pbToast('Cannot remove fixed college');
     prefList.splice(idx, 1);
     pbToast('Removed from preference list');
   } else {
@@ -605,24 +637,53 @@ function renderPrefList() {
   const count = document.getElementById('prefCount');
   if (!count) return;
   count.textContent = prefList.length + ' colleges';
-  if (!prefList.length) { list.innerHTML = '<div class="empty-state" style="padding:40px"><h3>No colleges added</h3><p>Go back and select colleges.</p></div>'; return; }
-  list.innerHTML = prefList.map((c, i) => `<li class="pref-item ${c.isAspirational ? 'asp-item' : ''}" draggable="true" data-idx="${i}" 
-    ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="dropItem(event)" ondragend="dragEnd(event)"
-    ontouchstart="handleTouchStart(event)" ontouchmove="handleTouchMove(event)" ontouchend="handleTouchEnd(event)">
-    <div class="pref-grip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="5" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="19" r="1"/></svg></div>
-    <div class="pref-num">${i + 1}</div>
-    <div class="pref-info">
-      <div class="pref-name">${escH(c.instituteName || c.name)}</div>
-      <div class="pref-branch">${escH(c.branch)} <span class="pref-code">${c.code}</span></div>
-      <div class="pref-cutoff" style="font-size:11px; color:var(--muted); margin-top:4px">Cutoff: <strong>${c.percentile.toFixed(2)}%</strong></div>
-    </div>
-    <button class="pref-remove" onclick="removePref(${i})" title="Remove">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-  </li>`).join('');
+  if (!prefList.length) {
+    list.innerHTML = '<div class="empty-state" style="padding:40px"><h3>No colleges added</h3><p>Go back and select colleges.</p></div>';
+    return;
+  }
+
+  list.innerHTML = prefList.map((c, i) => {
+    const isFixed = c.isFixed;
+    return `
+      <li class="pref-item ${isFixed ? 'is-fixed' : ''} ${c.isAspirational ? 'asp-item' : ''}" 
+          draggable="${!isFixed}" 
+          data-idx="${i}"
+          ondragstart="${isFixed ? '' : 'dragStart(event)'}" 
+          ondragover="${isFixed ? '' : 'dragOver(event)'}" 
+          ondrop="${isFixed ? '' : 'dropItem(event)'}" 
+          ondragend="${isFixed ? '' : 'dragEnd(event)'}"
+          style="${isFixed ? 'border-left: 4px solid var(--brand); cursor: default' : ''}">
+        <div class="pref-grip">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="5" r="1"/><circle cx="15" cy="5" r="1"/>
+            <circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/>
+            <circle cx="9" cy="19" r="1"/><circle cx="15" cy="19" r="1"/>
+          </svg>
+        </div>
+        <div class="pref-num">${i + 1}</div>
+        <div class="pref-info">
+          <div class="pref-name">${escH(c.instituteName || c.name)}</div>
+          <div class="pref-branch">${escH(c.branch)} <span class="pref-code">${c.code}</span></div>
+          <div class="pref-cutoff" style="font-size:11px; color:var(--muted); margin-top:4px">Cutoff: <strong>${c.percentile ? c.percentile.toFixed(2) + '%' : 'N/A'}</strong></div>
+        </div>
+        <div class="pref-actions">
+          ${isFixed ? 
+            '<span style="font-size:10px; font-weight:800; color:var(--brand); opacity:0.6; text-transform:uppercase; padding-right:8px">Mandatory</span>' : 
+            `<button class="pref-remove" onclick="removePref(${i})" title="Remove">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>`
+          }
+        </div>
+      </li>`;
+  }).join('');
 }
 
-function removePref(i) { prefList.splice(i, 1); renderPrefList(); triggerAutosave(); }
+function removePref(i) {
+  if (prefList[i] && prefList[i].isFixed) return pbToast('Cannot remove fixed college');
+  prefList.splice(i, 1);
+  renderPrefList();
+  triggerAutosave();
+}
 
 /* ══════ DRAG & DROP ══════ */
 let dragIdx = null;
@@ -734,9 +795,85 @@ function handleAddSuggestion(code, branch) {
 }
 
 /* ══════ PDF EXPORT ══════ */
+function exportPDF() {
+  if (!prefList.length) return pbToast('List is empty');
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  
+  const pct = document.getElementById('inPct').value;
+  const rank = document.getElementById('inRank').value;
+  const cat = document.getElementById('inCategory').value;
+  const region = document.getElementById('inRegion').value || 'All Regions';
 
+  // Header
+  doc.setFontSize(22);
+  doc.setTextColor(220, 38, 38); // Brand Red
+  doc.text('College Simplified', 14, 22);
+  
+  doc.setFontSize(16);
+  doc.setTextColor(17, 24, 39); // Ink
+  doc.text('MHT-CET Preference List 2026', 14, 32);
+  
+  // Candidate Info
+  doc.setFontSize(10);
+  doc.setTextColor(107, 114, 128); // Muted
+  doc.text(`Generated on: ${new Date().toLocaleDateString('en-IN')}`, 14, 42);
+  
+  doc.autoTable({
+    startY: 48,
+    head: [['Field', 'Details']],
+    body: [
+      ['Percentile', pct + '%'],
+      ['Merit Rank', rank],
+      ['Category', cat],
+      ['Region Preference', region]
+    ],
+    theme: 'plain',
+    headStyles: { fillColor: [249, 250, 251], textColor: [107, 114, 128], fontStyle: 'bold' },
+    styles: { fontSize: 10, cellPadding: 4 }
+  });
 
-/* ══════ SIDEBAR TABS ══════ */
+  // Preference Table
+  doc.setFontSize(14);
+  doc.setTextColor(17, 24, 39);
+  doc.text('Your Preference Order', 14, doc.lastAutoTable.finalY + 15);
+
+  const tableData = prefList.map((c, i) => [
+    i + 1,
+    c.instituteName || c.name,
+    c.branch,
+    c.code,
+    c.percentile.toFixed(2) + '%'
+  ]);
+
+  doc.autoTable({
+    startY: doc.lastAutoTable.finalY + 20,
+    head: [['#', 'Institute Name', 'Branch', 'Code', 'Cutoff']],
+    body: tableData,
+    headStyles: { fillColor: [220, 38, 38], textColor: [255, 255, 255], fontStyle: 'bold' },
+    alternateRowStyles: { fillColor: [254, 242, 242] },
+    styles: { fontSize: 9, cellPadding: 5 },
+    columnStyles: {
+      0: { cellWidth: 10 },
+      1: { cellWidth: 90 },
+      2: { cellWidth: 50 },
+      3: { cellWidth: 20 },
+      4: { cellWidth: 20 }
+    }
+  });
+
+  // Footer
+  const pageCount = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    doc.setFontSize(9);
+    doc.setTextColor(156, 163, 175);
+    doc.text(`Page ${i} of ${pageCount} — Created with College Simplified`, 14, doc.internal.pageSize.height - 10);
+  }
+
+  doc.save(`MHTCET_Preferences_${rank || 'List'}.pdf`);
+  pbToast('PDF Generated Successfully!');
+}
 function switchSideTab(tab) {
   document.querySelectorAll('.sidebar-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
   document.querySelectorAll('.sidebar-content').forEach(c => c.classList.toggle('active', c.id === 'side-' + tab));
@@ -752,6 +889,9 @@ function pbToast(msg) {
 }
 
 /* ══════ PREF DATA SAVE/LOAD ══════ */
+// Duplicate functions removed and moved to top or merged.
+
+// ── Dashboard Data Loader ──
 async function loadSavedPrefData() {
   if (!currentUserId) return;
   const res = await authApi('getPrefData', { userId: currentUserId });
