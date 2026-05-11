@@ -111,9 +111,12 @@
       border: 1px solid var(--stroke); 
       border-left: 5px solid var(--brand);
       display: none; 
-      align-items: center;
+      align-items: flex-start;
       gap: 12px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    }
+    @media (max-width: 600px) {
+      .greeting { padding: 12px 16px; font-size: 14px; }
     }
     .greeting b { color: var(--brand); font-weight: 800; }
   </style>
@@ -525,7 +528,7 @@
       const user = getSession();
       if (user) { 
         const banner = document.getElementById('helloBanner');
-        banner.innerHTML = `<span>👋</span> Hi <b>${user.name}</b>, ready to find your ideal MHT-CET college?`; 
+        banner.innerHTML = `<span>👋</span> <div>Hi <b>${user.name}</b>, ready to find your ideal MHT-CET college?</div>`; 
         banner.style.display = 'flex'; 
       }
 

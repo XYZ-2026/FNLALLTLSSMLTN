@@ -486,9 +486,16 @@
       border: 1px solid var(--stroke);
       border-left: 5px solid var(--brand);
       display: none;
-      align-items: center;
+      align-items: flex-start;
       gap: 12px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    }
+
+    @media (max-width: 600px) {
+      .greeting {
+        padding: 12px 16px;
+        font-size: 14px;
+      }
     }
 
     .greeting b {
@@ -789,7 +796,7 @@
       const loaderTxt = document.querySelector('#dataLoader span');
       const user = getSession();
       if (user && banner) {
-        banner.innerHTML = `<span>👋</span> Hi <b>${user.name}</b>, your AI Prediction profile is ready for analysis.`;
+        banner.innerHTML = `<span>👋</span> <div>Hi <b>${user.name}</b>, your AI Prediction profile is ready for analysis.</div>`;
         banner.style.display = 'flex';
       }
 
