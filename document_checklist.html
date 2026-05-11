@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MHT-CET Document Checklist — College Simplified</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lexend:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --brand: #dc2626;
+            --brand-soft: #fef2f2;
+            --brand-ring: rgba(220, 38, 38, 0.15);
+            --ink: #0f172a;
+            --ink2: #475569;
+            --muted: #94a3b8;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --stroke: #e2e8f0;
+            --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            line-height: 1.5;
+            padding-top: 80px; /* Offset for global header */
+            min-height: 100vh;
+        }
+
+        .wrap {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 40px 24px 100px;
+        }
+
+        /* ── Checklist Card ── */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: 32px;
+            padding: 48px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+        }
+
+        .checklist-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .checklist-header h1 {
+            font-family: 'Lexend', sans-serif;
+            font-weight: 800;
+            font-size: 32px;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        /* ── Controls ── */
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            position: relative;
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .control-label {
+            position: absolute;
+            top: -10px;
+            left: 16px;
+            background: #fff;
+            padding: 0 8px;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--brand);
+            z-index: 10;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        select {
+            width: 100%;
+            padding: 14px 20px;
+            border: 2px solid var(--brand);
+            border-radius: 16px;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--ink);
+            background: white;
+            cursor: pointer;
+            outline: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23dc2626' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 48px;
+            transition: all 0.2s;
+        }
+        
+        select:focus {
+            box-shadow: 0 0 0 5px var(--brand-ring);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 24px;
+            border-radius: 16px;
+            font-family: 'Lexend', sans-serif;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            letter-spacing: 0.2px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--brand), #991b1b);
+            color: white;
+            box-shadow: 0 10px 25px var(--brand-ring);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px var(--brand-ring);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #f97316;
+            color: #f97316;
+        }
+
+        .btn-outline:hover {
+            background: #fff7ed;
+            transform: translateY(-2px);
+        }
+
+        .btn-icon {
+            background: var(--bg);
+            color: var(--muted);
+            padding: 14px;
+            border-radius: 16px;
+            cursor: pointer;
+            border: 1px solid var(--stroke);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-icon:hover {
+            background: #fff;
+            color: var(--ink);
+            border-color: var(--brand);
+            transform: scale(1.05);
+        }
+
+        /* ── Progress ── */
+        .progress-section {
+            margin-bottom: 40px;
+            padding-top: 16px;
+            border-top: 2px solid var(--stroke);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: var(--bg);
+            border-radius: 100px;
+            overflow: hidden;
+            border: 1px solid var(--stroke);
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--brand);
+            width: 0%;
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .progress-text {
+            text-align: right;
+            font-size: 13px;
+            color: var(--muted);
+            font-weight: 800;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ── List ── */
+        .document-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .document-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 18px;
+            cursor: pointer;
+            padding: 12px 16px;
+            user-select: none;
+            border-radius: 16px;
+            transition: 0.2s;
+            border: 1.5px solid transparent;
+        }
+
+        .document-item:hover {
+            background: var(--brand-soft);
+            border-color: var(--brand-ring);
+        }
+
+        .checkbox-wrapper {
+            width: 24px;
+            height: 24px;
+            border: 2.5px solid var(--stroke);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #fff;
+        }
+
+        .document-item.checked .checkbox-wrapper {
+            background: var(--brand);
+            border-color: var(--brand);
+        }
+
+        .checkbox-wrapper svg {
+            width: 14px;
+            height: 14px;
+            color: white;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .document-item.checked .checkbox-wrapper svg {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .document-name {
+            font-size: 16px;
+            color: var(--ink2);
+            font-weight: 600;
+            line-height: 1.5;
+            transition: color 0.2s;
+        }
+
+        .document-item.checked .document-name {
+            color: var(--muted);
+            text-decoration: line-through;
+        }
+
+        /* ── Print Styles ── */
+        @media print {
+            body {
+                padding: 0 !important;
+                background: white;
+            }
+
+            .wrap {
+                max-width: 100%;
+                padding: 0;
+            }
+
+            .card {
+                box-shadow: none !important;
+                border: none !important;
+                padding: 20px !important;
+            }
+
+            .controls,
+            .btn-icon,
+            .btn-outline,
+            .btn-primary,
+            .progress-bar-container,
+            header,
+            .sidebar,
+            .sidebar-overlay {
+                display: none !important;
+            }
+
+            .document-item {
+                break-inside: avoid;
+                margin-bottom: 8px;
+                padding: 8px 0;
+            }
+            
+            .document-item:hover { background: transparent; border-color: transparent; }
+
+            .progress-section {
+                border-top: 1px solid #eee;
+            }
+            
+            .checklist-header h1 {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding-top: 70px;
+            }
+            .wrap {
+                padding: 20px 16px;
+            }
+            .card {
+                padding: 32px 20px;
+                border-radius: 24px;
+            }
+
+            .controls {
+                gap: 10px;
+            }
+
+            .btn {
+                padding: 14px 18px;
+                flex: 1;
+            }
+            
+            .btn-icon {
+                flex: 0;
+            }
+            
+            .checklist-header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="card" id="checklist-card">
+            <div class="checklist-header">
+                <h1>Document Checklist</h1>
+            </div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <span class="control-label">Your Category</span>
+                    <select id="categorySelect" onchange="updateCategory()">
+                        <option value="OPEN">OPEN</option>
+                        <option value="OBC">OBC</option>
+                        <option value="SC">SC</option>
+                        <option value="ST">ST</option>
+                        <option value="EWS">EWS</option>
+                        <option value="Minority">Minority</option>
+                        <option value="PWD">PWD</option>
+                        <option value="Defence">Defence</option>
+                        <option value="Orphan">Orphan</option>
+                        <option value="TFWS">TFWS</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-outline" onclick="resetChecklist()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path>
+                    </svg>
+                    RESET
+                </button>
+
+                <button class="btn-icon" onclick="window.print()" title="Print Checklist">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                        <rect x="6" y="14" width="12" height="8"></rect>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="progressBar"></div>
+                </div>
+                <div class="progress-text" id="progressText">0% Completed</div>
+            </div>
+
+            <div class="document-list" id="documentList">
+                <!-- Documents will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="firebase_config.js"></script>
+    <script src="shared_auth.js"></script>
+    <script>
+        const documentData = {
+            "OPEN": [
+                "MHT CET Application Form",
+                "MHT CET Admit Card",
+                "MHT CET Scorecard",
+                "Class 10 Mark Sheet",
+                "Class 12 Mark Sheet",
+                "12th College Leaving Certificate",
+                "Certificate of Indian Nationality OR Nationality mentioned on 12th Leaving Certificate OR Birth Certificate issued in India",
+                "Domicile Certificate of Maharashtra (Student / Father / Mother)",
+                "Passport-sized photographs",
+                "Photo Identity Proof – Aadhaar Card",
+                "JEE Score Card (if appeared)"
+            ],
+            "OBC": [
+                "MHT CET Application Form",
+                "MHT CET Admit Card",
+                "MHT CET Scorecard",
+                "Class 10 Mark Sheet",
+                "Class 12 Mark Sheet",
+                "12th College Leaving Certificate",
+                "Certificate of Indian Nationality OR Nationality mentioned on 12th Leaving Certificate OR Birth Certificate issued in India",
+                "Domicile Certificate of Maharashtra (Student / Father / Mother)",
+                "Passport-sized photographs",
+                "Photo Identity Proof – Aadhaar Card",
+                "JEE Score Card (if appeared)",
+                "Caste Certificate (OBC / SBC / VJ / NT) issued by Maharashtra",
+                "Caste Validity Certificate issued by Maharashtra",
+                "Valid Non-Creamy Layer (NCL) Certificate",
+                "Income Certificate"
+            ],
+            "SC": [
+                "MHT CET Application Form",
+                "MHT CET Admit Card",
+                "MHT CET Scorecard",
+                "Class 10 Mark Sheet",
+                "Class 12 Mark Sheet",
+                "12th College Leaving Certificate",
+                "Certificate of Indian Nationality OR Nationality mentioned on 12th Leaving Certificate OR Birth Certificate issued in India",
+                "Domicile Certificate of Maharashtra (Student / Father / Mother)",
+                "Passport-sized photographs",
+                "Photo Identity Proof – Aadhaar Card",
+                "JEE Score Card (if appeared)",
+                "Caste Certificate (SC) issued by competent authority in Maharashtra",
+                "Caste Validity Certificate issued by competent authority in Maharashtra"
+            ],
+            "ST": [
+                "MHT CET Application Form",
+                "MHT CET Admit Card",
+                "MHT CET Scorecard",
+                "Class 10 Mark Sheet",
+                "Class 12 Mark Sheet",
+                "12th College Leaving Certificate",
+                "Certificate of Indian Nationality OR Nationality mentioned on 12th Leaving Certificate OR Birth Certificate issued in India",
+                "Domicile Certificate of Maharashtra (Student / Father / Mother)",
+                "Passport-sized photographs",
+                "Photo Identity Proof – Aadhaar Card",
+                "JEE Score Card (if appeared)",
+                "Caste Certificate (ST) issued by competent authority in Maharashtra",
+                "Caste Validity Certificate issued by competent authority in Maharashtra"
+            ],
+            "EWS": [
+                "MHT CET Application Form",
+                "MHT CET Admit Card",
+                "MHT CET Scorecard",
+                "Class 10 Mark Sheet",
+                "Class 12 Mark Sheet",
+                "12th College Leaving Certificate",
+                "Certificate of Indian Nationality OR Nationality mentioned on 12th Leaving Certificate OR Birth Certificate issued in India",
+                "Domicile Certificate of Maharashtra (Student / Father / Mother)",
+                "Passport-sized photographs",
+                "Photo Identity Proof – Aadhaar Card",
+                "JEE Score Card (if appeared)",
+                "Valid EWS Certificate issued by competent authority in Maharashtra",
+                "Income Certificate showing family income below ₹8 lakhs"
+            ],
+            "Minority": [
+                "MHT CET Application Form",
+                "MHT CET Admit Card",
+                "MHT CET Scorecard",
+                "Class 10 Mark Sheet",
+                "Class 12 Mark Sheet",
+                "12th College Leaving Certificate",
+                "Certificate of Indian Nationality OR Nationality mentioned on 12th Leaving Certificate OR Birth Certificate issued in India",
+                "Domicile Certificate of Maharashtra (Student / Father / Mother)",
+                "Passport-sized photographs",
+                "Photo Identity Proof – Aadhaar Card",
+                "JEE Score Card (if appeared)",
+                "Self Declaration (Proforma O) / Samaj Letter",
+                "Linguistic Minority Certificate",
+                "Domicile Certificate of Any one amongst Student / Father / Mother"
+            ],
+            "PWD": [
+                "MHT CET Application Form",
+                "MHT CET Admit Card",
+                "MHT CET Scorecard",
+                "Class 10 Mark Sheet",
+                "Class 12 Mark Sheet",
+                "12th College Leaving Certificate",
+                "Certificate of Indian Nationality OR Nationality mentioned on 12th Leaving Certificate OR Birth Certificate issued in India",
+                "Domicile Certificate of Maharashtra (Student / Father / Mother)",
+                "Passport-sized photographs",
+                "Photo Identity Proof – Aadhaar Card",
+                "JEE Score Card (if appeared)",
+                "Physically Handicapped Certificate / PWD certificate from relevant authority"
+            ],
+            "Defence": [
+                "MHT CET Application Form",
+                "MHT CET Admit Card",
+                "MHT CET Scorecard",
+                "Class 10 Mark Sheet",
+                "Class 12 Mark Sheet",
+                "12th College Leaving Certificate",
+                "Certificate of Indian Nationality OR Nationality mentioned on 12th Leaving Certificate OR Birth Certificate issued in India",
+                "Domicile Certificate of Maharashtra (Student / Father / Mother)",
+                "Passport-sized photographs",
+                "Photo Identity Proof – Aadhaar Card",
+                "JEE Score Card (if appeared)",
+                "Defence Service Certificate (Proforma C) from Zilla Sainik Board",
+                "For DEF-1 & DEF-2 Domicile Certificate of father/mother who is/was in Defence Service"
+            ],
+            "Orphan": [
+                "MHT CET Application Form",
+                "MHT CET Admit Card",
+                "MHT CET Scorecard",
+                "Class 10 Mark Sheet",
+                "Class 12 Mark Sheet",
+                "12th College Leaving Certificate",
+                "Certificate of Indian Nationality OR Nationality mentioned on 12th Leaving Certificate OR Birth Certificate issued in India",
+                "Domicile Certificate of Maharashtra (Student / Father / Mother)",
+                "Passport-sized photographs",
+                "Photo Identity Proof – Aadhaar Card",
+                "JEE Score Card (if appeared)",
+                "Orphan Certificate from Regional Deputy Commissioner, Women & Child Development"
+            ],
+            "TFWS": [
+                "MHT CET Application Form",
+                "MHT CET Admit Card",
+                "MHT CET Scorecard",
+                "Class 10 Mark Sheet",
+                "Class 12 Mark Sheet",
+                "12th College Leaving Certificate",
+                "Certificate of Indian Nationality OR Nationality mentioned on 12th Leaving Certificate OR Birth Certificate issued in India",
+                "Domicile Certificate of Maharashtra (Student / Father / Mother)",
+                "Passport-sized photographs",
+                "Photo Identity Proof – Aadhaar Card",
+                "JEE Score Card (if appeared)",
+                "Family Income Certificate for Tuition Fee Waiver Scheme (annual income below ₹8 lakhs)"
+            ]
+        };
+
+        let currentCategory = 'OPEN';
+        let checkedStates = JSON.parse(localStorage.getItem('mht_cet_docs')) || {};
+
+        function init() {
+            initAuth({ requireLogin: false });
+            const savedCategory = localStorage.getItem('mht_cet_category');
+            if (savedCategory && documentData[savedCategory]) {
+                currentCategory = savedCategory;
+                document.getElementById('categorySelect').value = currentCategory;
+            }
+            renderList();
+        }
+
+        function renderList() {
+            const listContainer = document.getElementById('documentList');
+            const docs = documentData[currentCategory];
+            const categoryStates = checkedStates[currentCategory] || [];
+
+            listContainer.innerHTML = docs.map((doc, index) => {
+                const isChecked = categoryStates.includes(index);
+                return `
+                    <div class="document-item ${isChecked ? 'checked' : ''}" onclick="toggleDoc(${index})">
+                        <div class="checkbox-wrapper">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <div class="document-name">${doc}</div>
+                    </div>
+                `;
+            }).join('');
+
+            updateProgress();
+        }
+
+        function toggleDoc(index) {
+            if (!checkedStates[currentCategory]) {
+                checkedStates[currentCategory] = [];
+            }
+
+            const idx = checkedStates[currentCategory].indexOf(index);
+            if (idx === -1) {
+                checkedStates[currentCategory].push(index);
+            } else {
+                checkedStates[currentCategory].splice(idx, 1);
+            }
+
+            localStorage.setItem('mht_cet_docs', JSON.stringify(checkedStates));
+            renderList();
+        }
+
+        function updateCategory() {
+            currentCategory = document.getElementById('categorySelect').value;
+            localStorage.setItem('mht_cet_category', currentCategory);
+            renderList();
+        }
+
+        function updateProgress() {
+            const docs = documentData[currentCategory];
+            const checkedCount = (checkedStates[currentCategory] || []).length;
+            const percentage = docs.length > 0 ? Math.round((checkedCount / docs.length) * 100) : 0;
+            
+            document.getElementById('progressText').textContent = `${percentage}% Completed`;
+            document.getElementById('progressBar').style.width = `${percentage}%`;
+        }
+
+        function resetChecklist() {
+            if (confirm('Are you sure you want to reset the checklist for this category?')) {
+                checkedStates[currentCategory] = [];
+                localStorage.setItem('mht_cet_docs', JSON.stringify(checkedStates));
+                renderList();
+            }
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
