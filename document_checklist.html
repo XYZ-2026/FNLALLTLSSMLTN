@@ -21,7 +21,7 @@
             --bg: #f8fafc;
             --card: #ffffff;
             --stroke: #e2e8f0;
-            --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
         }
 
         *,
@@ -38,7 +38,8 @@
             background: var(--bg);
             color: var(--ink);
             line-height: 1.5;
-            padding-top: 80px; /* Offset for global header */
+            padding-top: 80px;
+            /* Offset for global header */
             min-height: 100vh;
         }
 
@@ -124,7 +125,7 @@
             padding-right: 48px;
             transition: all 0.2s;
         }
-        
+
         select:focus {
             box-shadow: 0 0 0 5px var(--brand-ring);
         }
@@ -290,6 +291,85 @@
             text-decoration: line-through;
         }
 
+        /* ── Table (Print Only) ── */
+        .checklist-table-container {
+            display: none;
+            margin-top: 24px;
+            border-radius: 16px;
+            border: 1px solid var(--stroke);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            background: #fff;
+        }
+
+        th {
+            background: #10b981;
+            color: #fff;
+            font-family: 'Lexend', sans-serif;
+            font-weight: 700;
+            padding: 16px 20px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--ink2);
+        }
+
+        .col-num { width: 50px; text-align: center; color: var(--muted); }
+        .col-status { width: 120px; text-align: center; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending { background: #f1f5f9; color: #64748b; }
+        .status-ready { background: #dcfce7; color: #15803d; }
+
+        /* ── Letterhead ── */
+        .letterhead {
+            display: none;
+            padding-bottom: 30px;
+            border-bottom: 2px solid var(--brand);
+            margin-bottom: 40px;
+        }
+
+        .letterhead-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .letterhead-title h2 {
+            font-family: 'Lexend', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+
+        .letterhead-info {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 600;
+            text-align: right;
+        }
+
         /* ── Print Styles ── */
         @media print {
             body {
@@ -299,77 +379,104 @@
 
             .wrap {
                 max-width: 100%;
-                padding: 0;
+                padding: 40px;
             }
 
             .card {
                 box-shadow: none !important;
                 border: none !important;
-                padding: 20px !important;
+                padding: 0 !important;
             }
 
             .controls,
             .btn-icon,
             .btn-outline,
             .btn-primary,
-            .progress-bar-container,
             header,
             .sidebar,
-            .sidebar-overlay {
+            .sidebar-overlay,
+            .checklist-header,
+            .progress-section,
+            .document-list {
                 display: none !important;
             }
 
-            .document-item {
-                break-inside: avoid;
-                margin-bottom: 8px;
-                padding: 8px 0;
+            .letterhead,
+            .checklist-table-container {
+                display: block !important;
             }
-            
-            .document-item:hover { background: transparent; border-color: transparent; }
 
-            .progress-section {
-                border-top: 1px solid #eee;
+            table {
+                border: 1.5px solid #000 !important;
             }
-            
-            .checklist-header h1 {
-                font-size: 24px;
+
+            th {
+                background: var(--brand) !important;
+                -webkit-print-color-adjust: exact;
+                color: #fff !important;
+            }
+
+            tr:nth-child(even) td {
+                background: #f8fafc !important;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .status-ready {
+                background: #fef2f2 !important;
+                color: var(--brand) !important;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .print-watermark {
+                display: block !important;
+                position: fixed;
+                bottom: 20px;
+                width: 100%;
+                text-align: center;
+                font-size: 10px;
+                color: #94a3b8;
+                font-weight: 700;
             }
         }
 
+        .print-watermark { display: none; }
+
         @media (max-width: 640px) {
-            body {
-                padding-top: 70px;
-            }
-            .wrap {
-                padding: 20px 16px;
-            }
-            .card {
-                padding: 32px 20px;
-                border-radius: 24px;
-            }
-
-            .controls {
-                gap: 10px;
-            }
-
-            .btn {
-                padding: 14px 18px;
-                flex: 1;
-            }
-            
-            .btn-icon {
-                flex: 0;
-            }
-            
-            .checklist-header h1 {
-                font-size: 24px;
-            }
+            body { padding-top: 70px; }
+            .wrap { padding: 20px 16px; }
+            .card { padding: 32px 20px; border-radius: 24px; }
+            .controls { gap: 10px; }
+            .btn { padding: 14px 18px; flex: 1; }
+            .checklist-header h1 { font-size: 24px; }
         }
     </style>
 </head>
 
 <body>
     <div class="wrap">
+        <div class="print-watermark">
+            Downloaded from College Simplified
+        </div>
+
+        <div class="letterhead">
+            <div class="letterhead-content">
+                <div class="letterhead-left">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <img src="logo.png" alt="Logo" style="height: 40px;">
+                        <span style="font-family: 'Lexend', sans-serif; font-size: 24px; font-weight: 800; color: var(--ink);">College Simplified</span>
+                    </div>
+                    <div class="letterhead-title">
+                        <h2>Document Checklist Report</h2>
+                        <p id="printCategoryLabel" style="font-weight: 700; color: var(--brand); text-transform: uppercase; font-size: 14px;"></p>
+                    </div>
+                </div>
+                <div class="letterhead-info">
+                    <p>Official Admission Portal</p>
+                    <p>www.collegesimplified.in</p>
+                    <p id="printDate"></p>
+                </div>
+            </div>
+        </div>
         <div class="card" id="checklist-card">
             <div class="checklist-header">
                 <h1>Document Checklist</h1>
@@ -392,21 +499,21 @@
                     </select>
                 </div>
 
+                <button class="btn btn-primary" onclick="window.print()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                    EXPORT PDF
+                </button>
+
                 <button class="btn btn-outline" onclick="resetChecklist()">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
                         stroke-linecap="round" stroke-linejoin="round">
                         <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path>
                     </svg>
                     RESET
-                </button>
-
-                <button class="btn-icon" onclick="window.print()" title="Print Checklist">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-                        <rect x="6" y="14" width="12" height="8"></rect>
-                    </svg>
                 </button>
             </div>
 
@@ -418,7 +525,22 @@
             </div>
 
             <div class="document-list" id="documentList">
-                <!-- Documents will be injected here -->
+                <!-- Interactive list will be injected here -->
+            </div>
+
+            <div class="checklist-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="col-num">#</th>
+                            <th>Document</th>
+                            <th class="col-status">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="printTableBody">
+                        <!-- Print table rows will be injected here -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -594,9 +716,13 @@
 
         function renderList() {
             const listContainer = document.getElementById('documentList');
+            const tableBody = document.getElementById('printTableBody');
             const docs = documentData[currentCategory];
             const categoryStates = checkedStates[currentCategory] || [];
+            
+            document.getElementById('printCategoryLabel').textContent = `Category: ${currentCategory}`;
 
+            // Render interactive list for screen
             listContainer.innerHTML = docs.map((doc, index) => {
                 const isChecked = categoryStates.includes(index);
                 return `
@@ -608,6 +734,22 @@
                         </div>
                         <div class="document-name">${doc}</div>
                     </div>
+                `;
+            }).join('');
+
+            // Render table for print
+            tableBody.innerHTML = docs.map((doc, index) => {
+                const isChecked = categoryStates.includes(index);
+                return `
+                    <tr>
+                        <td class="col-num">${index + 1}</td>
+                        <td>${doc}</td>
+                        <td class="col-status">
+                            <span class="status-badge ${isChecked ? 'status-ready' : 'status-pending'}">
+                                ${isChecked ? 'Ready' : 'Pending'}
+                            </span>
+                        </td>
+                    </tr>
                 `;
             }).join('');
 
@@ -640,7 +782,7 @@
             const docs = documentData[currentCategory];
             const checkedCount = (checkedStates[currentCategory] || []).length;
             const percentage = docs.length > 0 ? Math.round((checkedCount / docs.length) * 100) : 0;
-            
+
             document.getElementById('progressText').textContent = `${percentage}% Completed`;
             document.getElementById('progressBar').style.width = `${percentage}%`;
         }
