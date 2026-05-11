@@ -1218,7 +1218,7 @@
               </div>
               <div style="display:flex;gap:12px;align-items:center">
                 <select id="csvFilter" class="form-control"
-                  style="width:140px;height:44px;font-size:13px;border-radius:12px">
+                  style="width:140px;height:44px;font-size:13px;border-radius:12px" onchange="filterUsers()">
                   <option value="all">All Time</option>
                   <option value="today">Today</option>
                   <option value="week">Past Week</option>
@@ -1710,14 +1710,30 @@
     }
 
     function filterUsers() {
-      var q = (document.getElementById('userSearch').value || '').toLowerCase();
-      if (!q) { renderUsers(allUsers); return; }
+      var q = (document.getElementById('userSearch').value || '').toLowerCase().trim();
+      var dateRange = document.getElementById('csvFilter').value;
+      
+      var now = new Date();
+      var cutoff = 0;
+      if (dateRange === 'today') cutoff = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+      else if (dateRange === 'week') cutoff = now.getTime() - (7 * 24 * 60 * 60 * 1000);
+      else if (dateRange === 'month') cutoff = now.getTime() - (30 * 24 * 60 * 60 * 1000);
+
       var filtered = allUsers.filter(function (u) {
-        return (u.name || '').toLowerCase().includes(q) ||
-          (u.email || '').toLowerCase().includes(q) ||
-          (u.state || '').toLowerCase().includes(q) ||
-          (u.city || '').toLowerCase().includes(q) ||
-          (u.phone || '').toLowerCase().includes(q);
+        // 1. Date Filter
+        if (dateRange !== 'all') {
+          var dt = u.createdAt ? (u.createdAt.toDate ? u.createdAt.toDate() : new Date(u.createdAt)) : null;
+          if (!dt || dt.getTime() < cutoff) return false;
+        }
+
+        // 2. Text Search
+        if (!q) return true;
+        var name = String(u.name || '').toLowerCase();
+        var email = String(u.email || '').toLowerCase();
+        var state = String(u.state || '').toLowerCase();
+        var city = String(u.city || '').toLowerCase();
+        var phone = String(u.phone || '').toLowerCase();
+        return name.includes(q) || email.includes(q) || state.includes(q) || city.includes(q) || phone.includes(q);
       });
       renderUsers(filtered);
     }
