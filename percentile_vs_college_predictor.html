@@ -715,7 +715,8 @@
 
         branches.forEach(b => {
           const sel = selectedBranches.has(b) ? 'selected' : '';
-          html += `<div class="branch-opt ${sel}" onclick="toggleBranch('${b.replace(/'/g, "\\'")}')">
+          const bIdx = allBranchNames.indexOf(b);
+          html += `<div class="branch-opt ${sel}" onclick="toggleBranch(${bIdx})">
             <div class="branch-chk">${sel ? '✓' : ''}</div>
             <span>${b}</span>
           </div>`;
@@ -740,11 +741,7 @@
       renderBranchPanel();
     }
 
-    function toggleBranch(b) {
-      if (selectedBranches.has(b)) selectedBranches.delete(b);
-      else selectedBranches.add(b);
-      renderBranchPanel();
-    }
+
 
     function toggleCategory(cat) {
       const grouped = {};
@@ -833,7 +830,14 @@
 
       if (allData.length > 0) {
         const bSet = new Set();
-        allData.forEach(r => { if (r.branch) bSet.add(r.branch.trim()); });
+        allData.forEach(r => { 
+          if (r.branch) {
+            // Normalize: trim and collapse multiple spaces into one
+            const normalized = r.branch.trim().replace(/\s+/g, ' ');
+            r.branch = normalized;
+            bSet.add(normalized); 
+          }
+        });
         allBranchNames = Array.from(bSet).sort();
         renderBranchPanel();
 
@@ -842,6 +846,19 @@
       } else {
         document.getElementById('dataLoader').innerHTML = '<span style="color:var(--brand)">Failed to load data matrix. Please refresh.</span>';
       }
+    }
+
+    function toggleBranch(indexOrName) {
+      if (typeof indexOrName === 'number') {
+        const b = allBranchNames[indexOrName];
+        if (selectedBranches.has(b)) selectedBranches.delete(b);
+        else selectedBranches.add(b);
+      } else {
+        const b = indexOrName;
+        if (selectedBranches.has(b)) selectedBranches.delete(b);
+        else selectedBranches.add(b);
+      }
+      renderBranchPanel();
     }
 
     window.predict = predict;
