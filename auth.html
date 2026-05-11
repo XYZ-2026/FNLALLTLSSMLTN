@@ -551,15 +551,13 @@
         <div class="field-row">
           <div>
             <label>State</label>
-            <select id="rState" onchange="populateCities()">
+            <select id="rState">
               <option value="">Select State</option>
             </select>
           </div>
           <div>
             <label>City</label>
-            <select id="rCity">
-              <option value="">Select City</option>
-            </select>
+            <input type="text" id="rCity" placeholder="Pune / Mumbai">
           </div>
         </div>
         <div class="field-row">
@@ -635,13 +633,7 @@
         }).join('');
     })();
 
-    function populateCities() {
-      var st = document.getElementById('rState').value;
-      var sel = document.getElementById('rCity');
-      var cities = STATE_CITIES[st] || [];
-      sel.innerHTML = '<option value="">Select City</option>' +
-        cities.map(function (c) { return '<option value="' + escAuth(c) + '">' + escAuth(c) + '</option>'; }).join('');
-    }
+
 
     // Tab switch
     function switchTab(t) {

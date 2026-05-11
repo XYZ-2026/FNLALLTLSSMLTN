@@ -67,10 +67,11 @@ function injectGlobalUI() {
     body { transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     header { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
-    .sidebar-profile { display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--brand-soft); border-radius: 16px; margin-top: 8px; }
+    .sidebar-profile { display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--brand-soft); border-radius: 16px; margin-top: 8px; overflow: hidden; }
     .sidebar-avatar { width: 40px; height: 40px; background: var(--brand); color: #fff; border-radius: 50%; display: grid; place-items: center; font-weight: 800; flex-shrink: 0; }
+    .sidebar-user-info { overflow: hidden; min-width: 0; flex: 1; }
     .sidebar-user-name { font-weight: 700; font-size: 14px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .sidebar-user-email { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sidebar-user-email { font-size: 11px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 12px; text-decoration: none; color: var(--ink); font-weight: 600; font-size: 13px; transition: 0.2s; }
     .sidebar-link:hover { background: var(--brand-soft); color: var(--brand); }
     .sidebar-link svg { color: var(--muted); transition: 0.2s; width: 18px; height: 18px; flex-shrink: 0; }
