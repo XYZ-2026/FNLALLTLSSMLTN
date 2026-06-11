@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- SEO Optimization Meta Tags -->
+    <title>JoSAA Counselling Explorer (IIT, NIT, IIIT) — College Simplified</title>
+    <meta name="keywords" content="Counselling, mhtcet, josaa counselling, college simplified, mhtcet counselling, concept simplified, mhtcet counseling, josaa counseling, counseling, college predictor, college predictors, engineering college predictor, college admission predictor, josaa dashboard, nit iiit gfti admissions, jee advanced, jee main">
+    <meta name="description" content="Access the national-level JoSAA Counselling Dashboard. Optimize your choices for admission to IITs, NITs, IIITs, and GFTIs.">
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:title" content="JoSAA Counselling Explorer (IIT, NIT, IIIT) — College Simplified">
+    <meta property="og:description" content="Access the national-level JoSAA Counselling Dashboard. Optimize your choices for admission to IITs, NITs, IIITs, and GFTIs.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://counselling.collegesimplified.in/josaa-landing.html">
+    <meta property="og:site_name" content="College Simplified">
+    
+    <!-- Structured Data (JSON-LD) for Search Engines -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "College Simplified",
+      "url": "https://counselling.collegesimplified.in/",
+      "sameAs": [
+        "https://play.google.com/store/apps/details?id=co.mark.vvzmn",
+        "https://apps.apple.com/in/app/myinstitute/id1472483563",
+        "https://www.instagram.com/college_simplified/",
+        "https://youtube.com/@conceptsimplified"
+      ]
+    }
+    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lexend:wght@400;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --brand: #dc2626;
+      --ink: #111827;
+      --muted: #6b7280;
+      --bg: #fafafa;
+      --card: #ffffff;
+      --stroke: rgba(0, 0, 0, 0.08);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      --brand-soft: #fef2f2;
+      --brand-ring: rgba(220, 38, 38, 0.15);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html,
+    body {
+      overflow-x: hidden;
+      width: 100%;
+      position: relative;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      padding-top: 64px;
+      line-height: 1.6
+    }
+
+    .hero {
+      padding: 100px 20px 60px;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto
+    }
+
+    .badge {
+      background: var(--brand-soft);
+      color: var(--brand);
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      display: inline-block;
+      margin-bottom: 24px;
+      border: 1px solid var(--brand-ring)
+    }
+
+    .hero h1 {
+      font-family: 'Lexend', sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.5rem, 6vw, 3.75rem);
+      line-height: 1.1;
+      margin-bottom: 20px;
+      letter-spacing: -0.03em
+    }
+
+    .hero h1 span {
+      color: var(--brand)
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.15rem;
+      max-width: 600px;
+      margin: 0 auto
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px 100px;
+      display: flex;
+      flex-direction: column;
+      gap: 100px
+    }
+
+    .section {
+      animation: fadeUp 0.6s ease both
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 48px
+    }
+
+    .section-icon {
+      width: 64px;
+      height: 64px;
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      color: var(--brand);
+      box-shadow: var(--shadow);
+      flex-shrink: 0
+    }
+
+    .section-title {
+      flex: 1
+    }
+
+    .section-title h2 {
+      font-family: 'Lexend', sans-serif;
+      font-weight: 800;
+      font-size: 32px;
+      color: var(--ink);
+      margin-bottom: 8px;
+      letter-spacing: -0.02em
+    }
+
+    .section-title p {
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 700px
+    }
+
+    .meta-badge {
+      background: var(--bg);
+      border: 1.5px solid var(--stroke);
+      color: var(--muted);
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px
+    }
+
+    .meta-badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--brand);
+      box-shadow: 0 0 0 3px var(--brand-ring)
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+      gap: 32px
+    }
+
+    .tool-card {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 28px;
+      padding: 40px;
+      text-decoration: none;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden
+    }
+
+    .tool-card:hover {
+      transform: translateY(-12px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--brand)
+    }
+
+    .tool-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      position: relative;
+      z-index: 1
+    }
+
+    .tool-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      font-size: 28px;
+      background: var(--bg);
+      color: var(--muted);
+      transition: all 0.3s;
+      border: 1px solid var(--stroke)
+    }
+
+    .tool-card:hover .tool-icon {
+      background: var(--white);
+      color: var(--brand);
+      border-color: var(--brand-ring);
+      transform: scale(1.05)
+    }
+
+    .arrow {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg);
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      transition: all 0.3s;
+      border: 1px solid var(--stroke)
+    }
+
+    .tool-card:hover .arrow {
+      background: var(--brand);
+      color: #fff;
+      transform: rotate(-45deg);
+      border-color: var(--brand)
+    }
+
+    .tool-info h3 {
+      font-family: 'Lexend', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--ink);
+      margin-bottom: 12px
+    }
+
+    .tool-info p {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.6
+    }
+
+    .tool-tag {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: var(--bg);
+      color: var(--muted);
+      margin-top: 8px
+    }
+
+    .tool-card:hover .tool-tag {
+      background: var(--brand-soft);
+      color: var(--brand)
+    }
+
+    @media (max-width: 768px) {
+      .section-header {
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 32px
+      }
+
+      .section-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px
+      }
+
+      .section-title h2 {
+        font-size: 26px
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 20px
+      }
+
+      .tool-card {
+        padding: 32px
+      }
+
+      .hero {
+        padding: 80px 20px 40px
+      }
+
+      .wrap {
+        gap: 60px
+      }
+    }
+
+    /* PLACEMENT EXPLORER STYLES */
+    .placement-section {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 32px;
+      padding: 40px;
+      box-shadow: var(--shadow);
+    }
+
+    .placement-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      border-bottom: 1.5px solid var(--stroke);
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+    }
+
+    .placement-btn {
+      background: rgba(220, 38, 38, 0.85);
+      color: #ffffff;
+      border: 2px solid transparent;
+      padding: 12px 28px;
+      border-radius: 12px;
+      font-family: 'Lexend', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .placement-btn:hover {
+      background: var(--brand);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+    }
+
+    .placement-btn.active {
+      background: var(--brand);
+      border-color: rgba(220, 38, 38, 0.4);
+      box-shadow: 0 0 0 4px var(--brand-ring), 0 4px 12px rgba(220, 38, 38, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .search-box {
+      position: relative;
+      min-width: 280px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 16px 12px 44px;
+      border-radius: 12px;
+      border: 1.5px solid var(--stroke);
+      background: var(--bg);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: var(--ink);
+      transition: all 0.3s;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--brand);
+      background: var(--card);
+      box-shadow: 0 0 0 4px var(--brand-ring);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid var(--stroke);
+    }
+
+    .placement-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    .placement-table th {
+      background: var(--bg);
+      color: var(--muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      padding: 16px 24px;
+      border-bottom: 1.5px solid var(--stroke);
+    }
+
+    .placement-table td {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--stroke);
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    .placement-row {
+      transition: background 0.2s;
+    }
+
+    .placement-row:hover {
+      background: rgba(0, 0, 0, 0.015);
+    }
+
+    .placement-row:last-child td {
+      border-bottom: none;
+    }
+
+    .font-semibold {
+      font-weight: 600;
+    }
+
+    .text-brand {
+      color: var(--brand);
+    }
+
+    .text-muted {
+      color: var(--muted);
+    }
+
+    .text-ink {
+      color: var(--ink);
+    }
+
+    .text-emerald {
+      color: #059669;
+    }
+
+    .tier-tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .tier-tier-1 {
+      background: #fef2f2;
+      border: 1px solid rgba(220, 38, 38, 0.15);
+      color: #dc2626;
+    }
+
+    .tier-tier-2 {
+      background: #f0fdf4;
+      border: 1px solid rgba(22, 163, 74, 0.15);
+      color: #16a34a;
+    }
+
+    .tier-tier-3 {
+      background: #eff6ff;
+      border: 1px solid rgba(37, 99, 235, 0.15);
+      color: #2563eb;
+    }
+
+    .tier-tier-4 {
+      background: #fef3c7;
+      border: 1px solid rgba(217, 119, 6, 0.15);
+      color: #d97706;
+    }
+
+    .percentage-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .percentage-val {
+      font-weight: 600;
+      min-width: 40px;
+    }
+
+    .percentage-bar-bg {
+      flex: 1;
+      height: 6px;
+      background: var(--bg);
+      border-radius: 100px;
+      overflow: hidden;
+      min-width: 80px;
+      max-width: 120px;
+    }
+
+    .percentage-bar-fill {
+      height: 100%;
+      background: var(--brand);
+      border-radius: 100px;
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #placement-loading,
+    #placement-error {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--stroke);
+      border-top-color: var(--brand);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .scroll-hint {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--muted);
+      background: var(--bg);
+      border: 1px dashed var(--stroke);
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 768px) {
+      .placement-section {
+        padding: 20px 16px;
+        border-radius: 24px;
+        max-width: 100%;
+        overflow: hidden;
+      }
+      
+      .placement-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+      }
+
+      .btn-group {
+        width: 100%;
+        gap: 8px;
+      }
+
+      .placement-btn {
+        flex: 1;
+        padding: 10px 14px;
+        font-size: 13px;
+        text-align: center;
+      }
+
+      .search-box {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .scroll-hint {
+        display: inline-flex;
+        width: 100%;
+      }
+
+      .table-responsive {
+        max-width: 100%;
+        overflow-x: auto;
+        display: block;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .placement-table th {
+        padding: 12px 14px;
+        font-size: 10px;
+      }
+
+      .placement-table td {
+        padding: 14px 14px;
+        font-size: 13px;
+      }
+
+      .placement-table td:first-child {
+        white-space: normal;
+        min-width: 160px;
+        word-break: break-word;
+      }
+
+      .percentage-bar-bg {
+        max-width: 80px;
+        min-width: 60px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="hero">
+    <div class="badge">National Level Toolset</div>
+    <h1>Strategic <span>JOSAA</span> Counseling</h1>
+    <p>Premium tools for IIT, NIT, IIIT & GFTI admissions. Predict your rank, find your dream college, and access verified
+      cutoff data.</p>
+  </div>
+
+  <div class="wrap">
+    <!-- Premium Counselling Banners Section -->
+    <section class="premium-banners-section">
+      <style>
+        .premium-banners-section {
+          width: 100%;
+          font-family: 'Inter', sans-serif;
+        }
+        .banners-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          gap: 28px;
+          margin-top: 24px;
+        }
+        .premium-banner-card {
+          background: var(--card, #ffffff);
+          border: 1px solid var(--stroke, rgba(0,0,0,0.08));
+          border-radius: 24px;
+          overflow: hidden;
+          text-decoration: none;
+          color: inherit;
+          display: flex;
+          flex-direction: column;
+          box-shadow: var(--shadow, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .premium-banner-card:hover {
+          transform: translateY(-8px);
+          box-shadow: var(--shadow-lg, 0 20px 25px -5px rgba(0,0,0,0.1));
+          border-color: var(--brand, #dc2626);
+        }
+        .banner-img-container {
+          position: relative;
+          width: 100%;
+          padding-top: 52%; /* Aspect ratio of banners */
+          overflow: hidden;
+          background: #f3f4f6;
+        }
+        .banner-img-container img {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .premium-banner-card:hover .banner-img-container img {
+          transform: scale(1.05);
+        }
+        .banner-overlay {
+          position: absolute;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.3);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        }
+        .premium-banner-card:hover .banner-overlay {
+          opacity: 1;
+        }
+        .view-program-btn {
+          background: #ffffff;
+          color: #111827;
+          padding: 10px 20px;
+          border-radius: 100px;
+          font-weight: 700;
+          font-size: 13px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+          transform: translateY(10px);
+          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .premium-banner-card:hover .view-program-btn {
+          transform: translateY(0);
+        }
+        .banner-text-details {
+          padding: 20px 24px;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        .banner-text-details h3 {
+          font-family: 'Lexend', sans-serif;
+          font-weight: 700;
+          font-size: 18px;
+          color: var(--ink, #111827);
+        }
+        .banner-text-details p {
+          font-size: 13.5px;
+          color: var(--muted, #6b7280);
+          line-height: 1.4;
+        }
+        .section-header-banner {
+          margin-bottom: 8px;
+        }
+        .banner-badge-top {
+          background: var(--brand-soft, #fef2f2);
+          color: var(--brand, #dc2626);
+          padding: 6px 14px;
+          border-radius: 100px;
+          font-size: 11px;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: inline-block;
+          margin-bottom: 12px;
+          border: 1px solid var(--brand-ring, rgba(220,38,38,0.1));
+        }
+        .section-header-banner h2 {
+          font-family: 'Lexend', sans-serif;
+          font-weight: 800;
+          font-size: 24px;
+          color: var(--ink, #111827);
+          letter-spacing: -0.01em;
+        }
+        .section-header-banner p {
+          color: var(--muted, #6b7280);
+          font-size: 14.5px;
+          margin-top: 4px;
+        }
+        @media (max-width: 640px) {
+          .banners-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+          }
+          .banner-text-details {
+            padding: 16px 20px;
+          }
+          .banner-text-details h3 {
+            font-size: 16px;
+          }
+          .section-header-banner h2 {
+            font-size: 20px;
+          }
+        }
+      </style>
+      <div class="section-header-banner">
+        <div class="banner-badge-top">Premium Counselling Programs</div>
+        <h2>Direct Personal Counselling 2026</h2>
+        <p>Get premium mentoring from expert counselors to secure your dream engineering college seat.</p>
+      </div>
+      <div class="banners-grid">
+        <!-- Banner 1 -->
+        <a href="https://www.conceptsimplified.in/courses/668919" target="_blank" class="premium-banner-card">
+          <div class="banner-img-container">
+            <img src="paid%20banners/banner1.webp" alt="Simplified Pro | Maharashtra Engineering Admission Counselling 2026">
+            <div class="banner-overlay">
+              <span class="view-program-btn">View Program &rarr;</span>
+            </div>
+          </div>
+          <div class="banner-text-details">
+            <h3>Simplified Pro</h3>
+            <p>Maharashtra Engineering Admission Counselling 2026</p>
+          </div>
+        </a>
+
+        <!-- Banner 2 -->
+        <a href="https://www.conceptsimplified.in/courses/840574" target="_blank" class="premium-banner-card">
+          <div class="banner-img-container">
+            <img src="paid%20banners/banner2.webp" alt="Simplified Premium 1:1 | Maharashtra Engineering Admission Counselling 2026">
+            <div class="banner-overlay">
+              <span class="view-program-btn">View Program &rarr;</span>
+            </div>
+          </div>
+          <div class="banner-text-details">
+            <h3>Simplified Premium 1:1</h3>
+            <p>Maharashtra Engineering Admission Counselling 2026</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div class="section-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+            <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
+          </svg>
+        </div>
+        <div class="section-title">
+          <h2>JOSAA Admissions Hub</h2>
+          <p>Comprehensive explorer for national-level engineering institutes. Master the JOSAA counseling process with
+            data-driven predictions.</p>
+          <div class="meta-badge"><span class="dot"></span> 5 Specialized Tools</div>
+        </div>
+      </div>
+      <div class="grid">
+        <a class="tool-card" href="josaa_marks.html">
+          <div class="tool-top">
+            <div class="tool-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m7.5 4.27 9 5.15" />
+                <path d="M21 8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8z" />
+              </svg></div>
+            <div class="arrow">→</div>
+          </div>
+          <div class="tool-info">
+            <h3>Marks vs Percentile</h3>
+            <p>Enter your JEE Mains marks and shift details to get your estimated percentile score instantly.</p>
+            <div class="tool-tag">JEE Metrics</div>
+          </div>
+        </a>
+        <a class="tool-card" href="josaa_rank.html">
+          <div class="tool-top">
+            <div class="tool-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="20" x2="18" y2="10" />
+                <line x1="12" y1="20" x2="12" y2="4" />
+                <line x1="6" y1="20" x2="6" y2="14" />
+              </svg></div>
+            <div class="arrow">→</div>
+          </div>
+          <div class="tool-info">
+            <h3>Percentile to Rank</h3>
+            <p>Convert your JEE Mains percentile into an estimated All India Rank (AIR) based on current trends.</p>
+            <div class="tool-tag">Rank Prediction</div>
+          </div>
+        </a>
+        <a class="tool-card" href="josaa.html">
+          <div class="tool-top">
+            <div class="tool-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+              </svg></div>
+            <div class="arrow">→</div>
+          </div>
+          <div class="tool-info">
+            <h3>College Predictor</h3>
+            <p>Find matching NITs, IIITs & GFTIs based on your rank, category, and home state preferences.</p>
+            <div class="tool-tag">Strategic Match</div>
+          </div>
+        </a>
+        <a class="tool-card" href="josaa_iit.html">
+          <div class="tool-top">
+            <div class="tool-icon" style="color: #c2410c; background: #fff7ed;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+              </svg></div>
+            <div class="arrow">→</div>
+          </div>
+          <div class="tool-info">
+            <h3>IIT Predictor</h3>
+            <p>Find matching Indian Institutes of Technology (IITs) based on your JEE Advanced rank and category.</p>
+            <div class="tool-tag" style="color: #c2410c; background: #fff7ed;">IIT Special</div>
+          </div>
+        </a>
+        <a class="tool-card" href="josaa_cutoff.html">
+          <div class="tool-top">
+            <div class="tool-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg></div>
+            <div class="arrow">→</div>
+          </div>
+          <div class="tool-info">
+            <h3>JOSAA Cutoff Checker</h3>
+            <p>Search any national institute to view opening and closing ranks across all counselling rounds.</p>
+            <div class="tool-tag">Official Data</div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- PREMIUM SECTION -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-icon"
+          style="background:linear-gradient(135deg,#fef9e7,#fdf2e9);border-color:rgba(184,134,11,0.2);color:#b8860b">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polygon
+              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+          </svg>
+        </div>
+        <div class="section-title">
+          <h2>Premium Counselling Tools</h2>
+          <p>Advanced tools exclusively for premium members. Build your perfect preference list with JOSAA-specific
+            parameters and smart suggestions.</p>
+          <div class="meta-badge" style="background:#fef9e7;border-color:rgba(184,134,11,0.2);color:#b8860b"><span
+              class="dot" style="background:#b8860b;box-shadow:0 0 0 3px rgba(184,134,11,0.15)"></span> Premium Only
+          </div>
+        </div>
+      </div>
+      <div class="grid">
+        <a class="tool-card" href="josaa-preference-builder.html"
+          style="border:2px solid rgba(184,134,11,0.2);background:linear-gradient(145deg,#fff,#fef9e7)">
+          <div class="tool-top">
+            <div class="tool-icon"
+              style="background:linear-gradient(135deg,#fef9e7,#fdf2e9);color:#b8860b;border-color:rgba(184,134,11,0.2)">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+                <polyline points="10 9 9 9 8 9" />
+              </svg>
+            </div>
+            <div class="arrow" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#fff;border:none">→</div>
+          </div>
+          <div class="tool-info">
+            <h3>JOSAA Preference List Builder</h3>
+            <p>Smart 4-step wizard to build your JOSAA counselling preference list with college matching, drag-and-drop
+              reordering, and PDF/Excel export.</p>
+            <div class="tool-tag"
+              style="background:linear-gradient(135deg,#fef9e7,#fdf2e9);color:#b8860b;border:1px solid rgba(184,134,11,0.2)">
+              Premium Feature</div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- PLACEMENT STATISTICS HUB -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-icon" style="background: linear-gradient(135deg, #fff5f5, #fff); border-color: rgba(220, 38, 38, 0.2); color: var(--brand);">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10" />
+            <line x1="12" y1="20" x2="12" y2="4" />
+            <line x1="6" y1="20" x2="6" y2="14" />
+          </svg>
+        </div>
+        <div class="section-title">
+          <h2>College Placements Overview</h2>
+          <p>Analyze key placement statistics including average, median, highest packages, and employment percentages across national institutes.</p>
+          <div class="meta-badge" id="placement-meta-badge"><span class="dot"></span> Select a category to view stats</div>
+        </div>
+      </div>
+
+      <div class="placement-section">
+        <div class="placement-controls">
+          <div class="btn-group">
+            <button class="placement-btn" data-type="IIT" onclick="loadPlacements('IIT')">IIT</button>
+            <button class="placement-btn" data-type="NIT" onclick="loadPlacements('NIT')">NIT</button>
+            <button class="placement-btn" data-type="IIIT" onclick="loadPlacements('IIIT')">IIIT</button>
+            <button class="placement-btn" data-type="GFTI" onclick="loadPlacements('GFTI')">GFTI</button>
+          </div>
+          <div class="search-box">
+            <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+            <input type="text" id="placement-search" class="search-input" placeholder="Search by college or state..." oninput="filterPlacements()">
+          </div>
+        </div>
+
+        <div id="placement-loading" style="display: none;">
+          <div class="spinner"></div>
+          <p>Fetching placement metrics...</p>
+        </div>
+
+        <div id="placement-error">
+          <p>Choose an option above to examine latest placement metrics.</p>
+        </div>
+
+        <div id="placement-table-container" style="display: none;">
+          <div class="scroll-hint">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px; vertical-align: middle;">
+              <path d="m9 18 6-6-6-6"/>
+            </svg>
+            Swipe horizontally to view full table
+          </div>
+          <div class="table-responsive">
+            <table class="placement-table">
+              <thead>
+                <tr>
+                  <th>Institute</th>
+                  <th>Location</th>
+                  <th id="tier-header">Tier</th>
+                  <th>Avg Package</th>
+                  <th>Median Package</th>
+                  <th>Highest Package</th>
+                  <th>Placement %</th>
+                </tr>
+              </thead>
+              <tbody id="placement-table-body">
+                <!-- Data loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase_config.js"></script>
+  <script src="shared_auth.js"></script>
+  <script>
+    initAuth({ requireLogin: false });
+
+    // PLACEMENT HUB SCRIPT
+    let currentPlacementsData = [];
+    let currentType = 'IIT';
+
+    async function loadPlacements(type) {
+      currentType = type;
+      // Toggle active button styling
+      document.querySelectorAll('.placement-btn').forEach(btn => {
+        if (btn.dataset.type === type) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      // Reset search input
+      document.getElementById('placement-search').value = '';
+
+      const tableBody = document.getElementById('placement-table-body');
+      const tableContainer = document.getElementById('placement-table-container');
+      const loadingIndicator = document.getElementById('placement-loading');
+      const errorIndicator = document.getElementById('placement-error');
+      const metaBadge = document.getElementById('placement-meta-badge');
+
+      tableContainer.style.display = 'none';
+      errorIndicator.style.display = 'none';
+      loadingIndicator.style.display = 'block';
+
+      try {
+        const response = await fetch(`placement/${type}_PLACEMENTS.json`);
+        if (!response.ok) throw new Error('Failed to fetch placements data');
+        const data = await response.json();
+        currentPlacementsData = data[`${type}_PLACEMENTS`] || [];
+
+        renderPlacements(currentPlacementsData, type);
+
+        // Update meta badge
+        metaBadge.innerHTML = `<span class="dot"></span> ${currentPlacementsData.length} ${type} Placement Profiles loaded`;
+
+        loadingIndicator.style.display = 'none';
+        tableContainer.style.display = 'block';
+      } catch (error) {
+        console.error(error);
+        loadingIndicator.style.display = 'none';
+        errorIndicator.innerHTML = `<p style="color: var(--brand); font-weight: 500;">Failed to load ${type} placements. Please ensure files are placed under the placement directory.</p>`;
+        errorIndicator.style.display = 'block';
+        metaBadge.innerHTML = `<span class="dot" style="background:#ef4444"></span> Connection issue / Missing files`;
+      }
+    }
+
+    function renderPlacements(list, type) {
+      const tableBody = document.getElementById('placement-table-body');
+      tableBody.innerHTML = '';
+
+      // Hide or show Tier header cell
+      const tierHeader = document.getElementById('tier-header');
+      if (tierHeader) {
+        tierHeader.style.display = type === 'IIT' ? 'none' : '';
+      }
+
+      if (list.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="${type === 'IIT' ? 6 : 7}" style="text-align: center; color: var(--muted); padding: 40px; font-weight: 500;">No institutes match your query.</td></tr>`;
+        return;
+      }
+
+      list.forEach(item => {
+        const row = document.createElement('tr');
+        row.className = 'placement-row';
+        row.innerHTML = `
+          <td class="font-semibold text-ink">${escapeHTML(item.Institute)}</td>
+          <td class="text-muted">${escapeHTML(item.Location || '-')}</td>
+          ${type !== 'IIT' ? `<td><span class="tier-tag tier-${(item.Tier || 'Tier 3').replace(' ', '-').toLowerCase()}">${escapeHTML(item.Tier || 'Tier 3')}</span></td>` : ''}
+          <td class="font-semibold text-brand">${escapeHTML(item['Avg Package'] || '-')}</td>
+          <td>${escapeHTML(item['Median Package'] || '-')}</td>
+          <td class="font-semibold text-emerald">${escapeHTML(item['Highest Package'] || '-')}</td>
+          <td>
+            <div class="percentage-wrapper">
+              <span class="percentage-val">${escapeHTML(item['Placement %'] || '-')}</span>
+              <div class="percentage-bar-bg">
+                <div class="percentage-bar-fill" style="width: ${item['Placement %'] || '0%'}"></div>
+              </div>
+            </div>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    function filterPlacements() {
+      const query = document.getElementById('placement-search').value.toLowerCase().trim();
+      if (!query) {
+        renderPlacements(currentPlacementsData, currentType);
+        return;
+      }
+
+      const filtered = currentPlacementsData.filter(item => {
+        const name = (item.Institute || '').toLowerCase();
+        const location = (item.Location || '').toLowerCase();
+        const tier = (item.Tier || '').toLowerCase();
+        return name.includes(query) || location.includes(query) || tier.includes(query);
+      });
+
+      renderPlacements(filtered, currentType);
+    }
+
+    function escapeHTML(str) {
+      if (!str) return '';
+      return str.toString()
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Auto-load IIT statistics on load to show rich content initially
+    document.addEventListener('DOMContentLoaded', () => {
+      loadPlacements('IIT');
+    });
+  </script>
+</body>
+
+</html>

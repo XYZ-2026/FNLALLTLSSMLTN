@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <!-- SEO Optimization Meta Tags -->
+    <title>DSE College Cutoff Search Tool — College Simplified</title>
+    <meta name="keywords" content="Counselling, dse, direct second year, engineering cutoff, college simplified, dse cutoffs, concept simplified, college predictor, college predictors, engineering college predictor, college admission predictor, dse cutoff checker, diploma cutoffs">
+    <meta name="description" content="Search and compare Direct Second Year Engineering (DSE) college cutoffs for Diploma students in Maharashtra.">
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:title" content="DSE College Cutoff Search Tool — College Simplified">
+    <meta property="og:description" content="Search and compare Direct Second Year Engineering (DSE) college cutoffs for Diploma students in Maharashtra.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://counselling.collegesimplified.in/dse_cutoff_checker.html">
+    <meta property="og:site_name" content="College Simplified">
+    
+    <!-- Structured Data (JSON-LD) for Search Engines -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "College Simplified",
+      "url": "https://counselling.collegesimplified.in/",
+      "sameAs": [
+        "https://play.google.com/store/apps/details?id=co.mark.vvzmn",
+        "https://apps.apple.com/in/app/myinstitute/id1472483563",
+        "https://www.instagram.com/college_simplified/",
+        "https://youtube.com/@conceptsimplified"
+      ]
+    }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="firebase_config.js"></script>
+    <script src="shared_auth.js"></script>
+    
+    <style>
+        /* ── VARIABLES ── */
+        :root {
+            --brand: #dc2626;
+            --brand-d: #991b1b;
+            --brand-soft: #fef2f2;
+            --brand-ring: rgba(220, 38, 38, .15);
+            --ink: #0f1117;
+            --ink2: #2d3240;
+            --muted: #6c7389;
+            --bg: #f5f6fa;
+            --card: #ffffff;
+            --stroke: #e4e6ef;
+            --row-hover: #f0f2fa;
+            --th: #f8f9fc;
+            --inp: #ffffff;
+            --ring: #c7d2fe;
+            --chip-bg: #eef2ff;
+            --chip: #3b5bdb;
+            --green-bg: #f0fdf4;
+            --green: #16a34a;
+            --orange-bg: #fff7ed;
+            --orange: #d97706;
+            --red-bg: #fff0f1;
+            --red: #e63946;
+            --blue-bg: #eff6ff;
+            --blue: #2563eb;
+            --shadow: 0 2px 16px rgba(15, 17, 23, .07);
+            --shadow-lg: 0 8px 32px rgba(15, 17, 23, .10);
+            --bar: #ffffff;
+            --radius: 14px;
+        }
+
+        [data-theme="dark"] {
+            --brand: #ff6b74;
+            --brand-d: #e63946;
+            --brand-soft: #2a1215;
+            --brand-ring: rgba(255, 107, 116, .15);
+            --ink: #f0f1f6;
+            --ink2: #c8cad8;
+            --muted: #8b90a8;
+            --bg: #0b0d14;
+            --card: #131620;
+            --stroke: #222636;
+            --row-hover: #1a1e2e;
+            --th: #0f1219;
+            --inp: #0f1219;
+            --ring: #2d3a6b;
+            --chip-bg: #1a2150;
+            --chip: #94b4ff;
+            --green-bg: #0a1f10;
+            --green: #4ade80;
+            --orange-bg: #1f1208;
+            --orange: #fb923c;
+            --red-bg: #1f0c0e;
+            --red: #ff6b74;
+            --blue-bg: #0e1a38;
+            --blue: #60a5fa;
+            --shadow: 0 2px 16px rgba(0, 0, 0, .3);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, .4);
+            --bar: #0f1219;
+        }
+
+        /* ── RESET ── */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html,
+        body {
+            height: 100%
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            -webkit-font-smoothing: antialiased;
+            transition: background .25s, color .25s;
+            padding-top: 80px;
+        }
+
+        /* ── PAGES ── */
+        .page {
+            display: none;
+            min-height: calc(100vh - 64px)
+        }
+
+        .page.active {
+            display: block
+        }
+
+        /* ── CUTOFF PAGE ── */
+        .wrap-md {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 28px 20px 70px
+        }
+
+        /* ── HERO ── */
+        .cutoff-hero {
+            background: linear-gradient(135deg, var(--brand) 0%, var(--brand-d) 100%);
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 24px;
+            color: #fff;
+            position: relative;
+            overflow: visible;
+        }
+
+        .cutoff-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 18px;
+            background: radial-gradient(circle at 80% 50%, rgba(255, 255, 255, .06) 0%, transparent 60%);
+            pointer-events: none
+        }
+
+        .cutoff-hero h2 {
+            font-family: 'Lexend', sans-serif;
+            font-weight: 800;
+            font-size: clamp(20px, 3.5vw, 28px);
+            color: #fff;
+            margin-bottom: 12px;
+            position: relative;
+            letter-spacing: -0.5px;
+        }
+
+        .cutoff-hero p {
+            opacity: .9;
+            font-size: 15px;
+            line-height: 1.6;
+            position: relative;
+            max-width: 640px;
+            font-weight: 400;
+        }
+
+        /* ── SEARCH ── */
+        .search-outer {
+            position: relative;
+            margin-top: 20px;
+            z-index: 9000
+        }
+
+        .search-input-wrap {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, .15);
+            border: 1.5px solid rgba(255, 255, 255, .3);
+            border-radius: 12px;
+            transition: background .2s, border-color .2s
+        }
+
+        .search-input-wrap:focus-within {
+            background: rgba(255, 255, 255, .22);
+            border-color: rgba(255, 255, 255, .55)
+        }
+
+        .search-icon {
+            padding: 0 14px;
+            color: rgba(255, 255, 255, .75);
+            font-size: 18px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center
+        }
+
+        .search-input-wrap input {
+            flex: 1;
+            padding: 14px 4px;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            box-shadow: none !important
+        }
+
+        .search-input-wrap input::placeholder {
+            color: rgba(255, 255, 255, .6)
+        }
+
+        .search-clear-btn {
+            padding: 8px 14px;
+            color: rgba(255, 255, 255, .7);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 17px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0
+        }
+
+        .search-clear-btn.show {
+            display: flex
+        }
+
+        /* ── DROPDOWN ── */
+        .suggestions-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: var(--card);
+            border: 1.5px solid var(--stroke);
+            border-radius: 14px;
+            box-shadow: 0 16px 56px rgba(0, 0, 0, .22);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 99999;
+            display: none;
+        }
+
+        .suggestions-dropdown.open {
+            display: block;
+            animation: suggIn .15s ease
+        }
+
+        @keyframes suggIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .sugg-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 18px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--stroke);
+            transition: background .15s;
+        }
+
+        .sugg-row:last-child {
+            border-bottom: none;
+        }
+
+        .sugg-row:hover,
+        .sugg-row.hl {
+            background: var(--brand-soft);
+        }
+
+        .sugg-ico {
+            width: 44px;
+            height: 32px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            color: var(--muted);
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            border: 1px solid var(--stroke);
+        }
+
+        .sugg-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .sugg-name {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--ink);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 2px;
+        }
+
+        .sugg-meta {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+        }
+
+        mark {
+            background: var(--brand-soft);
+            color: var(--brand);
+            border-radius: 2px;
+            padding: 0 1px;
+            font-style: normal
+        }
+
+        /* ── FILTERS ── */
+        .filters-section {
+            background: var(--card);
+            border: 1.5px solid var(--stroke);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            margin-bottom: 18px;
+        }
+
+        #collegeFiltersSection {
+            display: none;
+        }
+
+        #collegeFiltersSection.show {
+            display: block;
+        }
+
+        .filters-title {
+            font-family: 'Lexend', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--ink2);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .filters-grid,
+        .filters-grid-3 {
+            display: grid;
+            gap: 12px
+        }
+
+        .filters-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .filters-grid-3 {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .filter-group label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .6px;
+            color: var(--muted);
+            margin-bottom: 6px
+        }
+
+        .flt-sel {
+            width: 100%;
+            padding: 10px 36px 10px 13px;
+            border-radius: 10px;
+            border: 1.5px solid var(--stroke);
+            background: var(--inp);
+            color: var(--ink);
+            font-size: 13.5px;
+            font-weight: 500;
+            outline: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            -webkit-appearance: none;
+            appearance: none;
+            transition: border-color .2s
+        }
+
+        .flt-sel:focus {
+            border-color: #93c5fd;
+            box-shadow: 0 0 0 3px var(--ring)
+        }
+
+        .stats-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap
+        }
+
+        .stat-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: 999px;
+            padding: 5px 12px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--ink2)
+        }
+
+        .sp-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%
+        }
+
+        /* Results */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
+            gap: 14px
+        }
+
+        .cutoff-card {
+            background: var(--card);
+            border: 1.5px solid var(--stroke);
+            border-radius: var(--radius);
+            padding: 18px;
+            transition: box-shadow .2s, transform .15s;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border-left: 4px solid var(--brand);
+            animation: cardIn .25s ease both
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .cutoff-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px)
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px
+        }
+
+        .card-name {
+            font-weight: 700;
+            font-size: 13.5px;
+            line-height: 1.4;
+            flex: 1;
+            color: var(--ink)
+        }
+
+        .card-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 999px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            background: var(--brand-soft);
+            color: var(--brand);
+        }
+
+        .card-branch {
+            font-size: 12.5px;
+            color: var(--muted);
+            line-height: 1.4
+        }
+
+        .card-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            background: var(--chip-bg);
+            color: var(--chip);
+            white-space: nowrap
+        }
+
+        .chip-gray {
+            background: var(--th);
+            color: var(--muted)
+        }
+
+        .chip-orange {
+            background: var(--orange-bg);
+            color: var(--orange)
+        }
+
+        .card-stats {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap
+        }
+
+        .stat-box {
+            background: var(--bg);
+            border-radius: 9px;
+            padding: 10px 13px;
+            flex: 1;
+            min-width: 90px;
+            border: 1px solid var(--stroke)
+        }
+
+        .stat-label {
+            font-size: 9.5px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: var(--muted);
+            font-weight: 700;
+            margin-bottom: 3px
+        }
+
+        .stat-val {
+            font-size: 16px;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums
+        }
+
+        .val-brand {
+            color: var(--brand)
+        }
+
+        /* Initial Tiles */
+        .initial-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .long-tile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: var(--card);
+            border: 1.5px solid var(--stroke);
+            border-radius: 14px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .long-tile:hover {
+            border-color: var(--brand);
+            background: var(--brand-soft);
+            transform: translateX(4px);
+        }
+
+        .tile-code {
+            width: 60px;
+            height: 32px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--muted);
+            border: 1px solid var(--stroke);
+            flex-shrink: 0;
+        }
+
+        .tile-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--ink);
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .load-more-btn {
+            width: 100%;
+            padding: 14px;
+            background: transparent;
+            border: 1.5px dashed var(--stroke);
+            color: var(--muted);
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: 0.2s;
+        }
+
+        .load-more-btn:hover {
+            background: var(--brand-soft);
+            border-color: var(--brand);
+            color: var(--brand);
+        }
+
+        /* Loading */
+        .loading-state {
+            text-align: center;
+            padding: 60px 24px;
+            color: var(--muted);
+            grid-column: 1/-1
+        }
+
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid var(--stroke);
+            border-top-color: var(--brand);
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+            margin: 0 auto 16px
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        /* Empty */
+        .empty-state {
+            text-align: center;
+            padding: 60px 24px;
+            color: var(--muted);
+            grid-column: 1/-1
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 14px
+        }
+
+        /* Toast */
+        .toast-wrap {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 99999
+        }
+
+        .toast {
+            background: var(--card);
+            border: 1.5px solid var(--stroke);
+            box-shadow: var(--shadow-lg);
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: toastIn .25s ease both
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .toast-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%
+        }
+
+        .t-info .toast-dot {
+            background: var(--brand)
+        }
+
+        .t-err {
+            border-color: var(--red)
+        }
+
+        .t-err .toast-dot {
+            background: var(--red)
+        }
+
+        /* Header link */
+        .back-link {
+            position: absolute;
+            top: 24px;
+            left: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: 0.2s;
+            z-index: 9999;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+            transform: translateX(-3px);
+        }
+
+        @media (max-width: 600px) {
+            .back-link {
+                top: 16px;
+                left: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page active" id="page-cutoff">
+        <div class="wrap-md">
+            <a href="dse-landing.html" class="back-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                Back to DSE Hub
+            </a>
+
+            <!-- HERO -->
+            <div class="cutoff-hero">
+                <h2>Direct Second Year (DSE) Cutoff Checker</h2>
+                <p>Search any Maharashtra engineering college to check previous year's CAP round cutoff percentiles and ranks for Diploma students.</p>
+
+                <!-- SEARCH -->
+                <div class="search-outer" id="searchOuter">
+                    <div class="search-input-wrap">
+                        <div class="search-icon">&#128269;</div>
+                        <input type="text" id="cutoffSrch" placeholder="Type Institute Code or Name (e.g. 1002 or Amravati)..." oninput="onSearchInput()" onkeydown="onSearchKey(event)" autocomplete="off">
+                        <button id="clearBtn" class="search-clear-btn" onclick="clearSearch()">&times;</button>
+                    </div>
+
+                    <!-- Suggestion dropdown -->
+                    <div class="suggestions-dropdown" id="suggDrop"></div>
+                </div>
+            </div>
+
+            <!-- GLOBAL FILTERS -->
+            <div class="filters-section">
+                <div class="filters-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                    Filter Institutes
+                </div>
+                <div class="filters-grid-3">
+                    <div class="filter-group">
+                        <label>Region</label>
+                        <select id="filterRegion" class="flt-sel" onchange="onGlobalFilterChange()">
+                            <option value="">All Regions</option>
+                            <option value="Amravati">Amravati Region</option>
+                            <option value="Aurangabad">Aurangabad Region</option>
+                            <option value="Mumbai">Mumbai Region</option>
+                            <option value="Nagpur">Nagpur Region</option>
+                            <option value="Nashik">Nashik Region</option>
+                            <option value="Pune">Pune Region</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Autonomy Status</label>
+                        <select id="filterAutonomy" class="flt-sel" onchange="onGlobalFilterChange()">
+                            <option value="">All Autonomy Types</option>
+                            <option value="autonomous">Autonomous Colleges</option>
+                            <option value="non-autonomous">Non-Autonomous Colleges</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Minority Status</label>
+                        <select id="filterMinority" class="flt-sel" onchange="onGlobalFilterChange()">
+                            <option value="">All Minority Types</option>
+                            <option value="minority">Minority Colleges</option>
+                            <option value="non-minority">Non-Minority Colleges</option>
+                            <option value="linguistic">Linguistic Minority</option>
+                            <option value="religious">Religious Minority</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLLEGE SPECIFIC FILTERS (Shown after pick) -->
+            <div class="filters-section" id="collegeFiltersSection">
+                <div class="filters-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Refine Course Cutoffs
+                </div>
+                <div class="filters-grid">
+                    <div class="filter-group" id="seatFilterGroup">
+                        <label>Category / Seat Type</label>
+                        <select id="filterSeat" class="flt-sel" onchange="applyFilters()">
+                            <option value="">All Seat Types</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Branch / Course</label>
+                        <select id="filterBranch" class="flt-sel" onchange="applyFilters()">
+                            <option value="">All Branches</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STATS AND ACTION -->
+            <div class="stats-bar">
+                <div class="stats-row" id="statsRow"></div>
+                <button onclick="resetAll()" style="background:none;border:none;color:var(--brand);font-weight:700;font-size:12.5px;cursor:pointer;display:flex;align-items:center;gap:4px">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                    Clear All Filters
+                </button>
+            </div>
+
+            <!-- RESULTS LIST -->
+            <div id="cutoffResults"></div>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div class="toast-wrap" id="toastWrap"></div>
+
+    <script>
+        'use strict';
+        var DSE_DATA = [];
+        var COLLEGE_META = {};
+        var DATA_READY = false;
+        var SEL_COLLEGE = null;
+        var ALL_COLLEGES = [];
+        var CUR_DSE = [];
+        var SUGG_MATCHES = [];
+        var HL_IDX = -1;
+        var LIST_LIMIT = 20;
+
+        // ── UTILS ──
+        function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+        function gv(id) { var el = document.getElementById(id); return el ? el.value : ''; }
+        function fP(v) { return parseFloat(v) || 0; }
+        function fI(v) { return parseInt(v) || 0; }
+        function fR(n) { return fI(n).toLocaleString('en-IN'); }
+
+        function showEmptyState() {
+            document.getElementById('cutoffResults').innerHTML =
+                '<div class="results-grid"><div class="empty-state">' +
+                '<div class="empty-icon">&#127979;</div>' +
+                '<h3>Search a college to begin</h3>' +
+                '<p>Type at least 2 characters of a college name or code above to load cutoff data.</p>' +
+                '</div></div>';
+        }
+
+        // ── LOAD DATA FILES ──
+        function loadDataFiles() {
+            var dseDone = false;
+            var metaDone = false;
+
+            function tryFinish() {
+                if (!dseDone || !metaDone) return;
+                initData();
+                DATA_READY = true;
+                displayInitialList();
+
+                // Auto-select college if search query param is present
+                var params = new URLSearchParams(window.location.search);
+                var q = params.get('search');
+                if (q) {
+                    var lower = q.toLowerCase().trim();
+                    var found = ALL_COLLEGES.find(function (c) {
+                        return c.name.toLowerCase().includes(lower) || c.code.toLowerCase().includes(lower);
+                    });
+                    if (found) {
+                        pickCollege(found.name);
+                    }
+                }
+            }
+
+            fetch('college-data.json')
+                .then(function (r) {
+                    if (!r.ok) throw new Error('college-data.json not found');
+                    return r.json();
+                })
+                .then(function (json) {
+                    var arr = json['college-data'] || [];
+                    arr.forEach(function (c) {
+                        COLLEGE_META[c['Institute Code']] = c;
+                    });
+                    console.log('College Metadata Loaded:', arr.length);
+                    metaDone = true;
+                    tryFinish();
+                })
+                .catch(function (err) {
+                    console.error(err);
+                    toast('Could not load college metadata. Check college-data.json.', 'err');
+                    metaDone = true;
+                    tryFinish();
+                });
+
+            fetch('DSE/DSE_CUTOFFS.json')
+                .then(function (r) {
+                    if (!r.ok) throw new Error('DSE_CUTOFFS.json not found');
+                    return r.json();
+                })
+                .then(function (json) {
+                    DSE_DATA = json['DSE_CUTOFFS'] || [];
+                    console.log('DSE Data Loaded:', DSE_DATA.length);
+                    dseDone = true;
+                    tryFinish();
+                })
+                .catch(function (err) {
+                    console.error(err);
+                    toast('Could not load DSE data. Check DSE_CUTOFFS.json.', 'err');
+                    dseDone = true;
+                    tryFinish();
+                });
+        }
+
+        // ── DATA INIT ──
+        function initData() {
+            DSE_DATA.forEach(function (row) {
+                row.Institute = (row.Institute || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+                row._pct = fP(row.Percentile);
+                row._rank = fI(row.Rank);
+            });
+
+            var seen = {};
+            ALL_COLLEGES = [];
+            DSE_DATA.forEach(function (r) {
+                var code = String(r['Institute Code'] || '').trim();
+                var n = r.Institute;
+                if (n && !seen[n.toLowerCase()]) {
+                    seen[n.toLowerCase()] = true;
+                    // Extract name without code prefix
+                    var cleanName = n.replace(/^\d+\s*-\s*/, '').replace(/^\d+\s+/, '').trim();
+                    ALL_COLLEGES.push({ name: cleanName, code: code, fullName: n });
+                }
+            });
+            ALL_COLLEGES.sort(function (a, b) {
+                return a.name.localeCompare(b.name);
+            });
+            console.log('Data Initialized. Unique DSE Colleges:', ALL_COLLEGES.length);
+        }
+
+        // ── REGION AND META DETECT ──
+        function getRegionByCode(code) {
+            var s = String(code || '').trim();
+            if (!s) return '';
+            var char = s.charAt(0);
+            switch (char) {
+                case '1': return 'Amravati';
+                case '2': return 'Aurangabad';
+                case '3': return 'Mumbai';
+                case '4': return 'Nagpur';
+                case '5': return 'Nashik';
+                case '6': return 'Pune';
+                default: return '';
+            }
+        }
+
+        function getCollegeDetails(c) {
+            var codeInt = parseInt(c.code) || 0;
+            var meta = COLLEGE_META[codeInt] || {};
+            var region = getRegionByCode(c.code);
+
+            var statusStr = (meta.Status || '').toLowerCase();
+            var isAutonomous = statusStr.includes('autonomous');
+            var isMinority = statusStr.includes('minority');
+            var minorityType = '';
+
+            if (isMinority) {
+                if (statusStr.includes('linguistic')) {
+                    minorityType = 'linguistic';
+                } else if (statusStr.includes('religious')) {
+                    minorityType = 'religious';
+                }
+            }
+
+            return {
+                region: region,
+                isAutonomous: isAutonomous,
+                isMinority: isMinority,
+                minorityType: minorityType,
+                statusText: meta.Status || ''
+            };
+        }
+
+        function matchesGlobalFilters(c) {
+            var rF = gv('filterRegion') || '';
+            var mF = gv('filterMinority') || '';
+            var aF = gv('filterAutonomy') || '';
+
+            var details = getCollegeDetails(c);
+
+            if (rF && details.region !== rF) return false;
+
+            if (aF) {
+                if (aF === 'autonomous' && !details.isAutonomous) return false;
+                if (aF === 'non-autonomous' && details.isAutonomous) return false;
+            }
+
+            if (mF) {
+                if (mF === 'minority' && !details.isMinority) return false;
+                if (mF === 'non-minority' && details.isMinority) return false;
+                if (mF === 'linguistic' && details.minorityType !== 'linguistic') return false;
+                if (mF === 'religious' && details.minorityType !== 'religious') return false;
+            }
+
+            return true;
+        }
+
+        // ── SEARCH LOGIC ──
+        function onSearchInput() {
+            var q = (gv('cutoffSrch') || '').trim();
+            var clr = document.getElementById('clearBtn');
+            clr.className = 'search-clear-btn' + (q ? ' show' : '');
+
+            if (!q) {
+                hideSugg();
+                if (SEL_COLLEGE) resetCutoff();
+                else displayInitialList();
+                return;
+            }
+
+            if (SEL_COLLEGE && q.toLowerCase() !== SEL_COLLEGE.toLowerCase()) {
+                SEL_COLLEGE = null;
+                document.getElementById('collegeFiltersSection').classList.remove('show');
+                document.getElementById('cutoffResults').innerHTML = '';
+                document.getElementById('statsRow').innerHTML = '';
+            }
+            if (!DATA_READY) return;
+            showSugg(q);
+        }
+
+        function showSugg(q) {
+            var lower = q.toLowerCase();
+            var matches = ALL_COLLEGES.filter(function (c) {
+                if (!c.name.toLowerCase().includes(lower) && !c.code.includes(lower)) return false;
+                return matchesGlobalFilters(c);
+            });
+
+            matches.sort(function (a, b) {
+                var aStarts = a.name.toLowerCase().startsWith(lower) || a.code.startsWith(lower);
+                var bStarts = b.name.toLowerCase().startsWith(lower) || b.code.startsWith(lower);
+                if (aStarts && !bStarts) return -1;
+                if (!aStarts && bStarts) return 1;
+                return a.name.localeCompare(b.name);
+            });
+
+            matches = matches.slice(0, 10);
+            SUGG_MATCHES = matches.map(function (c) { return c.name; });
+            HL_IDX = -1;
+
+            var drop = document.getElementById('suggDrop');
+            if (!matches.length) { drop.classList.remove('open'); return; }
+
+            var re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+
+            drop.innerHTML = matches.map(function (c, i) {
+                var hi = esc(c.name).replace(re, '<mark>$1</mark>');
+                var details = getCollegeDetails(c);
+                var badges = '';
+                if (details.region) badges += '<span style="font-size:10px;font-weight:800;color:var(--brand)">' + details.region + '</span>';
+                if (details.isAutonomous) badges += '<span style="font-size:10px;font-weight:800;color:var(--green);margin-left:8px">Autonomous</span>';
+
+                return '<div class="sugg-row" data-idx="' + i + '" data-name="' + esc(c.name) + '">' +
+                    '<div class="sugg-ico"><span style="font-size:10px;font-weight:800">' + c.code + '</span></div>' +
+                    '<div class="sugg-text">' +
+                    '<div class="sugg-name">' + hi + '</div>' +
+                    '<div class="sugg-meta">Code: ' + c.code + ' &nbsp;·&nbsp; ' + badges + '</div>' +
+                    '</div></div>';
+            }).join('');
+
+            drop.querySelectorAll('.sugg-row').forEach(function (row) {
+                row.addEventListener('mousedown', function (e) {
+                    e.preventDefault();
+                    pickCollege(row.getAttribute('data-name'));
+                });
+            });
+
+            drop.classList.add('open');
+        }
+
+        function hideSugg() {
+            document.getElementById('suggDrop').classList.remove('open');
+            HL_IDX = -1;
+        }
+
+        function onSearchKey(e) {
+            var drop = document.getElementById('suggDrop');
+            var rows = drop.querySelectorAll('.sugg-row');
+            if (e.key === 'ArrowDown') { e.preventDefault(); HL_IDX = Math.min(HL_IDX + 1, rows.length - 1); hlRow(rows); }
+            else if (e.key === 'ArrowUp') { e.preventDefault(); HL_IDX = Math.max(HL_IDX - 1, -1); hlRow(rows); }
+            else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (HL_IDX >= 0 && SUGG_MATCHES[HL_IDX]) pickCollege(SUGG_MATCHES[HL_IDX]);
+                else if (SUGG_MATCHES.length > 0) pickCollege(SUGG_MATCHES[0]);
+            }
+            else if (e.key === 'Escape') hideSugg();
+        }
+
+        function hlRow(rows) {
+            rows.forEach(function (r, i) { r.classList.toggle('hl', i === HL_IDX); });
+        }
+
+        function pickCollege(name) {
+            SEL_COLLEGE = name;
+            document.getElementById('cutoffSrch').value = name;
+            document.getElementById('clearBtn').className = 'search-clear-btn show';
+            hideSugg();
+            loadCollege(name);
+
+            // SEO Metadata Updates
+            var found = ALL_COLLEGES.find(function (c) { return c.name.toLowerCase() === name.toLowerCase(); });
+            if (found) {
+                document.title = name + " (" + found.code + ") DSE Cutoffs — College Simplified";
+                var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?search=' + encodeURIComponent(name);
+                window.history.replaceState({ path: newurl }, '', newurl);
+            }
+        }
+
+        function clearSearch() {
+            document.getElementById('cutoffSrch').value = '';
+            document.getElementById('clearBtn').className = 'search-clear-btn';
+            hideSugg();
+            resetCutoff();
+        }
+
+        function resetAll() {
+            document.getElementById('filterRegion').value = '';
+            document.getElementById('filterMinority').value = '';
+            document.getElementById('filterAutonomy').value = '';
+            clearSearch();
+        }
+
+        function resetCutoff() {
+            SEL_COLLEGE = null;
+            CUR_DSE = [];
+            document.getElementById('collegeFiltersSection').classList.remove('show');
+            document.getElementById('statsRow').innerHTML = '';
+            LIST_LIMIT = 20;
+            displayInitialList();
+
+            document.title = "DSE College Cutoff Checker — College Simplified";
+            var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            window.history.replaceState({ path: newurl }, '', newurl);
+        }
+
+        function displayInitialList() {
+            var filtered = ALL_COLLEGES.filter(matchesGlobalFilters);
+            var slice = filtered.slice(0, LIST_LIMIT);
+            var res = document.getElementById('cutoffResults');
+
+            if (!slice.length) {
+                res.innerHTML =
+                    '<div class="results-grid"><div class="empty-state">' +
+                    '<div class="empty-icon">&#128270;</div>' +
+                    '<h3>No colleges match your filters</h3>' +
+                    '<p>Try changing the region, minority, or autonomy filters above.</p>' +
+                    '</div></div>';
+                return;
+            }
+
+            var html = '<div style="margin-bottom:16px;font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Browse DSE Institutes</div>';
+            html += '<div class="initial-grid">';
+            slice.forEach(function (c) {
+                var details = getCollegeDetails(c);
+                var statusInfo = details.isAutonomous ? 'Autonomous' : 'Non-Autonomous';
+                if (details.region) statusInfo += ' &middot; ' + details.region;
+                html += '<div class="long-tile" onclick="pickCollege(\'' + esc(c.name) + '\')">';
+                html += '<div class="tile-code">' + c.code + '</div>';
+                html += '<div class="tile-name">' + esc(c.name) + '</div>';
+                html += '<div style="font-size:11px;color:var(--muted);margin-right:16px;font-weight:600">' + statusInfo + '</div>';
+                html += '<div style="font-size:10px;font-weight:700;color:var(--brand)">View →</div>';
+                html += '</div>';
+            });
+            html += '</div>';
+
+            if (filtered.length > LIST_LIMIT) {
+                html += '<button class="load-more-btn" onclick="loadMoreColleges()">Load More Institutes (' + (filtered.length - LIST_LIMIT) + ' remaining)</button>';
+            }
+
+            res.innerHTML = html;
+        }
+
+        function loadMoreColleges() {
+            LIST_LIMIT += 30;
+            displayInitialList();
+        }
+
+        function onGlobalFilterChange() {
+            if (SEL_COLLEGE) {
+                var found = ALL_COLLEGES.find(function (c) { return c.name.toLowerCase() === SEL_COLLEGE.toLowerCase(); });
+                if (found && !matchesGlobalFilters(found)) {
+                    resetCutoff();
+                }
+            }
+            LIST_LIMIT = 20;
+            displayInitialList();
+        }
+
+        // ── LOAD DSE COLLEGE DATA ──
+        function loadCollege(name) {
+            var lower = name.toLowerCase();
+            // Match against clean name or full name in database
+            CUR_DSE = DSE_DATA.filter(function (r) {
+                var cleanDb = (r.Institute || '').replace(/^\d+\s*-\s*/, '').replace(/^\d+\s+/, '').trim().toLowerCase();
+                return cleanDb === lower || (r.Institute || '').toLowerCase() === lower;
+            });
+
+            buildCollegeFilters();
+            document.getElementById('filterSeat').value = '';
+            document.getElementById('filterBranch').value = '';
+            applyFilters();
+        }
+
+        function buildCollegeFilters() {
+            var seatSet = {};
+            var branchSet = {};
+
+            CUR_DSE.forEach(function (r) {
+                var s = (r['Seat Type.'] || '').trim();
+                var b = (r['Course Name'] || '').trim();
+                if (s) seatSet[s] = true;
+                if (b) branchSet[b] = true;
+            });
+
+            var seats = Object.keys(seatSet).sort();
+            var branches = Object.keys(branchSet).sort();
+
+            document.getElementById('filterSeat').innerHTML =
+                '<option value="">All Seat Types</option>' +
+                seats.map(function (s) { return '<option value="' + esc(s) + '">' + esc(s) + '</option>'; }).join('');
+
+            document.getElementById('filterBranch').innerHTML =
+                '<option value="">All Branches / Courses</option>' +
+                branches.map(function (b) { return '<option value="' + esc(b) + '">' + esc(b) + '</option>'; }).join('');
+
+            document.getElementById('collegeFiltersSection').classList.add('show');
+        }
+
+        function applyFilters() {
+            if (!SEL_COLLEGE) return;
+            var seatF = gv('filterSeat') || '';
+            var branchF = gv('filterBranch') || '';
+
+            var filteredRows = CUR_DSE.slice();
+            if (seatF) filteredRows = filteredRows.filter(function (r) { return (r['Seat Type.'] || '').trim() === seatF; });
+            if (branchF) filteredRows = filteredRows.filter(function (r) { return (r['Course Name'] || '').trim() === branchF; });
+
+            filteredRows.sort(function (a, b) { return b._pct - a._pct; });
+
+            renderStats(filteredRows.length);
+            renderCards(filteredRows);
+        }
+
+        function renderStats(total) {
+            var sr = document.getElementById('statsRow');
+            if (!total) { sr.innerHTML = ''; return; }
+            sr.innerHTML = '<div class="stat-pill"><span class="sp-dot" style="background:var(--brand)"></span>' + total + ' course option' + (total !== 1 ? 's' : '') + ' found</div>';
+        }
+
+        function renderCards(rows) {
+            var res = document.getElementById('cutoffResults');
+            if (!rows.length) {
+                res.innerHTML =
+                    '<div class="results-grid"><div class="empty-state">' +
+                    '<div class="empty-icon">&#128270;</div>' +
+                    '<h3>No results match your filters</h3>' +
+                    '<p>Try changing the category / seat type or branch filter.</p>' +
+                    '</div></div>';
+                return;
+            }
+
+            var html = '<div class="results-grid">';
+            rows.forEach(function (r, i) {
+                var cleanName = (r.Institute || '').replace(/^\d+\s*-\s*/, '').replace(/^\d+\s+/, '').trim();
+                html += '<div class="cutoff-card" style="animation-delay:' + (i * 20) + 'ms">';
+                html += '<div class="card-header"><div class="card-name">' + esc(cleanName) + '</div><span class="card-badge">DSE Diploma</span></div>';
+                html += '<div class="card-branch">' + esc(r['Course Name']) + '</div>';
+                html += '<div class="card-chips">';
+                html += '<span class="chip chip-gray">Seat Type: ' + esc(r['Seat Type.']) + '</span>';
+                html += '<span class="chip">Code: ' + esc(r['Institute Code']) + '</span>';
+                html += '</div>';
+                html += '<div class="card-stats">';
+                html += '<div class="stat-box"><div class="stat-label">Diploma Cutoff %</div><div class="stat-val val-brand">' + r._pct.toFixed(2) + '%</div></div>';
+                html += '<div class="stat-box"><div class="stat-label">Closing Merit Rank</div><div class="stat-val">' + fR(r._rank) + '</div></div>';
+                html += '</div></div>';
+            });
+            html += '</div>';
+            res.innerHTML = html;
+        }
+
+        // ── TOAST ──
+        function toast(msg, type) {
+            type = type || 'info';
+            var w = document.getElementById('toastWrap');
+            var t = document.createElement('div');
+            t.className = 'toast t-' + type;
+            t.innerHTML = '<div class="toast-dot"></div>' + esc(msg);
+            w.appendChild(t);
+            setTimeout(function () {
+                t.style.opacity = '0'; t.style.transition = 'opacity .3s';
+                setTimeout(function () { t.remove(); }, 300);
+            }, type === 'err' ? 5000 : 3000);
+        }
+
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('#searchOuter')) hideSugg();
+        });
+
+        // ── BOOT ──
+        function boot() {
+            if (!initAuth({ requireLogin: true, toolContainerId: 'page-cutoff' })) return;
+            showEmptyState();
+            loadDataFiles();
+        }
+
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+        else boot();
+    </script>
+</body>
+
+</html>

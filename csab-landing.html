@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- SEO Optimization Meta Tags -->
+    <title>CSAB Special Round Counselling Dashboard — College Simplified</title>
+    <meta name="keywords" content="Counselling, mhtcet, josaa counselling, college simplified, mhtcet counselling, concept simplified, mhtcet counseling, josaa counseling, counseling, college predictor, college predictors, engineering college predictor, college admission predictor, csab dashboard, csab special round, vacant seats, spot round admissions">
+    <meta name="description" content="Explore CSAB Special Round admission opportunities. Track vacant seat predictors and strategic counselling round guidelines.">
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:title" content="CSAB Special Round Counselling Dashboard — College Simplified">
+    <meta property="og:description" content="Explore CSAB Special Round admission opportunities. Track vacant seat predictors and strategic counselling round guidelines.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://counselling.collegesimplified.in/csab-landing.html">
+    <meta property="og:site_name" content="College Simplified">
+    
+    <!-- Structured Data (JSON-LD) for Search Engines -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "College Simplified",
+      "url": "https://counselling.collegesimplified.in/",
+      "sameAs": [
+        "https://play.google.com/store/apps/details?id=co.mark.vvzmn",
+        "https://apps.apple.com/in/app/myinstitute/id1472483563",
+        "https://www.instagram.com/college_simplified/",
+        "https://youtube.com/@conceptsimplified"
+      ]
+    }
+    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lexend:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #dc2626; --ink: #111827; --muted: #6b7280; --bg: #fafafa;
+      --card: #ffffff; --stroke: rgba(0, 0, 0, 0.08);
+      --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+      --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1);
+      --brand-soft: #fef2f2; --brand-ring: rgba(220, 38, 38, 0.15);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html, body { overflow-x: hidden; width: 100%; position: relative; }
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);padding-top:64px;line-height:1.6}
+
+    .hero{padding:100px 20px 60px;text-align:center;max-width:900px;margin:0 auto}
+    .badge{background:var(--brand-soft);color:var(--brand);padding:8px 20px;border-radius:100px;font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;display:inline-block;margin-bottom:24px;border:1px solid var(--brand-ring)}
+    .hero h1{font-family:'Lexend',sans-serif;font-weight:800;font-size:clamp(2.5rem, 6vw, 3.75rem);line-height:1.1;margin-bottom:20px;letter-spacing:-0.03em}
+    .hero h1 span{color:var(--brand)}
+    .hero p{color:var(--muted);font-size:1.15rem;max-width:600px;margin:0 auto}
+
+    .wrap{max-width:1200px;margin:0 auto;padding:0 20px 100px;display:flex;flex-direction:column;gap:100px}
+    .section{animation:fadeUp 0.6s ease both}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+    .section-header{display:flex;align-items:flex-start;gap:24px;margin-bottom:48px}
+    .section-icon{width:64px;height:64px;background:var(--card);border:1px solid var(--stroke);border-radius:20px;display:grid;place-items:center;color:var(--brand);box-shadow:var(--shadow);flex-shrink:0}
+    .section-title{flex:1}
+    .section-title h2{font-family:'Lexend',sans-serif;font-weight:800;font-size:32px;color:var(--ink);margin-bottom:8px;letter-spacing:-0.02em}
+    .section-title p{color:var(--muted);font-size:16px;max-width:700px}
+    
+    .meta-badge{background:var(--bg);border:1.5px solid var(--stroke);color:var(--muted);padding:6px 14px;border-radius:100px;font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:8px;margin-top:12px}
+    .meta-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 3px var(--brand-ring)}
+
+    .grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 340px), 1fr));gap:32px}
+    .tool-card{background:var(--card);border:1px solid var(--stroke);border-radius:28px;padding:40px;text-decoration:none;transition:all 0.4s cubic-bezier(0.16, 1, 0.3, 1);display:flex;flex-direction:column;gap:24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+    .tool-card:hover{transform:translateY(-12px);box-shadow:var(--shadow-lg);border-color:var(--brand)}
+    
+    .tool-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1}
+    .tool-icon{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;font-size:28px;background:var(--bg);color:var(--muted);transition:all 0.3s;border:1px solid var(--stroke)}
+    .tool-card:hover .tool-icon{background:var(--white);color:var(--brand);border-color:var(--brand-ring);transform:scale(1.05)}
+    .arrow{width:36px;height:36px;border-radius:50%;background:var(--bg);display:grid;place-items:center;color:var(--muted);transition:all 0.3s;border:1px solid var(--stroke)}
+    .tool-card:hover .arrow{background:var(--brand);color:#fff;transform:rotate(-45deg);border-color:var(--brand)}
+
+    .tool-info h3{font-family:'Lexend',sans-serif;font-weight:700;font-size:20px;color:var(--ink);margin-bottom:12px}
+    .tool-info p{font-size:15px;color:var(--muted);line-height:1.6}
+    .tool-tag{display:inline-block;padding:6px 14px;border-radius:10px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;background:var(--bg);color:var(--muted);margin-top:8px}
+    .tool-card:hover .tool-tag{background:var(--brand-soft);color:var(--brand)}
+
+    @media (max-width: 768px) {
+      .section-header{flex-direction:column;gap:16px;margin-bottom:32px}
+      .section-icon{width:56px;height:56px;border-radius:16px}
+      .section-title h2{font-size:26px}
+      .grid{grid-template-columns:1fr;gap:20px}
+      .tool-card{padding:32px}
+      .hero{padding:80px 20px 40px}
+      .wrap{gap:60px}
+    }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <div class="badge">Spot Round Toolset</div>
+    <h1>Strategic <span>CSAB</span> Counseling</h1>
+    <p>Premium tools for CSAB Special Spot Rounds. Predict your seat allotments, view important timelines, and access official rank metrics.</p>
+  </div>
+
+  <div class="wrap">
+    <!-- Premium Counselling Banners Section -->
+    <section class="premium-banners-section">
+      <style>
+        .premium-banners-section {
+          width: 100%;
+          font-family: 'Inter', sans-serif;
+        }
+        .banners-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          gap: 28px;
+          margin-top: 24px;
+        }
+        .premium-banner-card {
+          background: var(--card, #ffffff);
+          border: 1px solid var(--stroke, rgba(0,0,0,0.08));
+          border-radius: 24px;
+          overflow: hidden;
+          text-decoration: none;
+          color: inherit;
+          display: flex;
+          flex-direction: column;
+          box-shadow: var(--shadow, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .premium-banner-card:hover {
+          transform: translateY(-8px);
+          box-shadow: var(--shadow-lg, 0 20px 25px -5px rgba(0,0,0,0.1));
+          border-color: var(--brand, #dc2626);
+        }
+        .banner-img-container {
+          position: relative;
+          width: 100%;
+          padding-top: 52%; /* Aspect ratio of banners */
+          overflow: hidden;
+          background: #f3f4f6;
+        }
+        .banner-img-container img {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .premium-banner-card:hover .banner-img-container img {
+          transform: scale(1.05);
+        }
+        .banner-overlay {
+          position: absolute;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.3);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        }
+        .premium-banner-card:hover .banner-overlay {
+          opacity: 1;
+        }
+        .view-program-btn {
+          background: #ffffff;
+          color: #111827;
+          padding: 10px 20px;
+          border-radius: 100px;
+          font-weight: 700;
+          font-size: 13px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+          transform: translateY(10px);
+          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .premium-banner-card:hover .view-program-btn {
+          transform: translateY(0);
+        }
+        .banner-text-details {
+          padding: 20px 24px;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        .banner-text-details h3 {
+          font-family: 'Lexend', sans-serif;
+          font-weight: 700;
+          font-size: 18px;
+          color: var(--ink, #111827);
+        }
+        .banner-text-details p {
+          font-size: 13.5px;
+          color: var(--muted, #6b7280);
+          line-height: 1.4;
+        }
+        .section-header-banner {
+          margin-bottom: 8px;
+        }
+        .banner-badge-top {
+          background: var(--brand-soft, #fef2f2);
+          color: var(--brand, #dc2626);
+          padding: 6px 14px;
+          border-radius: 100px;
+          font-size: 11px;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          display: inline-block;
+          margin-bottom: 12px;
+          border: 1px solid var(--brand-ring, rgba(220,38,38,0.1));
+        }
+        .section-header-banner h2 {
+          font-family: 'Lexend', sans-serif;
+          font-weight: 800;
+          font-size: 24px;
+          color: var(--ink, #111827);
+          letter-spacing: -0.01em;
+        }
+        .section-header-banner p {
+          color: var(--muted, #6b7280);
+          font-size: 14.5px;
+          margin-top: 4px;
+        }
+        @media (max-width: 640px) {
+          .banners-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+          }
+          .banner-text-details {
+            padding: 16px 20px;
+          }
+          .banner-text-details h3 {
+            font-size: 16px;
+          }
+          .section-header-banner h2 {
+            font-size: 20px;
+          }
+        }
+      </style>
+      <div class="section-header-banner">
+        <div class="banner-badge-top">Premium Counselling Programs</div>
+        <h2>Direct Personal Counselling 2026</h2>
+        <p>Get premium mentoring from expert counselors to secure your dream engineering college seat.</p>
+      </div>
+      <div class="banners-grid">
+        <!-- Banner 1 -->
+        <a href="https://www.conceptsimplified.in/courses/668919" target="_blank" class="premium-banner-card">
+          <div class="banner-img-container">
+            <img src="paid%20banners/banner1.webp" alt="Simplified Pro | Maharashtra Engineering Admission Counselling 2026">
+            <div class="banner-overlay">
+              <span class="view-program-btn">View Program &rarr;</span>
+            </div>
+          </div>
+          <div class="banner-text-details">
+            <h3>Simplified Pro</h3>
+            <p>Maharashtra Engineering Admission Counselling 2026</p>
+          </div>
+        </a>
+
+        <!-- Banner 2 -->
+        <a href="https://www.conceptsimplified.in/courses/840574" target="_blank" class="premium-banner-card">
+          <div class="banner-img-container">
+            <img src="paid%20banners/banner2.webp" alt="Simplified Premium 1:1 | Maharashtra Engineering Admission Counselling 2026">
+            <div class="banner-overlay">
+              <span class="view-program-btn">View Program &rarr;</span>
+            </div>
+          </div>
+          <div class="banner-text-details">
+            <h3>Simplified Premium 1:1</h3>
+            <p>Maharashtra Engineering Admission Counselling 2026</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div class="section-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="section-title">
+          <h2>CSAB Special Rounds Hub</h2>
+          <p>Navigate the CSAB Special Spot Rounds with high-precision predictors and strategic counseling tools for vacant seat allocations.</p>
+          <div class="meta-badge"><span class="dot"></span> 4 Specialized Tools</div>
+        </div>
+      </div>
+      <div class="grid">
+        <a class="tool-card" href="csab.html">
+          <div class="tool-top"><div class="tool-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="arrow">→</div></div>
+          <div class="tool-info"><h3>CSAB Predictor</h3><p>Predict NIT, IIIT & GFTI seat allotments in CSAB Special Spot Rounds based on CRL rank and category.</p><div class="tool-tag">Spot Round</div></div>
+        </a>
+        <a class="tool-card" href="calendar.html">
+          <div class="tool-top"><div class="tool-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="arrow">→</div></div>
+          <div class="tool-info"><h3>Event Calendar</h3><p>Stay updated with all important CSAB counseling rounds, seat acceptance deadlines, and reporting timelines.</p><div class="tool-tag">Timelines</div></div>
+        </a>
+        <a class="tool-card" href="josaa_marks.html">
+          <div class="tool-top"><div class="tool-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8z"/></svg></div><div class="arrow">→</div></div>
+          <div class="tool-info"><h3>Marks vs Percentile</h3><p>Enter your JEE Mains marks and shift details to get your estimated percentile score instantly.</p><div class="tool-tag">JEE Metrics</div></div>
+        </a>
+        <a class="tool-card" href="josaa_rank.html">
+          <div class="tool-top"><div class="tool-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div><div class="arrow">→</div></div>
+          <div class="tool-info"><h3>Percentile to Rank</h3><p>Convert your JEE Mains percentile into an estimated All India Rank (AIR) based on current trends.</p><div class="tool-tag">Rank Prediction</div></div>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase_config.js"></script>
+  <script src="shared_auth.js"></script>
+  <script>
+    initAuth({ requireLogin: false });
+  </script>
+</body>
+</html>

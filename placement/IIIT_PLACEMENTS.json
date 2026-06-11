@@ -1,0 +1,284 @@
+{
+  "IIIT_PLACEMENTS": [
+    {
+      "Institute": "IIIT Hyderabad",
+      "Category": "IIIT",
+      "Tier": "Tier 1",
+      "Avg Package": "₹25 LPA",
+      "Median Package": "₹20 LPA",
+      "Highest Package": "₹120 LPA",
+      "Placement %": "92%",
+      "Location": "Hyderabad, TG"
+    },
+    {
+      "Institute": "IIIT Bangalore",
+      "Category": "IIIT",
+      "Tier": "Tier 1",
+      "Avg Package": "₹22 LPA",
+      "Median Package": "₹18 LPA",
+      "Highest Package": "₹90 LPA",
+      "Placement %": "91%",
+      "Location": "Bengaluru, KA"
+    },
+    {
+      "Institute": "IIIT Allahabad",
+      "Category": "IIIT",
+      "Tier": "Tier 1",
+      "Avg Package": "₹20 LPA",
+      "Median Package": "₹15 LPA",
+      "Highest Package": "₹80 LPA",
+      "Placement %": "90%",
+      "Location": "Prayagraj, UP"
+    },
+    {
+      "Institute": "ABV-IIITM Gwalior",
+      "Category": "IIIT",
+      "Tier": "Tier 1",
+      "Avg Package": "₹18 LPA",
+      "Median Package": "₹14 LPA",
+      "Highest Package": "₹70 LPA",
+      "Placement %": "88%",
+      "Location": "Gwalior, MP"
+    },
+    {
+      "Institute": "IIITDM Kancheepuram",
+      "Category": "IIIT",
+      "Tier": "Tier 2",
+      "Avg Package": "₹12 LPA",
+      "Median Package": "₹9 LPA",
+      "Highest Package": "₹45 LPA",
+      "Placement %": "80%",
+      "Location": "Chennai, TN"
+    },
+    {
+      "Institute": "PDPM IIITDM Jabalpur",
+      "Category": "IIIT",
+      "Tier": "Tier 2",
+      "Avg Package": "₹11 LPA",
+      "Median Package": "₹8 LPA",
+      "Highest Package": "₹40 LPA",
+      "Placement %": "78%",
+      "Location": "Jabalpur, MP"
+    },
+    {
+      "Institute": "IIIT Lucknow",
+      "Category": "IIIT",
+      "Tier": "Tier 2",
+      "Avg Package": "₹10 LPA",
+      "Median Package": "₹8 LPA",
+      "Highest Package": "₹36 LPA",
+      "Placement %": "77%",
+      "Location": "Lucknow, UP"
+    },
+    {
+      "Institute": "IIIT Sri City Chittoor",
+      "Category": "IIIT",
+      "Tier": "Tier 2",
+      "Avg Package": "₹9 LPA",
+      "Median Package": "₹7 LPA",
+      "Highest Package": "₹32 LPA",
+      "Placement %": "76%",
+      "Location": "Chittoor, AP"
+    },
+    {
+      "Institute": "IIIT Kota",
+      "Category": "IIIT",
+      "Tier": "Tier 2",
+      "Avg Package": "₹9 LPA",
+      "Median Package": "₹7 LPA",
+      "Highest Package": "₹35 LPA",
+      "Placement %": "74%",
+      "Location": "Kota, RJ"
+    },
+    {
+      "Institute": "IIIT Guwahati",
+      "Category": "IIIT",
+      "Tier": "Tier 2",
+      "Avg Package": "₹8 LPA",
+      "Median Package": "₹6.5 LPA",
+      "Highest Package": "₹30 LPA",
+      "Placement %": "72%",
+      "Location": "Guwahati, AS"
+    },
+    {
+      "Institute": "IIIT Pune",
+      "Category": "IIIT",
+      "Tier": "Tier 3",
+      "Avg Package": "₹8 LPA",
+      "Median Package": "₹6.5 LPA",
+      "Highest Package": "₹28 LPA",
+      "Placement %": "69%",
+      "Location": "Pune, MH"
+    },
+    {
+      "Institute": "IIIT Tiruchirappalli",
+      "Category": "IIIT",
+      "Tier": "Tier 3",
+      "Avg Package": "₹8 LPA",
+      "Median Package": "₹6.5 LPA",
+      "Highest Package": "₹28 LPA",
+      "Placement %": "71%",
+      "Location": "Tiruchirappalli, TN"
+    },
+    {
+      "Institute": "IIIT Nagpur",
+      "Category": "IIIT",
+      "Tier": "Tier 3",
+      "Avg Package": "₹7.5 LPA",
+      "Median Package": "₹6 LPA",
+      "Highest Package": "₹25 LPA",
+      "Placement %": "66%",
+      "Location": "Nagpur, MH"
+    },
+    {
+      "Institute": "IIIT Vadodara",
+      "Category": "IIIT",
+      "Tier": "Tier 3",
+      "Avg Package": "₹7.5 LPA",
+      "Median Package": "₹6 LPA",
+      "Highest Package": "₹26 LPA",
+      "Placement %": "67%",
+      "Location": "Vadodara, GJ"
+    },
+    {
+      "Institute": "IIIT Dharwad",
+      "Category": "IIIT",
+      "Tier": "Tier 3",
+      "Avg Package": "₹7.5 LPA",
+      "Median Package": "₹6 LPA",
+      "Highest Package": "₹24 LPA",
+      "Placement %": "66%",
+      "Location": "Dharwad, KA"
+    },
+    {
+      "Institute": "IIIT Kalyani",
+      "Category": "IIIT",
+      "Tier": "Tier 3",
+      "Avg Package": "₹7 LPA",
+      "Median Package": "₹5.5 LPA",
+      "Highest Package": "₹25 LPA",
+      "Placement %": "68%",
+      "Location": "Kalyani, WB"
+    },
+    {
+      "Institute": "IIIT Bhopal",
+      "Category": "IIIT",
+      "Tier": "Tier 3",
+      "Avg Package": "₹7 LPA",
+      "Median Package": "₹5.5 LPA",
+      "Highest Package": "₹24 LPA",
+      "Placement %": "65%",
+      "Location": "Bhopal, MP"
+    },
+    {
+      "Institute": "IIIT Kilohrad Sonepat",
+      "Category": "IIIT",
+      "Tier": "Tier 3",
+      "Avg Package": "₹7 LPA",
+      "Median Package": "₹5.5 LPA",
+      "Highest Package": "₹22 LPA",
+      "Placement %": "65%",
+      "Location": "Sonepat, HR"
+    },
+    {
+      "Institute": "IIIT Una",
+      "Category": "IIIT",
+      "Tier": "Tier 3",
+      "Avg Package": "₹7 LPA",
+      "Median Package": "₹5.5 LPA",
+      "Highest Package": "₹22 LPA",
+      "Placement %": "65%",
+      "Location": "Una, HP"
+    },
+    {
+      "Institute": "IIITDM Kurnool",
+      "Category": "IIIT",
+      "Tier": "Tier 3",
+      "Avg Package": "₹7 LPA",
+      "Median Package": "₹5.5 LPA",
+      "Highest Package": "₹22 LPA",
+      "Placement %": "64%",
+      "Location": "Kurnool, AP"
+    },
+    {
+      "Institute": "IIIT Kottayam",
+      "Category": "IIIT",
+      "Tier": "Tier 3",
+      "Avg Package": "₹7 LPA",
+      "Median Package": "₹5.5 LPA",
+      "Highest Package": "₹22 LPA",
+      "Placement %": "64%",
+      "Location": "Kottayam, KL"
+    },
+    {
+      "Institute": "IIIT Ranchi",
+      "Category": "IIIT",
+      "Tier": "Tier 3",
+      "Avg Package": "₹7 LPA",
+      "Median Package": "₹5.5 LPA",
+      "Highest Package": "₹22 LPA",
+      "Placement %": "63%",
+      "Location": "Ranchi, JH"
+    },
+    {
+      "Institute": "IIIT Surat",
+      "Category": "IIIT",
+      "Tier": "Tier 3",
+      "Avg Package": "₹7 LPA",
+      "Median Package": "₹5.5 LPA",
+      "Highest Package": "₹22 LPA",
+      "Placement %": "64%",
+      "Location": "Surat, GJ"
+    },
+    {
+      "Institute": "IIIT Bhagalpur",
+      "Category": "IIIT",
+      "Tier": "Tier 4",
+      "Avg Package": "₹5.5 LPA",
+      "Median Package": "₹4.5 LPA",
+      "Highest Package": "₹18 LPA",
+      "Placement %": "58%",
+      "Location": "Bhagalpur, BR"
+    },
+    {
+      "Institute": "IIIT Senapati Manipur",
+      "Category": "IIIT",
+      "Tier": "Tier 4",
+      "Avg Package": "₹5 LPA",
+      "Median Package": "₹4 LPA",
+      "Highest Package": "₹15 LPA",
+      "Placement %": "55%",
+      "Location": "Senapati, MN"
+    },
+    {
+      "Institute": "IIIT Agartala",
+      "Category": "IIIT",
+      "Tier": "Tier 4",
+      "Avg Package": "₹5 LPA",
+      "Median Package": "₹4 LPA",
+      "Highest Package": "₹15 LPA",
+      "Placement %": "55%",
+      "Location": "Agartala, TR"
+    },
+    {
+      "Institute": "IIIT Raichur",
+      "Category": "IIIT",
+      "Tier": "Tier 4",
+      "Avg Package": "₹5 LPA",
+      "Median Package": "₹4 LPA",
+      "Highest Package": "₹15 LPA",
+      "Placement %": "53%",
+      "Location": "Raichur, KA"
+    },
+    {
+      "Institute": "IIITV International Campus Diu",
+      "Category": "IIIT",
+      "Tier": "Tier 4",
+      "Avg Package": "₹5 LPA",
+      "Median Package": "₹4 LPA",
+      "Highest Package": "₹14 LPA",
+      "Placement %": "52%",
+      "Location": "Diu, DD"
+    }
+  ]
+}

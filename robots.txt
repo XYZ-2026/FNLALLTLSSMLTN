@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Disallow administrative and utility files
+Disallow: /admin.html
+Disallow: /seed.html
+Disallow: /coming-soon.html
+
+Sitemap: https://counselling.collegesimplified.in/sitemap.xml

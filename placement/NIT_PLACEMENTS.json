@@ -1,0 +1,324 @@
+{
+  "NIT_PLACEMENTS": [
+    {
+      "Institute": "NIT Tiruchirappalli",
+      "Category": "NIT",
+      "Tier": "Tier 1",
+      "Avg Package": "₹18 LPA",
+      "Median Package": "₹15 LPA",
+      "Highest Package": "₹75 LPA",
+      "Placement %": "92%",
+      "Location": "Tiruchirappalli, TN"
+    },
+    {
+      "Institute": "NIT Karnataka Surathkal",
+      "Category": "NIT",
+      "Tier": "Tier 1",
+      "Avg Package": "₹17 LPA",
+      "Median Package": "₹14 LPA",
+      "Highest Package": "₹70 LPA",
+      "Placement %": "90%",
+      "Location": "Surathkal, KA"
+    },
+    {
+      "Institute": "NIT Warangal",
+      "Category": "NIT",
+      "Tier": "Tier 1",
+      "Avg Package": "₹17 LPA",
+      "Median Package": "₹14 LPA",
+      "Highest Package": "₹72 LPA",
+      "Placement %": "91%",
+      "Location": "Warangal, TG"
+    },
+    {
+      "Institute": "NIT Rourkela",
+      "Category": "NIT",
+      "Tier": "Tier 1",
+      "Avg Package": "₹16 LPA",
+      "Median Package": "₹13 LPA",
+      "Highest Package": "₹65 LPA",
+      "Placement %": "90%",
+      "Location": "Rourkela, OD"
+    },
+    {
+      "Institute": "NIT Calicut",
+      "Category": "NIT",
+      "Tier": "Tier 1",
+      "Avg Package": "₹16 LPA",
+      "Median Package": "₹13 LPA",
+      "Highest Package": "₹65 LPA",
+      "Placement %": "89%",
+      "Location": "Kozhikode, KL"
+    },
+    {
+      "Institute": "Malaviya NIT Jaipur",
+      "Category": "NIT",
+      "Tier": "Tier 1",
+      "Avg Package": "₹15 LPA",
+      "Median Package": "₹12 LPA",
+      "Highest Package": "₹60 LPA",
+      "Placement %": "88%",
+      "Location": "Jaipur, RJ"
+    },
+    {
+      "Institute": "VNIT Nagpur",
+      "Category": "NIT",
+      "Tier": "Tier 1",
+      "Avg Package": "₹14 LPA",
+      "Median Package": "₹11 LPA",
+      "Highest Package": "₹55 LPA",
+      "Placement %": "86%",
+      "Location": "Nagpur, MH"
+    },
+    {
+      "Institute": "MNNIT Allahabad",
+      "Category": "NIT",
+      "Tier": "Tier 1",
+      "Avg Package": "₹14 LPA",
+      "Median Package": "₹11 LPA",
+      "Highest Package": "₹56 LPA",
+      "Placement %": "87%",
+      "Location": "Prayagraj, UP"
+    },
+    {
+      "Institute": "NIT Kurukshetra",
+      "Category": "NIT",
+      "Tier": "Tier 2",
+      "Avg Package": "₹13 LPA",
+      "Median Package": "₹10 LPA",
+      "Highest Package": "₹50 LPA",
+      "Placement %": "84%",
+      "Location": "Kurukshetra, HR"
+    },
+    {
+      "Institute": "SVNIT Surat",
+      "Category": "NIT",
+      "Tier": "Tier 2",
+      "Avg Package": "₹12 LPA",
+      "Median Package": "₹9.5 LPA",
+      "Highest Package": "₹44 LPA",
+      "Placement %": "81%",
+      "Location": "Surat, GJ"
+    },
+    {
+      "Institute": "NIT Jamshedpur",
+      "Category": "NIT",
+      "Tier": "Tier 2",
+      "Avg Package": "₹12 LPA",
+      "Median Package": "₹9.5 LPA",
+      "Highest Package": "₹44 LPA",
+      "Placement %": "82%",
+      "Location": "Jamshedpur, JH"
+    },
+    {
+      "Institute": "Maulana Azad NIT Bhopal",
+      "Category": "NIT",
+      "Tier": "Tier 2",
+      "Avg Package": "₹12 LPA",
+      "Median Package": "₹9.5 LPA",
+      "Highest Package": "₹45 LPA",
+      "Placement %": "82%",
+      "Location": "Bhopal, MP"
+    },
+    {
+      "Institute": "NIT Delhi",
+      "Category": "NIT",
+      "Tier": "Tier 2",
+      "Avg Package": "₹12 LPA",
+      "Median Package": "₹9.5 LPA",
+      "Highest Package": "₹44 LPA",
+      "Placement %": "81%",
+      "Location": "Delhi"
+    },
+    {
+      "Institute": "Dr. BR Ambedkar NIT Jalandhar",
+      "Category": "NIT",
+      "Tier": "Tier 2",
+      "Avg Package": "₹11 LPA",
+      "Median Package": "₹9 LPA",
+      "Highest Package": "₹42 LPA",
+      "Placement %": "80%",
+      "Location": "Jalandhar, PB"
+    },
+    {
+      "Institute": "NIT Durgapur",
+      "Category": "NIT",
+      "Tier": "Tier 2",
+      "Avg Package": "₹11 LPA",
+      "Median Package": "₹9 LPA",
+      "Highest Package": "₹40 LPA",
+      "Placement %": "79%",
+      "Location": "Durgapur, WB"
+    },
+    {
+      "Institute": "NIT Goa",
+      "Category": "NIT",
+      "Tier": "Tier 2",
+      "Avg Package": "₹11 LPA",
+      "Median Package": "₹8.5 LPA",
+      "Highest Package": "₹38 LPA",
+      "Placement %": "77%",
+      "Location": "Goa"
+    },
+    {
+      "Institute": "NIT Hamirpur",
+      "Category": "NIT",
+      "Tier": "Tier 2",
+      "Avg Package": "₹10 LPA",
+      "Median Package": "₹8 LPA",
+      "Highest Package": "₹36 LPA",
+      "Placement %": "76%",
+      "Location": "Hamirpur, HP"
+    },
+    {
+      "Institute": "NIT Patna",
+      "Category": "NIT",
+      "Tier": "Tier 2",
+      "Avg Package": "₹10 LPA",
+      "Median Package": "₹8 LPA",
+      "Highest Package": "₹36 LPA",
+      "Placement %": "76%",
+      "Location": "Patna, BR"
+    },
+    {
+      "Institute": "NIT Raipur",
+      "Category": "NIT",
+      "Tier": "Tier 2",
+      "Avg Package": "₹10 LPA",
+      "Median Package": "₹8 LPA",
+      "Highest Package": "₹35 LPA",
+      "Placement %": "75%",
+      "Location": "Raipur, CG"
+    },
+    {
+      "Institute": "NIT Silchar",
+      "Category": "NIT",
+      "Tier": "Tier 2",
+      "Avg Package": "₹10 LPA",
+      "Median Package": "₹8 LPA",
+      "Highest Package": "₹35 LPA",
+      "Placement %": "75%",
+      "Location": "Silchar, AS"
+    },
+    {
+      "Institute": "IIEST Shibpur",
+      "Category": "NIT",
+      "Tier": "Tier 2",
+      "Avg Package": "₹11 LPA",
+      "Median Package": "₹9 LPA",
+      "Highest Package": "₹40 LPA",
+      "Placement %": "80%",
+      "Location": "Howrah, WB"
+    },
+    {
+      "Institute": "NIT Andhra Pradesh",
+      "Category": "NIT",
+      "Tier": "Tier 3",
+      "Avg Package": "₹8 LPA",
+      "Median Package": "₹6.5 LPA",
+      "Highest Package": "₹28 LPA",
+      "Placement %": "67%",
+      "Location": "Tadepalligudem, AP"
+    },
+    {
+      "Institute": "NIT Puducherry",
+      "Category": "NIT",
+      "Tier": "Tier 3",
+      "Avg Package": "₹8 LPA",
+      "Median Package": "₹6.5 LPA",
+      "Highest Package": "₹26 LPA",
+      "Placement %": "68%",
+      "Location": "Puducherry"
+    },
+    {
+      "Institute": "NIT Srinagar",
+      "Category": "NIT",
+      "Tier": "Tier 3",
+      "Avg Package": "₹8 LPA",
+      "Median Package": "₹6.5 LPA",
+      "Highest Package": "₹26 LPA",
+      "Placement %": "67%",
+      "Location": "Srinagar, JK"
+    },
+    {
+      "Institute": "NIT Uttarakhand",
+      "Category": "NIT",
+      "Tier": "Tier 3",
+      "Avg Package": "₹8 LPA",
+      "Median Package": "₹6.5 LPA",
+      "Highest Package": "₹26 LPA",
+      "Placement %": "66%",
+      "Location": "Srinagar, UK"
+    },
+    {
+      "Institute": "NIT Agartala",
+      "Category": "NIT",
+      "Tier": "Tier 3",
+      "Avg Package": "₹7 LPA",
+      "Median Package": "₹5.5 LPA",
+      "Highest Package": "₹22 LPA",
+      "Placement %": "65%",
+      "Location": "Agartala, TR"
+    },
+    {
+      "Institute": "NIT Meghalaya",
+      "Category": "NIT",
+      "Tier": "Tier 3",
+      "Avg Package": "₹7 LPA",
+      "Median Package": "₹5.5 LPA",
+      "Highest Package": "₹20 LPA",
+      "Placement %": "62%",
+      "Location": "Shillong, ML"
+    },
+    {
+      "Institute": "NIT Sikkim",
+      "Category": "NIT",
+      "Tier": "Tier 4",
+      "Avg Package": "₹6 LPA",
+      "Median Package": "₹5 LPA",
+      "Highest Package": "₹18 LPA",
+      "Placement %": "58%",
+      "Location": "Ravangla, SK"
+    },
+    {
+      "Institute": "NIT Arunachal Pradesh",
+      "Category": "NIT",
+      "Tier": "Tier 4",
+      "Avg Package": "₹6 LPA",
+      "Median Package": "₹5 LPA",
+      "Highest Package": "₹18 LPA",
+      "Placement %": "57%",
+      "Location": "Yupia, AR"
+    },
+    {
+      "Institute": "NIT Nagaland",
+      "Category": "NIT",
+      "Tier": "Tier 4",
+      "Avg Package": "₹5.5 LPA",
+      "Median Package": "₹4.5 LPA",
+      "Highest Package": "₹16 LPA",
+      "Placement %": "55%",
+      "Location": "Nagaland"
+    },
+    {
+      "Institute": "NIT Manipur",
+      "Category": "NIT",
+      "Tier": "Tier 4",
+      "Avg Package": "₹5.5 LPA",
+      "Median Package": "₹4.5 LPA",
+      "Highest Package": "₹16 LPA",
+      "Placement %": "55%",
+      "Location": "Imphal, MN"
+    },
+    {
+      "Institute": "NIT Mizoram",
+      "Category": "NIT",
+      "Tier": "Tier 4",
+      "Avg Package": "₹5.5 LPA",
+      "Median Package": "₹4.5 LPA",
+      "Highest Package": "₹16 LPA",
+      "Placement %": "55%",
+      "Location": "Aizawl, MZ"
+    }
+  ]
+}

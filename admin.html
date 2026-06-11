@@ -1,0 +1,2991 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <!-- SEO Optimization Meta Tags -->
+    <title>Admin Dashboard — College Simplified</title>
+    <meta name="keywords" content="Counselling, mhtcet, josaa counselling, college simplified, mhtcet counselling, concept simplified, mhtcet counseling, josaa counseling, counseling, college predictor, college predictors, engineering college predictor, college admission predictor, admin portal, data management, counselling administration">
+    <meta name="description" content="College Simplified Admin Panel. Manage notifications, update college cutoff datasets, and configure portal settings.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:title" content="Admin Dashboard — College Simplified">
+    <meta property="og:description" content="College Simplified Admin Panel. Manage notifications, update college cutoff datasets, and configure portal settings.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://counselling.collegesimplified.in/admin.html">
+    <meta property="og:site_name" content="College Simplified">
+    
+    <!-- Structured Data (JSON-LD) for Search Engines -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "College Simplified",
+      "url": "https://counselling.collegesimplified.in/",
+      "sameAs": [
+        "https://play.google.com/store/apps/details?id=co.mark.vvzmn",
+        "https://apps.apple.com/in/app/myinstitute/id1472483563",
+        "https://www.instagram.com/college_simplified/",
+        "https://youtube.com/@conceptsimplified"
+      ]
+    }
+    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lexend:wght@400;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --brand: #dc2626;
+      /* Same Red as Landing */
+      --brand-d: #991b1b;
+      --brand-soft: #fef2f2;
+      --brand-ring: rgba(220, 38, 38, 0.15);
+      --ink: #111827;
+      --ink2: #374151;
+      --muted: #6b7280;
+      --bg: #fafafa;
+      --card: #ffffff;
+      --stroke: rgba(0, 0, 0, 0.08);
+      --inp: #ffffff;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --green: #10b981;
+      --green-bg: #ecfdf5;
+      --red: #dc2626;
+      --red-bg: #fef2f2;
+      --blue: #dc2626;
+      --blue-bg: #fef2f2;
+    }
+
+    [data-theme="dark"] {
+      --brand: #ef4444;
+      --brand-d: #dc2626;
+      --brand-soft: rgba(220, 38, 38, 0.1);
+      --ink: #f9fafb;
+      --ink2: #e5e7eb;
+      --muted: #9ca3af;
+      --bg: #030712;
+      --card: #111827;
+      --stroke: #1f2937;
+      --inp: #1f2937;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      overflow-x: hidden
+    }
+
+    /* Layout */
+    .admin-layout {
+      display: flex;
+      min-height: 100vh
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: var(--card);
+      border-right: 1px solid var(--stroke);
+      padding: 32px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      z-index: 300;
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1)
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      padding: 0 10px
+    }
+
+    .sidebar-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--brand), var(--brand-d));
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-family: 'Lexend', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      box-shadow: 0 8px 20px var(--brand-ring)
+    }
+
+    .sidebar-name {
+      font-family: 'Lexend', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--ink);
+      line-height: 1.2
+    }
+
+    .sidebar-name span {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 2px
+    }
+
+    .nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      list-style: none
+    }
+
+    .nav-item {
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--muted);
+      transition: all .2s ease;
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-family: inherit
+    }
+
+    .nav-item svg {
+      width: 20px;
+      height: 20px;
+      stroke-width: 2.5;
+      transition: transform .2s
+    }
+
+    .nav-item:hover {
+      background: var(--bg);
+      color: var(--ink);
+      transform: translateX(4px)
+    }
+
+    .nav-item.active {
+      background: var(--brand-soft);
+      color: var(--brand);
+      box-shadow: inset 0 0 0 1px var(--brand-ring)
+    }
+
+    .nav-item.active svg {
+      stroke: var(--brand)
+    }
+
+    .notice-card {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 16px;
+      transition: all 0.2s;
+    }
+
+    .notice-card:hover {
+      border-color: var(--brand);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .notice-title {
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .notice-desc {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    /* Main Content */
+    .main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg)
+    }
+
+    .topbar {
+      height: 72px;
+      background: var(--card);
+      border-bottom: 1px solid var(--stroke);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      backdrop-filter: blur(12px)
+    }
+
+    .page-header {
+      display: flex;
+      flex-direction: column
+    }
+
+    .page-title {
+      font-family: 'Lexend', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--ink)
+    }
+
+    .content {
+      padding: 32px;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%
+    }
+
+    /* Stats Section */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 24px;
+      padding: 28px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-shadow: var(--shadow);
+      transition: all .3s ease
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--brand)
+    }
+
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      transition: transform .3s ease
+    }
+
+    .stat-card:hover .stat-icon {
+      transform: scale(1.1)
+    }
+
+    .stat-icon.users {
+      background: var(--blue-bg);
+      color: var(--blue)
+    }
+
+    .stat-icon.states {
+      background: var(--green-bg);
+      color: var(--green)
+    }
+
+    .stat-icon.notifs {
+      background: var(--brand-soft);
+      color: var(--brand)
+    }
+
+    .stat-info .val {
+      font-family: 'Lexend', sans-serif;
+      font-weight: 800;
+      font-size: 28px;
+      line-height: 1;
+      color: var(--ink)
+    }
+
+    .stat-info .lbl {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 600;
+      margin-top: 6px
+    }
+
+    /* Panels & Tables */
+    .panel {
+      display: none;
+      animation: panelSlideIn .4s cubic-bezier(0.16, 1, 0.3, 1)
+    }
+
+    .panel.active {
+      display: block
+    }
+
+    @keyframes panelSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 24px;
+      flex-wrap: wrap
+    }
+
+    .search-container {
+      position: relative;
+      flex: 1;
+      max-width: 500px;
+      width: 100%
+    }
+
+    .search-container svg {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 14px 16px 14px 48px;
+      border: 1.5px solid var(--stroke);
+      border-radius: 16px;
+      font-size: 15px;
+      background: var(--card);
+      color: var(--ink);
+      font-family: inherit;
+      outline: none;
+      transition: all .2s;
+      box-shadow: var(--shadow)
+    }
+
+    .search-input:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 4px var(--brand-ring);
+      background: var(--card)
+    }
+
+    .table-container {
+      background: var(--card);
+      border-radius: 24px;
+      border: 1px solid var(--stroke);
+      box-shadow: var(--shadow);
+      overflow: hidden
+    }
+
+    .table-scroll {
+      overflow-x: auto
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    th {
+      background: var(--bg);
+      font-weight: 700;
+      text-align: left;
+      padding: 18px 24px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 1px solid var(--stroke)
+    }
+
+    td {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--stroke);
+      color: var(--ink);
+      font-size: 14px;
+      vertical-align: middle;
+      transition: background .15s
+    }
+
+    tr:last-child td {
+      border-bottom: none
+    }
+
+    tr:hover td {
+      background: var(--brand-soft)
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 10px;
+      margin-top: -10px;
+    }
+
+    th {
+      padding: 12px 24px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      font-weight: 800;
+      text-align: left;
+    }
+
+    td {
+      padding: 16px 24px;
+      background: var(--card);
+      border-top: 1px solid var(--stroke);
+      border-bottom: 1px solid var(--stroke);
+      vertical-align: middle;
+    }
+
+    td:first-child {
+      border-left: 1px solid var(--stroke);
+      border-radius: 20px 0 0 20px;
+    }
+
+    td:last-child {
+      border-right: 1px solid var(--stroke);
+      border-radius: 0 20px 20px 0;
+    }
+
+    tr:hover td {
+      border-color: var(--brand-ring);
+      background: var(--brand-soft);
+      transition: all 0.2s;
+    }
+
+    .user-cell {
+      display: flex;
+      align-items: center;
+      gap: 16px
+    }
+
+    .user-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: var(--brand-soft);
+      color: var(--brand);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 16px;
+      box-shadow: inset 0 0 0 1px var(--brand-ring)
+    }
+
+    /* Forms */
+    .card-section {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 28px;
+      padding: 40px;
+      max-width: 800px;
+      box-shadow: var(--shadow-lg);
+      margin: 0 auto
+    }
+
+    .card-section h3 {
+      font-family: 'Lexend', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .form-group {
+      margin-bottom: 24px
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--ink2);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 14px 18px;
+      border: 1.5px solid var(--stroke);
+      border-radius: 16px;
+      font-size: 15px;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: inherit;
+      outline: none;
+      transition: all .2s ease
+    }
+
+    .form-control:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 4px var(--brand-ring);
+      background: var(--card)
+    }
+
+    textarea.form-control {
+      min-height: 120px;
+      resize: vertical
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 12px 24px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+      transition: all .2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      white-space: nowrap
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--brand), var(--brand-d));
+      color: #fff;
+      box-shadow: 0 4px 12px var(--brand-ring)
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px var(--brand-ring);
+      filter: brightness(1.1)
+    }
+
+    .btn-primary:active {
+      transform: translateY(0)
+    }
+
+    .btn-outline {
+      background: var(--card);
+      border: 1.5px solid var(--stroke);
+      color: var(--ink2)
+    }
+
+    .btn-outline:hover {
+      border-color: var(--brand);
+      color: var(--brand);
+      background: var(--brand-soft)
+    }
+
+    .btn-danger {
+      background: var(--red-bg);
+      color: var(--red);
+      font-weight: 600
+    }
+
+    .btn-danger:hover {
+      background: var(--brand);
+      color: #fff;
+      transform: translateY(-2px)
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.8);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      backdrop-filter: blur(8px);
+      animation: fadeIn .3s ease
+    }
+
+    .modal-overlay.show {
+      display: flex
+    }
+
+    .modal-card {
+      background: var(--card);
+      border-radius: 32px;
+      padding: 40px;
+      max-width: 550px;
+      width: 100%;
+      box-shadow: var(--shadow-lg);
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative
+    }
+
+    @media (max-width: 600px) {
+      .modal-card {
+        padding: 24px;
+        border-radius: 24px;
+      }
+
+      .modal-grid {
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+      }
+
+      .modal-actions {
+        flex-direction: column-reverse;
+        gap: 10px !important;
+      }
+
+      .modal-actions .btn {
+        width: 100%;
+      }
+
+      #modalDelBtn {
+        margin-right: 0 !important;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+
+    /* Toast */
+    .toast-wrap {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      pointer-events: none
+    }
+
+    .toast {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 20px;
+      padding: 16px 24px;
+      font-size: 15px;
+      font-weight: 700;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      pointer-events: all;
+      animation: toastSlideIn .4s cubic-bezier(0.16, 1, 0.3, 1);
+      color: var(--ink);
+      border-left: 4px solid var(--brand)
+    }
+
+    @keyframes toastSlideIn {
+      from {
+        transform: translateX(100%) scale(0.9);
+        opacity: 0
+      }
+
+      to {
+        transform: translateX(0) scale(1);
+        opacity: 1
+      }
+    }
+
+    /* Mobile Navigation */
+    .mobile-nav {
+      display: none
+    }
+
+    /* 📱 Responsive Design */
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 88px;
+        padding: 32px 14px
+      }
+
+      .sidebar-name,
+      .nav-item span {
+        display: none
+      }
+
+      .nav-item {
+        justify-content: center;
+        padding: 16px
+      }
+
+      .sidebar-brand {
+        justify-content: center;
+        padding: 0
+      }
+    }
+
+    @media (max-width: 768px) {
+      .admin-layout {
+        flex-direction: column
+      }
+
+      .sidebar {
+        display: none
+      }
+
+      .topbar {
+        padding: 0 20px;
+        height: 64px
+      }
+
+      .content {
+        padding: 20px 16px 100px
+      }
+
+      .stat-grid {
+        grid-template-columns: 1fr;
+        gap: 16px
+      }
+
+      .mobile-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--card);
+        border-top: 1px solid var(--stroke);
+        padding: 12px 16px 24px;
+        justify-content: space-around;
+        z-index: 400;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05)
+      }
+
+      .m-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 10px;
+        font-weight: 700;
+        border: none;
+        background: none;
+        font-family: inherit
+      }
+
+      .m-nav-item svg {
+        width: 22px;
+        height: 22px;
+        stroke-width: 2
+      }
+
+      .m-nav-item.active {
+        color: var(--brand)
+      }
+
+      .card-section {
+        padding: 24px;
+        border-radius: 20px
+      }
+
+      .page-title {
+        font-size: 18px
+      }
+
+      .topbar #authArea {
+        display: none
+      }
+
+      /* Hide user area on mobile topbar, maybe move to profile tab */
+    }
+
+    /* Notifications */
+    .notif-item {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 24px;
+      border: 1px solid var(--stroke);
+      border-radius: 24px;
+      margin-bottom: 16px;
+      background: var(--card);
+      transition: all .2s ease;
+      box-shadow: var(--shadow)
+    }
+
+    .notif-item:hover {
+      border-color: var(--brand);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px)
+    }
+
+    .notif-item .n-body {
+      flex: 1;
+      min-width: 0
+    }
+
+    .notif-item .n-title {
+      font-family: 'Lexend', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      margin-bottom: 4px;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .notif-item .n-msg {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden
+    }
+
+    .notif-item .n-meta {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      font-weight: 600;
+      flex-wrap: wrap
+    }
+
+    .notif-item .n-actions {
+      flex-shrink: 0
+    }
+
+    .badge-sm {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px
+    }
+
+    .b-brand {
+      background: var(--brand-soft);
+      color: var(--brand)
+    }
+
+    .b-green {
+      background: var(--green-bg);
+      color: var(--green)
+    }
+
+    .b-josaa {
+      background: #fff7ed;
+      color: #ea580c;
+      border: 1px solid rgba(234, 88, 12, 0.15);
+    }
+
+    .b-mhtcet {
+      background: var(--brand-soft);
+      color: var(--brand);
+      border: 1px solid var(--brand-ring);
+    }
+
+    .empty {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 500
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.3
+    }
+
+    /* 📅 Calendar Management */
+    .calendar-admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .cal-nav-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-today-admin {
+      padding: 8px 16px;
+      border-radius: 12px;
+      border: 1.5px solid var(--stroke);
+      background: var(--card);
+      color: var(--ink);
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-today-admin:hover {
+      border-color: var(--brand);
+      color: var(--brand);
+      background: var(--brand-soft);
+    }
+
+    .cal-arrows {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-arrow {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      border: 1.5px solid var(--stroke);
+      background: var(--card);
+      color: var(--muted);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-arrow:hover {
+      border-color: var(--brand);
+      color: var(--brand);
+      background: var(--brand-soft);
+    }
+
+    .month-display-admin {
+      font-family: 'Lexend', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--ink);
+      min-width: 140px;
+    }
+
+    .calendar-admin-wrapper {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .weekdays-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      background: var(--bg);
+      border-bottom: 1px solid var(--stroke);
+    }
+
+    .weekday-label {
+      padding: 14px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    #adminDaysGrid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      grid-auto-rows: minmax(100px, 1fr);
+    }
+
+    .admin-day {
+      border-right: 1px solid var(--stroke);
+      border-bottom: 1px solid var(--stroke);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-height: 100px;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+
+    .admin-day:nth-child(7n) {
+      border-right: none;
+    }
+
+    .admin-day:hover {
+      background: var(--bg);
+    }
+
+    .admin-day.off-month {
+      background: var(--bg);
+      opacity: 0.4;
+    }
+
+    .admin-day.today {
+      background: var(--brand-soft);
+    }
+
+    .admin-day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .admin-day-num {
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 13px;
+      border-radius: 8px;
+      color: var(--ink2);
+    }
+
+    .admin-day.today .admin-day-num {
+      background: var(--brand);
+      color: #fff;
+    }
+
+    .admin-event-bar {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 8px;
+      background: var(--brand-soft);
+      color: var(--brand);
+      border-radius: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border: 1px solid var(--brand-ring);
+    }
+
+    .add-event-btn {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      border: none;
+      background: var(--brand-soft);
+      color: var(--brand);
+      font-size: 14px;
+      font-weight: 800;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      opacity: 0;
+      transition: all 0.2s;
+    }
+
+    .admin-day:hover .add-event-btn {
+      opacity: 1;
+    }
+
+    .add-event-btn:hover {
+      background: var(--brand);
+      color: #fff;
+    }
+
+    @media (max-width: 768px) {
+      #adminDaysGrid {
+        grid-auto-rows: minmax(70px, 1fr);
+      }
+
+      .admin-day {
+        min-height: 70px;
+        padding: 6px;
+      }
+
+      .admin-day-num {
+        width: 22px;
+        height: 22px;
+        font-size: 11px;
+      }
+
+      .admin-event-bar {
+        font-size: 9px;
+        padding: 2px 4px;
+      }
+
+      .month-display-admin {
+        font-size: 15px;
+        min-width: 120px;
+      }
+
+      .weekday-label {
+        padding: 8px 4px;
+        font-size: 10px;
+      }
+
+      .add-event-btn {
+        opacity: 1;
+        width: 24px;
+        height: 24px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #adminDaysGrid {
+        grid-auto-rows: minmax(60px, 1fr);
+      }
+
+      .admin-day {
+        min-height: 60px;
+        padding: 4px;
+        gap: 2px;
+      }
+
+      .admin-day-num {
+        width: 18px;
+        height: 18px;
+        font-size: 9px;
+        border-radius: 4px;
+      }
+
+      .admin-event-bar {
+        font-size: 8px;
+        padding: 1px 3px;
+        border-radius: 4px;
+      }
+
+      .calendar-admin-header {
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+
+      .cal-nav-group {
+        gap: 8px;
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .month-display-admin {
+        font-size: 14px;
+        min-width: auto;
+        flex: 1;
+        text-align: center;
+      }
+
+      .btn-arrow {
+        width: 32px;
+        height: 32px;
+      }
+
+      .btn-today-admin {
+        padding: 6px 12px;
+        font-size: 11px;
+      }
+
+      .calendar-admin-wrapper {
+        border-radius: 16px;
+      }
+    }
+
+    /* 📄 Non-CAP Admissions Styling */
+    .cap-admin-card {
+      background: var(--card);
+      border: 1.5px solid var(--stroke);
+      border-radius: 24px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+    }
+
+    .cap-admin-card:hover {
+      border-color: var(--brand-ring);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .cap-admin-card-hdr {
+      background: var(--bg);
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--stroke);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cap-admin-card-hdr h3 {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--ink);
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: 'Lexend', sans-serif;
+    }
+
+    .cap-admin-year-box {
+      padding: 24px;
+      border-bottom: 1px solid var(--stroke);
+    }
+
+    .cap-admin-year-box:last-child {
+      border-bottom: none;
+    }
+
+    .cap-admin-year-hdr {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .cap-admin-item {
+      background: var(--bg);
+      border: 1px solid var(--stroke);
+      border-radius: 16px;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      transition: all 0.2s;
+    }
+
+    .cap-admin-item:hover {
+      border-color: var(--brand);
+      background: var(--card);
+      transform: translateX(4px);
+    }
+
+    .cap-admin-item-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--ink2);
+    }
+
+    .cap-admin-item-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .cap-admin-item-actions .btn-sm {
+      padding: 6px 14px;
+      font-size: 12px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="toast-wrap" id="toastWrap"></div>
+
+  <div id="adminGate" style="display:none">
+    <div class="admin-layout">
+      <!-- SIDEBAR INJECTED GLOBALLY BY shared_auth.js -->
+
+      <!-- MAIN CONTENT -->
+      <main class="main" style="flex: 1; display: flex; flex-direction: column;">
+        <header class="topbar">
+          <div class="page-header">
+            <h2 class="page-title" id="pageTitle">Users Management</h2>
+          </div>
+          <div id="authArea"></div>
+        </header>
+
+        <div class="content">
+          <!-- STATS SECTION -->
+          <div class="stat-grid" id="statsGrid"></div>
+
+          <!-- EDIT REQUESTS PANEL -->
+          <div class="panel" id="panel-requests">
+            <div id="requestsList">
+              <div class="empty">Scanning for pending requests...</div>
+            </div>
+          </div>
+
+          <!-- USERS PANEL -->
+          <div class="panel active" id="panel-users">
+            <div class="panel-header" style="justify-content:space-between;gap:20px;flex-wrap:wrap">
+              <div class="search-container" style="flex:1;min-width:300px">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.35-4.35" />
+                </svg>
+                <input type="text" id="userSearch" class="search-input"
+                  placeholder="Search by name, email, city, state..." oninput="filterUsers()">
+              </div>
+              <div style="display:flex;gap:12px;align-items:center">
+                <select id="csvFilter" class="form-control"
+                  style="width:140px;height:44px;font-size:13px;border-radius:12px" onchange="filterUsers()">
+                  <option value="all">All Time</option>
+                  <option value="today">Today</option>
+                  <option value="week">Past Week</option>
+                  <option value="month">Past Month</option>
+                </select>
+                <button class="btn btn-primary" onclick="downloadUsersCSV()"
+                  style="height:44px;white-space:nowrap;display:flex;align-items:center">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    style="margin-right:8px">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  Export CSV
+                </button>
+              </div>
+            </div>
+            <div class="table-container">
+              <div class="table-scroll">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>User Details</th>
+                      <th>Phone Number</th>
+                      <th>Location</th>
+                      <th>Joined</th>
+                      <th style="text-align:right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="usersTbody">
+                    <tr>
+                      <td colspan="5" class="empty">Loading dashboard...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- SEND NOTIFICATION PANEL -->
+          <div class="panel" id="panel-notifSend">
+            <div class="card-section">
+              <h3>Compose Notification</h3>
+              <div class="form-group">
+                <label class="form-label">Recipient Target</label>
+                <select id="nTarget" class="form-control" onchange="toggleCustomEmail()">
+                  <option value="all">Broadcast to All Users</option>
+                  <option value="custom">Specific User (via Email)</option>
+                </select>
+              </div>
+              <div class="form-group" id="nEmailWrap" style="display:none">
+                <label class="form-label">Recipient Email</label>
+                <input type="email" id="nEmail" class="form-control" placeholder="user@example.com">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Notification Title</label>
+                <input type="text" id="nTitle" class="form-control" placeholder="Brief headline">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Message Content</label>
+                <textarea id="nMessage" class="form-control" placeholder="Enter notification message..."></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">CTA Link (Optional)</label>
+                <input type="text" id="nLink" class="form-control" placeholder="https://example.com">
+              </div>
+              <button class="btn btn-primary" id="sendNotifBtn" onclick="sendNotification()" style="width:100%">
+                Dispatch Notification
+              </button>
+            </div>
+          </div>
+
+          <!-- NOTIFICATION HISTORY PANEL -->
+          <div class="panel" id="panel-notifHistory">
+            <div id="adminNotifList">
+              <div class="empty">Scanning history...</div>
+            </div>
+          </div>
+
+          <!-- NON-CAP ADMISSIONS PANEL -->
+          <div class="panel" id="panel-nonCap">
+            <div class="card-section" style="max-width:1000px">
+              <h3>Post Admission Notice</h3>
+              <div class="cap-form-grid">
+                <div class="form-group">
+                  <label class="form-label">College Selection Mode</label>
+                  <div style="display:flex;gap:12px;margin-bottom:12px">
+                    <label
+                      style="flex:1; padding:10px; border:1.5px solid var(--stroke); border-radius:10px; cursor:pointer; display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700">
+                      <input type="radio" name="colMode" value="existing" checked onchange="switchColMode('existing')">
+                      Existing
+                    </label>
+                    <label
+                      style="flex:1; padding:10px; border:1.5px solid var(--stroke); border-radius:10px; cursor:pointer; display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700">
+                      <input type="radio" name="colMode" value="new" onchange="switchColMode('new')"> New
+                    </label>
+                  </div>
+                  <div id="colExistingWrap">
+                    <select id="capCollegeSelect" class="form-control"></select>
+                  </div>
+                  <div id="colNewWrap" style="display:none">
+                    <input type="text" id="capCollegeNew" class="form-control" placeholder="e.g. COEP, Pune">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Academic Year</label>
+                  <select id="capYear" class="form-control">
+                    <option value="2024">2024</option>
+                    <option value="2025" selected>2025</option>
+                    <option value="2026">2026</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Notice Title</label>
+                <input type="text" id="capTitle" class="form-control" placeholder="e.g. Spot Round Instructions">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Drive / Document Link</label>
+                <input type="text" id="capLink" class="form-control" placeholder="https://drive.google.com/...">
+              </div>
+              <button class="btn btn-primary" onclick="saveNonCap()" style="width:100%">Post Admission Notice</button>
+
+              <hr style="margin:40px 0; border:none; border-top:1px solid var(--stroke)">
+
+              <h3>Active Notices</h3>
+              <div id="nonCapList">
+                <div class="empty">Loading notices...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LATEST NOTICES PANEL -->
+          <div class="panel" id="panel-notices">
+            <div style="display:grid; grid-template-columns: 1fr 1.5fr; gap: 32px; align-items: start;">
+              <div class="card-section" style="margin:0; width:100%; max-width:none;">
+                <h3>Add New Notice</h3>
+                <div class="form-group">
+                  <label class="form-label">Notice Title</label>
+                  <input type="text" id="notTitle" class="form-control" placeholder="e.g. Admission Schedule 2026">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Description</label>
+                  <textarea id="notDesc" class="form-control" placeholder="Detailed announcement text..."></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Action Link (Optional - e.g. Drive Link)</label>
+                  <input type="url" id="notLink" class="form-control" placeholder="https://drive.google.com/...">
+                </div>
+                <button class="btn btn-primary" onclick="addNotice()" style="width:100%">Publish Notice</button>
+              </div>
+
+              <div>
+                <h3 style="margin-bottom:20px; font-size:18px; font-weight:700;">Live Notices</h3>
+                <div id="noticeList">
+                  <div class="empty">Loading notices...</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CALENDAR PANEL -->
+          <div class="panel" id="panel-calendar">
+            <div class="calendar-admin-header">
+              <div class="cal-nav-group">
+                <button class="btn-today-admin" onclick="setToday()">Today</button>
+                <div class="cal-arrows">
+                  <button class="btn-arrow" onclick="prevMonth()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <polyline points="15 18 9 12 15 6" />
+                    </svg>
+                  </button>
+                  <button class="btn-arrow" onclick="nextMonth()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                  </button>
+                </div>
+                <div class="month-display-admin" id="monthDisplay">May 2026</div>
+              </div>
+              <button class="btn btn-primary" onclick="openEventModal()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                <span>Add Event</span>
+              </button>
+            </div>
+
+            <div class="calendar-admin-wrapper">
+              <div class="weekdays-grid">
+                <div class="weekday-label">Sun</div>
+                <div class="weekday-label">Mon</div>
+                <div class="weekday-label">Tue</div>
+                <div class="weekday-label">Wed</div>
+                <div class="weekday-label">Thu</div>
+                <div class="weekday-label">Fri</div>
+                <div class="weekday-label">Sat</div>
+              </div>
+              <div id="adminDaysGrid"></div>
+            </div>
+          </div>
+
+          <!-- PREBUILT TEMPLATES PANEL -->
+          <div class="panel" id="panel-templates">
+            <div class="panel-header" style="justify-content:space-between;gap:20px;flex-wrap:wrap">
+              <div style="display:flex;gap:12px;align-items:center">
+                <h3 style="font-family:'Lexend',sans-serif; font-weight:800; font-size:18px; color:var(--ink); margin:0">
+                  Prebuilt Preference Templates
+                </h3>
+              </div>
+              <div style="display:flex;gap:12px">
+                <button class="btn btn-outline" onclick="adminSeedDefaultTemplates()" style="border-color: var(--brand); color: var(--brand)">
+                  Seed Defaults
+                </button>
+                <button class="btn btn-primary" onclick="window.location.href='preference-builder.html?newTemplate=1'">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:6px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  New Template
+                </button>
+              </div>
+            </div>
+            <div class="table-container" style="margin-top: 20px">
+              <div class="table-scroll">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Template Name</th>
+                      <th>Target & Filters</th>
+                      <th>Colleges</th>
+                      <th>Status</th>
+                      <th style="text-align:right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="templatesTbody">
+                    <tr>
+                      <td colspan="5" class="empty">Loading templates...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ADD/EDIT EVENT MODAL -->
+  <div class="modal-overlay" id="eventModal">
+    <div class="modal-card">
+      <h3 id="eventModalTitle">Add New Event</h3>
+      <div class="form-group">
+        <label class="form-label">Event Title</label>
+        <input type="text" id="evTitle" class="form-control" placeholder="e.g., JEE Main 2026 Registration">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea id="evDesc" class="form-control" placeholder="Detailed information about the event..."></textarea>
+      </div>
+      <div class="modal-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input type="date" id="evDate" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Time (Optional)</label>
+          <input type="time" id="evTime" class="form-control">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">CTA Link (Optional)</label>
+        <input type="text" id="evLink" class="form-control" placeholder="https://example.com/apply">
+      </div>
+      <div class="form-group" style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <input type="checkbox" id="evNotify" style="width:18px;height:18px;accent-color:var(--brand)">
+        <label for="evNotify" style="font-weight:600;font-size:14px;cursor:pointer">Send broadcast notification
+          now</label>
+      </div>
+      <div class="form-group" style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <input type="checkbox" id="evReminder" style="width:18px;height:18px;accent-color:var(--brand)"
+          onchange="document.getElementById('reminderConfig').style.display=this.checked?'block':'none'">
+        <label for="evReminder" style="font-weight:600;font-size:14px;cursor:pointer">Schedule automatic
+          reminder</label>
+      </div>
+      <div id="reminderConfig" style="display:none;margin-left:28px;margin-bottom:16px">
+        <label class="form-label" style="font-size:12px">Reminder Time</label>
+        <select id="evReminderOffset" class="form-control" style="padding:8px">
+          <option value="10">10 minutes before</option>
+          <option value="30">30 minutes before</option>
+          <option value="60">1 hour before</option>
+          <option value="1440">1 day before</option>
+        </select>
+      </div>
+      <div class="modal-actions" style="display:flex;gap:12px;justify-content:flex-end;margin-top:32px;flex-wrap:wrap">
+        <button class="btn btn-outline" onclick="closeEventModal()">Cancel</button>
+        <button class="btn btn-primary" id="saveEventBtn" onclick="saveEvent()">Save Event</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT USER MODAL -->
+  <div class="modal-overlay" id="editModal">
+    <div class="modal-card">
+      <h3>Edit User Profile</h3>
+      <div id="editFields"></div>
+      <div class="modal-actions" style="display:flex;gap:12px;justify-content:flex-end;margin-top:32px;flex-wrap:wrap">
+        <button class="btn btn-outline" onclick="closeEditModal()">Cancel</button>
+        <button class="btn btn-primary" id="saveEditBtn" onclick="saveUserEdit()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase_config.js"></script>
+  <script src="shared_auth.js"></script>
+  <script>
+    'use strict';
+
+    var allUsers = [];
+    var allNotifs = [];
+    var allEvents = [];
+    var allTemplates = [];
+    var editingUser = null;
+    var editingEvent = null;
+    var editingTemplate = null;
+    var currentCalDate = new Date();
+    var usersLimit = 50;
+    var lastSearchQuery = '';
+    var lastDateRange = '';
+
+    // ── Init ──
+    (function () {
+      initAuth();
+      var session = getSession();
+      if (!session || session.role !== 'admin') {
+        document.body.innerHTML = '<div style="text-align:center;padding:100px 20px"><h2 style="font-family:Lexend;font-weight:800;margin-bottom:12px;color:var(--brand)">Access Denied</h2><p style="color:var(--muted)">Admin privileges required. <a href="index.html">Return Home</a></p></div>';
+        return;
+      }
+      document.getElementById('adminGate').style.display = 'block';
+
+      // Inject Admin Tabs into Global Sidebar
+      injectAdminNav();
+
+      var params = new URLSearchParams(window.location.search);
+      var tab = params.get('tab');
+      if (tab) {
+        switchPanel(tab);
+      } else {
+        loadUsers();
+      }
+    })();
+
+    function injectAdminNav() {
+      var nav = document.querySelector('#sidebar nav'); if (!nav) return;
+      var html = `
+        <div class="sidebar-label" style="color:var(--brand)">Admin Controls</div>
+        <a href="#" class="sidebar-link admin-tab-btn active" data-tab="users" onclick="switchPanel('users', this);closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Users Database</a>
+        <a href="#" class="sidebar-link admin-tab-btn" data-tab="requests" onclick="switchPanel('requests', this);closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit Requests</a>
+        <a href="#" class="sidebar-link admin-tab-btn" data-tab="templates" onclick="switchPanel('templates', this);closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Prebuilt Templates</a>
+        <a href="#" class="sidebar-link admin-tab-btn" data-tab="notifSend" onclick="switchPanel('notifSend', this);closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> Send Alert</a>
+        <a href="#" class="sidebar-link admin-tab-btn" data-tab="notifHistory" onclick="switchPanel('notifHistory', this);closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Alert History</a>
+        <a href="#" class="sidebar-link admin-tab-btn" data-tab="nonCap" onclick="switchPanel('nonCap', this);closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Non-CAP Admissions</a>
+        <a href="#" class="sidebar-link admin-tab-btn" data-tab="notices" onclick="switchPanel('notices', this);closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Latest Notices</a>
+        <a href="#" class="sidebar-link admin-tab-btn" data-tab="calendar" onclick="switchPanel('calendar', this);closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Manage Events</a>
+      `;
+      nav.insertAdjacentHTML('beforeend', html);
+    }
+
+    // ── Toast ──
+    function toast(msg, type) {
+      var w = document.getElementById('toastWrap'); if (!w) return;
+      var el = document.createElement('div'); el.className = 'toast';
+      var c = type === 'ok' ? 'var(--green)' : type === 'err' ? 'var(--red)' : 'var(--brand)';
+      el.innerHTML = '<span class="toast-dot" style="background:' + c + '"></span><span>' + escAuth(msg) + '</span>';
+      w.appendChild(el);
+      setTimeout(function () { el.style.opacity = '0'; el.style.transform = 'translateX(110%)'; el.style.transition = 'all .3s'; setTimeout(function () { el.remove() }, 350) }, 3500);
+    }
+
+    // ── Tabs ──
+    function switchPanel(panelId) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      var target = document.getElementById('panel-' + panelId);
+      if (target) target.classList.add('active');
+
+      // Update Sidebar Links
+      document.querySelectorAll('.admin-tab-btn').forEach(l => l.classList.remove('active'));
+      var sideLink = document.querySelector(`.admin-tab-btn[data-tab="${panelId}"]`);
+      if (sideLink) sideLink.classList.add('active');
+
+      var titles = {
+        'users': 'Users Management',
+        'notifSend': 'Compose Notification',
+        'notifHistory': 'Notification History',
+        'nonCap': 'NON-CAP Admissions',
+        'calendar': 'Calendar Management',
+        'requests': 'Edit Quota Requests',
+        'notices': 'Manage Latest Notices',
+        'templates': 'Prebuilt Templates'
+      };
+      var headerTitle = document.getElementById('pageTitle');
+      if (headerTitle) headerTitle.textContent = titles[panelId] || 'Admin Panel';
+
+      // Auto-refresh data when switching tabs
+      if (panelId === 'notifHistory') loadNotifications();
+      if (panelId === 'users') loadUsers();
+      if (panelId === 'calendar') loadEvents();
+      if (panelId === 'nonCap') loadNonCap();
+      if (panelId === 'requests') loadRequests();
+      if (panelId === 'notices') loadAdminNotices();
+      if (panelId === 'templates') loadTemplatesPanel();
+    }
+
+    // ── USERS ──
+    async function loadUsers() {
+      usersLimit = 50;
+      var tb = document.getElementById('usersTbody');
+      var res = await authApi('getUsers', {});
+      if (res.ok) {
+        allUsers = res.data || [];
+        renderStats();
+        renderUsers(allUsers);
+      } else {
+        tb.innerHTML = '<tr><td colspan="5" class="empty">Error: ' + escAuth(res.error) + '</td></tr>';
+      }
+    }
+
+    function renderStats() {
+      try {
+        var grid = document.getElementById('statsGrid');
+        if (!grid) return;
+        var states = {};
+        var now = new Date();
+        var todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+        var weekStart = now.getTime() - (7 * 24 * 60 * 60 * 1000);
+        var monthStart = now.getTime() - (30 * 24 * 60 * 60 * 1000);
+
+        var regToday = 0, regWeek = 0, regMonth = 0;
+        allUsers.forEach(function (u) {
+          if (u.state) states[u.state] = (states[u.state] || 0) + 1;
+          var dt = u.createdAt ? (u.createdAt.toDate ? u.createdAt.toDate() : new Date(u.createdAt)) : null;
+          if (!dt) return;
+          var ts = dt.getTime();
+          if (ts >= todayStart) regToday++;
+          if (ts >= weekStart) regWeek++;
+          if (ts >= monthStart) regMonth++;
+        });
+
+        grid.innerHTML =
+          '<div class="stat-card">' +
+          '<div class="stat-icon users"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>' +
+          '<div class="stat-info"><div class="val">' + allUsers.length + '</div><div class="lbl">Total Users</div><div style="font-size:11px;color:var(--muted);margin-top:4px">+' + regToday + ' Today / +' + regWeek + ' Week</div></div>' +
+          '</div>' +
+          '<div class="stat-card">' +
+          '<div class="stat-icon states"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>' +
+          '<div class="stat-info"><div class="val">' + Object.keys(states).length + '</div><div class="lbl">States Covered</div><div style="font-size:11px;color:var(--muted);margin-top:4px">Top: ' + (Object.keys(states)[0] || 'N/A') + '</div></div>' +
+          '</div>' +
+          '<div class="stat-card">' +
+          '<div class="stat-icon notifs"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>' +
+          '<div class="stat-info"><div class="val">' + (allNotifs ? allNotifs.length : 0) + '</div><div class="lbl">Alerts History</div><div style="font-size:11px;color:var(--muted);margin-top:4px">Past Month: ' + regMonth + ' Regs</div></div>' +
+          '</div>';
+      } catch (e) {
+        console.error('renderStats error:', e);
+      }
+    }
+
+    function downloadUsersCSV() {
+      var filter = document.getElementById('csvFilter').value;
+      var now = new Date();
+      var cutoff = 0;
+      if (filter === 'today') cutoff = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+      else if (filter === 'week') cutoff = now.getTime() - (7 * 24 * 60 * 60 * 1000);
+      else if (filter === 'month') cutoff = now.getTime() - (30 * 24 * 60 * 60 * 1000);
+
+      var filtered = allUsers.filter(function (u) {
+        if (filter === 'all') return true;
+        var dt = u.createdAt ? (u.createdAt.toDate ? u.createdAt.toDate() : new Date(u.createdAt)) : null;
+        return dt && dt.getTime() >= cutoff;
+      });
+
+      if (!filtered.length) return toast('No users found for this range.', 'err');
+
+      var headers = ['Name', 'Email', 'Phone', 'State', 'City', 'Joined Date'];
+      var rows = filtered.map(function (u) {
+        var dt = u.createdAt ? (u.createdAt.toDate ? u.createdAt.toDate() : new Date(u.createdAt)) : new Date();
+        return [
+          '"' + (u.name || '').replace(/"/g, '""') + '"',
+          '"' + (u.email || '').replace(/"/g, '""') + '"',
+          '"' + (u.phone || '').replace(/"/g, '""') + '"',
+          '"' + (u.state || '').replace(/"/g, '""') + '"',
+          '"' + (u.city || '').replace(/"/g, '""') + '"',
+          '"' + dt.toISOString().split('T')[0] + '"'
+        ].join(',');
+      });
+
+      var csvContent = 'data:text/csv;charset=utf-8,' + headers.join(',') + '\n' + rows.join('\n');
+      var encodedUri = encodeURI(csvContent);
+      var link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', 'college_simplified_users_' + filter + '_' + new Date().toISOString().split('T')[0] + '.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast('CSV Exported: ' + filtered.length + ' users', 'ok');
+    }
+
+    function renderUsers(list) {
+      var tb = document.getElementById('usersTbody');
+      if (!list.length) { tb.innerHTML = '<tr><td colspan="5" class="empty"><div class="empty-icon">👥</div>No users found.</td></tr>'; return; }
+
+      var itemsToShow = list.slice(0, usersLimit);
+      var rowsHtml = itemsToShow.map(function (u, i) {
+        var initial = (u.name || 'U').charAt(0).toUpperCase();
+        var dt = u.createdAt ? (u.createdAt.toDate ? u.createdAt.toDate() : new Date(u.createdAt)) : null;
+        var dateStr = dt && !isNaN(dt.getTime()) ? dt.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Pending';
+
+        return '<tr>' +
+          '<td>' +
+          '<div class="user-cell">' +
+          '<div class="user-avatar" style="background:var(--brand-soft);color:var(--brand);box-shadow:none;border:1px solid var(--brand-ring)">' + initial + '</div>' +
+          '<div>' +
+          '<div style="font-weight:800;color:var(--ink);font-size:15px">' + escAuth(u.name) + '</div>' +
+          '<div style="display:flex;align-items:center;gap:6px;margin-top:2px">' +
+          '<div style="font-size:12px;color:var(--muted)">' + escAuth(u.email) + '</div>' +
+          (u.role === 'premium' ? '<span class="badge-sm" style="background:#fff7ed;color:#c2410c;border:1px solid #ffedd5;padding:2px 6px;font-size:9px">Premium</span>' : '') +
+          '</div>' +
+          '</div>' +
+          '</div>' +
+          '</td>' +
+          '<td><div style="font-weight:600;color:var(--ink2)">' + escAuth(u.phone || '-') + '</div></td>' +
+          '<td>' +
+          '<div style="font-weight:700;color:var(--ink)">' + escAuth(u.state || '-') + '</div>' +
+          '<div style="font-size:11px;color:var(--muted);margin-top:2px">' + escAuth(u.city || '-') + '</div>' +
+          '</td>' +
+          '<td><div style="font-weight:600;color:var(--ink2);font-size:13px">' + dateStr + '</div></td>' +
+          '<td style="text-align:right">' +
+          '<button class="btn btn-outline" style="padding:10px 20px;font-size:12px;border-radius:14px" onclick="openEditModal(' + allUsers.indexOf(u) + ')">Edit Profile</button>' +
+          '</td>' +
+          '</tr>';
+      }).join('');
+
+      if (list.length > usersLimit) {
+        rowsHtml += '<tr>' +
+          '<td colspan="5" style="text-align:center;padding:16px">' +
+          '<button class="btn btn-primary" onclick="loadMoreUsers()" style="padding:10px 24px;font-size:13px;border-radius:14px">Load More Users (Showing ' + usersLimit + ' of ' + list.length + ')</button>' +
+          '</td>' +
+          '</tr>';
+      }
+      tb.innerHTML = rowsHtml;
+    }
+
+    window.loadMoreUsers = function () {
+      usersLimit += 50;
+      filterUsers();
+    };
+
+    function filterUsers() {
+      var q = (document.getElementById('userSearch').value || '').toLowerCase().trim();
+      var dateRange = document.getElementById('csvFilter').value;
+
+      if (q !== lastSearchQuery || dateRange !== lastDateRange) {
+        usersLimit = 50;
+        lastSearchQuery = q;
+        lastDateRange = dateRange;
+      }
+
+      var now = new Date();
+      var cutoff = 0;
+      if (dateRange === 'today') cutoff = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+      else if (dateRange === 'week') cutoff = now.getTime() - (7 * 24 * 60 * 60 * 1000);
+      else if (dateRange === 'month') cutoff = now.getTime() - (30 * 24 * 60 * 60 * 1000);
+
+      var filtered = allUsers.filter(function (u) {
+        // 1. Date Filter
+        if (dateRange !== 'all') {
+          var dt = u.createdAt ? (u.createdAt.toDate ? u.createdAt.toDate() : new Date(u.createdAt)) : null;
+          if (!dt || dt.getTime() < cutoff) return false;
+        }
+
+        // 2. Text Search
+        if (!q) return true;
+        var name = String(u.name || '').toLowerCase();
+        var email = String(u.email || '').toLowerCase();
+        var state = String(u.state || '').toLowerCase();
+        var city = String(u.city || '').toLowerCase();
+        var phone = String(u.phone || '').toLowerCase();
+        return name.includes(q) || email.includes(q) || state.includes(q) || city.includes(q) || phone.includes(q);
+      });
+      renderUsers(filtered);
+    }
+
+    // ── Edit Modal ──
+    function openEditModal(idx) {
+      editingUser = allUsers[idx];
+      var fields = ['name', 'email', 'phone', 'state', 'city'];
+      var html = fields.map(function (f) {
+        return '<div class="form-group"><label class="form-label">' + f.charAt(0).toUpperCase() + f.slice(1) + '</label><input type="text" class="form-control" id="edit_' + f + '" value="' + escAuth(editingUser[f] || '') + '"></div>';
+      }).join('');
+      document.getElementById('editFields').innerHTML = html + `
+        <div class="form-group">
+          <label class="form-label">User Role</label>
+          <select class="form-control" id="edit_role">
+            <option value="user" ${editingUser.role === 'user' ? 'selected' : ''}>Standard User</option>
+            <option value="premium" ${editingUser.role === 'premium' ? 'selected' : ''}>Premium Member</option>
+            <option value="admin" ${editingUser.role === 'admin' ? 'selected' : ''}>Administrator</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-top: 20px; border-top: 1px dashed var(--stroke); padding-top: 20px;">
+          <label class="form-label">Preference Builder Limits</label>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <button class="btn btn-outline" style="flex: 1; font-size: 11px; padding: 10px; border-color: var(--brand); color: var(--brand)" onclick="resetUserPrefEdits('mht-cet-pref-builder')">
+              Reset MHT-CET Edits
+            </button>
+            <button class="btn btn-outline" style="flex: 1; font-size: 11px; padding: 10px; border-color: #ea580c; color: #ea580c" onclick="resetUserPrefEdits('josaa-pref-builder')">
+              Reset JOSAA Edits
+            </button>
+          </div>
+        </div>
+      `;
+      document.getElementById('editModal').classList.add('show');
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').classList.remove('show');
+      editingUser = null;
+    }
+
+    async function resetUserPrefEdits(tool) {
+      if (!editingUser) return;
+      var toolName = tool === 'josaa-pref-builder' ? 'JOSAA' : 'MHT-CET';
+      if (!confirm('Are you sure you want to reset ' + toolName + ' edit limits for ' + editingUser.name + '?')) return;
+
+      try {
+        var res = await authApi('resetPrefEdits', { userId: editingUser.id, tool: tool });
+        if (res.ok) {
+          toast(toolName + ' edit limit has been reset successfully!', 'ok');
+        } else {
+          toast('Error: ' + res.error, 'err');
+        }
+      } catch (err) {
+        toast('Error: ' + err.message, 'err');
+      }
+    }
+
+    async function saveUserEdit() {
+      if (!editingUser) return;
+      var payload = { id: editingUser.id };
+      ['name', 'email', 'phone', 'state', 'city', 'role'].forEach(function (f) {
+        var el = document.getElementById('edit_' + f);
+        if (el) payload[f] = el.value.trim();
+      });
+      var btn = document.getElementById('saveEditBtn');
+      btn.disabled = true; btn.textContent = 'Saving...';
+      var res = await authApi('updateUser', payload);
+      btn.disabled = false; btn.textContent = 'Save Changes';
+      if (res.ok) {
+        toast('User updated successfully!', 'ok');
+        closeEditModal();
+        loadUsers();
+      } else {
+        toast('Error: ' + (res.error || 'Failed to save'), 'err');
+      }
+    }
+
+    // ── NOTIFICATIONS ──
+    function toggleCustomEmail() {
+      var v = document.getElementById('nTarget').value;
+      document.getElementById('nEmailWrap').style.display = v === 'custom' ? 'block' : 'none';
+    }
+
+    async function sendNotification() {
+      var target = document.getElementById('nTarget').value;
+      if (target === 'custom') {
+        target = (document.getElementById('nEmail').value || '').trim();
+        if (!target) return toast('Please enter a user email.', 'err');
+      }
+      var title = (document.getElementById('nTitle').value || '').trim();
+      var message = (document.getElementById('nMessage').value || '').trim();
+      var link = (document.getElementById('nLink').value || '').trim();
+      if (!title) return toast('Title is required.', 'err');
+      if (!message) return toast('Message is required.', 'err');
+
+      var session = getSession();
+      var btn = document.getElementById('sendNotifBtn');
+      btn.disabled = true; btn.textContent = 'Sending...';
+
+      var res = await authApi('sendNotification', {
+        target: target, title: title, message: message, link: link,
+        senderName: session ? session.name : 'Admin'
+      });
+      btn.disabled = false; btn.textContent = 'Send Notification';
+
+      if (res.ok) {
+        toast('Notification sent!', 'ok');
+        document.getElementById('nTitle').value = '';
+        document.getElementById('nMessage').value = '';
+        document.getElementById('nLink').value = '';
+        loadNotifications();
+      } else {
+        toast('Error: ' + (res.error || 'Failed'), 'err');
+      }
+    }
+
+    async function loadNotifications() {
+      try {
+        console.log('Fetching notifications...');
+        var res = await authApi('getAllNotifications', {});
+        if (res.ok) {
+          allNotifs = res.data || [];
+          console.log('Fetched:', allNotifs.length, 'notifs');
+          renderStats();
+          renderNotifications();
+        } else {
+          console.error('Fetch failed:', res.error);
+          toast('Error: ' + (res.error || 'Failed to load history'), 'err');
+          var listEl = document.getElementById('adminNotifList');
+          if (listEl) listEl.innerHTML = '<div class="empty">Failed to load history.</div>';
+        }
+      } catch (e) {
+        console.error('loadNotifications catch:', e);
+        var listEl = document.getElementById('adminNotifList');
+        if (listEl) listEl.innerHTML = '<div class="empty">System error during fetch.</div>';
+      }
+    }
+
+    function renderNotifications() {
+      var el = document.getElementById('adminNotifList');
+      if (!el) {
+        console.error('adminNotifList element not found!');
+        return;
+      }
+      if (!allNotifs || !allNotifs.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">🔔</div>No notifications sent yet.</div>'; return; }
+
+      try {
+        el.innerHTML = allNotifs.map(function (n) {
+          var targetLabel = n.target === 'all' ? '<span class="badge-sm b-blue">All Users</span>' : '<span class="badge-sm b-green">' + escAuth(n.target) + '</span>';
+          var linkHtml = n.link ? '<a href="' + escAuth(n.link) + '" target="_blank" style="color:var(--blue);font-weight:600;text-decoration:none;font-size:12px">View Link →</a>' : '';
+
+          var dateStr = 'TBA';
+          if (n.createdAt) {
+            var dt = n.createdAt.toDate ? n.createdAt.toDate() : new Date(n.createdAt);
+            dateStr = dt.toLocaleString();
+          }
+
+          var schedLabel = '';
+          if (n.scheduledAt) {
+            var isPast = new Date(n.scheduledAt) <= new Date();
+            schedLabel = '<span class="badge-sm ' + (isPast ? 'b-green' : 'b-blue') + '" style="margin-left:8px">' + (isPast ? 'Delivered' : 'Scheduled: ' + new Date(n.scheduledAt).toLocaleString()) + '</span>';
+          }
+
+          return '<div class="notif-item">' +
+            '<div class="n-body">' +
+            '<div class="n-title" style="display:flex;align-items:center;gap:8px">' + escAuth(n.title) + schedLabel + '</div>' +
+            '<div class="n-msg">' + escAuth(n.message) + '</div>' +
+            '<div class="n-meta">' + targetLabel + '<span>' + dateStr + '</span>' + linkHtml + '</div>' +
+            '</div>' +
+            '<div class="n-actions">' +
+            '<button class="btn btn-danger" style="padding:8px 14px;font-size:11px" onclick="deleteNotification(\'' + n.id + '\')">Delete</button>' +
+            '</div>' +
+            '</div>';
+        }).join('');
+      } catch (e) {
+        console.error('Render error:', e);
+        el.innerHTML = '<div class="empty">Error rendering history. Check console.</div>';
+      }
+    }
+
+    async function deleteNotification(id) {
+      if (!confirm('Delete this notification?')) return;
+      var res = await authApi('deleteNotification', { id: id });
+      if (res.ok) { toast('Notification deleted.', 'ok'); loadNotifications(); }
+      else { toast('Error: ' + res.error, 'err'); }
+    }
+
+    // ── CALENDAR ──
+    async function loadEvents() {
+      var res = await authApi('getEvents', {});
+      if (res.ok) {
+        allEvents = res.data || [];
+        renderCalendar();
+      } else {
+        toast('Failed to load events', 'err');
+      }
+    }
+
+    function renderCalendar() {
+      var year = currentCalDate.getFullYear();
+      var month = currentCalDate.getMonth();
+
+      var display = document.getElementById('monthDisplay');
+      if (display) display.textContent = currentCalDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+      var firstDay = new Date(year, month, 1).getDay();
+      var lastDay = new Date(year, month + 1, 0).getDate();
+      var prevLastDay = new Date(year, month, 0).getDate();
+
+      var grid = document.getElementById('adminDaysGrid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      var today = new Date();
+      var isTodayMonth = today.getFullYear() === year && today.getMonth() === month;
+
+      // Fill previous month days
+      for (var x = firstDay; x > 0; x--) {
+        grid.appendChild(createAdminDayEl(prevLastDay - x + 1, true));
+      }
+
+      // Fill current month days
+      for (var i = 1; i <= lastDay; i++) {
+        var isToday = isTodayMonth && today.getDate() === i;
+        var dateStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(i).padStart(2, '0');
+        var dayEvents = allEvents.filter(function (e) { return e.date === dateStr; });
+        grid.appendChild(createAdminDayEl(i, false, isToday, dayEvents, dateStr));
+      }
+
+      // Fill next month days
+      var totalCells = grid.children.length;
+      var remaining = 42 - totalCells;
+      for (var j = 1; j <= remaining; j++) {
+        grid.appendChild(createAdminDayEl(j, true));
+      }
+    }
+
+    function createAdminDayEl(num, isOffMonth, isToday, events, dateStr) {
+      var div = document.createElement('div');
+      div.className = 'admin-day' + (isOffMonth ? ' off-month' : '') + (isToday ? ' today' : '');
+
+      var header = document.createElement('div');
+      header.className = 'admin-day-header';
+
+      var numSpan = document.createElement('span');
+      numSpan.className = 'admin-day-num';
+      numSpan.textContent = num;
+      header.appendChild(numSpan);
+
+      if (!isOffMonth) {
+        var addBtn = document.createElement('button');
+        addBtn.className = 'add-event-btn';
+        addBtn.innerHTML = '+';
+        addBtn.onclick = function () { openEventModal(undefined, dateStr); };
+        header.appendChild(addBtn);
+      }
+
+      div.appendChild(header);
+
+      if (events) {
+        events.forEach(function (ev) {
+          var evDiv = document.createElement('div');
+          evDiv.className = 'admin-event-bar';
+          evDiv.textContent = ev.title;
+          evDiv.onclick = function (e) {
+            e.stopPropagation();
+            openEventModal(allEvents.indexOf(ev));
+          };
+          div.appendChild(evDiv);
+        });
+      }
+      return div;
+    }
+
+    function prevMonth() { currentCalDate.setMonth(currentCalDate.getMonth() - 1); renderCalendar(); }
+    function nextMonth() { currentCalDate.setMonth(currentCalDate.getMonth() + 1); renderCalendar(); }
+    function setToday() { currentCalDate = new Date(); renderCalendar(); }
+
+    function openEventModal(idx, dateStr) {
+      editingEvent = idx !== undefined ? allEvents[idx] : null;
+      document.getElementById('eventModalTitle').textContent = editingEvent ? 'Edit Event' : 'Add New Event';
+      document.getElementById('evTitle').value = editingEvent ? editingEvent.title : '';
+      document.getElementById('evDesc').value = editingEvent ? editingEvent.desc : '';
+      document.getElementById('evDate').value = editingEvent ? editingEvent.date : (dateStr || '');
+      document.getElementById('evTime').value = editingEvent ? editingEvent.time : '';
+      document.getElementById('evLink').value = editingEvent ? editingEvent.link : '';
+      document.getElementById('evNotify').checked = false;
+      document.getElementById('evReminder').checked = false;
+      document.getElementById('reminderConfig').style.display = 'none';
+
+      // Add delete button if editing
+      var footer = document.querySelector('#eventModal .modal-actions');
+      var delBtn = document.getElementById('modalDelBtn');
+      if (editingEvent) {
+        if (!delBtn) {
+          delBtn = document.createElement('button');
+          delBtn.id = 'modalDelBtn';
+          delBtn.className = 'btn btn-danger';
+          delBtn.style.marginRight = 'auto';
+          delBtn.textContent = 'Delete';
+          delBtn.onclick = async function () {
+            if (await deleteEvent(editingEvent.id)) {
+              closeEventModal();
+            }
+          };
+          footer.prepend(delBtn);
+        }
+      } else {
+        if (delBtn) delBtn.remove();
+      }
+
+      document.getElementById('eventModal').classList.add('show');
+    }
+
+    function closeEventModal() {
+      document.getElementById('eventModal').classList.remove('show');
+      editingEvent = null;
+    }
+
+    async function saveEvent() {
+      var title = document.getElementById('evTitle').value.trim();
+      var desc = document.getElementById('evDesc').value.trim();
+      var date = document.getElementById('evDate').value;
+      var time = document.getElementById('evTime').value;
+      var link = document.getElementById('evLink').value.trim();
+      var notify = document.getElementById('evNotify').checked;
+
+      if (!title || !date) return toast('Title and Date are required.', 'err');
+
+      var payload = {
+        title: title, desc: desc, date: date, time: time, link: link
+      };
+
+      if (editingEvent) {
+        payload.id = editingEvent.id;
+      }
+
+      var btn = document.getElementById('saveEventBtn');
+      btn.disabled = true; btn.textContent = 'Saving...';
+
+      var action = editingEvent ? 'updateEvent' : 'addEvent';
+      var res = await authApi(action, payload);
+
+      if (res.ok) {
+        if (notify) {
+          await authApi('sendNotification', {
+            target: 'all',
+            title: 'Event: ' + title,
+            message: (desc || '') + ' | Date: ' + date + ' Time: ' + (time || 'TBA'),
+            link: link
+          });
+        }
+        if (document.getElementById('evReminder').checked && date && time) {
+          var offset = parseInt(document.getElementById('evReminderOffset').value);
+          var eventDT = new Date(date + 'T' + time);
+          var schedDT = new Date(eventDT.getTime() - (offset * 60000));
+          await authApi('sendNotification', {
+            target: 'all',
+            title: 'Reminder: ' + title,
+            message: 'Starting in ' + offset + ' mins! Date: ' + date + ' Time: ' + time,
+            link: link,
+            scheduledAt: schedDT.toISOString()
+          });
+        }
+        closeEventModal();
+        loadEvents();
+      } else {
+        toast('Error: ' + (res.error || 'Failed to save'), 'err');
+      }
+      btn.disabled = false; btn.textContent = 'Save Event';
+    }
+
+    async function deleteEvent(id) {
+      if (!confirm('Are you sure you want to delete this event?')) return false;
+      var res = await authApi('deleteEvent', { id: id });
+      if (res.ok) {
+        toast('Event deleted successfully!', 'ok');
+        loadEvents();
+        return true;
+      } else {
+        toast('Error: ' + (res.error || 'Failed to delete'), 'err');
+        return false;
+      }
+    }
+
+    // ── QUOTA REQUESTS ──
+    async function loadRequests() {
+      var listEl = document.getElementById('requestsList');
+      var res = await authApi('getEditRequests', {});
+      if (!res.ok) return listEl.innerHTML = '<div class="empty">Error loading requests.</div>';
+      var data = res.data || [];
+
+      var pending = data.filter(r => r.status === 'pending');
+      var history = data.filter(r => r.status !== 'pending');
+
+      var html = '';
+
+      if (pending.length > 0) {
+        html += '<h4 style="margin-bottom:16px; font-weight:800; font-family:Lexend; color:var(--brand)">Active Pending Requests</h4>';
+        html += pending.map(r => `
+          <div class="notif-item" style="border-left:4px solid var(--brand); flex-direction:column; align-items:flex-start; gap:16px">
+            <div style="display:flex; justify-content:space-between; width:100%; align-items:center">
+              <div class="n-body">
+                <div class="n-title" style="display:flex;align-items:center;gap:8px">
+                  ${escAuth(r.userName)} 
+                  <span class="badge-sm b-blue">${escAuth(r.userEmail)}</span>
+                  <span class="badge-sm ${r.tool === 'josaa-pref-builder' ? 'b-josaa' : 'b-mhtcet'}">
+                    ${r.tool === 'josaa-pref-builder' ? 'JOSAA' : 'MHT-CET'}
+                  </span>
+                </div>
+                <div class="n-msg">Requested at: ${new Date(r.createdAt.toDate ? r.createdAt.toDate() : r.createdAt).toLocaleString()}</div>
+                ${r.message ? `<div style="font-size:12px; color:var(--muted); margin-top:8px; font-style:italic">"${escAuth(r.message)}"</div>` : ''}
+              </div>
+            </div>
+            <div style="width:100%">
+              <input type="text" id="msg-${r.id}" class="form-control" placeholder="Optional message to user..." style="font-size:12px; padding:10px; margin-bottom:12px">
+              <div class="n-actions" style="display:flex; gap:10px; justify-content:flex-end">
+                <button class="btn btn-danger" style="padding:10px 20px;font-size:12px;border-radius:14px" onclick="handleRequest('${r.id}', '${r.userId}', '${r.userEmail}', 'rejected', '${r.tool || ''}')">Reject</button>
+                <button class="btn btn-primary" style="padding:10px 20px;font-size:12px;border-radius:14px" onclick="handleRequest('${r.id}', '${r.userId}', '${r.userEmail}', 'approved', '${r.tool || ''}')">Approve & Reset</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      if (history.length > 0) {
+        if (pending.length > 0) html += '<hr style="margin:40px 0; border:none; border-top:1.5px dashed var(--stroke)">';
+        html += '<h4 style="margin-bottom:16px; font-weight:800; font-family:Lexend; color:var(--muted)">Request History (Past Actions)</h4>';
+        html += history.map(r => {
+          var isApp = r.status === 'approved';
+          return `
+            <div class="notif-item" style="border-left:4px solid ${isApp ? 'var(--green)' : 'var(--muted)'}; opacity:0.75">
+              <div class="n-body">
+                <div class="n-title" style="display:flex;align-items:center;gap:8px">
+                  ${escAuth(r.userName)} <span class="badge-sm b-blue">${escAuth(r.userEmail)}</span>
+                  <span class="badge-sm ${r.tool === 'josaa-pref-builder' ? 'b-josaa' : 'b-mhtcet'}">
+                    ${r.tool === 'josaa-pref-builder' ? 'JOSAA' : 'MHT-CET'}
+                  </span>
+                  <span class="badge-sm ${isApp ? 'b-green' : 'b-blue'}" style="margin-left:auto">${r.status.toUpperCase()}</span>
+                </div>
+                <div class="n-msg" style="font-size:11px">Resolved at: ${new Date(r.respondedAt ? (r.respondedAt.toDate ? r.respondedAt.toDate() : r.respondedAt) : Date.now()).toLocaleString()}</div>
+                ${r.adminMessage ? `<div style="font-size:12px; color:var(--ink2); margin-top:8px">Admin Note: "${escAuth(r.adminMessage)}"</div>` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      if (!pending.length && !history.length) {
+        listEl.innerHTML = '<div class="empty"><div class="empty-icon">📝</div>No requests found in the system.</div>';
+      } else {
+        listEl.innerHTML = html;
+      }
+    }
+
+    async function handleRequest(id, userId, email, status, tool) {
+      var msg = document.getElementById('msg-' + id).value.trim();
+      if (status === 'rejected' && !msg) {
+        if (!confirm('Reject without a message? It is better to tell the user why.')) return;
+      }
+
+      if (!confirm('Are you sure you want to ' + status + ' this request?')) return;
+
+      var btn = event.target;
+      btn.disabled = true;
+
+      try {
+        if (status === 'approved') {
+          // 1. Reset the limit
+          var resetRes = await authApi('resetPrefEdits', { userId: userId, tool: tool });
+          if (!resetRes.ok) throw new Error('Reset failed: ' + resetRes.error);
+        }
+
+        // 2. Resolve the request
+        var finalMsg = msg || (status === 'approved' ? 'Your edit limit has been reset.' : 'Your request for additional edits was declined.');
+        var resolveRes = await authApi('respondEditRequest', {
+          requestId: id,
+          status: status,
+          adminMessage: finalMsg
+        });
+        if (!resolveRes.ok) throw new Error('Update failed: ' + resolveRes.error);
+
+        // 3. Send Notification to User
+        var notifLink = (tool === 'josaa-pref-builder') ? 'josaa-preference-builder.html' : 'preference-builder.html';
+        await authApi('sendNotificationToUser', {
+          email: email,
+          title: status === 'approved' ? 'Quota Reset Approved' : 'Quota Reset Request',
+          message: finalMsg,
+          link: notifLink
+        });
+
+        toast(status.charAt(0).toUpperCase() + status.slice(1) + ' successful!', 'ok');
+        loadRequests();
+      } catch (err) {
+        toast('Error: ' + err.message, 'err');
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // ── NON-CAP ADMISSIONS ──
+    function switchColMode(mode) {
+      document.getElementById('colExistingWrap').style.display = mode === 'existing' ? 'block' : 'none';
+      document.getElementById('colNewWrap').style.display = mode === 'new' ? 'block' : 'none';
+    }
+
+    async function saveNonCap() {
+      var mode = document.querySelector('input[name="colMode"]:checked').value;
+      var college = mode === 'existing' ? document.getElementById('capCollegeSelect').value : document.getElementById('capCollegeNew').value.trim();
+      var year = document.getElementById('capYear').value;
+      var title = document.getElementById('capTitle').value.trim();
+      var link = document.getElementById('capLink').value.trim();
+
+      if (!college || !title || !link) return toast('All fields required.', 'err');
+
+      var res = await authApi('saveNonCapAdmission', { college, year, title, link });
+      if (res.ok) {
+        toast('Notice posted!', 'ok');
+        document.getElementById('capTitle').value = '';
+        document.getElementById('capLink').value = '';
+        loadNonCap();
+      } else {
+        toast('Error: ' + res.error, 'err');
+      }
+    }
+
+    async function loadNonCap() {
+      var listEl = document.getElementById('nonCapList');
+      var res = await authApi('getNonCapAdmissions', {});
+      if (!res.ok) return listEl.innerHTML = '<div class="empty">Error loading notices.</div>';
+
+      var data = res.data || [];
+      if (!data.length) return listEl.innerHTML = '<div class="empty">No notices found.</div>';
+
+      // Grouping logic
+      var groups = {};
+      var collegeSet = new Set();
+      data.forEach(n => {
+        collegeSet.add(n.college);
+        if (!groups[n.college]) groups[n.college] = {};
+        if (!groups[n.college][n.year]) groups[n.college][n.year] = [];
+        groups[n.college][n.year].push(n);
+      });
+
+      // Update College Select
+      var select = document.getElementById('capCollegeSelect');
+      var currentVal = select.value;
+      select.innerHTML = Array.from(collegeSet).sort().map(c => `<option value="${c}">${c}</option>`).join('');
+      if (currentVal) select.value = currentVal;
+
+      listEl.innerHTML = Object.keys(groups).sort().map(college => `
+        <div class="cap-admin-card">
+          <div class="cap-admin-card-hdr">
+            <h3>${college}</h3>
+          </div>
+          ${Object.keys(groups[college]).sort((a, b) => b - a).map(year => `
+            <div class="cap-admin-year-box">
+              <div class="cap-admin-year-hdr">
+                <span style="font-weight:700;font-size:14px;color:var(--brand)">AY ${year}</span>
+                <button class="btn btn-outline btn-sm" onclick="prefillCap('${college.replace(/'/g, "\\'")}', '${year}')">+ Add More</button>
+              </div>
+              ${groups[college][year].map(n => `
+                <div class="cap-admin-item">
+                  <div class="cap-admin-item-title">${n.title}</div>
+                  <div class="cap-admin-item-actions">
+                    <a href="${n.link}" target="_blank" class="btn btn-outline btn-sm" style="padding:6px 10px">View</a>
+                    <button class="btn btn-danger btn-sm" style="padding:6px 10px" onclick="deleteNonCap('${n.id}')">Del</button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          `).join('')}
+        </div>
+      `).join('');
+    }
+
+    function prefillCap(college, year) {
+      document.querySelector('input[name="colMode"][value="existing"]').checked = true;
+      switchColMode('existing');
+      document.getElementById('capCollegeSelect').value = college;
+      document.getElementById('capYear').value = year;
+      document.getElementById('capTitle').focus();
+      toast('Form pre-filled for ' + college, 'ok');
+    }
+
+    async function deleteNonCap(id) {
+      if (!confirm('Delete this notice?')) return;
+      var res = await authApi('deleteNonCapAdmission', { id });
+      if (res.ok) { toast('Deleted!', 'ok'); loadNonCap(); }
+      else { toast('Error: ' + res.error, 'err'); }
+    }
+
+    // ── LATEST NOTICES ──
+    async function loadAdminNotices() {
+      var list = document.getElementById('noticeList');
+      if (!list) return;
+      var res = await authApi('getNotices');
+      if (res.ok) {
+        var data = res.data || [];
+        if (!data.length) {
+          list.innerHTML = '<div class="empty">No notices published yet.</div>';
+          return;
+        }
+        list.innerHTML = data.map(n => `
+          <div class="notice-card">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px;">
+              <div style="flex:1">
+                <div class="notice-title">${escAuth(n.title)}</div>
+                <div class="notice-desc">${escAuth(n.description)}</div>
+                ${n.link ? `<a href="${escAuth(n.link)}" target="_blank" class="btn btn-outline" style="padding:6px 12px; font-size:11px; margin-top:8px">View Link →</a>` : ''}
+              </div>
+              <button class="btn btn-danger" style="padding:8px; border-radius:10px" onclick="deleteNotice('${n.id}')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+              </button>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        list.innerHTML = '<div class="empty">Error loading notices.</div>';
+      }
+    }
+
+    async function addNotice() {
+      var title = document.getElementById('notTitle').value;
+      var desc = document.getElementById('notDesc').value;
+      var link = document.getElementById('notLink').value;
+      if (!title || !desc) return toast('Title and Description are required', 'err');
+
+      var res = await authApi('addNotice', { title, description: desc, link });
+      if (res.ok) {
+        toast('Notice published successfully!', 'ok');
+        document.getElementById('notTitle').value = '';
+        document.getElementById('notDesc').value = '';
+        document.getElementById('notLink').value = '';
+        loadAdminNotices();
+      } else {
+        toast(res.error, 'err');
+      }
+    }
+
+    async function deleteNotice(id) {
+      if (!confirm('Are you sure you want to delete this notice?')) return;
+      var res = await authApi('deleteNotice', { id });
+      if (res.ok) {
+        toast('Notice deleted', 'ok');
+        loadAdminNotices();
+      } else {
+        toast(res.error, 'err');
+      }
+    }
+
+    window.loadAdminNotices = loadAdminNotices;
+    window.addNotice = addNotice;
+    window.deleteNotice = deleteNotice;
+    window.switchPanel = switchPanel;
+
+    // ── PREBUILT TEMPLATES MANAGEMENT ──
+    var cutoffData = [];
+    var collegeMetadata = [];
+    var isDataLoaded = false;
+    var isDataLoading = false;
+    var loadedTemplates = [];
+    var currentTplId = null;
+    var tplColleges = [];
+
+    var FIXED_ASPIRATIONAL = [
+      { code: '16006', instituteName: 'COEP Technological University', branch: 'Computer Engineering', percentile: 99.98, isFixed: true, isAspirational: true },
+      { code: '3012', instituteName: 'Veermata Jijabai Technological Institute (VJTI)', branch: 'Computer Engineering', percentile: 99.95, isFixed: true, isAspirational: true },
+      { code: '3012', instituteName: 'Veermata Jijabai Technological Institute (VJTI)', branch: 'Information Technology', percentile: 99.92, isFixed: true, isAspirational: true },
+      { code: '16006', instituteName: 'COEP Technological University', branch: 'Artificial Intelligence and Machine Learning', percentile: 99.88, isFixed: true, isAspirational: true },
+      { code: '3215', instituteName: 'Sardar Patel Institute of Technology (SPIT)', branch: 'Computer Science and Engineering', percentile: 99.85, isFixed: true, isAspirational: true },
+      { code: '3215', instituteName: 'Sardar Patel Institute of Technology (SPIT)', branch: 'Computer Engineering', percentile: 99.82, isFixed: true, isAspirational: true }
+    ];
+
+    async function loadCutoffData() {
+      if (isDataLoaded) return true;
+      if (isDataLoading) {
+        while (isDataLoading) {
+          await new Promise(function(r) { setTimeout(r, 100); });
+        }
+        return isDataLoaded;
+      }
+      isDataLoading = true;
+      try {
+        toast('Loading college cutoff data (12MB)... please wait', 'ok');
+        var r1 = await fetch('data.json'); var j1 = await r1.json();
+        var raw1 = j1['MHT-CET College Data'] || j1[Object.keys(j1)[0]] || [];
+        cutoffData = raw1.map(function(r) {
+          return {
+            code: String(r['Institute Code'] || ''),
+            name: r['Institute'] || r['Institute Name'] || '',
+            branch: String(r['Branch'] || r['Branch Name'] || '').trim(),
+            seatType: r['Seat Type'] || '',
+            rank: parseInt(r['Rank']) || 0,
+            percentile: parseFloat(r['Percentile']) || 0
+          };
+        });
+
+        var r2 = await fetch('college-data.json'); var j2 = await r2.json();
+        collegeMetadata = (j2['college-data'] || []).map(function(c) {
+          return {
+            code: String(c['Institute Code'] || ''),
+            name: c['Institute Name'] || '',
+            status: c['Status'] || '',
+            intake: c['Total Intake'] || 0
+          };
+        });
+        isDataLoaded = true;
+        toast('Cutoff data loaded successfully!', 'ok');
+        return true;
+      } catch (e) {
+        console.error(e);
+        toast('Failed to load college data', 'err');
+        return false;
+      } finally {
+        isDataLoading = false;
+      }
+    }
+
+    async function loadTemplatesPanel() {
+      var tbody = document.getElementById('templatesTbody');
+      if (!tbody) return;
+      tbody.innerHTML = '<tr><td colspan="5" class="empty">Loading preference templates...</td></tr>';
+      
+      var res = await authApi('getAllTemplates', {});
+      if (res.ok) {
+        loadedTemplates = res.data || [];
+        renderTemplatesList(loadedTemplates);
+      } else {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty" style="color:var(--red)">Failed to load templates: ' + escAuth(res.error) + '</td></tr>';
+      }
+    }
+
+    function renderTemplatesList(list) {
+      var tbody = document.getElementById('templatesTbody');
+      if (!tbody) return;
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty"><div class="empty-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:block; margin:0 auto 12px; color:var(--muted)"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>No templates created yet. Click "New Template" or "Seed Defaults" to start.</td></tr>';
+        return;
+      }
+      
+      tbody.innerHTML = list.map(function(t) {
+        var badge = t.isPublished 
+          ? '<span class="badge-sm b-green">Published</span>' 
+          : '<span class="badge-sm" style="background:var(--stroke); color:var(--muted)">Draft</span>';
+        
+        var filters = t.filters || {};
+        var filterText = '';
+        if (filters.percentileMin !== undefined && filters.percentileMin !== null && filters.percentileMin !== '') {
+          filterText += 'Pct: ' + filters.percentileMin + '-' + (filters.percentileMax || 100) + '% | ';
+        }
+        if (filters.rankMin !== undefined && filters.rankMin !== null && filters.rankMin !== '') {
+          filterText += 'Rank: ' + filters.rankMin + '-' + filters.rankMax + ' | ';
+        }
+        filterText += 'Branch: ' + (filters.branchGroup || 'all') + ' | Region: ' + (filters.region || 'All');
+        
+        return '<tr>' +
+          '<td>' +
+          '<div style="font-weight:800; color:var(--ink); font-size:14px">' + escAuth(t.name) + '</div>' +
+          '<div style="font-size:11px; color:var(--muted); margin-top:2px; max-width:320px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">' + escAuth(t.description || 'No description.') + '</div>' +
+          '</td>' +
+          '<td><div style="font-size:12px; font-weight:600; color:var(--ink2)">' + escAuth(filterText) + '</div></td>' +
+          '<td><div style="font-weight:700; color:var(--brand)">' + (t.prefList?.length || 0) + ' Colleges</div></td>' +
+          '<td>' + badge + '</td>' +
+          '<td style="text-align:right">' +
+          '<button class="btn btn-outline" style="padding:6px 12px; font-size:12px; border-radius:10px" onclick="window.location.href=\'preference-builder.html?editTemplate=' + t.id + '\'">Edit</button>' +
+          '<button class="btn btn-danger" style="padding:6px 12px; font-size:12px; border-radius:10px; margin-left:6px" onclick="deleteTemplateFromList(\'' + t.id + '\')">Delete</button>' +
+          '</td>' +
+          '</tr>';
+      }).join('');
+    }
+
+    async function deleteTemplateFromList(id) {
+      if (!confirm('Are you sure you want to delete this template?')) return;
+      var res = await authApi('deleteTemplate', { templateId: id });
+      if (res.ok) {
+        toast('Template deleted successfully!', 'ok');
+        loadTemplatesPanel();
+      } else {
+        toast('Failed to delete template: ' + res.error, 'err');
+      }
+    }
+
+
+
+    var CATS = {
+      'computer': ['COMPUTER', 'COMP', 'INFORMATION TECH', 'IT', 'DATA SCIENCE', 'ARTIFICIAL', 'AI', 'CYBER', 'SOFTWARE'],
+      'electronics': ['ELECTRONICS', 'ELEC &', 'TELECOMM', 'EXTC', 'ENTC', 'ELECTRICAL', 'INSTRUMENTATION'],
+      'core': ['MECHANICAL', 'MECH', 'CIVIL', 'CHEMICAL', 'PRODUCTION', 'AUTOMOBILE', 'AERONAUTICAL'],
+      'biotech': ['BIOTECHNOLOGY', 'BIOTECH', 'BIOMEDICAL']
+    };
+    function categorizeBranch(b) {
+      var u = b.toUpperCase();
+      if (u.includes('COMPUTER') || u.includes('COMP') || u.includes('INFORMATION') || u.includes('DATA SCIENCE') || u.includes('ARTIFICIAL') || u.includes('CYBER') || u.includes('SOFTWARE')) return 'Computer & IT';
+      if (u.includes('ELECTRONIC') || u.includes('TELECOMM') || u.includes('EXTC') || u.includes('ENTC') || u.includes('ELECTRICAL') || u.includes('INSTRUMENTATION')) return 'Electronics & Telecom';
+      if (u.includes('MECHANICAL') || u.includes('MECH') || u.includes('CIVIL') || u.includes('CHEMICAL') || u.includes('PRODUCTION') || u.includes('AUTOMOBILE') || u.includes('AERONAUTICAL')) return 'Core Engineering';
+      if (u.includes('BIOTECH') || u.includes('BIOMEDICAL')) return 'Biotech & Allied';
+      return 'Other';
+    }
+
+    function extractMinority(status) {
+      var s = status.toLowerCase();
+      if (s.includes('muslim')) return 'Muslim';
+      if (s.includes('christian')) return 'Christian';
+      if (s.includes('jain')) return 'Jain';
+      if (s.includes('gujarat')) return 'Gujarathi';
+      return '';
+    }
+
+    function generateCollegeListForParams(filters) {
+      var pctMin = filters.percentileMin !== undefined && filters.percentileMin !== null && filters.percentileMin !== '' ? parseFloat(filters.percentileMin) : 0;
+      var pctMax = filters.percentileMax !== undefined && filters.percentileMax !== null && filters.percentileMax !== '' ? parseFloat(filters.percentileMax) : 100;
+      var rankMin = filters.rankMin !== undefined && filters.rankMin !== null && filters.rankMin !== '' ? parseInt(filters.rankMin) : 0;
+      var rankMax = filters.rankMax !== undefined && filters.rankMax !== null && filters.rankMax !== '' ? parseInt(filters.rankMax) : 1000000;
+
+      var hasPctRange = (filters.percentileMin !== undefined && filters.percentileMin !== null && filters.percentileMin !== '');
+      var hasRankRange = (filters.rankMin !== undefined && filters.rankMin !== null && filters.rankMin !== '');
+
+      var bg = filters.branchGroup || 'all';
+      var region = filters.region || '';
+      var category = filters.category || 'OPEN';
+      var colType = filters.collegeType || '';
+      var minority = filters.minority || '';
+
+      var catMap = { 'OPEN': 'OPEN', 'OBC': 'OBC', 'SC': 'SC', 'ST': 'ST', 'VJ/DT': 'VJ', 'NT1': 'NT1', 'NT2': 'NT2', 'NT3': 'NT3', 'EWS': 'EWS', 'TFWS': 'TFWS' };
+      var searchCat = catMap[category] || 'OPEN';
+
+      var metaMap = {};
+      collegeMetadata.forEach(function(c) { metaMap[c.code] = c; });
+
+      var filtered = cutoffData.filter(function(r) {
+        // Exclude FIXED_ASPIRATIONAL colleges from generation to avoid duplicates
+        var isFixedCol = FIXED_ASPIRATIONAL.some(function(fa) {
+          return fa.code === r.code && fa.branch === r.branch;
+        });
+        if (isFixedCol) return false;
+
+        if (hasPctRange) {
+          if (r.percentile < pctMin || r.percentile > pctMax) return false;
+        }
+        if (hasRankRange) {
+          if (r.rank < rankMin || r.rank > rankMax) return false;
+        }
+        if (bg !== 'all') {
+          var cat = categorizeBranch(r.branch);
+          if (bg === 'computer' && cat !== 'Computer & IT') return false;
+          if (bg === 'electronics' && cat !== 'Electronics & Telecom') return false;
+          if (bg === 'core' && cat !== 'Core Engineering') return false;
+          if (bg === 'biotech' && cat !== 'Biotech & Allied') return false;
+        }
+        var meta = metaMap[r.code] || {};
+        var statusLower = (meta.status || '').toLowerCase();
+        if (colType) {
+          if (colType === 'Government' && !statusLower.includes('government')) return false;
+          if (colType === 'Aided' && !statusLower.includes('aided')) return false;
+          if (colType === 'Autonomous' && !statusLower.includes('autonomous')) return false;
+          if (colType === 'Un-Aided' && (statusLower.includes('government') || statusLower.includes('aided'))) return false;
+        }
+        if (region) {
+          var nameLower = (meta.name || r.name || '').toLowerCase();
+          if (!nameLower.includes(region.toLowerCase())) return false;
+        }
+        if (minority) {
+          if (!statusLower.includes('minority') || !statusLower.includes(minority.toLowerCase())) return false;
+        }
+        var isMatchingMinorityCollege = minority && statusLower.includes('minority') && statusLower.includes(minority.toLowerCase());
+        var activeSearchCat = isMatchingMinorityCollege ? 'OPEN' : searchCat;
+        if (activeSearchCat !== 'OPEN' && !(r.seatType || '').includes(activeSearchCat)) return false;
+        if (activeSearchCat === 'OPEN' && !(r.seatType || '').includes('OPEN')) return false;
+
+        // Exclude women-only and ladies seats from templates
+        var isWomenOnly = (meta.name || r.name || '').toLowerCase().includes('women') || (meta.name || r.name || '').toLowerCase().includes('girls') || (meta.status || '').toLowerCase().includes('women') || (meta.status || '').toLowerCase().includes('girls') || r.code === '3035';
+        if (isWomenOnly) return false;
+        if ((r.seatType || '').startsWith('L')) return false;
+
+        return true;
+      });
+
+      var groups = {};
+      filtered.forEach(function(r) {
+        var key = r.code + '|' + r.branch;
+        if (!groups[key] || r.percentile > groups[key].percentile) {
+          groups[key] = r;
+        }
+      });
+
+      var results = Object.values(groups).map(function(r) {
+        var meta = metaMap[r.code] || {};
+        return {
+          code: r.code,
+          instituteName: meta.name || r.name,
+          branch: r.branch,
+          percentile: r.percentile,
+          isGov: (meta.status || '').toLowerCase().includes('government'),
+          isAided: (meta.status || '').toLowerCase().includes('aided'),
+          isAuto: (meta.status || '').toLowerCase().includes('autonomous'),
+          isMinority: (meta.status || '').toLowerCase().includes('minority'),
+          minorityType: extractMinority(meta.status || '')
+        };
+      });
+
+      results.sort(function(a, b) { return b.percentile - a.percentile; });
+      
+      // Prepend FIXED_ASPIRATIONAL colleges to the result list
+      var finalResults = FIXED_ASPIRATIONAL.map(function(fa) {
+        return {
+          code: fa.code,
+          instituteName: fa.instituteName,
+          branch: fa.branch,
+          percentile: fa.percentile,
+          isFixed: true,
+          isAspirational: true,
+          isGov: true,
+          isAided: true,
+          isAuto: true,
+          isMinority: false,
+          minorityType: ''
+        };
+      });
+      
+      // Add other generated colleges, up to 35 total (including fixed ones)
+      results.forEach(function(r) {
+        if (finalResults.length < 35) {
+          finalResults.push(r);
+        }
+      });
+
+      return finalResults;
+    }
+
+    async function adminSeedDefaultTemplates() {
+      if (!confirm('Are you sure you want to seed 12 default templates? This will generate and publish them in the database.')) return;
+      
+      var loaded = await loadCutoffData();
+      if (!loaded) return;
+      
+      var seedDefs = [
+        {
+          name: "Top Computer & IT — Mumbai (95-99%ile)",
+          description: "Ideal preference list for high-scoring students seeking CS/IT branches in top-tier Mumbai colleges (VJTI, SPIT, DJ Sanghvi, etc.).",
+          tags: ["Mumbai", "Computer", "95-99%ile", "Premium"],
+          filters: { percentileMin: 95, percentileMax: 100, branchGroup: "computer", region: "Mumbai", category: "OPEN", collegeType: "", minority: "" }
+        },
+        {
+          name: "Top Computer & IT — Pune (95-99%ile)",
+          description: "Ideal preference list for high-scoring students seeking CS/IT branches in top-tier Pune colleges (COEP, PICT, VIT Pune, etc.).",
+          tags: ["Pune", "Computer", "95-99%ile", "Premium"],
+          filters: { percentileMin: 95, percentileMax: 100, branchGroup: "computer", region: "Pune", category: "OPEN", collegeType: "", minority: "" }
+        },
+        {
+          name: "Mid-Range CS/IT — Mumbai (90-95%ile)",
+          description: "Curated preference list for students seeking CS/IT branches in reputable Mumbai colleges.",
+          tags: ["Mumbai", "Computer", "90-95%ile", "Premium"],
+          filters: { percentileMin: 90, percentileMax: 95, branchGroup: "computer", region: "Mumbai", category: "OPEN", collegeType: "", minority: "" }
+        },
+        {
+          name: "Mid-Range CS/IT — Pune (90-95%ile)",
+          description: "Curated preference list for students seeking CS/IT branches in reputable Pune colleges.",
+          tags: ["Pune", "Computer", "90-95%ile", "Premium"],
+          filters: { percentileMin: 90, percentileMax: 95, branchGroup: "computer", region: "Pune", category: "OPEN", collegeType: "", minority: "" }
+        },
+        {
+          name: "Government & Autonomous Colleges — Maharashtra",
+          description: "A comprehensive list focusing on highly reputed Government and Autonomous engineering colleges across all regions.",
+          tags: ["Maharashtra", "Government", "Autonomous", "Premium"],
+          filters: { percentileMin: 85, percentileMax: 100, branchGroup: "all", region: "", category: "OPEN", collegeType: "Autonomous", minority: "" }
+        },
+        {
+          name: "Electronics & Telecomm — Pune & Mumbai (85-95%ile)",
+          description: "Preference list for students looking for Electronics / ENTC / Instrumentation branches in Mumbai and Pune's best colleges.",
+          tags: ["Pune", "Mumbai", "Electronics", "85-95%ile"],
+          filters: { percentileMin: 85, percentileMax: 95, branchGroup: "electronics", region: "", category: "OPEN", collegeType: "", minority: "" }
+        },
+        {
+          name: "Muslim Minority Colleges — Mumbai Region",
+          description: "Edge-case preference list for Muslim minority candidates seeking admission in Mumbai colleges (MH Saboo Siddik, Anjuman-I-Islam, etc.) under minority quota.",
+          tags: ["Mumbai", "Muslim", "Minority"],
+          filters: { percentileMin: 75, percentileMax: 98, branchGroup: "computer", region: "Mumbai", category: "OPEN", collegeType: "", minority: "Muslim" }
+        },
+        {
+          name: "Jain Minority Colleges — Pune & Mumbai",
+          description: "Edge-case preference list for Jain minority candidates in Pune (e.g. GH Raisoni) and Mumbai colleges under minority quota.",
+          tags: ["Jain", "Minority"],
+          filters: { percentileMin: 75, percentileMax: 98, branchGroup: "computer", region: "", category: "OPEN", collegeType: "", minority: "Jain" }
+        },
+        {
+          name: "Core Engineering Branches — Top Colleges (85-95%ile)",
+          description: "Preference list focusing on Mechanical, Electrical, and Civil engineering in top colleges across Mumbai and Pune.",
+          tags: ["Core", "Mechanical", "Electrical", "85-95%ile"],
+          filters: { percentileMin: 85, percentileMax: 95, branchGroup: "core", region: "", category: "OPEN", collegeType: "", minority: "" }
+        },
+        {
+          name: "Biotech & Allied Sciences — Top Colleges",
+          description: "Specialized preference list focusing on Biotechnology and Biomedical engineering departments in Maharashtra.",
+          tags: ["Biotech", "Biomedical", "Allied"],
+          filters: { percentileMin: 75, percentileMax: 98, branchGroup: "biotech", region: "", category: "OPEN", collegeType: "", minority: "" }
+        },
+        {
+          name: "Nagpur Region Top Colleges (80-95%ile)",
+          description: "A comprehensive preference list of the best engineering institutions in the Nagpur region (RCOEM, VNIT, YCCE, etc.).",
+          tags: ["Nagpur", "80-95%ile"],
+          filters: { percentileMin: 80, percentileMax: 95, branchGroup: "computer", region: "Nagpur", category: "OPEN", collegeType: "", minority: "" }
+        },
+        {
+          name: "Lower-Mid Range CS/IT — Mumbai & Pune (70-85%ile)",
+          description: "Practical preference list for students scoring 70-85 percentile targeting CS/IT branches in Pune and Mumbai.",
+          tags: ["Mumbai", "Pune", "70-85%ile"],
+          filters: { percentileMin: 70, percentileMax: 85, branchGroup: "computer", region: "", category: "OPEN", collegeType: "", minority: "" }
+        }
+      ];
+      
+      toast('Seeding templates... please wait', 'ok');
+      try {
+        for (var i = 0; i < seedDefs.length; i++) {
+          var t = seedDefs[i];
+          var pList = generateCollegeListForParams(t.filters);
+          await authApi('saveTemplate', {
+            name: t.name,
+            description: t.description,
+            filters: t.filters,
+            tags: t.tags,
+            prefList: pList,
+            isPublished: true
+          });
+        }
+        toast('12 default templates seeded successfully!', 'ok');
+        loadTemplatesPanel();
+      } catch (err) {
+        toast('Seeding failed: ' + err.message, 'err');
+      }
+    }
+
+    window.loadTemplatesPanel = loadTemplatesPanel;
+    window.adminSeedDefaultTemplates = adminSeedDefaultTemplates;
+    window.deleteTemplateFromList = deleteTemplateFromList;
+  </script>
+</body>
+
+</html>

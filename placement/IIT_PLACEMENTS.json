@@ -1,0 +1,211 @@
+{
+  "IIT_PLACEMENTS": [
+    {
+      "Institute": "IIT Madras",
+      "Category": "IIT",
+      "Avg Package": "₹25 LPA",
+      "Median Package": "₹21 LPA",
+      "Highest Package": "₹1.3 Cr",
+      "Placement %": "95%",
+      "Location": "Chennai, Tamil Nadu"
+    },
+    {
+      "Institute": "IIT Delhi",
+      "Category": "IIT",
+      "Avg Package": "₹26 LPA",
+      "Median Package": "₹22 LPA",
+      "Highest Package": "₹2 Cr",
+      "Placement %": "93%",
+      "Location": "Delhi"
+    },
+    {
+      "Institute": "IIT Bombay",
+      "Category": "IIT",
+      "Avg Package": "₹25 LPA",
+      "Median Package": "₹21 LPA",
+      "Highest Package": "₹3 Cr",
+      "Placement %": "94%",
+      "Location": "Mumbai, Maharashtra"
+    },
+    {
+      "Institute": "IIT Kanpur",
+      "Category": "IIT",
+      "Avg Package": "₹22 LPA",
+      "Median Package": "₹18 LPA",
+      "Highest Package": "₹1.9 Cr",
+      "Placement %": "92%",
+      "Location": "Kanpur, Uttar Pradesh"
+    },
+    {
+      "Institute": "IIT Kharagpur",
+      "Category": "IIT",
+      "Avg Package": "₹22 LPA",
+      "Median Package": "₹18 LPA",
+      "Highest Package": "₹2.4 Cr",
+      "Placement %": "90%",
+      "Location": "Kharagpur, West Bengal"
+    },
+    {
+      "Institute": "IIT Roorkee",
+      "Category": "IIT",
+      "Avg Package": "₹21 LPA",
+      "Median Package": "₹17 LPA",
+      "Highest Package": "₹2 Cr",
+      "Placement %": "90%",
+      "Location": "Roorkee, Uttarakhand"
+    },
+    {
+      "Institute": "IIT Hyderabad",
+      "Category": "IIT",
+      "Avg Package": "₹21 LPA",
+      "Median Package": "₹17 LPA",
+      "Highest Package": "₹1.5 Cr",
+      "Placement %": "91%",
+      "Location": "Hyderabad, Telangana"
+    },
+    {
+      "Institute": "IIT Guwahati",
+      "Category": "IIT",
+      "Avg Package": "₹20 LPA",
+      "Median Package": "₹16 LPA",
+      "Highest Package": "₹1.2 Cr",
+      "Placement %": "89%",
+      "Location": "Guwahati, Assam"
+    },
+    {
+      "Institute": "IIT BHU Varanasi",
+      "Category": "IIT",
+      "Avg Package": "₹19 LPA",
+      "Median Package": "₹15 LPA",
+      "Highest Package": "₹1.7 Cr",
+      "Placement %": "88%",
+      "Location": "Varanasi, Uttar Pradesh"
+    },
+    {
+      "Institute": "IIT Indore",
+      "Category": "IIT",
+      "Avg Package": "₹18 LPA",
+      "Median Package": "₹14 LPA",
+      "Highest Package": "₹1 Cr",
+      "Placement %": "87%",
+      "Location": "Indore, Madhya Pradesh"
+    },
+    {
+      "Institute": "IIT ISM Dhanbad",
+      "Category": "IIT",
+      "Avg Package": "₹18 LPA",
+      "Median Package": "₹14 LPA",
+      "Highest Package": "₹1 Cr",
+      "Placement %": "86%",
+      "Location": "Dhanbad, Jharkhand"
+    },
+    {
+      "Institute": "IIT Gandhinagar",
+      "Category": "IIT",
+      "Avg Package": "₹17 LPA",
+      "Median Package": "₹13 LPA",
+      "Highest Package": "₹70 LPA",
+      "Placement %": "84%",
+      "Location": "Gandhinagar, Gujarat"
+    },
+    {
+      "Institute": "IIT Mandi",
+      "Category": "IIT",
+      "Avg Package": "₹16 LPA",
+      "Median Package": "₹13 LPA",
+      "Highest Package": "₹60 LPA",
+      "Placement %": "83%",
+      "Location": "Mandi, Himachal Pradesh"
+    },
+    {
+      "Institute": "IIT Jodhpur",
+      "Category": "IIT",
+      "Avg Package": "₹17 LPA",
+      "Median Package": "₹13 LPA",
+      "Highest Package": "₹85 LPA",
+      "Placement %": "84%",
+      "Location": "Jodhpur, Rajasthan"
+    },
+    {
+      "Institute": "IIT Ropar",
+      "Category": "IIT",
+      "Avg Package": "₹17 LPA",
+      "Median Package": "₹13 LPA",
+      "Highest Package": "₹75 LPA",
+      "Placement %": "85%",
+      "Location": "Rupnagar, Punjab"
+    },
+    {
+      "Institute": "IIT Bhubaneswar",
+      "Category": "IIT",
+      "Avg Package": "₹16 LPA",
+      "Median Package": "₹12 LPA",
+      "Highest Package": "₹55 LPA",
+      "Placement %": "82%",
+      "Location": "Bhubaneswar, Odisha"
+    },
+    {
+      "Institute": "IIT Patna",
+      "Category": "IIT",
+      "Avg Package": "₹16 LPA",
+      "Median Package": "₹12 LPA",
+      "Highest Package": "₹82 LPA",
+      "Placement %": "84%",
+      "Location": "Patna, Bihar"
+    },
+    {
+      "Institute": "IIT Tirupati",
+      "Category": "IIT",
+      "Avg Package": "₹15 LPA",
+      "Median Package": "₹11 LPA",
+      "Highest Package": "₹46 LPA",
+      "Placement %": "80%",
+      "Location": "Tirupati, Andhra Pradesh"
+    },
+    {
+      "Institute": "IIT Palakkad",
+      "Category": "IIT",
+      "Avg Package": "₹14 LPA",
+      "Median Package": "₹11 LPA",
+      "Highest Package": "₹40 LPA",
+      "Placement %": "79%",
+      "Location": "Palakkad, Kerala"
+    },
+    {
+      "Institute": "IIT Bhilai",
+      "Category": "IIT",
+      "Avg Package": "₹14 LPA",
+      "Median Package": "₹10 LPA",
+      "Highest Package": "₹36 LPA",
+      "Placement %": "78%",
+      "Location": "Bhilai, Chhattisgarh"
+    },
+    {
+      "Institute": "IIT Jammu",
+      "Category": "IIT",
+      "Avg Package": "₹14 LPA",
+      "Median Package": "₹10 LPA",
+      "Highest Package": "₹35 LPA",
+      "Placement %": "77%",
+      "Location": "Jammu, Jammu and Kashmir"
+    },
+    {
+      "Institute": "IIT Goa",
+      "Category": "IIT",
+      "Avg Package": "₹15 LPA",
+      "Median Package": "₹11 LPA",
+      "Highest Package": "₹40 LPA",
+      "Placement %": "79%",
+      "Location": "Goa"
+    },
+    {
+      "Institute": "IIT Dharwad",
+      "Category": "IIT",
+      "Avg Package": "₹13 LPA",
+      "Median Package": "₹10 LPA",
+      "Highest Package": "₹32 LPA",
+      "Placement %": "76%",
+      "Location": "Dharwad, Karnataka"
+    }
+  ]
+}

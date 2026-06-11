@@ -1,0 +1,2104 @@
+{
+  "ALL_CLG_PLACEMENT_TIER": [
+    {
+      "Sr No": "1",
+      "College Name": "COEP Technological University",
+      "Avg Package (LPA)": "17.5",
+      "Tier": "Tier 1"
+    },
+    {
+      "Sr No": "2",
+      "College Name": "VJTI, Matunga, Mumbai",
+      "Avg Package (LPA)": "16.3",
+      "Tier": "Tier 1"
+    },
+    {
+      "Sr No": "3",
+      "College Name": "Sardar Patel Institute of Technology, Andheri",
+      "Avg Package (LPA)": "11–12",
+      "Tier": "Tier 1"
+    },
+    {
+      "Sr No": "4",
+      "College Name": "Pune Institute of Computer Technology",
+      "Avg Package (LPA)": "10.1",
+      "Tier": "Tier 1"
+    },
+    {
+      "Sr No": "5",
+      "College Name": "Institute of Chemical Technology, Matunga",
+      "Avg Package (LPA)": "9–10",
+      "Tier": "Tier 1"
+    },
+    {
+      "Sr No": "6",
+      "College Name": "Dwarkadas J. Sanghvi College of Engineering, Vile Parle",
+      "Avg Package (LPA)": "10–12",
+      "Tier": "Tier 1"
+    },
+    {
+      "Sr No": "7",
+      "College Name": "Cummins College of Engineering for Women, Pune",
+      "Avg Package (LPA)": "8–9",
+      "Tier": "Tier 1"
+    },
+    {
+      "Sr No": "8",
+      "College Name": "Walchand College of Engineering, Sangli",
+      "Avg Package (LPA)": "9–10",
+      "Tier": "Tier 1"
+    },
+    {
+      "Sr No": "9",
+      "College Name": "Vishwakarma Institute of Technology, Pune",
+      "Avg Package (LPA)": "9–10",
+      "Tier": "Tier 1"
+    },
+    {
+      "Sr No": "10",
+      "College Name": "Thadomal Shahani Engineering College, Bandra",
+      "Avg Package (LPA)": "7–8",
+      "Tier": "Tier 1"
+    },
+    {
+      "Sr No": "11",
+      "College Name": "Pimpri Chinchwad College of Engineering, Pune",
+      "Avg Package (LPA)": "8–9",
+      "Tier": "Tier 1"
+    },
+    {
+      "Sr No": "12",
+      "College Name": "Vivekanand Education Society's Institute of Technology, Chembur",
+      "Avg Package (LPA)": "7–8",
+      "Tier": "Tier 1"
+    },
+    {
+      "Sr No": "13",
+      "College Name": "Laxminarayan Innovation Technological University, Nagpur",
+      "Avg Package (LPA)": "6–7",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "14",
+      "College Name": "Fr. Conceicao Rodrigues College of Engineering, Bandra",
+      "Avg Package (LPA)": "6–7",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "15",
+      "College Name": "K J Somaiya Institute of Technology",
+      "Avg Package (LPA)": "9–10",
+      "Tier": "Tier 1"
+    },
+    {
+      "Sr No": "16",
+      "College Name": "Pune Vidyarthi Griha's College of Engineering, Pune",
+      "Avg Package (LPA)": "6–7",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "17",
+      "College Name": "D.Y. Patil College of Engineering Akurdi, Pune",
+      "Avg Package (LPA)": "6.5–7.5",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "18",
+      "College Name": "Government College of Engineering, Chhatrapati Sambhajinagar",
+      "Avg Package (LPA)": "5.5–6.5",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "19",
+      "College Name": "Government College of Engineering, Amravati",
+      "Avg Package (LPA)": "5.5–6.5",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "20",
+      "College Name": "Vidyalankar Institute of Technology, Wadala",
+      "Avg Package (LPA)": "7–8",
+      "Tier": "Tier 1"
+    },
+    {
+      "Sr No": "21",
+      "College Name": "Sardar Patel College of Engineering, Andheri",
+      "Avg Package (LPA)": "7–8",
+      "Tier": "Tier 1"
+    },
+    {
+      "Sr No": "22",
+      "College Name": "Government College of Engineering, Karad",
+      "Avg Package (LPA)": "5.5–6.5",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "23",
+      "College Name": "Thakur College of Engineering and Technology, Kandivali",
+      "Avg Package (LPA)": "6–7",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "24",
+      "College Name": "Government College of Engineering, Nagpur",
+      "Avg Package (LPA)": "5.5–6.5",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "25",
+      "College Name": "FR. C. Rodrigues Institute of Technology, Vashi",
+      "Avg Package (LPA)": "5.5–6.5",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "26",
+      "College Name": "AISSMS College of Engineering, Pune",
+      "Avg Package (LPA)": "6–7",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "27",
+      "College Name": "AISSMS Institute of Information Technology, Pune",
+      "Avg Package (LPA)": "6–7",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "28",
+      "College Name": "Rajarshi Shahu College of Engineering, Tathawade",
+      "Avg Package (LPA)": "6–7",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "29",
+      "College Name": "Pimpri Chinchwad College of Engineering and Research, Ravet",
+      "Avg Package (LPA)": "5.5–6.5",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "30",
+      "College Name": "Shri Guru Gobind Singhji Institute of Engineering, Nanded",
+      "Avg Package (LPA)": "6–7",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "31",
+      "College Name": "MIT Academy of Engineering, Alandi",
+      "Avg Package (LPA)": "6–7",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "32",
+      "College Name": "Don Bosco Institute of Technology, Mumbai",
+      "Avg Package (LPA)": "5.5–6.5",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "33",
+      "College Name": "International Institute of Information Technology (I²IT), Pune",
+      "Avg Package (LPA)": "7–8",
+      "Tier": "Tier 1"
+    },
+    {
+      "Sr No": "34",
+      "College Name": "D.Y. Patil Institute of Technology, Pimpri",
+      "Avg Package (LPA)": "6–7",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "35",
+      "College Name": "Marathwada Mitra Mandal's College of Engineering, Pune",
+      "Avg Package (LPA)": "5.5–6.5",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "36",
+      "College Name": "St. Francis Institute of Technology, Borivali",
+      "Avg Package (LPA)": "5–6",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "37",
+      "College Name": "Kolhapur Institute of Technology's College of Engineering, Kolhapur",
+      "Avg Package (LPA)": "5.5–6.5",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "38",
+      "College Name": "Rajiv Gandhi Institute of Technology, Mumbai",
+      "Avg Package (LPA)": "5–6",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "39",
+      "College Name": "Xavier Institute of Engineering, Mahim",
+      "Avg Package (LPA)": "4.5–5.5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "40",
+      "College Name": "Government College of Engineering & Research, Avasari Khurd",
+      "Avg Package (LPA)": "5–6",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "41",
+      "College Name": "Government College of Engineering & Research, Avasari Khurd (duplicate)",
+      "Avg Package (LPA)": "5–6",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "42",
+      "College Name": "Modern College of Engineering, Pune",
+      "Avg Package (LPA)": "6–7",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "43",
+      "College Name": "K. K. Wagh Institute of Engineering, Nashik",
+      "Avg Package (LPA)": "6–7",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "44",
+      "College Name": "S.I.E.S. Graduate School of Technology, Navi Mumbai",
+      "Avg Package (LPA)": "5–6",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "45",
+      "College Name": "University Dept. of Chemical Technology, Aurangabad",
+      "Avg Package (LPA)": "6–7",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "46",
+      "College Name": "Yeshwantrao Chavan College of Engineering, Nagpur",
+      "Avg Package (LPA)": "6.5–7.5",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "47",
+      "College Name": "Thakur Shyamnarayan Engineering College, Mumbai",
+      "Avg Package (LPA)": "4.5–5.5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "48",
+      "College Name": "Bharati Vidyapeeth College of Engineering, Navi Mumbai",
+      "Avg Package (LPA)": "5–6",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "49",
+      "College Name": "Sinhgad College of Engineering, Vadgaon, Pune",
+      "Avg Package (LPA)": "6–7",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "50",
+      "College Name": "Institute of Chemical Technology, Jalna",
+      "Avg Package (LPA)": "5–6",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "51",
+      "College Name": "Atharva College of Engineering, Malad",
+      "Avg Package (LPA)": "5–6",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "52",
+      "College Name": "Bharati Vidyapeeth's College of Engineering, Lavale",
+      "Avg Package (LPA)": "5–6",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "53",
+      "College Name": "Shri Sant Gajanan Maharaj College of Engineering, Shegaon",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "54",
+      "College Name": "Shah & Anchor Kutchhi Engineering College, Mumbai",
+      "Avg Package (LPA)": "5–6",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "55",
+      "College Name": "Bharati Vidyapeeth's College of Engineering for Women, Pune",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "56",
+      "College Name": "Pillai College of Engineering, New Panvel",
+      "Avg Package (LPA)": "5–6",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "57",
+      "College Name": "Wadia College of Engineering, Pune",
+      "Avg Package (LPA)": "5–6",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "58",
+      "College Name": "Terna Engineering College, Navi Mumbai",
+      "Avg Package (LPA)": "5–6",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "59",
+      "College Name": "G.H. Raisoni College of Engineering & Management, Wagholi",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "60",
+      "College Name": "Rajarambapu Institute of Technology, Walwa, Sangli",
+      "Avg Package (LPA)": "5–6",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "61",
+      "College Name": "Vidyavardhini's College of Engineering, Vasai",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "62",
+      "College Name": "JSPM's Jaywantrao Sawant College of Engineering, Pune",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "63",
+      "College Name": "Kamalnayan Bajaj Institute of Engineering, Baramati",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "64",
+      "College Name": "Datta Meghe College of Engineering, Airoli",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "65",
+      "College Name": "Vasantdada Patil Pratishthan's College of Engineering, Sion",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "66",
+      "College Name": "Usha Mittal Institute of Technology, Mumbai",
+      "Avg Package (LPA)": "5–6",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "67",
+      "College Name": "Smt. Kashibai Navale College of Engineering, Vadgaon",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "68",
+      "College Name": "Textile & Engineering Institute, Ichalkaranji",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "69",
+      "College Name": "Sanjivani College of Engineering, Kopargaon",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "70",
+      "College Name": "Government College of Engineering, Jalgaon",
+      "Avg Package (LPA)": "5–6",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "71",
+      "College Name": "Rizvi College of Engineering, Bandra",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "72",
+      "College Name": "Shri Bhagubhai Mafatlal Polytechnic & College of Engineering",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "73",
+      "College Name": "JSPM Narhe Technical Campus, Pune",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "74",
+      "College Name": "A. P. Shah Institute of Technology, Thane",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "75",
+      "College Name": "Lokmanya Tilak College of Engineering, Navi Mumbai",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "76",
+      "College Name": "Pune Vidyarthi Griha's College of Engineering, Nashik",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "77",
+      "College Name": "Amrutvahini College of Engineering, Sangamner",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "78",
+      "College Name": "Government College of Engineering, Kolhapur",
+      "Avg Package (LPA)": "5–6",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "79",
+      "College Name": "Walchand Institute of Technology, Solapur",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "80",
+      "College Name": "G.H. Raisoni College of Engineering, Nagpur",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "81",
+      "College Name": "Indira College of Engineering & Management, Pune",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "82",
+      "College Name": "NBN Sinhgad Technical Institutes Campus, Pune",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "83",
+      "College Name": "Karmaveer Adv. Baburao Thakare College of Engineering, Nashik",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "84",
+      "College Name": "Smt. Indira Gandhi College of Engineering, Navi Mumbai",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "85",
+      "College Name": "Saraswati College of Engineering, Kharghar",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "86",
+      "College Name": "Sinhgad Institute of Technology and Science, Narhe",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "87",
+      "College Name": "Ajeenkya DY Patil School of Engineering, Lohegaon",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "88",
+      "College Name": "Pd. Vasantdada Patil Institute of Technology, Bavdhan",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "89",
+      "College Name": "Marathwada Mitra Mandal's Institute of Technology, Lohgaon",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "90",
+      "College Name": "Sant Gadge Baba Amravati University, Amravati",
+      "Avg Package (LPA)": "5–6",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "91",
+      "College Name": "Nutan Maharashtra Institute of Engineering & Technology, Pune",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "92",
+      "College Name": "Prof. Ram Meghe Institute of Technology & Research, Amravati",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "93",
+      "College Name": "M.H. Saboo Siddik College of Engineering, Mumbai",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "94",
+      "College Name": "MET League's Engineering College, Nashik",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "95",
+      "College Name": "ST. Vincent Pallotti College of Engineering, Nagpur",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "96",
+      "College Name": "Annasaheb Chudaman Patil College of Engineering, Navi Mumbai",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "97",
+      "College Name": "Finolex Academy of Management and Technology, Ratnagiri",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "98",
+      "College Name": "Sinhgad Academy of Engineering, Kondhwa, Pune",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "99",
+      "College Name": "G H Raisoni College of Engineering & Management, Nagpur",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "100",
+      "College Name": "Shree L.R. Tiwari College of Engineering, Mira Road",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "101",
+      "College Name": "Zeal College of Engineering & Research, Narhe",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "102",
+      "College Name": "D.Y. Patil College of Engineering and Technology, Kolhapur",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "103",
+      "College Name": "Bhivarabai Sawant Institute of Technology & Research, Wagholi",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "104",
+      "College Name": "R. C. Patel Institute of Technology, Shirpur",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "105",
+      "College Name": "Vidya Prasarak Mandal's College of Engineering, Thane",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "106",
+      "College Name": "Cummins College of Engineering For Women, Nagpur",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "107",
+      "College Name": "Rasiklal M. Dhariwal Sinhgad Technical Institutes Campus, Pune",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "108",
+      "College Name": "M.G.M.'s College of Engineering and Technology, Navi Mumbai",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "109",
+      "College Name": "University Institute of Chemical Technology, Jalgaon",
+      "Avg Package (LPA)": "5–6",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "110",
+      "College Name": "Government College of Engineering, Yavatmal",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "111",
+      "College Name": "Dhole Patil College of Engineering, Wagholi",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "112",
+      "College Name": "K.C. College of Engineering, Kopri, Thane",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "113",
+      "College Name": "Deogiri Institute of Engineering and Management Studies, Aurangabad",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "114",
+      "College Name": "New Horizon Institute of Technology & Management, Thane",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "115",
+      "College Name": "Sinhgad Institute of Technology",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "116",
+      "College Name": "Shri Vithal Education and Research Institute, Pandharpur",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "117",
+      "College Name": "Anantrao Pawar College of Engineering & Research, Pune",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "118",
+      "College Name": "Shivnagar Vidya Prasarak Mandal's College of Engineering, Baramati",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "119",
+      "College Name": "Shivajirao S. Jondhale College of Engineering, Dombivali",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "120",
+      "College Name": "Priyadarshani College of Engineering, Nagpur",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "121",
+      "College Name": "P. R. Pote Patil College of Engineering, Amravati",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "122",
+      "College Name": "Trinity Academy of Engineering, Yewalewadi",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "123",
+      "College Name": "S K N Sinhgad College of Engineering, Pandharpur",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "124",
+      "College Name": "Annasaheb Dange College of Engineering, Ashta, Sangli",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "125",
+      "College Name": "Pravara Rural College of Engineering, Loni",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "126",
+      "College Name": "Bhivarabai Sawant College of Engineering and Research, Narhe",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "127",
+      "College Name": "Sipna College of Engineering & Technology, Amravati",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "128",
+      "College Name": "Pillai HOC College of Engineering & Technology, Raigad",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "129",
+      "College Name": "Government College of Engineering, Chandrapur",
+      "Avg Package (LPA)": "5–6",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "130",
+      "College Name": "ISBM College of Engineering, Pune",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "131",
+      "College Name": "VIVA Institute of Technology, Virar",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "132",
+      "College Name": "Dr. D.Y. Patil College of Engineering & Innovation, Talegaon",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "133",
+      "College Name": "R.H. Sapat College of Engineering, Nashik",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "134",
+      "College Name": "PDEA's College of Engineering, Manjari, Pune",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "135",
+      "College Name": "Chhatrapati Shivaji Maharaj Institute of Technology, Panvel",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "136",
+      "College Name": "Pravin Rohidas Patil College of Engineering & Technology",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "137",
+      "College Name": "Maharashtra Institute of Technology, Aurangabad",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "138",
+      "College Name": "Genba Sopanrao Moze College of Engineering, Baner-Balewadi",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "139",
+      "College Name": "Parvatibai Genba Moze College of Engineering, Wagholi",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "140",
+      "College Name": "Tatyasaheb Kore Institute of Engineering, Warananagar",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "141",
+      "College Name": "Prof Ram Meghe College of Engineering, Badnera",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "142",
+      "College Name": "St. John College of Engineering & Management, Palghar",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "143",
+      "College Name": "SVKM's Institute of Technology, Dhule",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "144",
+      "College Name": "S.S.P.M.'s College of Engineering, Kankavli",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "145",
+      "College Name": "SKN Sinhgad Institute of Technology & Science, Pune",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "146",
+      "College Name": "Trinity College of Engineering and Research, Pisoli",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "147",
+      "College Name": "Mahatma Gandhi Missions College of Engineering, Nanded",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "148",
+      "College Name": "Alard College of Engineering and Management, Pune",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "149",
+      "College Name": "Universal College of Engineering, Palghar",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "150",
+      "College Name": "Priyadarshini J. L. College of Engineering, Nagpur",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "151",
+      "College Name": "Nagesh Karajagi Orchid College of Engineering, Solapur",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "152",
+      "College Name": "Bajaj Institute of Technology, Wardha",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "153",
+      "College Name": "Dr. Babasaheb Ambedkar Technological University, Lonere",
+      "Avg Package (LPA)": "5–6",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "154",
+      "College Name": "N. B. Navale Sinhgad College of Engineering, Solapur",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "155",
+      "College Name": "Dr. Vithalrao Vikhe Patil College of Engineering, Ahmednagar",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "156",
+      "College Name": "Bharati Vidyapeeth's College of Engineering, Kolhapur",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "157",
+      "College Name": "CSMSS Chh. Shahu College of Engineering, Aurangabad",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "158",
+      "College Name": "Sandip Institute of Technology, Nashik",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "159",
+      "College Name": "Guru Gobind Singh College of Engineering, Nashik",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "160",
+      "College Name": "Yadavrao Tasgaonkar Institute of Engineering, Karjat",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "161",
+      "College Name": "Bharat College of Engineering, Badlapur",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "162",
+      "College Name": "Mauli Group of Institutions, Shegaon",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "163",
+      "College Name": "S. B. Jain Institute of Technology, Nagpur",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "164",
+      "College Name": "M.S. Bidve Engineering College, Latur",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "165",
+      "College Name": "Department of Technology, Shivaji University, Kolhapur",
+      "Avg Package (LPA)": "5–6",
+      "Tier": "Tier 2"
+    },
+    {
+      "Sr No": "166",
+      "College Name": "SNJB's Kantabai Bhavarlalji Jain College of Engineering, Nashik",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "167",
+      "College Name": "Shivajirao S. Jondhale College of Engineering & Technology, Thane",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "168",
+      "College Name": "Dr. J.J. Magdum College of Engineering, Jaysingpur",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "169",
+      "College Name": "Dr. D.Y. Patil Technical Campus, Varale, Talegaon",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "170",
+      "College Name": "Jawaharlal Darda Institute of Engineering, Yavatmal",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "171",
+      "College Name": "Karmaveer Bhaurao Patil College of Engineering, Satara",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "172",
+      "College Name": "MET's Institute of Technology, Nashik",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "173",
+      "College Name": "Priyadarshini Bhagwati College of Engineering, Nagpur",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "174",
+      "College Name": "Watumull Institute of Engineering & Technology, Ulhasnagar",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "175",
+      "College Name": "Aurangabad College of Engineering, Aurangabad",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "176",
+      "College Name": "Konkan Gyanpeeth College of Engineering, Karjat",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "177",
+      "College Name": "Yashwantrao Bhonsale Institute of Technology",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "178",
+      "College Name": "K.J. College of Engineering & Management Research, Pisoli",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "179",
+      "College Name": "Sanjay Ghodawat Institute",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "180",
+      "College Name": "Anjuman-I-Islam's Kalsekar Technical Campus, Panvel",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "181",
+      "College Name": "Sant Gajanan Maharaj College of Engineering, Gadhinglaj",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "182",
+      "College Name": "K.D.K. College of Engineering, Nagpur",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "183",
+      "College Name": "Shri Hanuman Vyayam Prasarak Mandal's College of Engineering, Amravati",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "184",
+      "College Name": "Dr. D Y Patil Pratishthan's College of Engineering, Kolhapur",
+      "Avg Package (LPA)": "3–4",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "185",
+      "College Name": "Shramsadhana Bombay Trust, College of Engineering, Jalgaon",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "186",
+      "College Name": "Vishwaniketan's iMEET, Khalapur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "187",
+      "College Name": "Ideal Institute of Technology, Wada, Thane",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "188",
+      "College Name": "Sharad Institute of Technology College of Engineering, Ichalkaranji",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "189",
+      "College Name": "VPM's Maharshi Parshuram College of Engineering, Ratnagiri",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "190",
+      "College Name": "P.K. Technical Campus, Pune",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "191",
+      "College Name": "Shree Ramchandra College of Engineering, Lonikand",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "192",
+      "College Name": "Siddhant College of Engineering, Maval, Pune",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "193",
+      "College Name": "Rajendra Mane College of Engineering, Ratnagiri",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "194",
+      "College Name": "R.C. Patel College of Engineering and Polytechnic, Shirpur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "195",
+      "College Name": "Keystone School of Engineering, Pune",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "196",
+      "College Name": "Loknete Gopinathji Munde Institute of Engineering, Nashik",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "197",
+      "College Name": "Jaihind College of Engineering, Kuran",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "198",
+      "College Name": "Sandip Institute of Engineering & Management, Nashik",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "199",
+      "College Name": "Peoples Education Society's College of Engineering, Aurangabad",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "200",
+      "College Name": "Shri Chhatrapati Shivaji Maharaj College of Engineering, Nepti",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "201",
+      "College Name": "Kavi Kulguru Institute of Technology & Science, Ramtek",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "202",
+      "College Name": "Theem College of Engineering, Boisar",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "203",
+      "College Name": "Dr. Daulatrao Aher College of Engineering, Karad",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "204",
+      "College Name": "Indala College of Engineering, Bapsai, Kalyan",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "205",
+      "College Name": "Anuradha Engineering College, Chikhali",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "206",
+      "College Name": "Vidya Prasarini Sabha's College of Engineering, Lonavala",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "207",
+      "College Name": "D.Y. Patil Technical Campus, Talsande, Kolhapur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "208",
+      "College Name": "Matoshri College of Engineering, Eklahare, Nashik",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "209",
+      "College Name": "Sahyadri Valley College of Engineering, Rajuri, Pune",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "210",
+      "College Name": "Yadavrao Tasgaonkar College of Engineering & Management",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "211",
+      "College Name": "G.V. Acharya Institute of Engineering and Technology, Karjat",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "212",
+      "College Name": "Pad. Vasantraodada Patil Institute of Technology, Budhgaon",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "213",
+      "College Name": "Dr. Rajendra Gode Institute of Technology, Amravati",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "214",
+      "College Name": "Sir Visvesvaraya Institute of Technology, Chincholi, Nashik",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "215",
+      "College Name": "Shri Shivaji Education Society's College of Engineering, Akola",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "216",
+      "College Name": "J D College of Engineering and Management, Nagpur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "217",
+      "College Name": "S.N.D. College of Engineering & Research, Babulgaon",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "218",
+      "College Name": "Al-Ameen College of Engineering, Koregaon Bhima",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "219",
+      "College Name": "Gharda Institute of Technology, Khed, Ratnagiri",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "220",
+      "College Name": "Navsahyadri Education Society's Group of Institutions",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "221",
+      "College Name": "Late Bapusaheb Shivaji Rao Deore College of Engineering, Dhule",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "222",
+      "College Name": "Devi Mahalaxmi College of Engineering and Technology",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "223",
+      "College Name": "Tulsiramji Gaikwad Patil College of Engineering, Nagpur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "224",
+      "College Name": "G H Raisoni College of Engineering and Management, Jalgaon",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "225",
+      "College Name": "Loknete Shamrao Peje Government College of Engineering, Ratnagiri",
+      "Avg Package (LPA)": "4–5",
+      "Tier": "Tier 3"
+    },
+    {
+      "Sr No": "226",
+      "College Name": "Guru Nanak Institute of Engineering & Technology, Nagpur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "227",
+      "College Name": "Group of Institutions (Integrated Campus), Kashti Shrigondha",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "228",
+      "College Name": "Rajiv Gandhi College of Engineering Research & Technology, Chandrapur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "229",
+      "College Name": "Manav School of Engineering & Technology, Akola",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "230",
+      "College Name": "Late Gambhirrao Natuba Sapkal College of Engineering, Nashik",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "231",
+      "College Name": "Sharadchandra Pawar College of Engineering, Dumbarwadi",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "232",
+      "College Name": "A.G. Patil Institute of Technology, Solapur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "233",
+      "College Name": "Tatyasaheb Kore Institute of Engineering and Technology, Yelur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "234",
+      "College Name": "Terna Public Charitable Trust's College of Engineering, Osmanabad",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "235",
+      "College Name": "B.R. Harne College of Engineering & Technology, Ambernath",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "236",
+      "College Name": "Samarth College of Engineering and Management",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "237",
+      "College Name": "Jhulelal Institute of Technology, Nagpur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "238",
+      "College Name": "Shree Siddheshwar Women's College of Engineering, Solapur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "239",
+      "College Name": "Brahma Valley College of Engineering & Research, Nashik",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "240",
+      "College Name": "Yashoda Technical Campus, Wadhe, Satara",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "241",
+      "College Name": "Suryodaya College of Engineering & Technology, Nagpur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "242",
+      "College Name": "Shreeyash College of Engineering and Technology, Aurangabad",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "243",
+      "College Name": "Jagdambha College of Engineering and Technology, Yavatmal",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "244",
+      "College Name": "Dilkap Research Institute of Engineering, Karjat",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "245",
+      "College Name": "Wainganga College of Engineering and Management, Nagpur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "246",
+      "College Name": "Matsyodari Shikshan Sansatha's College of Engineering, Jalna",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "247",
+      "College Name": "D.N. Patel College of Engineering, Shahada, Nandurbar",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "248",
+      "College Name": "Vilasrao Deshmukh Foundation Group of Institutions, Latur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "249",
+      "College Name": "Khandesh College of Engineering And Management, Jalgaon",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "250",
+      "College Name": "Shri Chhatrapati Shivajiraje College of Engineering, Bhor",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "251",
+      "College Name": "Vishwabharati Academy's College of Engineering, Ahmednagar",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "252",
+      "College Name": "College of Engineering and Technology, North Maharashtra, Jalgaon",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "253",
+      "College Name": "Babasaheb Naik College of Engineering, Pusad",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "254",
+      "College Name": "Flora Institute of Technology, Khed Shivapur, Pune",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "255",
+      "College Name": "Shri Shivaji Institute of Engineering and Management Studies, Parbhani",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "256",
+      "College Name": "Sharadchandra Pawar College of Engineering & Technology, Someshwar Nagar",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "257",
+      "College Name": "Padmashri Dr. V.B. Kolte College of Engineering, Malkapur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "258",
+      "College Name": "Shatabdi Institute of Engineering & Research, Sinnar",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "259",
+      "College Name": "Dnyanshree Institute Engineering and Technology, Satara",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "260",
+      "College Name": "Smt. Alamuri Ratnamala Institute of Engineering, Shahapur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "261",
+      "College Name": "Godavari College of Engineering, Jalgaon",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "262",
+      "College Name": "Takshashila Institute of Engineering & Technology, Amravati",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "263",
+      "College Name": "MIT College of Railway Engineering and Research, Barshi",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "264",
+      "College Name": "Sanghavi College of Engineering, Varvandi, Nashik",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "265",
+      "College Name": "Anjuman College of Engineering & Technology, Nagpur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "266",
+      "College Name": "Matoshri Pratishan's Group of Institutions, Nanded",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "267",
+      "College Name": "Gurunanak Institute of Technology, Nagpur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "268",
+      "College Name": "Shri. Jaykumar Rawal Institute of Technology, Dondaicha",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "269",
+      "College Name": "Nagpur Institute of Technology, Nagpur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "270",
+      "College Name": "Institute of Technology, Management & Research, Nashik",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "271",
+      "College Name": "Smt. Radhikatai Pandav College of Engineering, Nagpur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "272",
+      "College Name": "Atma Malik Institute of Technology & Research",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "273",
+      "College Name": "Adarsh Institute of Technology and Research Centre, Vita, Sangli",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "274",
+      "College Name": "Karmayogi Institute of Technology",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "275",
+      "College Name": "Dr. Bapuji Salunkhe Institute of Engineering & Technology, Kolhapur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "276",
+      "College Name": "Suman Ramesh Tulsiani Technical Campus, Kamshet",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "277",
+      "College Name": "Ashokrao Mane Group of Institutions",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "278",
+      "College Name": "Mahatma Basaweshwar Education Society's College of Engineering, Ambejogai",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "279",
+      "College Name": "Rajarshi Shahu College of Engineering, Buldhana",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "280",
+      "College Name": "Nanasaheb Mahadik College of Engineering, Walwa, Sangli",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "281",
+      "College Name": "Shree Santkrupa Institute of Engineering & Technology, Karad",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "282",
+      "College Name": "J.T. Mahajan College of Engineering, Faizpur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "283",
+      "College Name": "Shankarrao Mohite Patil Institute of Technology, Akluj",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "284",
+      "College Name": "Fabtech Technical Campus College of Engineering, Sangola",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "285",
+      "College Name": "Vidharbha Institute of Technology, Nagpur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "286",
+      "College Name": "Dattakala Group of Institutions, Daund, Pune",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "287",
+      "College Name": "Siddhivinayak Technical Campus, Nile",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "288",
+      "College Name": "P.G. College of Engineering & Technology, Nandurbar",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "289",
+      "College Name": "New Institute of Technology, Kolhapur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "290",
+      "College Name": "Matoshri Asarabai Polytechnic, Nashik",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "291",
+      "College Name": "Matoshri Institute of Technology, Dhanore, Nashik",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "292",
+      "College Name": "Sanjeevan Group of Institutions",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "293",
+      "College Name": "Ballarpur Institute of Technology, Bhandara",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "294",
+      "College Name": "Hi-Tech Institute of Technology, Aurangabad",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "295",
+      "College Name": "International Centre of Excellence in Engineering (ICEEM)",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "296",
+      "College Name": "Shree Govindrao Vanjari College of Engineering, Nagpur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "297",
+      "College Name": "Gramin Technical and Management Campus, Nanded",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "298",
+      "College Name": "G.M. Vedak Institute of Technology, Tala, Raigad",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "299",
+      "College Name": "Dr. A. D. Shinde College of Engineering, Kolhapur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "300",
+      "College Name": "Shri Sant Gadgebaba College of Engineering, Bhusawal",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "301",
+      "College Name": "Vidya Vikas Pratishthan Institute of Engineering, Solapur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "302",
+      "College Name": "Aditya Engineering College, Beed",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "303",
+      "College Name": "Gangamai College of Engineering, Dhule",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "304",
+      "College Name": "Sanmati Engineering College, Washim",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "305",
+      "College Name": "Bapurao Deshmukh College of Engineering, Sevagram",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "306",
+      "College Name": "Bramhadevdada Mane Institute of Technology, Solapur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "307",
+      "College Name": "Metropolitan Institute of Technology & Management, Sindhudurg",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "308",
+      "College Name": "Adsul's Technical Campus, Ahmednagar",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "309",
+      "College Name": "Pankaj Laddhad Institute of Technology & Management Studies, Buldhana",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "310",
+      "College Name": "Karanjekar College of Engineering & Management, Sakoli",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "311",
+      "College Name": "Sanjay Bhokare Group of Institutes, Miraj",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "312",
+      "College Name": "Sandipani Technical Campus, Latur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "313",
+      "College Name": "Shri Shankarprasad Agnihotri College of Engineering, Wardha",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "314",
+      "College Name": "Dr. V.K. Patil College of Engineering & Technology",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "315",
+      "College Name": "Arvind Gavali College of Engineering, Satara",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "316",
+      "College Name": "Vidya Niketan College of Engineering, Sangamner",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "317",
+      "College Name": "Nagarjuna Institute of Engineering Technology & Management, Nagpur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "318",
+      "College Name": "Manoharbhai Patel Institute of Engineering & Technology, Bhandara",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "319",
+      "College Name": "Mandukarrao Pandav College of Engineering, Bhandara",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "320",
+      "College Name": "Everest Education Society Group of Institutions, Ohar",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "321",
+      "College Name": "Jaywant College of Engineering & Polytechnic, Sangali",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "322",
+      "College Name": "Rajiv Gandhi College of Engineering, Ahmednagar",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "323",
+      "College Name": "Phaltan Education Society's College of Engineering, Satara",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "324",
+      "College Name": "Shri Sai College of Engineering & Technology, Bhadrawati",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "325",
+      "College Name": "Ahinsa Institute of Technology, Dhule",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "326",
+      "College Name": "S.B. Patil College of Engineering, Indapur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "327",
+      "College Name": "Bhagwant Institute of Technology, Barshi",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "328",
+      "College Name": "Shri. Anandrao Abitkar College of Engineering, Pal",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "329",
+      "College Name": "Agnihotri College of Engineering, Sindhi(Meghe)",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "330",
+      "College Name": "Shriram Institute of Engineering & Technology, Paniv",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "331",
+      "College Name": "Samajbhushan Eknathrao Dhakane College of Engineering, Shevgaon",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "332",
+      "College Name": "Shree Tuljabhavani College of Engineering, Tuljapur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "333",
+      "College Name": "Swaminarayan Siddhanta Institute of Technology, Nagpur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "334",
+      "College Name": "Appasaheb Alias Sa.Re.Patil Institute of Technology, Kolhapur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "335",
+      "College Name": "K. T. Patil College of Engineering and Technology, Osmanabad",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "336",
+      "College Name": "Mangaldeep College of Engineering",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "337",
+      "College Name": "Nagnathappa Halge Engineering College, Parli, Beed",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "338",
+      "College Name": "Shri Swami Samarth Institute of Management and Technology, Nashik",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "339",
+      "College Name": "Maulana Mukhtar Ahmad Nadvi Technical Campus, Malegaon",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "340",
+      "College Name": "Bharat-Ratna Indira Gandhi College of Engineering, Solapur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "341",
+      "College Name": "MKD Institute of Technology, Nandurbar",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "342",
+      "College Name": "R.V. Parankar College of Engineering & Technology, Wardha",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "343",
+      "College Name": "Jamia Institute of Engineering And Management Studies, Akkalkuwa",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "344",
+      "College Name": "Mitthulalji Sarada Polytechnic, Beed",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "345",
+      "College Name": "Abhinav Education Society's College of Engineering, Wadwadi",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "346",
+      "College Name": "V M Institute of Engineering and Technology, Nagpur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "347",
+      "College Name": "Sangli Vishveshwarya Technical Campus, Miraj",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "348",
+      "College Name": "Late Narayandas Bhawandas Chhabada Institute of Engineering, Satara",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "349",
+      "College Name": "Jijau Institute of Engineering Technology and Management, Nanded",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    },
+    {
+      "Sr No": "350",
+      "College Name": "Vilasrao Deshmukh College of Engineering and Technology, Nagpur",
+      "Avg Package (LPA)": "2–3",
+      "Tier": "Tier 4"
+    }
+  ]
+}

@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- SEO Optimization Meta Tags -->
+    <title>Best College Predictor — MHT-CET, JoSAA, CSAB & COMEDK | College Simplified</title>
+    <meta name="keywords" content="Counselling, mhtcet, josaa counselling, college simplified, mhtcet counselling, concept simplified, mhtcet counseling, josaa counseling, counseling, college predictor, college predictors, engineering college predictor, college admission predictor, best college predictor, college predictor, mhtcet college predictor, josaa college predictor, engineering college predictor, csab college predictor, comedk college predictor, marks to percentile, percentile to rank">
+    <meta name="description" content="College Simplified is the best engineering college predictor hub. Predict your college admission chances for MHT-CET, JoSAA, CSAB, and COMEDK based on your rank and percentile.">
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:title" content="Best College Predictor — MHT-CET, JoSAA, CSAB & COMEDK | College Simplified">
+    <meta property="og:description" content="College Simplified is the best engineering college predictor hub. Predict your college admission chances for MHT-CET, JoSAA, CSAB, and COMEDK based on your rank and percentile.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://counselling.collegesimplified.in/index.html">
+    <meta property="og:site_name" content="College Simplified">
+    
+    <!-- Structured Data (JSON-LD) for Search Engines -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "College Simplified",
+      "url": "https://counselling.collegesimplified.in/",
+      "sameAs": [
+        "https://play.google.com/store/apps/details?id=co.mark.vvzmn",
+        "https://apps.apple.com/in/app/myinstitute/id1472483563",
+        "https://www.instagram.com/college_simplified/",
+        "https://youtube.com/@conceptsimplified"
+      ]
+    }
+    </script>
+    <meta name="google-site-verification" content="yeirvMDC7sVnbJpUDbLnR-iulQYchIZflW-TpoPCBSo" />
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lexend:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --brand: #dc2626;
+            --brand-soft: #fef2f2;
+            --brand-ring: rgba(220, 38, 38, 0.15);
+            --ink: #111827;
+            --muted: #6b7280;
+            --bg: #fafafa;
+            --white: #ffffff;
+            --card: #ffffff;
+            --border: rgba(0, 0, 0, 0.08);
+            --stroke: rgba(0, 0, 0, 0.08);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            line-height: 1.5;
+            padding-top: 64px;
+        }
+
+        /* ── Hero ── */
+        .hero {
+            padding: 100px 20px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .badge {
+            background: var(--brand-soft);
+            color: var(--brand);
+            padding: 8px 20px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: inline-block;
+            margin-bottom: 24px;
+            border: 1px solid var(--brand-ring);
+        }
+
+        h1 {
+            font-family: 'Lexend', sans-serif;
+            font-weight: 800;
+            font-size: clamp(2.5rem, 6vw, 3.75rem);
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -0.03em;
+        }
+
+        h1 span {
+            color: var(--brand);
+        }
+
+        .hero p {
+            color: var(--muted);
+            font-size: 1.15rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* ── Grid ── */
+        .grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+            gap: 32px;
+            grid-auto-flow: dense;
+        }
+
+        .choice-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 40px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .choice-card:hover {
+            transform: translateY(-12px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--brand);
+        }
+
+        .choice-card-split {
+            padding: 0 !important;
+            gap: 0 !important;
+            overflow: hidden;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .choice-card-split:hover {
+            transform: translateY(-12px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-half {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 32px;
+            text-decoration: none;
+            color: inherit;
+            flex: 1;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            gap: 20px;
+        }
+
+        .card-half:hover {
+            background: var(--brand-soft);
+        }
+
+        .card-half:hover .card-icon {
+            transform: scale(1.1);
+        }
+
+        .card-half:hover .card-footer span {
+            transform: translateX(8px);
+        }
+
+        .card-half+.card-half {
+            border-left: 1px solid var(--border);
+        }
+
+        .choice-card-split h2 {
+            font-size: 20px;
+        }
+
+        .card-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--brand-soft);
+            color: var(--brand);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        .choice-card:hover .card-icon {
+            transform: scale(1.1);
+        }
+
+        .choice-card h2 {
+            font-family: 'Lexend', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--ink);
+            letter-spacing: -0.01em;
+        }
+
+        .choice-card p {
+            color: var(--muted);
+            font-size: 15px;
+            flex-grow: 1;
+            line-height: 1.6;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--brand);
+            font-weight: 800;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 8px;
+        }
+
+        .card-footer span {
+            transition: transform 0.3s ease;
+        }
+
+        .choice-card:hover .card-footer span {
+            transform: translateX(8px);
+        }
+
+        @media (min-width: 769px) {
+            .choice-card-split {
+                grid-column: span 2;
+            }
+
+            .card-half {
+                padding: 40px;
+                gap: 24px;
+            }
+
+            .choice-card-split h2 {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 80px 20px 40px;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            .grid {
+                padding-bottom: 60px;
+                gap: 20px;
+                grid-template-columns: 1fr;
+            }
+
+            .choice-card {
+                padding: 32px;
+            }
+
+            .choice-card-split {
+                flex-direction: column !important;
+            }
+
+            .card-half {
+                padding: 24px 32px;
+            }
+
+            .card-half+.card-half {
+                border-left: none;
+                border-top: 1px solid var(--border);
+            }
+        }
+
+        /* ── Latest Notices ── */
+        .notices-section {
+            max-width: 1200px;
+            margin: 0 auto 100px;
+            padding: 0 20px;
+            scroll-margin-top: 100px;
+        }
+
+        .section-hdr {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+
+        .section-hdr h2 {
+            font-family: 'Lexend', sans-serif;
+            font-weight: 800;
+            font-size: 28px;
+            letter-spacing: -0.02em;
+        }
+
+        .notices-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .notice-item {
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: 20px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notice-item:hover {
+            border-color: var(--brand);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .notice-item-hdr {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .notice-item-title {
+            font-weight: 700;
+            font-size: 17px;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notice-item-title::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--brand);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .notice-item-date {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .notice-item-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+        }
+
+        .notice-item.expanded {
+            border-color: var(--brand);
+            box-shadow: var(--shadow-lg);
+            border-left: 5px solid var(--brand);
+        }
+
+        .notice-item.expanded .notice-item-body {
+            max-height: 800px;
+            opacity: 1;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--stroke);
+        }
+
+        .notice-item-desc {
+            font-size: 14.5px;
+            color: var(--ink2);
+            line-height: 1.7;
+            margin-bottom: 24px;
+            white-space: pre-wrap;
+        }
+
+        .btn-notice {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--ink);
+            color: #fff;
+            border-radius: 14px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .btn-notice:hover {
+            transform: scale(1.05);
+            background: var(--brand);
+            box-shadow: 0 8px 20px var(--brand-ring);
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <section class="hero">
+            <div class="badge">Best Engineering College Predictor</div>
+            <h1>Your Ultimate <span>College Predictor Hub</span></h1>
+            <p>Explore the best college predictors for MHT-CET, JoSAA, CSAB, and COMEDK. Estimate your admission chances, expected cutoff ranks, and percentile metrics with high-precision analytical tools.</p>
+        </section>
+
+        <!-- Premium Counselling Banners Section -->
+        <section class="premium-banners-section">
+            <style>
+                .premium-banners-section {
+                    width: 100%;
+                    max-width: 1200px;
+                    margin: 0 auto;
+                    padding: 0 20px 48px;
+                    font-family: 'Inter', sans-serif;
+                }
+                .banners-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+                    gap: 28px;
+                    margin-top: 24px;
+                }
+                .premium-banner-card {
+                    background: var(--card, #ffffff);
+                    border: 1px solid var(--stroke, rgba(0,0,0,0.08));
+                    border-radius: 24px;
+                    overflow: hidden;
+                    text-decoration: none;
+                    color: inherit;
+                    display: flex;
+                    flex-direction: column;
+                    box-shadow: var(--shadow, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                }
+                .premium-banner-card:hover {
+                    transform: translateY(-8px);
+                    box-shadow: var(--shadow-lg, 0 20px 25px -5px rgba(0,0,0,0.1));
+                    border-color: var(--brand, #dc2626);
+                }
+                .banner-img-container {
+                    position: relative;
+                    width: 100%;
+                    padding-top: 52%; /* Aspect ratio of banners */
+                    overflow: hidden;
+                    background: #f3f4f6;
+                }
+                .banner-img-container img {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+                }
+                .premium-banner-card:hover .banner-img-container img {
+                    transform: scale(1.05);
+                }
+                .banner-overlay {
+                    position: absolute;
+                    inset: 0;
+                    background: rgba(0, 0, 0, 0.3);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                }
+                .premium-banner-card:hover .banner-overlay {
+                    opacity: 1;
+                }
+                .view-program-btn {
+                    background: #ffffff;
+                    color: #111827;
+                    padding: 10px 20px;
+                    border-radius: 100px;
+                    font-weight: 700;
+                    font-size: 13px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                    transform: translateY(10px);
+                    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                }
+                .premium-banner-card:hover .view-program-btn {
+                    transform: translateY(0);
+                }
+                .banner-text-details {
+                    padding: 20px 24px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                }
+                .banner-text-details h3 {
+                    font-family: 'Lexend', sans-serif;
+                    font-weight: 700;
+                    font-size: 18px;
+                    color: var(--ink, #111827);
+                }
+                .banner-text-details p {
+                    font-size: 13.5px;
+                    color: var(--muted, #6b7280);
+                    line-height: 1.4;
+                }
+                .section-header-banner {
+                    margin-bottom: 8px;
+                }
+                .banner-badge-top {
+                    background: var(--brand-soft, #fef2f2);
+                    color: var(--brand, #dc2626);
+                    padding: 6px 14px;
+                    border-radius: 100px;
+                    font-size: 11px;
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    display: inline-block;
+                    margin-bottom: 12px;
+                    border: 1px solid var(--brand-ring, rgba(220,38,38,0.1));
+                }
+                .section-header-banner h2 {
+                    font-family: 'Lexend', sans-serif;
+                    font-weight: 800;
+                    font-size: 24px;
+                    color: var(--ink, #111827);
+                    letter-spacing: -0.01em;
+                }
+                .section-header-banner p {
+                    color: var(--muted, #6b7280);
+                    font-size: 14.5px;
+                    margin-top: 4px;
+                }
+                @media (max-width: 640px) {
+                    .banners-grid {
+                        grid-template-columns: 1fr;
+                        gap: 20px;
+                    }
+                    .premium-banners-section {
+                        padding: 0 20px 32px;
+                    }
+                    .banner-text-details {
+                        padding: 16px 20px;
+                    }
+                    .banner-text-details h3 {
+                        font-size: 16px;
+                    }
+                    .section-header-banner h2 {
+                        font-size: 20px;
+                    }
+                }
+            </style>
+            <div class="section-header-banner">
+                <div class="banner-badge-top">Premium Counselling Programs</div>
+                <h2>Direct Personal Counselling 2026</h2>
+                <p>Get premium mentoring from expert counselors to secure your dream engineering college seat.</p>
+            </div>
+            <div class="banners-grid">
+                <!-- Banner 1 -->
+                <a href="https://www.conceptsimplified.in/courses/668919" target="_blank" class="premium-banner-card">
+                    <div class="banner-img-container">
+                        <img src="paid%20banners/banner1.webp" alt="Simplified Pro | Maharashtra Engineering Admission Counselling 2026">
+                        <div class="banner-overlay">
+                            <span class="view-program-btn">View Program &rarr;</span>
+                        </div>
+                    </div>
+                    <div class="banner-text-details">
+                        <h3>Simplified Pro</h3>
+                        <p>Maharashtra Engineering Admission Counselling 2026</p>
+                    </div>
+                </a>
+
+                <!-- Banner 2 -->
+                <a href="https://www.conceptsimplified.in/courses/840574" target="_blank" class="premium-banner-card">
+                    <div class="banner-img-container">
+                        <img src="paid%20banners/banner2.webp" alt="Simplified Premium 1:1 | Maharashtra Engineering Admission Counselling 2026">
+                        <div class="banner-overlay">
+                            <span class="view-program-btn">View Program &rarr;</span>
+                        </div>
+                    </div>
+                    <div class="banner-text-details">
+                        <h3>Simplified Premium 1:1</h3>
+                        <p>Maharashtra Engineering Admission Counselling 2026</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <section class="grid">
+            <a href="cet-landing.html" class="choice-card">
+                <div class="card-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                        <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
+                    </svg>
+                </div>
+                <div>
+                    <h2>MHT-CET College Predictor</h2>
+                    <p>High-precision MHT-CET college predictor, marks vs percentile converters, state merit rank estimators, and official DTE cutoff analysis for Maharashtra engineering colleges.</p>
+                </div>
+                <div class="card-footer">Explore MHT-CET Predictor <span>→</span></div>
+            </a>
+
+            <a href="dse-landing.html" class="choice-card">
+                <div class="card-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                        <path d="M7 9.5V14c0 1.5 2.5 3 5 3s5-1.5 5-3V9.5" />
+                        <path d="M2 17l10 5 10-5" />
+                    </svg>
+                </div>
+                <div>
+                    <h2>DSE College Predictor</h2>
+                    <p>High-precision Direct Second Year Engineering (DSE) college predictor, cutoff checker, and comparison tools using official DTE cutoff data for Diploma students in Maharashtra.</p>
+                </div>
+                <div class="card-footer">Explore DSE Predictor <span>→</span></div>
+            </a>
+
+            <div class="choice-card choice-card-split">
+                <a href="josaa-landing.html" class="card-half">
+                    <div class="card-icon" style="flex-shrink: 0;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2>JoSAA College Predictor</h2>
+                        <p style="margin-top: 8px;">Advanced JoSAA college predictor, choice filling preference list builder, and round-wise opening/closing ranks for IITs, NITs, IIITs, and GFTIs.</p>
+                    </div>
+                    <div class="card-footer">Run JoSAA Predictor <span>→</span></div>
+                </a>
+                <a href="csab-landing.html" class="card-half">
+                    <div class="card-icon" style="flex-shrink: 0;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2>CSAB College Predictor</h2>
+                        <p style="margin-top: 8px;">Find vacant seats and predict NIT/IIIT/GFTI admissions in CSAB special rounds using our CSAB spot round college predictor.</p>
+                    </div>
+                    <div class="card-footer">Run CSAB Predictor <span>→</span></div>
+                </a>
+            </div>
+
+            <a href="comedk-landing.html" class="choice-card">
+                <div class="card-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                </div>
+                <div>
+                    <h2>COMEDK College Predictor</h2>
+                    <p>Accurate COMEDK college predictor and cutoff rank checker for COMEDK UGET counselling across top engineering colleges in Karnataka.</p>
+                </div>
+                <div class="card-footer">Explore COMEDK Predictor <span>→</span></div>
+            </a>
+
+            <a href="manipal_cutoff.html" class="choice-card">
+                <div class="card-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                        <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
+                    </svg>
+                </div>
+                <div>
+                    <h2>Manipal MET College Predictor</h2>
+                    <p>Analyze Manipal MET cutoff ranks across MIT Manipal, MIT Bengaluru, MUJ Jaipur, and SMIT Sikkim for all admission rounds.</p>
+                </div>
+                <div class="card-footer">View MET Predictor <span>→</span></div>
+            </a>
+
+            <a href="calendar.html" class="choice-card">
+                <div class="card-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>
+                </div>
+                <div>
+                    <h2>Counselling Event Calendar</h2>
+                    <p>Stay updated with all important MHT-CET, COMEDK, and JoSAA counselling dates, CAP rounds, and deadlines.</p>
+                </div>
+                <div class="card-footer">View Calendar <span>→</span></div>
+            </a>
+
+            <a href="non-cap-admissions.html" class="choice-card">
+                <div class="card-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                    </svg>
+                </div>
+                <div>
+                    <h2>NON-CAP & Vacancy Admissions</h2>
+                    <p>Information and updates regarding institutional level admissions and spot round vacancy seats.</p>
+                </div>
+                <div class="card-footer">Check Vacancies <span>→</span></div>
+            </a>
+
+            <a href="document_checklist.html" class="choice-card">
+                <div class="card-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                        <polyline points="10 9 9 9 8 9" />
+                    </svg>
+                </div>
+                <div>
+                    <h2>Counselling Document Checklist</h2>
+                    <p>Manage and track all required documents for your category to ensure a smooth CAP round admission process.</p>
+                </div>
+                <div class="card-footer">Start Checklist <span>→</span></div>
+            </a>
+        </section>
+
+        <section class="notices-section" id="latest-notices">
+            <div class="section-hdr">
+                <h2>Latest Notifications & Updates</h2>
+            </div>
+            <div class="notices-grid" id="noticesContainer">
+                <div style="text-align:center; padding:40px; color:var(--muted)">Syncing with server...</div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="firebase_config.js"></script>
+    <script src="shared_auth.js"></script>
+    <script>
+        initAuth({ requireLogin: false });
+
+        async function loadNotices() {
+            const container = document.getElementById('noticesContainer');
+            if (!container) return;
+            const res = await authApi('getNotices');
+            if (res.ok) {
+                const data = res.data || [];
+                if (!data.length) {
+                    container.innerHTML = '<div style="text-align:center;padding:60px;color:var(--muted);font-weight:600">No active notices at the moment.</div>';
+                    return;
+                }
+                container.innerHTML = data.map(n => {
+                    const dt = n.createdAt ? (n.createdAt.toDate ? n.createdAt.toDate() : new Date(n.createdAt)).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+                    return `
+                        <div class="notice-item" onclick="this.classList.toggle('expanded')">
+                            <div class="notice-item-hdr">
+                                <div class="notice-item-title">${escAuth(n.title)}</div>
+                                <div class="notice-item-date">${dt}</div>
+                            </div>
+                            <div class="notice-item-body">
+                                <div class="notice-item-desc">${escAuth(n.description)}</div>
+                                ${n.link ? `<a href="${escAuth(n.link)}" target="_blank" class="btn-notice" onclick="event.stopPropagation()">Download / View Document <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--brand)">Failed to connect to notices server.</div>';
+            }
+        }
+
+        loadNotices();
+    </script>
+</body>
+
+</html>

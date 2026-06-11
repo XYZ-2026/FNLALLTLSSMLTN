@@ -1,0 +1,2878 @@
+'use strict';
+
+/* ══════ STATE ══════ */
+let cutoffData = [], collegeMetadata = [], selectedBranches = new Set(), matchedColleges = [], selectedColleges = [], prefList = [], allBranchNames = [];
+let prefEditCount = 0;
+let prefLocked = false;
+let prefDataLoaded = false;
+let currentFormId = null;
+let allForms = [];
+let currentUserId = null;
+let expandedCategories = new Set();
+let currentStudentInfo = null;
+let cachedUsers = null;
+
+// Admin Template Editing Mode State
+let isAdminTemplateEditingMode = false;
+let editingTemplateId = null;
+let editingTemplateName = '';
+let editingTemplateDesc = '';
+let editingTemplateTags = [];
+let editingTemplateIsPublished = true;
+let editingTemplateFilters = {};
+const CATS = {
+  'Computer & IT': ['COMPUTER', 'INFORMATION TECHNOLOGY', 'AI', 'ARTIFICIAL', 'DATA SCIENCE', 'MACHINE LEARNING', 'SOFTWARE', 'CYBER', 'ROBOTICS'],
+  'Electronics & Telecom': ['ELECTRONICS', 'TELECOMMUNICATION', 'ENTC', 'COMMUNICATION', 'INSTRUMENTATION'],
+  'Core Engineering': ['MECHANICAL', 'CIVIL', 'ELECTRICAL', 'CHEMICAL', 'PRODUCTION', 'METALLURGY', 'AUTOMOBILE', 'TEXTILE', 'MINING'],
+  'Biotech & Allied': ['BIOTECHNOLOGY', 'BIO-MEDICAL', 'BIO MEDICAL', 'FOOD', 'AGRICULTURE', 'PHARMACEUTICAL'],
+  'Other Branches': []
+};
+const FIXED_ASPIRATIONAL = [
+  { code: '16006', instituteName: 'COEP Technological University', branch: 'Computer Engineering', percentile: 99.98, isFixed: true, isAspirational: true },
+  { code: '3012', instituteName: 'Veermata Jijabai Technological Institute (VJTI)', branch: 'Computer Engineering', percentile: 99.95, isFixed: true, isAspirational: true },
+  { code: '3012', instituteName: 'Veermata Jijabai Technological Institute (VJTI)', branch: 'Information Technology', percentile: 99.92, isFixed: true, isAspirational: true },
+  { code: '16006', instituteName: 'COEP Technological University', branch: 'Artificial Intelligence and Machine Learning', percentile: 99.88, isFixed: true, isAspirational: true },
+  { code: '3215', instituteName: 'Sardar Patel Institute of Technology (SPIT)', branch: 'Computer Science and Engineering', percentile: 99.85, isFixed: true, isAspirational: true },
+  { code: '3215', instituteName: 'Sardar Patel Institute of Technology (SPIT)', branch: 'Computer Engineering', percentile: 99.82, isFixed: true, isAspirational: true }
+];
+
+/* ══════ STEPPER ══════ */
+let currentStep = 1;
+function goStep(n) {
+  if (n < 0 || n > 5) return;
+  if (n === 2) {
+    if (!validateStep1()) return;
+    saveNonLockedData();
+  }
+  if (n === 3 && selectedBranches.size === 0) { pbToast('Select at least one branch'); return }
+  if (n === 3) {
+    generateMatches();
+    // Restore checkbox selections from keys if available
+    if (window._tempKeys && window._tempKeys.length > 0) {
+      selectedColleges = [];
+      window._tempKeys.forEach(key => {
+        const idx = matchedColleges.findIndex(c => (c.code + '|' + c.branch) === key);
+        if (idx >= 0) selectedColleges.push(idx);
+      });
+      delete window._tempKeys;
+      renderColleges('all');
+    }
+  }
+  if (n === 4) {
+    if (!window._isLoadingForm) {
+      buildPrefList();
+    } else {
+      renderPrefList();
+      renderSuggestions();
+      renderAspirational();
+    }
+  }
+
+  // Save progress on every step transition
+  if (n > 0 && n <= 4) saveNonLockedData();
+
+  currentStep = n;
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  const targetPanel = document.getElementById('panel' + n);
+  if (targetPanel) targetPanel.classList.add('active');
+
+  // Manage Stepper
+  const stepper = document.getElementById('pbStepper');
+  if (n === 0 || n === 5) {
+    if (stepper) stepper.style.display = 'none';
+  } else {
+    if (stepper) stepper.style.display = 'flex';
+    document.querySelectorAll('.step-item').forEach((s, i) => {
+      s.classList.remove('active', 'done');
+      if (i + 1 < n) s.classList.add('done');
+      else if (i + 1 === n) s.classList.add('active');
+    });
+    document.querySelectorAll('.step-line').forEach((l, i) => {
+      l.classList.toggle('done', i + 1 < n);
+    });
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function startNewForm() {
+  const user = getSession();
+  const isAdmin = user && user.role === 'admin';
+
+  // For admin users, show student details modal first
+  if (isAdmin && !currentStudentInfo) {
+    showStudentModal();
+    return;
+  }
+
+  currentFormId = null;
+  prefList = [...FIXED_ASPIRATIONAL];
+  selectedColleges = [];
+  selectedBranches = new Set(); // Clear branch selections
+
+  if (prefLocked) lockProfileFields();
+  else unlockProfileFields();
+
+  renderEditStatus();
+  goStep(1);
+}
+
+function loadForm(formId, step = 1) {
+  const form = allForms.find(f => f.id === formId);
+  if (!form) return;
+  currentFormId = formId;
+  currentStudentInfo = form.studentInfo || null;
+  document.getElementById('inPct').value = form.percentile || '';
+  document.getElementById('inRank').value = form.rank || '';
+
+  let genderVal = form.gender;
+  let categoryVal = form.category || 'OPEN';
+  if (!genderVal) {
+    if (categoryVal.startsWith('L') && categoryVal !== 'L') {
+      genderVal = 'Female-only';
+      categoryVal = categoryVal.substring(1);
+    } else {
+      genderVal = 'Gender-Neutral';
+    }
+  }
+  document.getElementById('inCategory').value = categoryVal;
+  document.getElementById('inGender').value = genderVal;
+  document.getElementById('inRegion').value = form.region || '';
+  prefList = form.prefList || [];
+
+  // Ensure Fixed Aspirational are present even in old forms
+  FIXED_ASPIRATIONAL.forEach(fa => {
+    if (!prefList.some(p => p.code === fa.code && p.branch === fa.branch)) {
+      prefList.unshift(fa);
+    }
+  });
+
+  selectedBranches = new Set(form.selectedBranches || []);
+  if (selectedBranches.size === 0 && prefList.length > 0) {
+    prefList.forEach(item => {
+      if (item.branch) {
+        selectedBranches.add(item.branch);
+      }
+    });
+  }
+
+  window._tempKeys = form.selectedCollegeKeys || [];
+  if (window._tempKeys.length === 0 && prefList.length > 0) {
+    window._tempKeys = prefList.map(item => item.code + '|' + item.branch);
+  }
+
+  if (form.colType) document.getElementById('inColType').value = form.colType;
+  if (form.minority) document.getElementById('inMinority').value = form.minority;
+
+  if (prefLocked) lockProfileFields();
+  else unlockProfileFields();
+
+  renderBranches();
+  renderEditStatus();
+
+  window._isLoadingForm = true;
+  // Use saved step if not explicitly provided
+  const targetStep = step || form.currentStep || 1;
+  goStep(targetStep);
+  window._isLoadingForm = false;
+}
+
+async function deleteForm(formId) {
+  if (!confirm('Are you sure you want to delete this preference list? This action cannot be undone.')) return;
+  const res = await authApi('deleteForm', { userId: currentUserId, formId });
+  if (res.ok) {
+    pbToast('Form deleted successfully');
+    loadSavedPrefData();
+  } else {
+    pbToast('Error: ' + res.error);
+  }
+}
+
+function returnToDashboard() {
+  loadSavedPrefData(); // Refresh list
+}
+
+async function saveNonLockedData() {
+  if (!currentUserId) return;
+  if (typeof isAdminTemplateEditingMode !== 'undefined' && isAdminTemplateEditingMode) return;
+  
+  const pct = document.getElementById('inPct').value;
+  const rank = document.getElementById('inRank').value;
+  const cat = document.getElementById('inCategory').value;
+  const gender = document.getElementById('inGender').value;
+  const region = document.getElementById('inRegion').value;
+
+  const res = await authApi('savePrefData', {
+    userId: currentUserId,
+    formId: currentFormId,
+    percentile: pct,
+    rank: rank,
+    category: cat,
+    gender: gender,
+    region: region,
+    prefList: prefList,
+    selectedBranches: Array.from(selectedBranches),
+    selectedCollegeKeys: selectedColleges.map(idx => matchedColleges[idx] ? matchedColleges[idx].code + '|' + matchedColleges[idx].branch : '').filter(Boolean),
+    currentStep: currentStep,
+    colType: document.getElementById('inColType').value,
+    minority: document.getElementById('inMinority').value,
+    studentInfo: currentStudentInfo || null,
+    skipEditCount: true
+  });
+  if (res.ok && res.data.formId) currentFormId = res.data.formId;
+}
+
+let autoTid = null;
+function triggerAutosave() {
+  clearTimeout(autoTid);
+  autoTid = setTimeout(saveNonLockedData, 1000);
+}
+
+function validateStep1() {
+  if (typeof isAdminTemplateEditingMode !== 'undefined' && isAdminTemplateEditingMode) {
+    const pMin = document.getElementById('inPctMin').value.trim();
+    const pMax = document.getElementById('inPctMax').value.trim();
+    const rMin = document.getElementById('inRankMin').value.trim();
+    const rMax = document.getElementById('inRankMax').value.trim();
+
+    const hasPct = pMin !== '' && pMax !== '' && !isNaN(parseFloat(pMin)) && !isNaN(parseFloat(pMax));
+    const hasRank = rMin !== '' && rMax !== '' && !isNaN(parseInt(rMin)) && !isNaN(parseInt(rMax));
+
+    const hasAnyPct = pMin !== '' || pMax !== '';
+    const hasAnyRank = rMin !== '' || rMax !== '';
+
+    if (!hasPct && !hasRank) {
+      pbToast('Enter a valid percentile range OR rank range');
+      return false;
+    }
+    if (hasAnyPct && !hasPct) {
+      pbToast('Please enter both Min and Max Percentile to define a range');
+      return false;
+    }
+    if (hasAnyRank && !hasRank) {
+      pbToast('Please enter both Min and Max Rank to define a range');
+      return false;
+    }
+    if (hasPct && parseFloat(pMin) > parseFloat(pMax)) {
+      pbToast('Min percentile cannot be greater than Max percentile');
+      return false;
+    }
+    if (hasRank && parseInt(rMin) > parseInt(rMax)) {
+      pbToast('Min rank cannot be greater than Max rank');
+      return false;
+    }
+    return true;
+  }
+
+  const p = document.getElementById('inPct').value, r = document.getElementById('inRank').value;
+  if (!p || isNaN(parseFloat(p))) { pbToast('Enter valid percentile'); return false }
+  if (!r || isNaN(parseInt(r))) { pbToast('Enter valid rank'); return false }
+  return true;
+}
+
+/* ══════ DATA LOADING ══════ */
+async function loadData() {
+  const loader = document.getElementById('dataLoader');
+  try {
+    loader.innerHTML = '<div class="pb-spinner"></div><span>Loading cutoff data (12MB)...</span>';
+    const r1 = await fetch('data.json'); const j1 = await r1.json();
+    const raw1 = j1['MHT-CET College Data'] || j1[Object.keys(j1)[0]] || [];
+    cutoffData = raw1.map(r => ({
+      code: String(r['Institute Code'] || ''), name: r['Institute'] || r['Institute Name'] || '',
+      branch: (r['Branch'] || r['Branch Name'] || '').trim(),
+      seatType: r['Seat Type'] || '', rank: parseInt(r['Rank']) || 0,
+      percentile: parseFloat(r['Percentile']) || 0
+    }));
+
+    loader.querySelector('span').textContent = 'Loading college metadata...';
+    const r2 = await fetch('college-data.json'); const j2 = await r2.json();
+    collegeMetadata = (j2['college-data'] || []).map(c => ({
+      code: String(c['Institute Code'] || ''), name: c['Institute Name'] || '',
+      status: c['Status'] || '', intake: c['Total Intake'] || 0
+    }));
+
+    // Extract branches
+    const bSet = new Set();
+    cutoffData.forEach(r => { if (r.branch) bSet.add(r.branch) });
+    allBranchNames = Array.from(bSet).sort();
+    renderBranches();
+    loader.style.display = 'none';
+    document.getElementById('predictBtn').disabled = false;
+  } catch (e) {
+    console.error(e);
+    loader.innerHTML = '<span style="color:var(--brand)">Failed to load data. Please refresh.</span>';
+  }
+}
+
+/* ══════ BRANCH RENDERING ══════ */
+function categorizeBranch(b) {
+  const u = b.toUpperCase();
+  for (const [cat, kws] of Object.entries(CATS)) {
+    if (cat === 'Other Branches') continue;
+    if (kws.some(k => { const re = new RegExp('\\b' + k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'); return re.test(u) })) return cat;
+  }
+  return 'Other Branches';
+}
+
+function renderBranches() {
+  const container = document.getElementById('branchContainer');
+  const grouped = {};
+  Object.keys(CATS).forEach(c => grouped[c] = []);
+  allBranchNames.forEach(b => { const cat = categorizeBranch(b); grouped[cat].push(b) });
+
+  let html = '<div class="branch-select-all" onclick="toggleAllBranches()"><div class="branch-chk" id="chkAll">✓</div> Select All Branches (' + allBranchNames.length + ')</div>';
+
+  Object.entries(grouped).forEach(([cat, branches]) => {
+    if (!branches.length) return;
+    const selCount = branches.filter(b => selectedBranches.has(b)).length;
+    html += `<div class="branch-cat">
+      <div class="branch-cat-head" onclick="toggleCatCollapse(this)">
+        <div class="branch-cat-name"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>${cat}</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="branch-cat-count">${selCount}/${branches.length}</span>
+          <button class="branch-cat-toggle" onclick="event.stopPropagation();toggleCategory('${cat}')">Select All</button>
+        </div>
+      </div>
+      <div class="branch-list" style="display:${expandedCategories.has(cat) ? 'grid' : 'none'}">`;
+    branches.forEach(b => {
+      const sel = selectedBranches.has(b) ? 'selected' : '';
+      html += `<div class="branch-opt ${sel}" onclick="toggleBranch('${b.replace(/'/g, "\\'")}')"><div class="branch-chk">${sel ? '✓' : ''}</div><span>${b}</span></div>`;
+    });
+    html += '</div></div>';
+  });
+
+  container.innerHTML = html;
+  renderBranchChips();
+  updateAllChk();
+}
+
+function toggleCatCollapse(el) {
+  const list = el.nextElementSibling;
+  const cat = el.querySelector('.branch-cat-name').textContent.trim();
+  const isOpen = list.style.display === 'none';
+  list.style.display = isOpen ? 'grid' : 'none';
+  if (isOpen) expandedCategories.add(cat); else expandedCategories.delete(cat);
+}
+
+function toggleBranch(b) {
+  if (selectedBranches.has(b)) selectedBranches.delete(b);
+  else selectedBranches.add(b);
+  renderBranches();
+  triggerAutosave();
+}
+
+function toggleCategory(cat) {
+  const grouped = {};
+  Object.keys(CATS).forEach(c => grouped[c] = []);
+  allBranchNames.forEach(b => { grouped[categorizeBranch(b)].push(b) });
+  const branches = grouped[cat] || [];
+  const allSel = branches.every(b => selectedBranches.has(b));
+  branches.forEach(b => { if (allSel) selectedBranches.delete(b); else selectedBranches.add(b) });
+  renderBranches();
+}
+
+function toggleAllBranches() {
+  if (selectedBranches.size === allBranchNames.length) { selectedBranches.clear() }
+  else { allBranchNames.forEach(b => selectedBranches.add(b)) }
+  renderBranches();
+}
+
+function updateAllChk() {
+  const el = document.getElementById('chkAll');
+  if (el) el.textContent = selectedBranches.size === allBranchNames.length ? '✓' : '';
+}
+
+function renderBranchChips() {
+  const row = document.getElementById('branchChips');
+  if (!row) return;
+  if (selectedBranches.size === 0) { row.innerHTML = '<span style="color:var(--muted);font-size:12px">No branches selected</span>'; return }
+  if (selectedBranches.size > 8) { row.innerHTML = `<span class="bchip">${selectedBranches.size} branches selected</span>`; return }
+  row.innerHTML = Array.from(selectedBranches).map(b => `<span class="bchip">${b}<span class="bchip-x" onclick="toggleBranch('${b.replace(/'/g, "\\'")}')">×</span></span>`).join('');
+}
+
+/* ══════ COLLEGE MATCHING (Step 3) ══════ */
+function generateMatches() {
+  const isTemplate = (typeof isAdminTemplateEditingMode !== 'undefined' && isAdminTemplateEditingMode);
+
+  let pct = 0;
+  let rank = 1000000;
+  let pctMin = 0, pctMax = 100, rankMin = 0, rankMax = 1000000;
+  let hasPctRange = false;
+  let hasRankRange = false;
+
+  if (isTemplate) {
+    const pMinVal = document.getElementById('inPctMin').value;
+    const pMaxVal = document.getElementById('inPctMax').value;
+    if (pMinVal !== '' && pMaxVal !== '') {
+      pctMin = parseFloat(pMinVal);
+      pctMax = parseFloat(pMaxVal);
+      hasPctRange = true;
+    }
+
+    const rMinVal = document.getElementById('inRankMin').value;
+    const rMaxVal = document.getElementById('inRankMax').value;
+    if (rMinVal !== '' && rMaxVal !== '') {
+      rankMin = parseInt(rMinVal);
+      rankMax = parseInt(rMaxVal);
+      hasRankRange = true;
+    }
+  } else {
+    pct = parseFloat(document.getElementById('inPct').value);
+    rank = parseInt(document.getElementById('inRank').value);
+  }
+
+  const region = document.getElementById('inRegion').value;
+  const colType = document.getElementById('inColType').value;
+  const minority = document.getElementById('inMinority').value;
+  const category = document.getElementById('inCategory').value;
+  const gender = document.getElementById('inGender').value;
+
+  const isLadiesSeatSelected = (gender === 'Female-only');
+  const baseCategory = category;
+
+  // Build category seat filter
+  const catMap = { 'OPEN': 'OPEN', 'OBC': 'OBC', 'SC': 'SC', 'ST': 'ST', 'VJ/DT': 'VJ', 'NT1': 'NT1', 'NT2': 'NT2', 'NT3': 'NT3', 'EWS': 'EWS', 'TFWS': 'TFWS' };
+  const searchCat = catMap[baseCategory] || 'OPEN';
+
+  const metaMap = {};
+  collegeMetadata.forEach(c => metaMap[c.code] = c);
+
+  // Filter cutoff data
+  let filtered = cutoffData.filter(r => {
+    if (!selectedBranches.has(r.branch)) return false;
+
+    if (isTemplate) {
+      if (hasPctRange && (r.percentile < pctMin || r.percentile > pctMax)) return false;
+      if (hasRankRange && (r.rank < rankMin || r.rank > rankMax)) return false;
+    }
+
+    const meta = metaMap[r.code] || {};
+    const nameLower = (meta.name || r.name || '').toLowerCase();
+    const statusLower = (meta.status || '').toLowerCase();
+
+    // Check if this college matches the selected minority preference
+    const isMatchingMinorityCollege = minority && 
+      statusLower.includes('minority') && 
+      statusLower.includes(minority.toLowerCase());
+
+    // For matching minority colleges, use OPEN seats. For others, use user's selected category seats.
+    const activeSearchCat = isMatchingMinorityCollege ? 'OPEN' : searchCat;
+
+    if (activeSearchCat !== 'OPEN' && !(r.seatType || '').includes(activeSearchCat)) return false;
+    if (activeSearchCat === 'OPEN' && !(r.seatType || '').includes('OPEN')) return false;
+
+    // Gender/Ladies filter:
+    const isWomenOnly = nameLower.includes('women') || nameLower.includes('girls') || statusLower.includes('women') || statusLower.includes('girls') || r.code === '3035';
+    
+    if (isLadiesSeatSelected) {
+      if (!isWomenOnly && !(r.seatType || '').startsWith('L')) return false;
+    } else {
+      if ((r.seatType || '').startsWith('L')) return false;
+      if (isWomenOnly) return false;
+    }
+
+    return true;
+  });
+
+  // Group by institute+branch, pick closest percentile
+  const groups = {};
+  filtered.forEach(r => {
+    const key = r.code + '|' + r.branch;
+    if (isTemplate) {
+      if (!groups[key] || r.percentile > groups[key].percentile) {
+        groups[key] = r;
+      }
+    } else {
+      if (!groups[key] || Math.abs(r.percentile - pct) < Math.abs(groups[key].percentile - pct)) {
+        groups[key] = r;
+      }
+    }
+  });
+
+  let results = Object.values(groups);
+
+  results = results.map(r => {
+    const meta = metaMap[r.code] || {};
+    const status = (meta.status || '').toLowerCase();
+    return {
+      ...r, instituteName: meta.name || r.name,
+      status: meta.status || '', intake: meta.intake || 0,
+      isGov: status.includes('government'),
+      isAided: status.includes('aided'),
+      isAuto: status.includes('autonomous'),
+      isMinority: status.includes('minority'),
+      minorityType: extractMinority(meta.status || ''),
+      diff: isTemplate ? 0 : (r.percentile - pct)
+    };
+  });
+
+  // Helper to filter by minority & region combined
+  function filterByMinorityAndRegion(list) {
+    return list.filter(r => {
+      const isMatchingMinorityCollege = minority && 
+        (r.status || '').toLowerCase().includes('minority') && 
+        (r.status || '').toLowerCase().includes(minority.toLowerCase());
+
+      if (minority) {
+        // Match if it's the specified minority college
+        if (isMatchingMinorityCollege) return true;
+        
+        // Match if it's a general (non-minority) college AND matches region
+        if (!r.isMinority) {
+          if (region) {
+            return (r.instituteName || '').toLowerCase().includes(region.toLowerCase());
+          }
+          return true;
+        }
+        return false;
+      } else {
+        // No minority preference, standard region filter
+        if (region) {
+          return (r.instituteName || '').toLowerCase().includes(region.toLowerCase());
+        }
+        return true;
+      }
+    });
+  }
+
+  // Apply reachable filters (ColType, Minority, Region)
+  let reachableList = results;
+  if (colType) {
+    reachableList = reachableList.filter(r => {
+      if (colType === 'Government') return r.isGov;
+      if (colType === 'Aided') return r.isAided;
+      if (colType === 'Autonomous') return r.isAuto;
+      if (colType === 'Un-Aided') return !r.isGov && !r.isAided;
+      return true;
+    });
+  }
+  reachableList = filterByMinorityAndRegion(reachableList);
+
+  if (isTemplate) {
+    matchedColleges = reachableList.sort((a, b) => b.percentile - a.percentile);
+  } else {
+    // Apply aspirational filters (IGNORE minority filter)
+    let aspirationalList = results;
+    if (colType) {
+      aspirationalList = aspirationalList.filter(r => {
+        if (colType === 'Government') return r.isGov;
+        if (colType === 'Aided') return r.isAided;
+        if (colType === 'Autonomous') return r.isAuto;
+        if (colType === 'Un-Aided') return !r.isGov && !r.isAided;
+        return true;
+      });
+    }
+    // User said: dont consider minority in aspirational ones
+    if (region) {
+      aspirationalList = aspirationalList.filter(r => (r.instituteName || '').toLowerCase().includes(region.toLowerCase()));
+    }
+
+    // Split: reachable vs aspirational
+    const reachableMinority = reachableList.filter(r => {
+      return minority && 
+        (r.status || '').toLowerCase().includes('minority') && 
+        (r.status || '').toLowerCase().includes(minority.toLowerCase());
+    });
+
+    const reachableNormal = reachableList.filter(r => {
+      const isMatchingMinorityCollege = minority && 
+        (r.status || '').toLowerCase().includes('minority') && 
+        (r.status || '').toLowerCase().includes(minority.toLowerCase());
+      return !isMatchingMinorityCollege && r.percentile <= pct;
+    });
+
+    const sortedNormal = reachableNormal.sort((a, b) => b.percentile - a.percentile).slice(0, Math.max(0, 34 - reachableMinority.length));
+    const reachable = [...reachableMinority, ...sortedNormal].sort((a, b) => b.percentile - a.percentile);
+
+    // For aspirational, we take from the list that IGNORES minority status
+    const aspirational = aspirationalList
+      .filter(r => r.percentile > pct)
+      .sort((a, b) => a.percentile - b.percentile)
+      .slice(0, 6); // Select exactly 6 aspirational colleges as requested
+
+    aspirational.forEach(r => r.isAspirational = true);
+    matchedColleges = [...aspirational, ...reachable];
+  }
+
+  // Suggestion pool: branch+cat+region+colType matching colleges that were filtered out by minority
+  // (Or any other colleges the user might want to see as suggestions)
+  suggestionPool = results.filter(r => {
+    // Ignore minority filter
+    if (colType) {
+      const status = (r.status || '').toLowerCase();
+      if (colType === 'Government' && !status.includes('government')) return false;
+      if (colType === 'Aided' && !status.includes('aided')) return false;
+      if (colType === 'Autonomous' && !status.includes('autonomous')) return false;
+      if (colType === 'Un-Aided' && (status.includes('government') || status.includes('aided'))) return false;
+    }
+    if (region && !(r.instituteName || '').toLowerCase().includes(region.toLowerCase())) return false;
+
+    // Don't include what's already in matchedColleges
+    if (matchedColleges.some(m => m.code === r.code && m.branch === r.branch)) return false;
+
+    return true;
+  }).sort((a, b) => Math.abs(a.percentile - pct) - Math.abs(b.percentile - pct));
+
+  // Auto-select reachable + aspirational
+  selectedColleges = matchedColleges.map((_, i) => i);
+  renderColleges();
+}
+
+let suggestionPool = [];
+
+function extractMinority(status) {
+  const m = status.match(/(Religious Minority\s*-\s*\w+|Linguistic Minority\s*-\s*\w+)/i);
+  return m ? m[1] : '';
+}
+
+function renderColleges(filter = 'all') {
+  const grid = document.getElementById('collegeGrid');
+  const countEl = document.getElementById('matchCount');
+  let items = matchedColleges;
+
+  if (filter === 'aspirational') items = matchedColleges.filter(r => r.isAspirational);
+  else if (filter === 'reachable') items = matchedColleges.filter(r => !r.isAspirational);
+  else if (filter === 'government') items = matchedColleges.filter(r => r.isGov);
+  else if (filter === 'autonomous') items = matchedColleges.filter(r => r.isAuto);
+
+  countEl.textContent = items.length + ' colleges found (' + selectedColleges.length + ' selected)';
+
+  if (!items.length) {
+    const minority = document.getElementById('inMinority').value;
+    const region = document.getElementById('inRegion').value;
+    let msg = 'Try adjusting your filters or branch preferences.';
+    if (minority) msg = `no colleges found !! for ${minority} ${region ? 'in ' + region : ''}`;
+
+    grid.innerHTML = `<div class="empty-state"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><h3>No Matches</h3><p>${msg}</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = items.map((c, idx) => {
+    const realIdx = matchedColleges.indexOf(c);
+    const sel = selectedColleges.includes(realIdx);
+    const asp = c.isAspirational ? 'aspirational' : '';
+    const tags = [];
+    if (c.isGov) tags.push('<span class="col-tag gov">Government</span>');
+    if (c.isAuto) tags.push('<span class="col-tag auto">Autonomous</span>');
+    if (c.isMinority) tags.push('<span class="col-tag minority">' + escH(c.minorityType || 'Minority') + '</span>');
+    if (c.isAided) tags.push('<span class="col-tag">Aided</span>');
+
+    return `<div class="col-card ${sel ? 'selected' : ''} ${asp}" onclick="toggleCollege(${realIdx})">
+      <div class="col-chk">${sel ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg>' : ''}</div>
+      <div class="col-name">${escH(c.instituteName)}</div>
+      <div class="col-meta">
+        ${tags.join('')}
+        <span class="col-tag branch-tag">${escH(c.branch)}</span>
+        ${c.intake ? `<span class="col-tag intake">Intake: ${c.intake}</span>` : ''}
+      </div>
+      <div class="col-pct"><strong>${c.percentile.toFixed(2)}%</strong> <small>Cutoff | Code: ${c.code}</small></div>
+    </div>`;
+  }).join('');
+}
+
+function toggleCollege(idx) {
+  const i = selectedColleges.indexOf(idx);
+  if (i >= 0) selectedColleges.splice(i, 1); else selectedColleges.push(idx);
+  renderColleges(document.querySelector('.filter-chip.active')?.dataset.f || 'all');
+  triggerAutosave();
+}
+
+function filterColleges(f, el) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderColleges(f);
+}
+
+/* ══════ PREFERENCE LIST (Step 4) ══════ */
+function buildPrefList() {
+  const userAspirational = matchedColleges.filter((c, i) => selectedColleges.includes(i) && c.isAspirational);
+  const userNormal = matchedColleges.filter((c, i) => selectedColleges.includes(i) && !c.isAspirational);
+
+  // Sort normal by percentile desc
+  userNormal.sort((a, b) => b.percentile - a.percentile);
+
+  // Combine: Fixed -> User Aspirational -> User Normal
+  const combined = [...FIXED_ASPIRATIONAL, ...userAspirational, ...userNormal];
+  
+  // Deduplicate based on code + branch, keeping the first occurrence (which preserves fixed/aspirational flags)
+  const seen = new Set();
+  prefList = combined.filter(c => {
+    const key = c.code + '|' + c.branch;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  renderPrefList();
+  renderSuggestions();
+  renderAspirational();
+}
+
+/* ══════ ASPIRATIONAL TAB ══════ */
+function renderAspirational() {
+  const grid = document.getElementById('aspGrid');
+  const suggGrid = document.getElementById('aspSuggestions');
+  if (!grid) return;
+  const pct = parseFloat(document.getElementById('inPct').value) || 0;
+
+  // 1. Current Aspirational in Pref List
+  const allAsp = prefList.filter(c => c.isAspirational);
+  grid.innerHTML = allAsp.map(c => {
+    const tags = [];
+    if (c.isGov) tags.push('<span class="col-tag gov">Government</span>');
+    if (c.isAuto) tags.push('<span class="col-tag auto">Autonomous</span>');
+    return `<div class="col-card selected aspirational" onclick="toggleAspirational('${c.code}','${c.branch.replace(/'/g, "\\'")}')">
+      <div class="col-chk"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="col-name">${escH(c.instituteName)}</div>
+      <div class="col-meta">${tags.join('')}<span class="col-tag branch-tag">${escH(c.branch)}</span></div>
+      <div class="col-pct"><strong>${c.percentile.toFixed(2)}%</strong> <small>Code: ${c.code}</small></div>
+    </div>`;
+  }).join('');
+
+  if (!allAsp.length) grid.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">No aspirational colleges added</div>';
+
+  // 2. Aspirational Suggestions (from suggestionPool)
+  if (suggGrid) {
+    const inPref = new Set(prefList.map(p => p.code + '|' + p.branch));
+    const pool = suggestionPool.filter(c => !inPref.has(c.code + '|' + c.branch) && c.percentile > pct).slice(0, 8);
+    suggGrid.innerHTML = pool.map(c => `<div class="col-card aspirational" onclick="toggleAspirational('${c.code}','${c.branch.replace(/'/g, "\\'")}')">
+      <div class="col-chk"></div>
+      <div class="col-name">${escH(c.instituteName)}</div>
+      <div class="col-meta"><span class="col-tag">${escH(c.branch)}</span></div>
+      <div class="col-pct">${c.percentile.toFixed(2)}%<small>Code: ${c.code}</small></div>
+    </div>`).join('');
+    if (!pool.length) suggGrid.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">No more suggestions</div>';
+  }
+}
+
+let searchTimeout = null;
+function searchManualColleges() {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(async () => {
+    const query = (document.getElementById('manualSearchInput').value || '').toLowerCase().trim();
+    const resDiv = document.getElementById('manualSearchResults');
+    if (!query) { resDiv.innerHTML = ''; return; }
+    resDiv.innerHTML = '<div class="pb-spinner" style="margin:20px auto"></div>';
+    
+    const category = document.getElementById('inCategory').value || 'OPEN';
+    const minority = document.getElementById('inMinority').value || '';
+    const gender = document.getElementById('inGender').value || 'Gender-Neutral';
+    const isLadiesSeatSelected = (gender === 'Female-only');
+    const baseCategory = category;
+
+    const catMap = { 'OPEN': 'OPEN', 'OBC': 'OBC', 'SC': 'SC', 'ST': 'ST', 'VJ/DT': 'VJ', 'NT1': 'NT1', 'NT2': 'NT2', 'NT3': 'NT3', 'EWS': 'EWS', 'TFWS': 'TFWS' };
+    const searchCat = catMap[baseCategory] || 'OPEN';
+
+    const metaMap = {}; collegeMetadata.forEach(c => metaMap[c.code] = c);
+
+    let filtered = cutoffData.filter(r => {
+      if (!r.code.includes(query) && !(r.name || '').toLowerCase().includes(query) && !(r.branch || '').toLowerCase().includes(query)) return false;
+
+      const meta = metaMap[r.code] || {};
+      const nameLower = (meta.name || r.name || '').toLowerCase();
+      const statusLower = (meta.status || '').toLowerCase();
+      const isWomenOnly = nameLower.includes('women') || nameLower.includes('girls') || statusLower.includes('women') || statusLower.includes('girls') || r.code === '3035';
+
+      if (isLadiesSeatSelected) {
+        if (!isWomenOnly && !(r.seatType || '').startsWith('L')) return false;
+      } else {
+        if ((r.seatType || '').startsWith('L')) return false;
+        if (isWomenOnly) return false;
+      }
+      return true;
+    });
+    
+    const groups = {};
+    filtered.forEach(r => {
+      const key = r.code + '|' + r.branch;
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(r);
+    });
+
+    let results = Object.values(groups).map(rows => {
+      const meta = metaMap[rows[0].code] || {};
+      const statusLower = (meta.status || '').toLowerCase();
+      const isMatchingMinorityCollege = minority && 
+        statusLower.includes('minority') && 
+        statusLower.includes(minority.toLowerCase());
+
+      const activeSearchCat = isMatchingMinorityCollege ? 'OPEN' : searchCat;
+
+      let matched = rows.filter(r => (r.seatType || '').includes(activeSearchCat));
+      if (!matched.length) matched = rows.filter(r => (r.seatType || '').includes('OPEN'));
+      if (!matched.length) matched = rows;
+      
+      let finalRow;
+      if (isLadiesSeatSelected) {
+        finalRow = matched.find(r => (r.seatType || '').startsWith('L'));
+      } else {
+        finalRow = matched.find(r => (r.seatType || '').startsWith('G'));
+      }
+      return finalRow || matched[0];
+    });
+
+    results.sort((a, b) => b.percentile - a.percentile);
+    const sliced = results.slice(0, 15);
+
+    if (!sliced.length) { resDiv.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">No colleges found</div>'; return; }
+
+    const inPref = new Set(prefList.map(p => p.code + '|' + p.branch));
+
+    resDiv.innerHTML = sliced.map(r => {
+      const meta = metaMap[r.code] || {};
+      const status = (meta.status || '').toLowerCase();
+      const isSel = inPref.has(r.code + '|' + r.branch);
+      const tags = [];
+      if (status.includes('government')) tags.push('<span class="col-tag gov">Government</span>');
+      if (status.includes('autonomous')) tags.push('<span class="col-tag auto">Autonomous</span>');
+
+      return `<div class="col-card ${isSel ? 'selected' : ''}" style="margin-bottom:12px; cursor: default">
+        <div class="col-name" style="padding-right:50px">${escH(meta.name || r.name)}</div>
+        <div class="col-meta">
+          ${tags.join('')}
+          <span class="col-tag branch-tag">${escH(r.branch)}</span>
+        </div>
+        <div class="col-pct"><strong>${r.percentile.toFixed(2)}%</strong> <small>Cutoff | Code: ${r.code}</small></div>
+        <button class="pb-btn pb-btn-primary" onclick="handleAddSuggestion('${r.code}','${r.branch.replace(/'/g, "\\'")}', true)" style="position:absolute; right:12px; top:12px; width:34px; height:34px; padding:0; border-radius:10px; display:flex; align-items:center; justify-content:center; box-shadow: none">
+          ${isSel ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>'}
+        </button>
+      </div>`;
+    }).join('');
+  }, 300);
+}
+
+let searchListTimeout = null;
+function searchManualCollegesList() {
+  clearTimeout(searchListTimeout);
+  searchListTimeout = setTimeout(async () => {
+    const query = (document.getElementById('manualSearchInputList').value || '').toLowerCase().trim();
+    const resDiv = document.getElementById('manualSearchResultsList');
+    if (!query) { resDiv.innerHTML = ''; return; }
+    resDiv.innerHTML = '<div class="pb-spinner" style="margin:20px auto"></div>';
+    
+    const category = document.getElementById('inCategory').value || 'OPEN';
+    const minority = document.getElementById('inMinority').value || '';
+    const gender = document.getElementById('inGender').value || 'Gender-Neutral';
+    const isLadiesSeatSelected = (gender === 'Female-only');
+    const baseCategory = category;
+
+    const catMap = { 'OPEN': 'OPEN', 'OBC': 'OBC', 'SC': 'SC', 'ST': 'ST', 'VJ/DT': 'VJ', 'NT1': 'NT1', 'NT2': 'NT2', 'NT3': 'NT3', 'EWS': 'EWS', 'TFWS': 'TFWS' };
+    const searchCat = catMap[baseCategory] || 'OPEN';
+
+    const metaMap = {}; collegeMetadata.forEach(c => metaMap[c.code] = c);
+
+    let filtered = cutoffData.filter(r => {
+      if (!r.code.includes(query) && !(r.name || '').toLowerCase().includes(query) && !(r.branch || '').toLowerCase().includes(query)) return false;
+
+      const meta = metaMap[r.code] || {};
+      const nameLower = (meta.name || r.name || '').toLowerCase();
+      const statusLower = (meta.status || '').toLowerCase();
+      const isWomenOnly = nameLower.includes('women') || nameLower.includes('girls') || statusLower.includes('women') || statusLower.includes('girls') || r.code === '3035';
+
+      if (isLadiesSeatSelected) {
+        if (!isWomenOnly && !(r.seatType || '').startsWith('L')) return false;
+      } else {
+        if ((r.seatType || '').startsWith('L')) return false;
+        if (isWomenOnly) return false;
+      }
+      return true;
+    });
+    
+    const groups = {};
+    filtered.forEach(r => {
+      const key = r.code + '|' + r.branch;
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(r);
+    });
+
+    let results = Object.values(groups).map(rows => {
+      const meta = metaMap[rows[0].code] || {};
+      const statusLower = (meta.status || '').toLowerCase();
+      const isMatchingMinorityCollege = minority && 
+        statusLower.includes('minority') && 
+        statusLower.includes(minority.toLowerCase());
+
+      const activeSearchCat = isMatchingMinorityCollege ? 'OPEN' : searchCat;
+
+      let matched = rows.filter(r => (r.seatType || '').includes(activeSearchCat));
+      if (!matched.length) matched = rows.filter(r => (r.seatType || '').includes('OPEN'));
+      if (!matched.length) matched = rows;
+      
+      let finalRow;
+      if (isLadiesSeatSelected) {
+        finalRow = matched.find(r => (r.seatType || '').startsWith('L'));
+      } else {
+        finalRow = matched.find(r => (r.seatType || '').startsWith('G'));
+      }
+      return finalRow || matched[0];
+    });
+
+    results.sort((a, b) => b.percentile - a.percentile);
+    const sliced = results.slice(0, 15);
+
+    if (!sliced.length) { resDiv.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">No colleges found</div>'; return; }
+
+    const inPref = new Set(prefList.map(p => p.code + '|' + p.branch));
+
+    resDiv.innerHTML = sliced.map(r => {
+      const meta = metaMap[r.code] || {};
+      const status = (meta.status || '').toLowerCase();
+      const isSel = inPref.has(r.code + '|' + r.branch);
+      const tags = [];
+      if (status.includes('government')) tags.push('<span class="col-tag gov">Government</span>');
+      if (status.includes('autonomous')) tags.push('<span class="col-tag auto">Autonomous</span>');
+
+      return `<div class="col-card ${isSel ? 'selected' : ''}" style="margin-bottom:12px; cursor: default">
+        <div class="col-name" style="padding-right:50px">${escH(meta.name || r.name)}</div>
+        <div class="col-meta">
+          ${tags.join('')}
+          <span class="col-tag branch-tag">${escH(r.branch)}</span>
+        </div>
+        <div class="col-pct"><strong>${r.percentile.toFixed(2)}%</strong> <small>Cutoff | Code: ${r.code}</small></div>
+        <button class="pb-btn pb-btn-primary" onclick="handleAddSuggestion('${r.code}','${r.branch.replace(/'/g, "\\'")}')" style="position:absolute; right:12px; top:12px; width:34px; height:34px; padding:0; border-radius:10px; display:flex; align-items:center; justify-content:center; box-shadow: none">
+          ${isSel ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>'}
+        </button>
+      </div>`;
+    }).join('');
+  }, 300);
+}
+
+function sortPrefList() {
+  prefList.sort((a, b) => b.percentile - a.percentile);
+  renderPrefList();
+  pbToast('List sorted by cutoff percentile');
+}
+
+function toggleAspirational(code, branch) {
+  const key = code + '|' + branch;
+  const idx = prefList.findIndex(p => p.code === code && p.branch === branch);
+  if (idx >= 0) {
+    // Prevent removing fixed aspirational
+    if (prefList[idx].isFixed) return pbToast('Cannot remove fixed college');
+    prefList.splice(idx, 1);
+    pbToast('Removed from preference list');
+  } else {
+    let c = [...matchedColleges, ...suggestionPool].find(r => r.code === code && r.branch === branch);
+    if (!c) {
+      const raw = cutoffData.find(r => r.code === code && r.branch === branch);
+      if (raw) {
+        const metaMap = {}; collegeMetadata.forEach(m => metaMap[m.code] = m);
+        const meta = metaMap[code] || {};
+        const status = (meta.status || '').toLowerCase();
+        c = {
+          ...raw, instituteName: meta.name || raw.name, status: meta.status || '',
+          isGov: status.includes('government'), isAuto: status.includes('autonomous'),
+          isMinority: status.includes('minority'), minorityType: extractMinority(meta.status || ''),
+          isAided: status.includes('aided')
+        };
+      }
+    }
+    if (c) {
+      const copy = { ...c, isAspirational: true };
+      const lastFixedIdx = prefList.reduce((acc, item, i) => item.isFixed ? i : acc, -1);
+      prefList.splice(lastFixedIdx + 1, 0, copy);
+      pbToast('Added to preference list');
+    }
+  }
+  renderPrefList(); renderAspirational(); renderSuggestions();
+  triggerAutosave();
+}
+
+function renderPrefList() {
+  const list = document.getElementById('prefListUl');
+  const count = document.getElementById('prefCount');
+  if (!count) return;
+  count.textContent = prefList.length + ' colleges';
+  if (!prefList.length) {
+    list.innerHTML = '<div class="empty-state" style="padding:40px"><h3>No colleges added</h3><p>Go back and select colleges.</p></div>';
+    return;
+  }
+
+  list.innerHTML = prefList.map((c, i) => {
+    const isFixed = c.isFixed;
+    const badges = [];
+    if (c.isAspirational) {
+      badges.push('<span class="pref-code asp-badge" style="background:#fff7ed; color:#ea580c; border:1px solid rgba(234, 88, 12, 0.15); margin-left:6px; font-weight:800; font-size:10px; text-transform:uppercase; letter-spacing:0.5px">Aspirational</span>');
+    }
+    if (isFixed) {
+      badges.push('<span class="pref-code fixed-badge" style="background:var(--brand-soft); color:var(--brand); border:1px solid var(--brand-ring); margin-left:6px; font-weight:800; font-size:10px; text-transform:uppercase; letter-spacing:0.5px">Mandatory</span>');
+    }
+
+    // Look up status from metadata
+    const meta = collegeMetadata.find(m => String(m.code) === String(c.code)) || {};
+    const status = meta.status || c.status || '';
+    const statusTags = [];
+    const statusLower = status.toLowerCase();
+    
+    if (statusLower.includes('government')) {
+      statusTags.push('<span class="col-tag gov" style="font-size: 9px; padding: 2px 8px; margin-left: 6px">Government</span>');
+    }
+    if (statusLower.includes('autonomous')) {
+      statusTags.push('<span class="col-tag auto" style="font-size: 9px; padding: 2px 8px; margin-left: 6px">Autonomous</span>');
+    }
+    if (statusLower.includes('minority')) {
+      const minType = c.minorityType || (meta.status ? extractMinority(meta.status) : '');
+      statusTags.push(`<span class="col-tag minority" style="font-size: 9px; padding: 2px 8px; margin-left: 6px">${escH(minType || 'Minority')}</span>`);
+    }
+    if (statusLower.includes('aided') && !statusLower.includes('un-aided')) {
+      statusTags.push('<span class="col-tag" style="font-size: 9px; padding: 2px 8px; margin-left: 6px">Aided</span>');
+    }
+
+    return `
+      <li class="pref-item ${isFixed ? 'is-fixed' : ''} ${c.isAspirational ? 'asp-item' : ''}" 
+          draggable="${!isFixed}" 
+          data-idx="${i}"
+          ondragstart="${isFixed ? '' : 'dragStart(event)'}" 
+          ondragover="${isFixed ? '' : 'dragOver(event)'}" 
+          ondrop="${isFixed ? '' : 'dropItem(event)'}" 
+          ondragend="${isFixed ? '' : 'dragEnd(event)'}"
+          style="${isFixed ? 'border-left: 4px solid var(--brand); cursor: default' : ''}">
+        <div class="pref-grip">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="5" r="1"/><circle cx="15" cy="5" r="1"/>
+            <circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/>
+            <circle cx="9" cy="19" r="1"/><circle cx="15" cy="19" r="1"/>
+          </svg>
+        </div>
+        <div class="pref-num">${i + 1}</div>
+        <div class="pref-info">
+          <div class="pref-name">${escH(c.instituteName || c.name)}</div>
+          <div class="pref-branch">${escH(c.branch)} <span class="pref-code">${c.code}</span>${badges.join('')}${statusTags.join('')}</div>
+          <div class="pref-cutoff" style="font-size:11px; color:var(--muted); margin-top:4px">Cutoff: <strong>${c.percentile ? c.percentile.toFixed(2) + '%' : 'N/A'}</strong></div>
+        </div>
+        <div class="pref-actions">
+          ${isFixed ?
+        '<span style="font-size:10px; font-weight:800; color:var(--brand); opacity:0.6; text-transform:uppercase; padding-right:8px">Mandatory</span>' :
+        `<button class="pref-remove" onclick="removePref(${i})" title="Remove">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>`
+      }
+        </div>
+      </li>`;
+  }).join('');
+}
+
+function removePref(i) {
+  if (prefList[i] && prefList[i].isFixed) return pbToast('Cannot remove fixed college');
+  prefList.splice(i, 1);
+  renderPrefList();
+  triggerAutosave();
+}
+
+/* ══════ DRAG & DROP ══════ */
+let dragIdx = null;
+function dragStart(e) { dragIdx = +e.target.closest('.pref-item').dataset.idx; e.target.closest('.pref-item').classList.add('dragging') }
+function dragOver(e) { e.preventDefault(); const item = e.target.closest('.pref-item'); if (item) item.classList.add('drag-over') }
+function dropItem(e) {
+  e.preventDefault();
+  document.querySelectorAll('.pref-item').forEach(el => el.classList.remove('drag-over'));
+  const targetIdx = +e.target.closest('.pref-item').dataset.idx;
+  if (dragIdx === null || dragIdx === targetIdx) return;
+  const [moved] = prefList.splice(dragIdx, 1);
+  prefList.splice(targetIdx, 0, moved);
+  renderPrefList();
+  triggerAutosave();
+}
+function dragEnd(e) { dragIdx = null; document.querySelectorAll('.pref-item').forEach(el => el.classList.remove('dragging', 'drag-over')) }
+
+// Mobile Touch Support
+let touchElement = null;
+function handleTouchStart(e) {
+  touchElement = e.target.closest('.pref-item');
+  if (!touchElement) return;
+  dragIdx = parseInt(touchElement.dataset.idx);
+  touchElement.classList.add('dragging');
+}
+function handleTouchMove(e) {
+  if (!touchElement) return;
+  const touch = e.touches[0];
+  const target = document.elementFromPoint(touch.clientX, touch.clientY);
+  const targetItem = target ? target.closest('.pref-item') : null;
+  document.querySelectorAll('.pref-item').forEach(el => el.classList.remove('drag-over'));
+  if (targetItem && targetItem !== touchElement) targetItem.classList.add('drag-over');
+  e.preventDefault();
+}
+function handleTouchEnd(e) {
+  if (!touchElement) return;
+  const touch = e.changedTouches[0];
+  const target = document.elementFromPoint(touch.clientX, touch.clientY);
+  const targetItem = target ? target.closest('.pref-item') : null;
+  if (targetItem) {
+    const targetIdx = parseInt(targetItem.dataset.idx);
+    if (dragIdx !== null && dragIdx !== targetIdx) {
+      const [moved] = prefList.splice(dragIdx, 1);
+      prefList.splice(targetIdx, 0, moved);
+      renderPrefList();
+    }
+  }
+  document.querySelectorAll('.pref-item').forEach(el => el.classList.remove('dragging', 'drag-over'));
+  touchElement = null; dragIdx = null;
+}
+
+/* ══════ SUGGESTIONS ══════ */
+function renderSuggestions() {
+  const panel = document.getElementById('suggList');
+  if (!panel) return;
+  const prefCodes = new Set(prefList.map(c => c.code + '|' + c.branch));
+
+  // Combine matchedColleges (not in pref) and suggestionPool (not in pref)
+  const currentMatches = matchedColleges.filter(c => !prefCodes.has(c.code + '|' + c.branch));
+  const poolMatches = suggestionPool.filter(c => !prefCodes.has(c.code + '|' + c.branch));
+
+  const suggs = [...currentMatches, ...poolMatches].slice(0, 12);
+
+  if (!suggs.length) { panel.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">No more suggestions</div>'; return }
+
+  panel.innerHTML = suggs.map((c, i) => `<div class="sugg-item">
+    <div class="sugg-info">
+      <div class="sugg-name">${escH(c.instituteName || c.name)}</div>
+      <div class="sugg-sub">${escH(c.branch)} | ${c.percentile.toFixed(2)}%</div>
+      ${c.isMinority ? `<div style="font-size:10px; color:var(--brand); font-weight:600">${escH(c.minorityType)}</div>` : ''}
+    </div>
+    <button class="sugg-add" onclick="handleAddSuggestion('${c.code}','${c.branch.replace(/'/g, "\\'")}')">+ Add</button>
+  </div>`).join('');
+}
+
+function handleAddSuggestion(code, branch, isAspirational = false) {
+  // Search in matched pool first
+  let c = [...matchedColleges, ...suggestionPool].find(r => r.code === code && r.branch === branch);
+
+  // If not found (manual search), enrich from cutoffData and metadata
+  if (!c) {
+    const raw = cutoffData.find(r => r.code === code && r.branch === branch);
+    if (raw) {
+      const metaMap = {}; collegeMetadata.forEach(m => metaMap[m.code] = m);
+      const meta = metaMap[code] || {};
+      const status = (meta.status || '').toLowerCase();
+      c = {
+        ...raw, instituteName: meta.name || raw.name, status: meta.status || '',
+        isGov: status.includes('government'), isAuto: status.includes('autonomous'),
+        isMinority: status.includes('minority'), minorityType: extractMinority(meta.status || ''),
+        isAided: status.includes('aided')
+      };
+    }
+  }
+
+  if (c) {
+    if (!prefList.some(p => p.code === c.code && p.branch === c.branch)) {
+      const copy = { ...c };
+      if (isAspirational) {
+        copy.isAspirational = true;
+      }
+      if (copy.isAspirational) {
+        const lastFixedIdx = prefList.reduce((acc, item, i) => item.isFixed ? i : acc, -1);
+        prefList.splice(lastFixedIdx + 1, 0, copy);
+      } else {
+        prefList.push(copy);
+      }
+      pbToast('Added to preference list');
+      renderPrefList(); renderAspirational(); renderSuggestions();
+      // Update manual search UIs if visible
+      if (document.getElementById('manualSearchInput')) searchManualColleges();
+      if (document.getElementById('manualSearchInputList')) searchManualCollegesList();
+      triggerAutosave();
+    } else {
+      pbToast('Already in list');
+    }
+  }
+}
+
+/* ══════ PDF EXPORT ══════ */
+function exportPDF() {
+  if (!prefList.length) return pbToast('List is empty');
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  const pct = document.getElementById('inPct').value;
+  const rank = document.getElementById('inRank').value;
+  const cat = document.getElementById('inCategory').value;
+  const gender = document.getElementById('inGender').value;
+  const region = document.getElementById('inRegion').value || 'All Regions';
+  const isLadies = gender === 'Female-only';
+  const catDisplay = (isLadies ? 'Ladies ' : '') + cat;
+
+  // Header (Letterhead structure)
+  doc.setFont("Helvetica", "bold");
+  doc.setFontSize(22);
+  doc.setTextColor(220, 38, 38); // Brand Red
+  doc.text('College', 14, 20);
+
+  doc.setFont("Helvetica", "bold");
+  doc.setTextColor(17, 24, 39); // Ink
+  const brandWidth = doc.getTextWidth('College ');
+  doc.text('Simplified', 14 + brandWidth, 20);
+
+  doc.setFontSize(14);
+  doc.setTextColor(17, 24, 39);
+  doc.text('MHT-CET Preference List Report', 14, 28);
+
+  doc.setFont("Helvetica", "normal");
+  doc.setFontSize(9);
+  doc.setTextColor(107, 114, 128);
+  // Include student name in header if available
+  let headerLine = `Rank: ${rank} | Category: ${catDisplay} | Region: ${region}`;
+  if (currentStudentInfo && currentStudentInfo.name) {
+    headerLine = `Student: ${currentStudentInfo.name} | ${headerLine}`;
+  }
+  doc.text(headerLine, 14, 34);
+
+  // Right Side Info
+  doc.setFontSize(9);
+  doc.setTextColor(107, 114, 128);
+  doc.text('Official Website', 196, 16, { align: 'right' });
+  doc.text('www.collegesimplified.in', 196, 21, { align: 'right' });
+  doc.text(`Date: ${new Date().toLocaleDateString('en-IN')}`, 196, 26, { align: 'right' });
+
+  // Divider Line
+  doc.setDrawColor(220, 38, 38); // Brand Red
+  doc.setLineWidth(1);
+  doc.line(14, 38, 196, 38);
+
+  // Build profile table rows — include student info if present
+  const profileRows = [];
+  if (currentStudentInfo && currentStudentInfo.name) {
+    profileRows.push(['Student Name', currentStudentInfo.name]);
+    if (currentStudentInfo.email) profileRows.push(['Student Email', currentStudentInfo.email]);
+    if (currentStudentInfo.phone) profileRows.push(['Student Phone', currentStudentInfo.phone]);
+  }
+  profileRows.push(['Percentile', pct + '%']);
+  profileRows.push(['Merit Rank', rank]);
+  profileRows.push(['Category', catDisplay]);
+  profileRows.push(['Region Preference', region]);
+
+  doc.autoTable({
+    startY: 48,
+    head: [['Field', 'Details']],
+    body: profileRows,
+    theme: 'plain',
+    headStyles: { fillColor: [249, 250, 251], textColor: [107, 114, 128], fontStyle: 'bold' },
+    styles: { fontSize: 10, cellPadding: 4 }
+  });
+
+  // Preference Table
+  doc.setFontSize(14);
+  doc.setTextColor(17, 24, 39);
+  doc.text('Your Preference Order', 14, doc.lastAutoTable.finalY + 15);
+
+  const tableData = prefList.map((c, i) => [
+    i + 1,
+    c.instituteName || c.name,
+    c.branch,
+    c.code,
+    c.percentile.toFixed(2) + '%'
+  ]);
+
+  doc.autoTable({
+    startY: doc.lastAutoTable.finalY + 20,
+    head: [['#', 'Institute Name', 'Branch', 'Code', 'Cutoff']],
+    body: tableData,
+    rowPageBreak: 'avoid',
+    headStyles: { fillColor: [220, 38, 38], textColor: [255, 255, 255], fontStyle: 'bold' },
+    alternateRowStyles: { fillColor: [254, 242, 242] },
+    styles: { fontSize: 9, cellPadding: 5 },
+    columnStyles: {
+      0: { cellWidth: 16 },
+      1: { cellWidth: 84 },
+      2: { cellWidth: 50 },
+      3: { cellWidth: 20 },
+      4: { cellWidth: 20 }
+    }
+  });
+
+  // Footer
+  const pageCount = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    doc.setFontSize(9);
+    doc.setTextColor(156, 163, 175);
+    doc.text(`Page ${i} of ${pageCount} — Created with College Simplified`, 14, doc.internal.pageSize.height - 10);
+  }
+
+  const pdfName = currentStudentInfo && currentStudentInfo.name
+    ? `MHTCET_Preferences_${currentStudentInfo.name.replace(/\s+/g, '_')}.pdf`
+    : `MHTCET_Preferences_${rank || 'List'}.pdf`;
+  doc.save(pdfName);
+  pbToast('PDF Generated Successfully!');
+}
+function switchSideTab(tab) {
+  document.querySelectorAll('.sidebar-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.sidebar-content').forEach(c => c.classList.toggle('active', c.id === 'side-' + tab));
+}
+
+/* ══════ UTILS ══════ */
+function escH(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;') }
+function pbToast(msg) {
+  let t = document.getElementById('pbToast');
+  if (!t) { t = document.createElement('div'); t.id = 'pbToast'; t.className = 'pb-toast'; document.body.appendChild(t) }
+  t.textContent = msg; t.style.display = 'flex';
+  clearTimeout(t._tid); t._tid = setTimeout(() => t.style.display = 'none', 3000);
+}
+
+/* ══════ STUDENT DETAILS MODAL (Admin) ══════ */
+function showStudentModal() {
+  currentStudentInfo = null;
+  // Reset modal state
+  const searchInput = document.getElementById('studentSearchInput');
+  const resultsDiv = document.getElementById('studentSearchResults');
+  const selectedCard = document.getElementById('studentSelectedCard');
+  const nameInput = document.getElementById('studentName');
+  const emailInput = document.getElementById('studentEmail');
+  const phoneInput = document.getElementById('studentPhone');
+  if (searchInput) searchInput.value = '';
+  if (resultsDiv) resultsDiv.innerHTML = '';
+  if (selectedCard) { selectedCard.style.display = 'none'; selectedCard.innerHTML = ''; }
+  if (nameInput) nameInput.value = '';
+  if (emailInput) emailInput.value = '';
+  if (phoneInput) phoneInput.value = '';
+  switchStudentMode('existing');
+  const modal = document.getElementById('studentModal');
+  if (modal) modal.classList.add('show');
+}
+
+function closeStudentModal() {
+  const modal = document.getElementById('studentModal');
+  if (modal) modal.classList.remove('show');
+}
+
+function switchStudentMode(mode) {
+  const existingWrap = document.getElementById('studentExistingWrap');
+  const customWrap = document.getElementById('studentCustomWrap');
+  const existingLabel = document.getElementById('studentModeExisting');
+  const customLabel = document.getElementById('studentModeCustom');
+  if (mode === 'existing') {
+    existingWrap.style.display = 'block';
+    customWrap.style.display = 'none';
+    existingLabel.style.border = '2px solid var(--brand)';
+    existingLabel.style.background = 'var(--brand-soft)';
+    existingLabel.style.color = 'var(--brand)';
+    customLabel.style.border = '2px solid var(--stroke)';
+    customLabel.style.background = 'transparent';
+    customLabel.style.color = 'var(--muted)';
+  } else {
+    existingWrap.style.display = 'none';
+    customWrap.style.display = 'block';
+    customLabel.style.border = '2px solid var(--brand)';
+    customLabel.style.background = 'var(--brand-soft)';
+    customLabel.style.color = 'var(--brand)';
+    existingLabel.style.border = '2px solid var(--stroke)';
+    existingLabel.style.background = 'transparent';
+    existingLabel.style.color = 'var(--muted)';
+  }
+  // Clear selection when switching
+  currentStudentInfo = null;
+  const selectedCard = document.getElementById('studentSelectedCard');
+  if (selectedCard) { selectedCard.style.display = 'none'; selectedCard.innerHTML = ''; }
+}
+
+let studentSearchTid = null;
+async function searchExistingUsers() {
+  clearTimeout(studentSearchTid);
+  studentSearchTid = setTimeout(async () => {
+    const query = (document.getElementById('studentSearchInput').value || '').toLowerCase().trim();
+    const resultsDiv = document.getElementById('studentSearchResults');
+    if (!query || query.length < 2) { resultsDiv.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">Type at least 2 characters to search</div>'; return; }
+    resultsDiv.innerHTML = '<div class="pb-spinner" style="margin:20px auto"></div>';
+
+    // Cache users list to avoid repeated Firestore calls
+    if (!cachedUsers) {
+      const res = await authApi('getUsers');
+      if (res.ok) cachedUsers = res.data || [];
+      else { resultsDiv.innerHTML = '<div style="padding:20px;text-align:center;color:var(--brand);font-size:12px">Failed to load users</div>'; return; }
+    }
+
+    const filtered = cachedUsers.filter(u => {
+      const name = (u.name || '').toLowerCase();
+      const email = (u.email || '').toLowerCase();
+      const phone = (u.phone || '').toLowerCase();
+      return name.includes(query) || email.includes(query) || phone.includes(query);
+    }).slice(0, 10);
+
+    if (!filtered.length) {
+      resultsDiv.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">No users found matching your search</div>';
+      return;
+    }
+
+    resultsDiv.innerHTML = filtered.map(u => {
+      const ini = (u.name || 'U').charAt(0).toUpperCase();
+      return `<div onclick="selectExistingUser('${escH(u.id)}')" style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;cursor:pointer;transition:0.2s;border:1.5px solid var(--stroke);margin-bottom:8px;background:var(--card)" onmouseover="this.style.borderColor='var(--brand)';this.style.background='var(--brand-soft)'" onmouseout="this.style.borderColor='var(--stroke)';this.style.background='var(--card)'">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-weight:800;font-size:16px;flex-shrink:0">${ini}</div>
+        <div style="min-width:0;flex:1">
+          <div style="font-weight:700;font-size:14px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escH(u.name)}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escH(u.email || '')}${u.phone ? ' · ' + escH(u.phone) : ''}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }, 300);
+}
+
+function selectExistingUser(userId) {
+  if (!cachedUsers) return;
+  const user = cachedUsers.find(u => u.id === userId);
+  if (!user) return;
+  currentStudentInfo = {
+    name: user.name || '',
+    email: user.email || '',
+    phone: user.phone || '',
+    userId: user.id
+  };
+  // Show selected user card
+  const selectedCard = document.getElementById('studentSelectedCard');
+  const resultsDiv = document.getElementById('studentSearchResults');
+  if (resultsDiv) resultsDiv.innerHTML = '';
+  if (selectedCard) {
+    const ini = (user.name || 'U').charAt(0).toUpperCase();
+    selectedCard.style.display = 'block';
+    selectedCard.innerHTML = `<div style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:16px;border:2px solid var(--brand);background:var(--brand-soft)">
+      <div style="width:44px;height:44px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:800;font-size:18px;flex-shrink:0">${ini}</div>
+      <div style="min-width:0;flex:1">
+        <div style="font-weight:800;font-size:15px;color:var(--ink)">${escH(user.name)}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px">${escH(user.email || '')}${user.phone ? ' · ' + escH(user.phone) : ''}</div>
+      </div>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>`;
+  }
+  document.getElementById('studentSearchInput').value = user.name;
+}
+
+function submitStudentInfo() {
+  const mode = document.querySelector('input[name="studentMode"]:checked')?.value || 'existing';
+  if (mode === 'existing') {
+    if (!currentStudentInfo || !currentStudentInfo.name) {
+      pbToast('Please search and select a student');
+      return;
+    }
+  } else {
+    const name = (document.getElementById('studentName').value || '').trim();
+    if (!name) {
+      pbToast('Student name is required');
+      return;
+    }
+    currentStudentInfo = {
+      name: name,
+      email: (document.getElementById('studentEmail').value || '').trim(),
+      phone: (document.getElementById('studentPhone').value || '').trim()
+    };
+  }
+  closeStudentModal();
+  // Now proceed with the actual form creation
+  currentFormId = null;
+  prefList = [...FIXED_ASPIRATIONAL];
+  selectedColleges = [];
+  selectedBranches = new Set();
+  if (prefLocked) lockProfileFields();
+  else unlockProfileFields();
+  renderEditStatus();
+  goStep(1);
+}
+
+/* ══════ PREF DATA SAVE/LOAD ══════ */
+// Duplicate functions removed and moved to top or merged.
+
+// ── Dashboard Data Loader ──
+async function loadSavedPrefData() {
+  if (!currentUserId) return;
+  const res = await authApi('getPrefData', { userId: currentUserId });
+  if (res.ok) {
+    const user = getSession();
+    const isAdmin = user && user.role === 'admin';
+    prefDataLoaded = true;
+    prefEditCount = res.data.editCount || 0;
+    prefLocked = !isAdmin && prefEditCount >= 3;
+    allForms = res.data.forms || [];
+
+    // Pre-fill fields from the most recent form for convenience
+    if (allForms.length > 0) {
+      const latest = allForms[0];
+      document.getElementById('inPct').value = latest.percentile || '';
+      document.getElementById('inRank').value = latest.rank || '';
+      
+      let genderVal = latest.gender;
+      let categoryVal = latest.category || 'OPEN';
+      if (!genderVal) {
+        if (categoryVal.startsWith('L') && categoryVal !== 'L') {
+          genderVal = 'Female-only';
+          categoryVal = categoryVal.substring(1);
+        } else {
+          genderVal = 'Gender-Neutral';
+        }
+      }
+      document.getElementById('inCategory').value = categoryVal;
+      document.getElementById('inGender').value = genderVal;
+      if (latest.region) document.getElementById('inRegion').value = latest.region;
+    }
+
+    renderEditStatus();
+
+    // Show Dashboard
+    const dashSec = document.getElementById('dashboardDrafts');
+    const dashList = document.getElementById('dashboardDraftsList');
+    if (dashSec && dashList) {
+      if (allForms.length > 0) {
+        dashSec.style.display = 'block';
+        dashList.innerHTML = allForms.map(form => {
+          const date = form.updatedAt ? new Date(form.updatedAt.toDate ? form.updatedAt.toDate() : form.updatedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Recently';
+          const studentInfo = form.studentInfo;
+          const studentLine = studentInfo && studentInfo.name
+            ? `<div style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12px;font-weight:700;color:var(--ink2)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                ${escH(studentInfo.name)}${studentInfo.email ? ' · ' + escH(studentInfo.email) : ''}
+              </div>`
+            : '';
+          const templateLine = form.sourceTemplate && form.sourceTemplate.templateName
+            ? `<div style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12px;font-weight:700;color:var(--brand)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                From Template: ${escH(form.sourceTemplate.templateName)}
+              </div>`
+            : '';
+          return `<div class="col-card dashboard-form-card" style="text-align: left; border: 1px solid var(--stroke); padding: 20px; cursor: default; margin-bottom: 12px">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px; flex-wrap: wrap; gap: 8px">
+              <div>
+                <div style="font-weight: 800; color: var(--brand); font-size: 17px">Preference List</div>
+                <div style="font-size: 11px; color: var(--muted); margin-top: 2px; display: flex; align-items: center; gap: 4px">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  ${date}
+                </div>
+                ${studentLine}
+                ${templateLine}
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center">
+                <div style="background: var(--brand-soft); color: var(--brand); padding: 3px 10px; border-radius: 6px; font-size: 9px; font-weight: 800; border: 1px solid var(--brand-ring); text-transform: uppercase">ID: ${form.id.slice(-4)}</div>
+                <button onclick="deleteForm('${form.id}')" style="background: none; border: none; color: #ef4444; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center" title="Delete Draft">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2 2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </div>
+            </div>
+            
+            <div class="dash-card-stats" style="margin-bottom: 20px; padding: 16px; background: #f8fafc; border-radius: 16px; border: 1px solid var(--stroke); display: flex; flex-direction: column; gap: 12px">
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px">
+                <span style="font-weight: 800; color: var(--ink)">${form.percentile || '??'}% Percentile</span>
+                <span style="font-weight: 700; color: var(--brand); font-size: 11px">Strategy: ${form.colType || 'All Colleges'}</span>
+              </div>
+              <div style="font-size: 12px; font-weight: 600; color: var(--ink2); padding-top: 8px; border-top: 1px dashed var(--stroke); display: flex; justify-content: space-between">
+                <span>Category: ${(() => {
+                  const catVal = form.category || 'OPEN';
+                  const isLadies = form.gender === 'Female-only' || (catVal.startsWith('L') && catVal !== 'L');
+                  const base = (catVal.startsWith('L') && catVal !== 'L') ? catVal.substring(1) : catVal;
+                  const label = base === 'OBC' ? 'OBC' :
+                                base === 'SC' ? 'Scheduled Caste' :
+                                base === 'ST' ? 'Scheduled Tribe' :
+                                base === 'VJ/DT' ? 'VJ / DT / NT-A' :
+                                base === 'NT1' ? 'NT-B' :
+                                base === 'NT2' ? 'NT-C' :
+                                base === 'NT3' ? 'NT-D' :
+                                base === 'EWS' ? 'EWS' :
+                                base === 'TFWS' ? 'TFWS' :
+                                base === 'OPEN' ? 'Open' : base;
+                  return (isLadies ? 'Ladies ' : '') + label;
+                })()}</span>
+                ${form.minority ? `<span style="color:var(--gold)">${form.minority} Minority</span>` : ''}
+              </div>
+            </div>
+
+              <button class="pb-btn pb-btn-primary" onclick="loadForm('${form.id}')" style="flex: 1; padding: 10px; justify-content: center; font-size: 13px">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Resume List
+              </button>
+          </div>`;
+        }).join('');
+      } else {
+        dashSec.style.display = 'none';
+      }
+    }
+    goStep(0);
+    loadDashboardTemplates();
+  } else {
+    renderEditStatus();
+    goStep(1);
+  }
+}
+
+function renderEditStatus() {
+  let wrap = document.getElementById('editStatusWrap');
+  if (wrap) wrap.style.display = 'none';
+  let saveWrap = document.getElementById('saveProfileWrap');
+  if (saveWrap) saveWrap.style.display = 'none';
+  unlockProfileFields();
+}
+
+function lockProfileFields() {
+  // Permanently unlocked - do nothing
+}
+
+function unlockProfileFields() {
+  ['inPct', 'inRank'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.disabled = false; el.style.opacity = '1'; el.style.cursor = ''; }
+  });
+}
+
+function enableEditing() {
+  const user = getSession();
+  const isAdmin = user && user.role === 'admin';
+  const remaining = 3 - prefEditCount;
+  
+  if (isAdmin) {
+    unlockProfileFields();
+    let saveWrap = document.getElementById('saveProfileWrap');
+    if (saveWrap) saveWrap.style.display = 'flex';
+    document.getElementById('editStatusWrap').style.opacity = '0.4';
+    return;
+  }
+
+  if (remaining <= 0) { pbToast('No edits remaining'); return; }
+
+  const msg = remaining === 1 ?
+    '⚠️ WARNING: This is your LAST edit! After saving, you will be locked out. Are you sure?' :
+    `You have used ${prefEditCount}/3 edits. Are you sure you want to use another edit?`;
+
+  if (!confirm(msg)) return;
+
+  unlockProfileFields();
+  // Show save button
+  let saveWrap = document.getElementById('saveProfileWrap');
+  if (saveWrap) saveWrap.style.display = 'flex';
+  document.getElementById('editStatusWrap').style.opacity = '0.4'; // Dim status while editing
+}
+
+async function saveProfileData() {
+  if (!validateStep1()) return;
+  const pct = document.getElementById('inPct').value;
+  const rank = document.getElementById('inRank').value;
+  const cat = document.getElementById('inCategory').value;
+  const gender = document.getElementById('inGender').value;
+  const region = document.getElementById('inRegion').value;
+  const saveBtn = document.getElementById('saveProfileBtn');
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving...'; }
+  const res = await authApi('savePrefData', {
+    userId: currentUserId,
+    formId: currentFormId,
+    percentile: pct,
+    rank: rank,
+    category: cat,
+    gender: gender,
+    region: region,
+    prefList: prefList,
+    incrementEdit: true
+  });
+  if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save & Lock'; }
+  if (res.ok) {
+    if (res.data.formId) currentFormId = res.data.formId;
+    prefEditCount = res.data.editCount;
+    prefDataLoaded = true;
+    const user = getSession();
+    const isAdmin = user && user.role === 'admin';
+    prefLocked = !isAdmin && prefEditCount >= 3;
+    document.getElementById('editStatusWrap').style.opacity = '1';
+    renderEditStatus();
+    lockProfileFields();
+    let saveWrap = document.getElementById('saveProfileWrap');
+    if (saveWrap) saveWrap.style.display = 'none';
+    if (isAdmin) {
+      pbToast('Profile saved!');
+    } else {
+      pbToast('Profile saved! ' + (3 - prefEditCount) + ' edits remaining.');
+    }
+  } else {
+    pbToast(res.error || 'Failed to save');
+  }
+}
+
+function openReportModal() {
+  let modal = document.getElementById('reportModal');
+  if (modal) modal.classList.add('show');
+}
+
+function closeReportModal() {
+  let modal = document.getElementById('reportModal');
+  if (modal) modal.classList.remove('show');
+}
+
+async function submitEditRequest() {
+  const user = getSession();
+  if (!user) return;
+  const msg = (document.getElementById('reportMessage').value || '').trim() || 'Please unlock my preference list edits.';
+  const btn = document.getElementById('submitReportBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+  const res = await authApi('submitEditRequest', { userId: currentUserId, userName: user.name, userEmail: user.email, message: msg });
+  if (btn) { btn.disabled = false; btn.textContent = 'Send Request'; }
+  if (res.ok) {
+    pbToast('Request sent! Admin will review it shortly.');
+    closeReportModal();
+  } else {
+    pbToast(res.error || 'Failed to send request');
+  }
+}
+
+/* ══════ TEMPLATE LIBRARY ══════ */
+let loadedTemplates = [];
+let loadedAdminTemplates = [];
+let currentPreviewTemplateId = null;
+let currentEditingTemplateId = null;
+let adminTempListColleges = []; // Array of {code, instituteName, branch, percentile, selected}
+let currentTplPctFilter = 'all';
+let currentTplBranchFilter = 'all';
+
+let tplActiveCategoryKey = null;
+
+async function openTemplateLibrary() {
+  goStep(5);
+  tplActiveCategoryKey = null; // Reset category view
+  const container = document.getElementById('tplLibraryContent');
+  if (container) {
+    container.innerHTML = '<div class="pb-loader"><div class="pb-spinner"></div><span>Loading templates...</span></div>';
+  }
+  const res = await authApi('getTemplates', {});
+  if (res.ok) {
+    loadedTemplates = res.data || [];
+    filterTemplates();
+  } else {
+    if (container) {
+      container.innerHTML = `<div style="color:var(--brand);text-align:center;padding:20px">${escH(res.error || 'Failed to load templates')}</div>`;
+    }
+  }
+}
+
+function filterTplByPct(pctRange, btn) {
+  currentTplPctFilter = pctRange;
+  const parent = document.getElementById('tplPctFilter');
+  if (parent) {
+    parent.querySelectorAll('.tpl-fchip').forEach(c => c.classList.remove('active'));
+  }
+  if (btn) btn.classList.add('active');
+  tplActiveCategoryKey = null; // Reset active category key when a filter chip is clicked
+  filterTemplates();
+}
+
+function filterTplByBranch(branchGroup, btn) {
+  currentTplBranchFilter = branchGroup;
+  const parent = document.getElementById('tplBranchFilter');
+  if (parent) {
+    parent.querySelectorAll('.tpl-fchip').forEach(c => c.classList.remove('active'));
+  }
+  if (btn) btn.classList.add('active');
+  tplActiveCategoryKey = null; // Reset active category key when a filter chip is clicked
+  filterTemplates();
+}
+
+function areTplFiltersActive() {
+  const pct = currentTplPctFilter !== 'all';
+  const branch = currentTplBranchFilter !== 'all';
+  const regionSelect = document.getElementById('tplRegionFilter');
+  const region = regionSelect ? regionSelect.value !== '' : false;
+  const specialSelect = document.getElementById('tplSpecialFilter');
+  const special = specialSelect ? specialSelect.value !== '' : false;
+  return pct || branch || region || special;
+}
+
+function getTplCategory(t) {
+  if (t.filters?.minority || t.filters?.collegeType === 'Autonomous' || (t.tags || []).some(tag => ['minority', 'muslim', 'jain', 'government', 'autonomous'].includes(tag.toLowerCase()))) {
+    return 'special';
+  }
+  if (t.filters?.region || (t.tags || []).some(tag => ['mumbai', 'pune', 'nagpur', 'nashik', 'aurangabad', 'amravati'].includes(tag.toLowerCase()))) {
+    return 'region';
+  }
+  if ((t.filters?.branchGroup && t.filters.branchGroup !== 'all') || (t.tags || []).some(tag => ['computer', 'electronics', 'core', 'biotech'].includes(tag.toLowerCase()))) {
+    return 'branch';
+  }
+  return 'percentile';
+}
+
+function getGradientForTpl(t) {
+  const name = (t.name || '').toLowerCase();
+  const tags = (t.tags || []).map(tg => tg.toLowerCase());
+  
+  if (tags.includes('mumbai') || name.includes('mumbai')) {
+    return 'linear-gradient(135deg, #1e3a8a, #3b82f6)';
+  }
+  if (tags.includes('pune') || name.includes('pune')) {
+    return 'linear-gradient(135deg, #064e3b, #10b981)';
+  }
+  if (tags.includes('nagpur') || name.includes('nagpur')) {
+    return 'linear-gradient(135deg, #311042, #701a75)';
+  }
+  if (tags.includes('minority') || name.includes('minority') || tags.includes('muslim') || tags.includes('jain')) {
+    return 'linear-gradient(135deg, #78350f, #d97706)';
+  }
+  if (tags.includes('government') || tags.includes('autonomous') || name.includes('government')) {
+    return 'linear-gradient(135deg, #b91c1c, #f87171)';
+  }
+  
+  return 'linear-gradient(135deg, #dc2626, #f43f5e)';
+}
+
+function getBadgeForTpl(t) {
+  const name = (t.name || '').toLowerCase();
+  const tags = (t.tags || []).map(tg => tg.toLowerCase());
+  
+  if (tags.includes('mumbai') || name.includes('mumbai')) return 'Mumbai Region';
+  if (tags.includes('pune') || name.includes('pune')) return 'Pune Region';
+  if (tags.includes('nagpur') || name.includes('nagpur')) return 'Nagpur Region';
+  if (tags.includes('minority') || name.includes('minority')) return 'Minority Quota';
+  if (tags.includes('government') || name.includes('government')) return 'Govt / Aided';
+  
+  return 'General List';
+}
+
+function resetTplFilters() {
+  currentTplPctFilter = 'all';
+  currentTplBranchFilter = 'all';
+  
+  document.querySelectorAll('#tplPctFilter .tpl-fchip').forEach(c => c.classList.toggle('active', c.dataset.pct === 'all'));
+  document.querySelectorAll('#tplBranchFilter .tpl-fchip').forEach(c => c.classList.toggle('active', c.dataset.bg === 'all'));
+  
+  const regionSelect = document.getElementById('tplRegionFilter');
+  if (regionSelect) regionSelect.value = '';
+  
+  const specialSelect = document.getElementById('tplSpecialFilter');
+  if (specialSelect) specialSelect.value = '';
+  
+  tplActiveCategoryKey = null;
+  filterTemplates();
+}
+
+function showCategoryAll(key) {
+  tplActiveCategoryKey = key;
+  filterTemplates();
+}
+
+function getCounselorForTpl(t) {
+  const name = (t.name || '').toLowerCase();
+  const tags = (t.tags || []).map(tg => tg.toLowerCase());
+  
+  if (tags.includes('mumbai') || name.includes('mumbai')) {
+    return { name: 'Kalpesh Hiwase', badgeBg: '#ea580c' }; // Orange
+  }
+  if (tags.includes('pune') || name.includes('pune')) {
+    return { name: 'Prof. Sandip Kale', badgeBg: '#10b981' }; // Green
+  }
+  if (tags.includes('electronics') || tags.includes('core') || name.includes('electronics') || name.includes('core')) {
+    return { name: 'Prof. Rohan Tamture', badgeBg: '#0891b2' }; // Cyan
+  }
+  if (tags.includes('minority') || tags.includes('special') || name.includes('minority') || tags.includes('muslim') || tags.includes('jain')) {
+    return { name: 'Dr. Umesh Moharil', badgeBg: '#c026d3' }; // Pink
+  }
+  return { name: 'Prof. Nilima Jagtap', badgeBg: '#e11d48' }; // Rose
+}
+
+function renderCardsHtml(list, isScrollable = false) {
+  if (list.length === 0) {
+    return `<div style="padding:20px; text-align:center; color:var(--muted); font-size:13px; grid-column:1/-1">No templates found in this section.</div>`;
+  }
+  
+  return list.map(t => {
+    const colCount = t.prefList?.length || 0;
+    const usage = t.usageCount || 0;
+    const gradient = getGradientForTpl(t);
+    const scrollStyle = isScrollable ? 'style="width: 240px; flex-shrink: 0; scroll-snap-align: start;"' : '';
+    const counselor = getCounselorForTpl(t);
+
+    return `<div class="tpl-card-v2" ${scrollStyle} onclick="previewTemplate('${t.id}')">
+      <div class="tpl-card-banner" style="background: ${gradient}">
+        <div class="tpl-banner-tag">${escH(getBadgeForTpl(t))}</div>
+        <div class="tpl-banner-accent">MHT-CET 2026</div>
+        <div class="tpl-banner-title" style="max-width: 100%;">${escH(t.name)}</div>
+        <div style="z-index: 3; margin-top: 4px;">
+          <span style="background: ${counselor.badgeBg}; color: #ffffff; padding: 2px 6px; border-radius: 4px; font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">${escH(counselor.name)}</span>
+        </div>
+      </div>
+      <div class="tpl-card-body" style="padding: 14px 16px; display: flex; flex-direction: column; flex: 1; min-height: 70px; justify-content: space-between">
+        <h4 style="font-family:'Lexend',sans-serif; font-weight: 800; font-size: 13px; color: var(--ink); line-height: 1.4; margin: 0 0 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis">${escH(t.name)}</h4>
+        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--muted); font-weight: 500; border-top: 1px dashed var(--stroke); padding-top: 8px; margin-top: auto">
+          <span style="display: inline-flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: middle;"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg> ${colCount} Colleges</span>
+          <span style="display: inline-flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: middle;"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg> Used ${usage} times</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterTemplates() {
+  let filtered = loadedTemplates || [];
+
+  // 1. Percentile filter
+  if (currentTplPctFilter !== 'all') {
+    filtered = filtered.filter(t => {
+      const min = t.filters?.percentileMin || 0;
+      const max = t.filters?.percentileMax || 100;
+      if (currentTplPctFilter === '95-100') {
+        return max >= 95;
+      } else if (currentTplPctFilter === '90-95') {
+        return min >= 90 && min <= 95;
+      } else if (currentTplPctFilter === '85-90') {
+        return min >= 85 && min <= 90;
+      } else if (currentTplPctFilter === '80-85') {
+        return min >= 80 && min <= 85;
+      } else if (currentTplPctFilter === '70-80') {
+        return min >= 70 && min <= 80;
+      }
+      return true;
+    });
+  }
+
+  // 2. Branch Group filter
+  if (currentTplBranchFilter !== 'all') {
+    filtered = filtered.filter(t => {
+      return (t.filters?.branchGroup || '').toLowerCase() === currentTplBranchFilter.toLowerCase();
+    });
+  }
+
+  // 3. Region filter
+  const regionSelect = document.getElementById('tplRegionFilter');
+  const regionVal = regionSelect ? regionSelect.value : '';
+  if (regionVal) {
+    filtered = filtered.filter(t => {
+      return (t.filters?.region || '').toLowerCase() === regionVal.toLowerCase();
+    });
+  }
+
+  // 4. Special filter
+  const specialSelect = document.getElementById('tplSpecialFilter');
+  const specialVal = specialSelect ? specialSelect.value : '';
+  if (specialVal) {
+    filtered = filtered.filter(t => {
+      const type = (t.filters?.collegeType || '').toLowerCase();
+      const mino = (t.filters?.minority || '').toLowerCase();
+      if (specialVal === 'minority') {
+        return !!mino;
+      } else if (specialVal === 'government') {
+        return type === 'government' || type === 'aided';
+      } else if (specialVal === 'autonomous') {
+        return type === 'autonomous';
+      }
+      return true;
+    });
+  }
+
+  renderTemplates(filtered);
+}
+
+function renderTemplates(templates) {
+  const container = document.getElementById('tplLibraryContent');
+  if (!container) return;
+
+  const filtersActive = areTplFiltersActive();
+
+  // If filters are active or a single category is being shown, render a grid list
+  if (filtersActive || tplActiveCategoryKey) {
+    let list = templates;
+    let title = 'Search Results';
+    
+    if (tplActiveCategoryKey) {
+      list = templates.filter(t => getTplCategory(t) === tplActiveCategoryKey);
+      const catNames = {
+        'percentile': 'Percentile-based Templates',
+        'region': 'Region-specific Templates',
+        'special': 'Minority & Special Lists',
+        'branch': 'Branch-focused Templates'
+      };
+      title = catNames[tplActiveCategoryKey] || 'Templates';
+    }
+
+    container.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px">
+        <h3 style="font-family:'Lexend',sans-serif; font-weight:800; font-size:18px; color:var(--ink); margin:0">
+          ${title} <span style="font-size:13px; font-weight:600; color:var(--muted)">(${list.length} templates)</span>
+        </h3>
+        <button class="pb-btn pb-btn-ghost" onclick="resetTplFilters()" style="padding:8px 16px; font-size:12px">
+          &larr; Back to Categories
+        </button>
+      </div>
+      <div class="tpl-grid" id="tplGrid">
+        ${renderCardsHtml(list)}
+      </div>
+    `;
+    return;
+  }
+
+  // Otherwise show horizontal scroll categories
+  const categories = [
+    { key: 'percentile', title: 'Percentile-based Templates', desc: 'Curated preference lists matching specific CET score brackets.' },
+    { key: 'region', title: 'Region-specific Templates', desc: 'Highly requested lists focusing on top institutions in Mumbai, Pune, Nagpur, etc.' },
+    { key: 'special', title: 'Minority & Special Lists', desc: 'Government, Autonomous, and Religious/Linguistic minority lists.' },
+    { key: 'branch', title: 'Branch-focused Templates', desc: 'Sorted preference guides categorized by branch fields.' }
+  ];
+
+  let html = '';
+  categories.forEach(cat => {
+    const catTemplates = templates.filter(t => getTplCategory(t) === cat.key);
+    if (catTemplates.length === 0) return;
+
+    html += `
+      <div class="tpl-category-section" style="margin-bottom: 36px">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px">
+          <h3 style="font-family:'Lexend',sans-serif; font-weight:800; font-size:16px; color:var(--ink); margin:0">${cat.title}</h3>
+          <button class="tpl-show-all-btn" onclick="showCategoryAll('${cat.key}')">
+            Show All
+          </button>
+        </div>
+        <div class="tpl-row-scroll" style="display:flex; gap:16px; overflow-x:auto; padding: 4px 4px 12px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch">
+          ${renderCardsHtml(catTemplates, true)}
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html || `
+    <div class="empty-state">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <h3>No Templates</h3>
+      <p>Please contact admin to seed or add templates.</p>
+    </div>
+  `;
+}
+
+function previewTemplate(id) {
+  const t = loadedTemplates.find(x => x.id === id);
+  if (!t) return;
+  currentPreviewTemplateId = id;
+  document.getElementById('tplPreviewTitle').textContent = t.name;
+  document.getElementById('tplPreviewDesc').textContent = t.description || 'No description.';
+  
+  const tagsWrap = document.getElementById('tplPreviewTags');
+  tagsWrap.innerHTML = (t.tags || []).map(tag => `<span class="tpl-tag">${escH(tag)}</span>`).join('');
+  
+  const colleges = t.prefList || [];
+  document.getElementById('tplPreviewCount').textContent = colleges.length;
+
+  const listWrap = document.getElementById('tplPreviewList');
+  if (colleges.length === 0) {
+    listWrap.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">No colleges in this template.</div>';
+  } else {
+    listWrap.innerHTML = colleges.map((c, idx) => {
+      const tags = [];
+      if (c.isGov) tags.push('<span class="col-tag gov" style="font-size:9px;padding:2px 6px">Govt</span>');
+      if (c.isAuto) tags.push('<span class="col-tag auto" style="font-size:9px;padding:2px 6px">Auto</span>');
+      return `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid var(--stroke)">
+        <div style="min-width:0; flex:1; padding-right:12px">
+          <div style="font-size:13px; font-weight:800; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap">${idx + 1}. ${escH(c.instituteName)}</div>
+          <div style="font-size:11px; color:var(--muted); margin-top:3px; display:flex; align-items:center; gap:6px; flex-wrap:wrap">
+            <span style="font-weight:700; color:var(--brand)">${escH(c.branch)}</span>
+            ${tags.join('')}
+          </div>
+        </div>
+        <div style="font-size:12px; font-weight:800; color:var(--ink); flex-shrink:0; text-align:right">
+          <div>${c.percentile ? c.percentile.toFixed(2) + '%' : 'N/A'}</div>
+          <div style="font-size:9px; font-weight:500; color:var(--muted); margin-top:2px">Code: ${c.code}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  const modal = document.getElementById('tplPreviewModal');
+  if (modal) modal.classList.add('show');
+}
+
+function closeTplPreview() {
+  const modal = document.getElementById('tplPreviewModal');
+  if (modal) modal.classList.remove('show');
+}
+
+function applyCurrentTemplate() {
+  if (currentPreviewTemplateId) {
+    useTemplate(currentPreviewTemplateId);
+  }
+}
+
+async function useTemplate(templateId) {
+  const user = getSession();
+  if (!user) {
+    pbToast('Please log in first.');
+    return;
+  }
+  pbToast('Applying template...', 3000);
+  const res = await authApi('applyTemplate', { userId: currentUserId, templateId });
+  if (res.ok) {
+    pbToast('Template applied successfully!');
+    closeTplPreview();
+    const formId = res.data.formId;
+    await loadSavedPrefData();
+    loadForm(formId, 4);
+  } else {
+    pbToast(res.error || 'Failed to apply template.');
+  }
+}
+
+/* ─── ADMIN TEMPLATE MANAGEMENT ─── */
+async function openAdminTemplateManager() {
+  const modal = document.getElementById('adminTplManagerModal');
+  if (modal) modal.classList.add('show');
+  
+  const listEl = document.getElementById('adminTplManagerList');
+  if (listEl) {
+    listEl.innerHTML = '<div class="pb-loader"><div class="pb-spinner"></div><span>Loading all templates...</span></div>';
+  }
+  
+  const res = await authApi('getAllTemplates', {});
+  if (res.ok) {
+    loadedAdminTemplates = res.data || [];
+    renderAdminTemplatesList(loadedAdminTemplates);
+  } else {
+    if (listEl) listEl.innerHTML = `<div style="color:var(--brand);text-align:center;padding:20px">${escH(res.error || 'Failed to load templates')}</div>`;
+  }
+}
+
+function closeAdminTplManager() {
+  const modal = document.getElementById('adminTplManagerModal');
+  if (modal) modal.classList.remove('show');
+}
+
+
+
+function generateCollegeListForParams(filters) {
+  const pctMin = filters.percentileMin !== undefined && filters.percentileMin !== null && filters.percentileMin !== '' ? parseFloat(filters.percentileMin) : 0;
+  const pctMax = filters.percentileMax !== undefined && filters.percentileMax !== null && filters.percentileMax !== '' ? parseFloat(filters.percentileMax) : 100;
+  const rankMin = filters.rankMin !== undefined && filters.rankMin !== null && filters.rankMin !== '' ? parseInt(filters.rankMin) : 0;
+  const rankMax = filters.rankMax !== undefined && filters.rankMax !== null && filters.rankMax !== '' ? parseInt(filters.rankMax) : 1000000;
+
+  const hasPctRange = (filters.percentileMin !== undefined && filters.percentileMin !== null && filters.percentileMin !== '');
+  const hasRankRange = (filters.rankMin !== undefined && filters.rankMin !== null && filters.rankMin !== '');
+
+  const bg = filters.branchGroup || 'all';
+  const region = filters.region || '';
+  const category = filters.category || 'OPEN';
+  const colType = filters.collegeType || '';
+  const minority = filters.minority || '';
+
+  const catMap = { 'OPEN': 'OPEN', 'OBC': 'OBC', 'SC': 'SC', 'ST': 'ST', 'VJ/DT': 'VJ', 'NT1': 'NT1', 'NT2': 'NT2', 'NT3': 'NT3', 'EWS': 'EWS', 'TFWS': 'TFWS' };
+  const searchCat = catMap[category] || 'OPEN';
+
+  const metaMap = {};
+  collegeMetadata.forEach(c => metaMap[c.code] = c);
+
+  let filtered = cutoffData.filter(r => {
+    if (hasPctRange) {
+      if (r.percentile < pctMin || r.percentile > pctMax) return false;
+    }
+    if (hasRankRange) {
+      if (r.rank < rankMin || r.rank > rankMax) return false;
+    }
+    if (bg !== 'all') {
+      const cat = categorizeBranch(r.branch);
+      if (bg === 'computer' && cat !== 'Computer & IT') return false;
+      if (bg === 'electronics' && cat !== 'Electronics & Telecom') return false;
+      if (bg === 'core' && cat !== 'Core Engineering') return false;
+      if (bg === 'biotech' && cat !== 'Biotech & Allied') return false;
+    }
+    const meta = metaMap[r.code] || {};
+    const statusLower = (meta.status || '').toLowerCase();
+    if (colType) {
+      if (colType === 'Government' && !statusLower.includes('government')) return false;
+      if (colType === 'Aided' && !statusLower.includes('aided')) return false;
+      if (colType === 'Autonomous' && !statusLower.includes('autonomous')) return false;
+      if (colType === 'Un-Aided' && (statusLower.includes('government') || statusLower.includes('aided'))) return false;
+    }
+    if (region) {
+      const nameLower = (meta.name || r.name || '').toLowerCase();
+      if (!nameLower.includes(region.toLowerCase())) return false;
+    }
+    if (minority) {
+      if (!statusLower.includes('minority') || !statusLower.includes(minority.toLowerCase())) return false;
+    }
+    const isMatchingMinorityCollege = minority && statusLower.includes('minority') && statusLower.includes(minority.toLowerCase());
+    const activeSearchCat = isMatchingMinorityCollege ? 'OPEN' : searchCat;
+    if (activeSearchCat !== 'OPEN' && !(r.seatType || '').includes(activeSearchCat)) return false;
+    if (activeSearchCat === 'OPEN' && !(r.seatType || '').includes('OPEN')) return false;
+
+    // Exclude women-only and ladies seats from templates
+    const isWomenOnly = (meta.name || r.name || '').toLowerCase().includes('women') || (meta.name || r.name || '').toLowerCase().includes('girls') || (meta.status || '').toLowerCase().includes('women') || (meta.status || '').toLowerCase().includes('girls') || r.code === '3035';
+    if (isWomenOnly) return false;
+    if ((r.seatType || '').startsWith('L')) return false;
+
+    return true;
+  });
+
+  const groups = {};
+  filtered.forEach(r => {
+    const key = r.code + '|' + r.branch;
+    if (!groups[key] || r.percentile > groups[key].percentile) {
+      groups[key] = r;
+    }
+  });
+
+  let results = Object.values(groups).map(r => {
+    const meta = metaMap[r.code] || {};
+    return {
+      code: r.code,
+      instituteName: meta.name || r.name,
+      branch: r.branch,
+      percentile: r.percentile,
+      isGov: (meta.status || '').toLowerCase().includes('government'),
+      isAided: (meta.status || '').toLowerCase().includes('aided'),
+      isAuto: (meta.status || '').toLowerCase().includes('autonomous'),
+      isMinority: (meta.status || '').toLowerCase().includes('minority'),
+      minorityType: extractMinority(meta.status || '')
+    };
+  });
+
+  results.sort((a, b) => b.percentile - a.percentile);
+  return results.slice(0, 35); // 35 colleges max
+}
+
+
+
+async function deleteTemplate(templateId) {
+  if (!confirm('Are you sure you want to delete this template? This action cannot be undone.')) return;
+  const res = await authApi('deleteTemplate', { templateId });
+  if (res.ok) {
+    pbToast('Template deleted.');
+    const allRes = await authApi('getAllTemplates', {});
+    if (allRes.ok) {
+      renderAdminTemplatesList(allRes.data);
+    }
+  } else {
+    pbToast('Error deleting template: ' + res.error);
+  }
+}
+
+
+
+async function createNewTemplateInBuilder() {
+  // Initialize admin mode variables
+  isAdminTemplateEditingMode = true;
+  editingTemplateId = null;
+  editingTemplateName = '';
+  editingTemplateDesc = '';
+  editingTemplateTags = [];
+  editingTemplateIsPublished = true;
+  editingTemplateFilters = {
+    percentileMin: 95,
+    percentileMax: 99.9,
+    branchGroup: 'all',
+    region: '',
+    category: 'OPEN',
+    collegeType: '',
+    minority: ''
+  };
+
+  // Reset/Initialize Builder State
+  prefList = [];
+  selectedBranches = new Set();
+  selectedColleges = [];
+  currentFormId = null;
+
+  // Clear inputs in Step 1
+  document.getElementById('inPct').value = '95';
+  document.getElementById('inRank').value = '5000';
+  document.getElementById('inPctMin').value = '95';
+  document.getElementById('inPctMax').value = '99.9';
+  document.getElementById('inRankMin').value = '';
+  document.getElementById('inRankMax').value = '';
+  document.getElementById('inCategory').value = 'OPEN';
+  document.getElementById('inGender').value = 'Gender-Neutral';
+  document.getElementById('inRegion').value = '';
+  document.getElementById('inColType').value = '';
+  document.getElementById('inMinority').value = '';
+
+  // Setup Admin Banner & UI
+  setupAdminBuilderUI('');
+
+  // Close manager modal & navigate
+  closeAdminTplManager();
+  goStep(1);
+}
+
+function editTemplateInBuilder(id) {
+  const allRes = loadedAdminTemplates || [];
+  const t = allRes.find(x => x.id === id);
+  if (!t) return;
+
+  isAdminTemplateEditingMode = true;
+  editingTemplateId = id;
+  editingTemplateName = t.name || '';
+  editingTemplateDesc = t.description || '';
+  editingTemplateTags = t.tags || [];
+  editingTemplateIsPublished = t.isPublished !== false;
+  editingTemplateFilters = t.filters || {};
+
+  // Load template filters to Step 1 inputs
+  document.getElementById('inPct').value = t.filters?.percentileMax || t.filters?.percentileMin || '95';
+  document.getElementById('inRank').value = '1000'; // Default placeholder for templates
+  document.getElementById('inPctMin').value = t.filters?.percentileMin !== undefined && t.filters?.percentileMin !== null ? t.filters.percentileMin : '';
+  document.getElementById('inPctMax').value = t.filters?.percentileMax !== undefined && t.filters?.percentileMax !== null ? t.filters.percentileMax : '';
+  document.getElementById('inRankMin').value = t.filters?.rankMin !== undefined && t.filters?.rankMin !== null ? t.filters.rankMin : '';
+  document.getElementById('inRankMax').value = t.filters?.rankMax !== undefined && t.filters?.rankMax !== null ? t.filters.rankMax : '';
+
+  document.getElementById('inCategory').value = t.filters?.category || 'OPEN';
+  document.getElementById('inGender').value = 'Gender-Neutral';
+  document.getElementById('inRegion').value = t.filters?.region || '';
+  document.getElementById('inColType').value = t.filters?.collegeType || '';
+  document.getElementById('inMinority').value = t.filters?.minority || '';
+
+  // Setup builder state with template's colleges
+  prefList = t.prefList || [];
+  
+  // Pre-select branches matching template's colleges
+  selectedBranches = new Set();
+  prefList.forEach(c => {
+    if (c.branch) selectedBranches.add(c.branch);
+  });
+  renderBranches(); // Update checkboxes in Step 2
+
+  // Restore matched colleges selection keys for Step 3
+  window._tempKeys = prefList.map(c => c.code + '|' + c.branch);
+  selectedColleges = [];
+
+  setupAdminBuilderUI(t.name);
+
+  // Close manager modal & navigate
+  closeAdminTplManager();
+  goStep(1);
+}
+
+function setupAdminBuilderUI(name) {
+  const banner = document.getElementById('adminModeBanner');
+  if (banner) {
+    banner.style.display = 'flex';
+    document.getElementById('adminModeTplName').textContent = name || 'New Template';
+  }
+
+  // Update complete button in Step 4
+  const saveBtn = document.getElementById('completeSaveBtn');
+  if (saveBtn) {
+    saveBtn.innerHTML = `Save Template <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:10px"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>`;
+    saveBtn.setAttribute('onclick', 'saveTemplateFromBuilder()');
+  }
+
+  // Toggle rows
+  const userRow = document.getElementById('studentPctRankRow');
+  const tplRow = document.getElementById('adminTplRangeRow');
+  if (userRow) userRow.style.display = 'none';
+  if (tplRow) tplRow.style.display = 'block';
+
+  // Show and populate metadata fields in Step 4
+  const metaSection = document.getElementById('adminTemplateMetaSection');
+  if (metaSection) {
+    metaSection.style.display = 'block';
+    document.getElementById('adminMetaName').value = editingTemplateName || '';
+    document.getElementById('adminMetaDesc').value = editingTemplateDesc || '';
+    document.getElementById('adminMetaTags').value = (editingTemplateTags || []).join(', ');
+    document.getElementById('adminMetaPublished').checked = editingTemplateIsPublished !== false;
+  }
+}
+
+function updateAdminModeTplName(val) {
+  editingTemplateName = val;
+  const nameEl = document.getElementById('adminModeTplName');
+  if (nameEl) {
+    nameEl.textContent = val.trim() || 'New Template';
+  }
+}
+
+async function saveTemplateFromBuilder() {
+  const nameInput = document.getElementById('adminMetaName');
+  const descInput = document.getElementById('adminMetaDesc');
+  const tagsInput = document.getElementById('adminMetaTags');
+  const pubInput = document.getElementById('adminMetaPublished');
+
+  const name = nameInput ? nameInput.value.trim() : '';
+  const description = descInput ? descInput.value.trim() : '';
+  const tagsStr = tagsInput ? tagsInput.value : '';
+  const isPublished = pubInput ? pubInput.checked : true;
+
+  if (!name) {
+    pbToast('Template name is required.');
+    return;
+  }
+
+  const tags = tagsStr.split(',').map(s => s.trim()).filter(Boolean);
+
+  const pctMinVal = document.getElementById('inPctMin').value;
+  const pctMaxVal = document.getElementById('inPctMax').value;
+  const rankMinVal = document.getElementById('inRankMin').value;
+  const rankMaxVal = document.getElementById('inRankMax').value;
+
+  const filters = {
+    percentileMin: pctMinVal !== '' ? parseFloat(pctMinVal) : null,
+    percentileMax: pctMaxVal !== '' ? parseFloat(pctMaxVal) : null,
+    rankMin: rankMinVal !== '' ? parseInt(rankMinVal) : null,
+    rankMax: rankMaxVal !== '' ? parseInt(rankMaxVal) : null,
+    branchGroup: editingTemplateFilters.branchGroup || 'all',
+    region: document.getElementById('inRegion').value,
+    category: document.getElementById('inCategory').value,
+    collegeType: document.getElementById('inColType').value,
+    minority: document.getElementById('inMinority').value
+  };
+
+  // The college list is the active prefList!
+  const selectedColleges = prefList.map(c => {
+    return {
+      code: c.code,
+      instituteName: c.instituteName,
+      branch: c.branch,
+      percentile: c.percentile,
+      isGov: c.isGov || false,
+      isAided: c.isAided || false,
+      isAuto: c.isAuto || false,
+      isMinority: c.isMinority || false,
+      minorityType: c.minorityType || ''
+    };
+  });
+
+  if (selectedColleges.length === 0) {
+    pbToast('Please add at least one college to the template.');
+    return;
+  }
+
+  const payload = {
+    templateId: editingTemplateId,
+    name,
+    description,
+    filters,
+    tags,
+    prefList: selectedColleges,
+    isPublished
+  };
+
+  pbToast('Saving template...', 3000);
+  const res = await authApi('saveTemplate', payload);
+  if (res.ok) {
+    pbToast('Template saved successfully!');
+    exitAdminTemplateEditingMode();
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('editTemplate') || params.has('newTemplate')) {
+      window.location.href = 'admin.html?tab=templates';
+    } else {
+      goStep(0);
+      openAdminTemplateManager();
+    }
+  } else {
+    pbToast(res.error || 'Failed to save template.');
+  }
+}
+
+function exitAdminTemplateEditingMode() {
+  isAdminTemplateEditingMode = false;
+  editingTemplateId = null;
+  editingTemplateName = '';
+  editingTemplateDesc = '';
+  editingTemplateTags = [];
+  editingTemplateIsPublished = true;
+  editingTemplateFilters = {};
+  
+  // Hide the admin banner
+  const banner = document.getElementById('adminModeBanner');
+  if (banner) banner.style.display = 'none';
+
+  // Restore the Step 4 button text/onclick
+  const saveBtn = document.getElementById('completeSaveBtn');
+  if (saveBtn) {
+    saveBtn.innerHTML = `Complete & Save List <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:10px"><path d="M20 6 9 17 4 12"/></svg>`;
+    saveBtn.setAttribute('onclick', 'returnToDashboard()');
+  }
+
+  // Toggle rows back
+  const userRow = document.getElementById('studentPctRankRow');
+  const tplRow = document.getElementById('adminTplRangeRow');
+  if (userRow) userRow.style.display = 'flex';
+  if (tplRow) tplRow.style.display = 'none';
+
+  // Hide metadata fields in Step 4
+  const metaSection = document.getElementById('adminTemplateMetaSection');
+  if (metaSection) metaSection.style.display = 'none';
+}
+
+function handleExitAdminMode() {
+  exitAdminTemplateEditingMode();
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('editTemplate') || params.has('newTemplate')) {
+    window.location.href = 'admin.html?tab=templates';
+  } else {
+    goStep(0);
+    openAdminTemplateManager();
+  }
+}
+
+function renderAdminTemplatesList(templates) {
+  const listEl = document.getElementById('adminTplManagerList');
+  document.getElementById('adminTplTotalCount').textContent = templates.length + ' templates';
+  
+  if (templates.length === 0) {
+    listEl.innerHTML = '<div style="padding:30px; text-align:center; color:var(--muted)">No templates created yet. Click "New Template" or "Seed Defaults" to start.</div>';
+    return;
+  }
+  
+  listEl.innerHTML = templates.map(t => {
+    const pubBadge = t.isPublished ? 
+      '<span style="background:#dcfce7; color:#16a34a; font-size:10px; font-weight:800; padding:2px 6px; border-radius:4px">Published</span>' :
+      '<span style="background:#f1f5f9; color:#64748b; font-size:10px; font-weight:800; padding:2px 6px; border-radius:4px">Draft</span>';
+    
+    return `<div class="tpl-mgmt-item">
+      <div class="tpl-mgmt-info">
+        <div class="tpl-mgmt-name">${escH(t.name)}</div>
+        <div class="tpl-mgmt-meta">
+          <span>${t.prefList?.length || 0} colleges</span>
+          <span>·</span>
+          <span>Used ${t.usageCount || 0} times</span>
+          <span>·</span>
+          ${pubBadge}
+        </div>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap">
+        <button class="pb-btn pb-btn-ghost" onclick="editTemplateInBuilder('${t.id}')" style="padding:6px 12px; font-size:12px; border-color:var(--brand); color:var(--brand)">Edit</button>
+        <button class="pb-btn" onclick="deleteTemplate('${t.id}')" style="padding:6px 12px; font-size:12px; background:none; color:#ef4444; border:1px solid rgba(239, 68, 68, 0.2)">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function seedDefaultTemplates() {
+  if (!confirm('Are you sure you want to seed 12 default templates? This will generate and publish them in the database.')) return;
+  
+  const seedDefs = [
+    {
+      name: "Top Computer & IT — Mumbai (95-99%ile)",
+      description: "Ideal preference list for high-scoring students seeking CS/IT branches in top-tier Mumbai colleges (VJTI, SPIT, DJ Sanghvi, etc.).",
+      tags: ["Mumbai", "Computer", "95-99%ile", "Premium"],
+      filters: { percentileMin: 95, percentileMax: 100, branchGroup: "computer", region: "Mumbai", category: "OPEN", collegeType: "", minority: "" }
+    },
+    {
+      name: "Top Computer & IT — Pune (95-99%ile)",
+      description: "Ideal preference list for high-scoring students seeking CS/IT branches in top-tier Pune colleges (COEP, PICT, VIT Pune, etc.).",
+      tags: ["Pune", "Computer", "95-99%ile", "Premium"],
+      filters: { percentileMin: 95, percentileMax: 100, branchGroup: "computer", region: "Pune", category: "OPEN", collegeType: "", minority: "" }
+    },
+    {
+      name: "Mid-Range CS/IT — Mumbai (90-95%ile)",
+      description: "Curated preference list for students seeking CS/IT branches in reputable Mumbai colleges.",
+      tags: ["Mumbai", "Computer", "90-95%ile", "Premium"],
+      filters: { percentileMin: 90, percentileMax: 95, branchGroup: "computer", region: "Mumbai", category: "OPEN", collegeType: "", minority: "" }
+    },
+    {
+      name: "Mid-Range CS/IT — Pune (90-95%ile)",
+      description: "Curated preference list for students seeking CS/IT branches in reputable Pune colleges.",
+      tags: ["Pune", "Computer", "90-95%ile", "Premium"],
+      filters: { percentileMin: 90, percentileMax: 95, branchGroup: "computer", region: "Pune", category: "OPEN", collegeType: "", minority: "" }
+    },
+    {
+      name: "Government & Autonomous Colleges — Maharashtra",
+      description: "A comprehensive list focusing on highly reputed Government and Autonomous engineering colleges across all regions.",
+      tags: ["Maharashtra", "Government", "Autonomous", "Premium"],
+      filters: { percentileMin: 85, percentileMax: 100, branchGroup: "all", region: "", category: "OPEN", collegeType: "Autonomous", minority: "" }
+    },
+    {
+      name: "Electronics & Telecomm — Pune & Mumbai (85-95%ile)",
+      description: "Preference list for students looking for Electronics / ENTC / Instrumentation branches in Mumbai and Pune's best colleges.",
+      tags: ["Pune", "Mumbai", "Electronics", "85-95%ile"],
+      filters: { percentileMin: 85, percentileMax: 95, branchGroup: "electronics", region: "", category: "OPEN", collegeType: "", minority: "" }
+    },
+    {
+      name: "Muslim Minority Colleges — Mumbai Region",
+      description: "Edge-case preference list for Muslim minority candidates seeking admission in Mumbai colleges (MH Saboo Siddik, Anjuman-I-Islam, etc.) under minority quota.",
+      tags: ["Mumbai", "Muslim", "Minority"],
+      filters: { percentileMin: 75, percentileMax: 98, branchGroup: "computer", region: "Mumbai", category: "OPEN", collegeType: "", minority: "Muslim" }
+    },
+    {
+      name: "Jain Minority Colleges — Pune & Mumbai",
+      description: "Edge-case preference list for Jain minority candidates in Pune (e.g. GH Raisoni) and Mumbai colleges under minority quota.",
+      tags: ["Jain", "Minority"],
+      filters: { percentileMin: 75, percentileMax: 98, branchGroup: "computer", region: "", category: "OPEN", collegeType: "", minority: "Jain" }
+    },
+    {
+      name: "Core Engineering Branches — Top Colleges (85-95%ile)",
+      description: "Preference list focusing on Mechanical, Electrical, and Civil engineering in top colleges across Mumbai and Pune.",
+      tags: ["Core", "Mechanical", "Electrical", "85-95%ile"],
+      filters: { percentileMin: 85, percentileMax: 95, branchGroup: "core", region: "", category: "OPEN", collegeType: "", minority: "" }
+    },
+    {
+      name: "Biotech & Allied Sciences — Top Colleges",
+      description: "Specialized preference list focusing on Biotechnology and Biomedical engineering departments in Maharashtra.",
+      tags: ["Biotech", "Biomedical", "Allied"],
+      filters: { percentileMin: 75, percentileMax: 98, branchGroup: "biotech", region: "", category: "OPEN", collegeType: "", minority: "" }
+    },
+    {
+      name: "Nagpur Region Top Colleges (80-95%ile)",
+      description: "A comprehensive preference list of the best engineering institutions in the Nagpur region (RCOEM, VNIT, YCCE, etc.).",
+      tags: ["Nagpur", "80-95%ile"],
+      filters: { percentileMin: 80, percentileMax: 95, branchGroup: "computer", region: "Nagpur", category: "OPEN", collegeType: "", minority: "" }
+    },
+    {
+      name: "Lower-Mid Range CS/IT — Mumbai & Pune (70-85%ile)",
+      description: "Practical preference list for students scoring 70-85 percentile targeting CS/IT branches in Pune and Mumbai.",
+      tags: ["Mumbai", "Pune", "70-85%ile"],
+      filters: { percentileMin: 70, percentileMax: 85, branchGroup: "computer", region: "", category: "OPEN", collegeType: "", minority: "" }
+    }
+  ];
+
+  pbToast('Seeding templates... please wait');
+  
+  for (const t of seedDefs) {
+    const pList = generateCollegeListForParams(t.filters);
+    await authApi('saveTemplate', {
+      name: t.name,
+      description: t.description,
+      filters: t.filters,
+      tags: t.tags,
+      prefList: pList,
+      isPublished: true
+    });
+  }
+  
+  pbToast('12 default templates seeded successfully!');
+  if (document.getElementById('adminTplManagerModal').classList.contains('show')) {
+    const res = await authApi('getAllTemplates', {});
+    if (res.ok) renderAdminTemplatesList(res.data);
+  }
+}
+
+/* ══════ BOOT ══════ */
+async function boot() {
+  const session = initAuth({ requireLogin: true, toolContainerId: 'toolArea' });
+  if (!session) return;
+  const user = getSession();
+  if (user) currentUserId = user.id;
+  if (user && user.role === 'admin') {
+    const adminBtn = document.getElementById('adminTemplateBtn');
+    if (adminBtn) adminBtn.style.display = 'block';
+  }
+  await loadData();
+  await loadSavedPrefData();
+
+  if (user && user.role === 'admin') {
+    const params = new URLSearchParams(window.location.search);
+    const editTplId = params.get('editTemplate');
+    const newTpl = params.get('newTemplate');
+
+    if (editTplId) {
+      const res = await authApi('getAllTemplates', {});
+      if (res.ok) {
+        loadedAdminTemplates = res.data || [];
+        editTemplateInBuilder(editTplId);
+      }
+    } else if (newTpl) {
+      createNewTemplateInBuilder();
+    }
+  }
+}
+
+/* ─── TEMPLATES TAB (IN BUILDER) ─── */
+async function loadTemplatesTab() {
+  const container = document.getElementById('tabTplGridContainer');
+  if (!container) return;
+  
+  if (loadedTemplates.length === 0) {
+    container.innerHTML = '<div class="pb-loader"><div class="pb-spinner"></div><span>Loading templates...</span></div>';
+    const res = await authApi('getTemplates', {});
+    if (res.ok) {
+      loadedTemplates = res.data || [];
+    } else {
+      container.innerHTML = `<div style="color:var(--brand);text-align:center;padding:20px">${escH(res.error || 'Failed to load templates')}</div>`;
+      return;
+    }
+  }
+  
+  // Reset the sub-tabs active state when loading
+  const parent = document.getElementById('tabTplCategories');
+  if (parent) {
+    parent.querySelectorAll('.tpl-sub-tab-btn').forEach(b => {
+      const isAll = b.dataset.cat === 'all';
+      b.classList.toggle('active', isAll);
+      b.style.background = isAll ? 'var(--brand-soft)' : 'transparent';
+      b.style.color = isAll ? 'var(--brand)' : 'var(--muted)';
+    });
+  }
+  
+  renderTemplatesInTab('all');
+}
+
+function switchTabTplCategory(catKey, btn) {
+  const parent = document.getElementById('tabTplCategories');
+  if (parent) {
+    parent.querySelectorAll('.tpl-sub-tab-btn').forEach(b => {
+      b.classList.remove('active');
+      b.style.background = 'transparent';
+      b.style.color = 'var(--muted)';
+    });
+  }
+  if (btn) {
+    btn.classList.add('active');
+    btn.style.background = 'var(--brand-soft)';
+    btn.style.color = 'var(--brand)';
+  }
+  renderTemplatesInTab(catKey);
+}
+
+function renderTemplatesInTab(catKey) {
+  const container = document.getElementById('tabTplGridContainer');
+  if (!container) return;
+  
+  let filtered = loadedTemplates || [];
+  if (catKey !== 'all') {
+    filtered = filtered.filter(t => getTplCategory(t) === catKey);
+  }
+  
+  if (filtered.length === 0) {
+    container.innerHTML = `<div style="padding:40px 20px; text-align:center; color:var(--muted); font-size:13px; grid-column:1/-1">No templates found in this section.</div>`;
+    return;
+  }
+  
+  container.innerHTML = filtered.map(t => {
+    const colCount = t.prefList?.length || 0;
+    const usage = t.usageCount || 0;
+    const gradient = getGradientForTpl(t);
+    const counselor = getCounselorForTpl(t);
+
+    return `<div class="tpl-card-v2" onclick="previewTemplate('${t.id}')" style="max-width:100%">
+      <div class="tpl-card-banner" style="background: ${gradient}; height:110px; padding:12px;">
+        <div class="tpl-banner-tag" style="font-size:7.5px; padding:2px 6px;">${escH(getBadgeForTpl(t))}</div>
+        <div class="tpl-banner-accent" style="top:12px; right:12px; font-size:7.5px;">MHT-CET 2026</div>
+        <div class="tpl-banner-title" style="font-size:12px; max-width: 100%; margin-bottom: 2px;">${escH(t.name)}</div>
+        <div style="z-index: 3; margin-top: 2px;">
+          <span style="background: ${counselor.badgeBg}; color: #ffffff; padding: 1px 4px; border-radius: 4px; font-size: 7px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">${escH(counselor.name)}</span>
+        </div>
+      </div>
+      <div class="tpl-card-body" style="padding: 10px 12px; display: flex; flex-direction: column; flex: 1; min-height: 50px; justify-content: space-between">
+        <h4 style="font-family:'Lexend',sans-serif; font-weight: 800; font-size: 12px; color: var(--ink); line-height: 1.3; margin: 0 0 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis">${escH(t.name)}</h4>
+        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 10px; color: var(--muted); font-weight: 500; border-top: 1px dashed var(--stroke); padding-top: 6px; margin-top: auto">
+          <span style="display: inline-flex; align-items: center; gap: 4px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: middle;"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg> ${colCount} Colleges</span>
+          <span style="display: inline-flex; align-items: center; gap: 4px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: middle;"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg> Used ${usage}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ─── DASHBOARD TEMPLATES LIBRARY ─── */
+async function loadDashboardTemplates() {
+  const container = document.getElementById('dashTplGridContainer');
+  if (!container) return;
+  
+  if (loadedTemplates.length === 0) {
+    container.innerHTML = '<div class="pb-loader"><div class="pb-spinner"></div><span>Loading templates...</span></div>';
+    const res = await authApi('getTemplates', {});
+    if (res.ok) {
+      loadedTemplates = res.data || [];
+    } else {
+      container.innerHTML = `<div style="color:var(--brand);text-align:center;padding:20px">${escH(res.error || 'Failed to load templates')}</div>`;
+      return;
+    }
+  }
+  
+  // Reset active state for dashboard sub-tabs
+  const parent = document.getElementById('dashTplCategories');
+  if (parent) {
+    parent.querySelectorAll('.tpl-sub-tab-btn').forEach(b => {
+      const isAll = b.dataset.cat === 'all';
+      b.classList.toggle('active', isAll);
+      b.style.background = isAll ? 'var(--brand-soft)' : 'transparent';
+      b.style.color = isAll ? 'var(--brand)' : 'var(--muted)';
+    });
+  }
+  
+  renderTemplatesInDashboard('all');
+}
+
+function switchDashTplCategory(catKey, btn) {
+  const parent = document.getElementById('dashTplCategories');
+  if (parent) {
+    parent.querySelectorAll('.tpl-sub-tab-btn').forEach(b => {
+      b.classList.remove('active');
+      b.style.background = 'transparent';
+      b.style.color = 'var(--muted)';
+    });
+  }
+  if (btn) {
+    btn.classList.add('active');
+    btn.style.background = 'var(--brand-soft)';
+    btn.style.color = 'var(--brand)';
+  }
+  renderTemplatesInDashboard(catKey);
+}
+
+function renderTemplatesInDashboard(catKey) {
+  const container = document.getElementById('dashTplGridContainer');
+  if (!container) return;
+  
+  let filtered = loadedTemplates || [];
+  if (catKey !== 'all') {
+    filtered = filtered.filter(t => getTplCategory(t) === catKey);
+  }
+  
+  if (filtered.length === 0) {
+    container.innerHTML = `<div style="padding:40px 20px; text-align:center; color:var(--muted); font-size:13px; grid-column:1/-1">No templates found in this section.</div>`;
+    return;
+  }
+  
+  // Show only first 3 templates in dashboard preview
+  const previewList = filtered.slice(0, 3);
+  
+  container.innerHTML = previewList.map(t => {
+    const colCount = t.prefList?.length || 0;
+    const usage = t.usageCount || 0;
+    const gradient = getGradientForTpl(t);
+    const counselor = getCounselorForTpl(t);
+
+    return `<div class="tpl-card-v2" onclick="previewTemplate('${t.id}')" style="max-width:100%">
+      <div class="tpl-card-banner" style="background: ${gradient}; height:110px; padding:12px;">
+        <div class="tpl-banner-tag" style="font-size:7.5px; padding:2px 6px;">${escH(getBadgeForTpl(t))}</div>
+        <div class="tpl-banner-accent" style="top:12px; right:12px; font-size:7.5px;">MHT-CET 2026</div>
+        <div class="tpl-banner-title" style="font-size:12px; max-width: 100%; margin-bottom: 2px;">${escH(t.name)}</div>
+        <div style="z-index: 3; margin-top: 2px;">
+          <span style="background: ${counselor.badgeBg}; color: #ffffff; padding: 1px 4px; border-radius: 4px; font-size: 7px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">${escH(counselor.name)}</span>
+        </div>
+      </div>
+      <div class="tpl-card-body" style="padding: 10px 12px; display: flex; flex-direction: column; flex: 1; min-height: 50px; justify-content: space-between">
+        <h4 style="font-family:'Lexend',sans-serif; font-weight: 800; font-size: 12px; color: var(--ink); line-height: 1.3; margin: 0 0 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis">${escH(t.name)}</h4>
+        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 10px; color: var(--muted); font-weight: 500; border-top: 1px dashed var(--stroke); padding-top: 6px; margin-top: auto">
+          <span style="display: inline-flex; align-items: center; gap: 4px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: middle;"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg> ${colCount} Colleges</span>
+          <span style="display: inline-flex; align-items: center; gap: 4px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: middle;"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg> Used ${usage}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+
+// Expose globals
+window.goStep = goStep; window.toggleBranch = toggleBranch; window.toggleCategory = toggleCategory;
+window.toggleAllBranches = toggleAllBranches; window.toggleCatCollapse = toggleCatCollapse;
+window.toggleCollege = toggleCollege; window.filterColleges = filterColleges;
+window.removePref = removePref; window.handleAddSuggestion = handleAddSuggestion;
+window.returnToDashboard = returnToDashboard;
+window.exportPDF = exportPDF; window.switchSideTab = switchSideTab;
+window.deleteForm = deleteForm;
+window.dragStart = dragStart; window.dragOver = dragOver; window.dropItem = dropItem; window.dragEnd = dragEnd;
+window.toggleAspirational = toggleAspirational;
+window.enableEditing = enableEditing; window.saveProfileData = saveProfileData;
+window.openReportModal = openReportModal; window.closeReportModal = closeReportModal;
+window.submitEditRequest = submitEditRequest;
+window.searchManualColleges = searchManualColleges;
+window.searchManualCollegesList = searchManualCollegesList;
+window.sortPrefList = sortPrefList;
+window.handleTouchStart = handleTouchStart;
+window.handleTouchMove = handleTouchMove;
+window.handleTouchEnd = handleTouchEnd;
+window.showStudentModal = showStudentModal;
+window.closeStudentModal = closeStudentModal;
+window.switchStudentMode = switchStudentMode;
+window.searchExistingUsers = searchExistingUsers;
+window.selectExistingUser = selectExistingUser;
+window.submitStudentInfo = submitStudentInfo;
+
+// Expose template functions to window
+window.openTemplateLibrary = openTemplateLibrary;
+window.loadTemplatesTab = loadTemplatesTab;
+window.switchTabTplCategory = switchTabTplCategory;
+window.loadDashboardTemplates = loadDashboardTemplates;
+window.switchDashTplCategory = switchDashTplCategory;
+window.filterTplByPct = filterTplByPct;
+window.filterTplByBranch = filterTplByBranch;
+window.filterTemplates = filterTemplates;
+window.previewTemplate = previewTemplate;
+window.closeTplPreview = closeTplPreview;
+window.applyCurrentTemplate = applyCurrentTemplate;
+window.openAdminTemplateManager = openAdminTemplateManager;
+window.closeAdminTplManager = closeAdminTplManager;
+window.deleteTemplate = deleteTemplate;
+window.seedDefaultTemplates = seedDefaultTemplates;
+window.useTemplate = useTemplate;
+window.resetTplFilters = resetTplFilters;
+window.showCategoryAll = showCategoryAll;
+window.createNewTemplateInBuilder = createNewTemplateInBuilder;
+window.editTemplateInBuilder = editTemplateInBuilder;
+window.saveTemplateFromBuilder = saveTemplateFromBuilder;
+window.exitAdminTemplateEditingMode = exitAdminTemplateEditingMode;
+window.handleExitAdminMode = handleExitAdminMode;
+window.updateAdminModeTplName = updateAdminModeTplName;
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+
+

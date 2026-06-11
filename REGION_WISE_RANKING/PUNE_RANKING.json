@@ -1,0 +1,629 @@
+{
+  "PUNE_RANKING": [
+    {
+      "Sr No": "1",
+      "College Code": "16006",
+      "College Name": "COEP Technological University"
+    },
+    {
+      "Sr No": "2",
+      "College Code": "06271",
+      "College Name": "Pune Institute of Computer Technology (PICT)"
+    },
+    {
+      "Sr No": "3",
+      "College Code": "06276",
+      "College Name": "MKSSS's Cummins College of Engineering for Women, Pune"
+    },
+    {
+      "Sr No": "4",
+      "College Code": "06007",
+      "College Name": "Walchand College of Engineering, Sangli"
+    },
+    {
+      "Sr No": "5",
+      "College Code": "06273",
+      "College Name": "Vishwakarma Institute of Technology (VIT), Pune"
+    },
+    {
+      "Sr No": "6",
+      "College Code": "06175",
+      "College Name": "Pimpri Chinchwad College of Engineering (PCCOE), Pune"
+    },
+    {
+      "Sr No": "7",
+      "College Code": "06274",
+      "College Name": "PVG's College of Engineering and G.K. Pate Institute of Management, Pune"
+    },
+    {
+      "Sr No": "8",
+      "College Code": "06272",
+      "College Name": "D.Y. Patil College of Engineering, Akurdi, Pune"
+    },
+    {
+      "Sr No": "9",
+      "College Code": "06005",
+      "College Name": "Government College of Engineering, Karad"
+    },
+    {
+      "Sr No": "10",
+      "College Code": "06278",
+      "College Name": "AISSMS College of Engineering, Pune"
+    },
+    {
+      "Sr No": "11",
+      "College Code": "06282",
+      "College Name": "AISSMS Institute of Information Technology, Pune"
+    },
+    {
+      "Sr No": "12",
+      "College Code": "06141",
+      "College Name": "Rajarshi Shahu College of Engineering, Pune"
+    },
+    {
+      "Sr No": "13",
+      "College Code": "06822",
+      "College Name": "PCCOE&R, Ravet, Pune"
+    },
+    {
+      "Sr No": "14",
+      "College Code": "06146",
+      "College Name": "MIT Academy of Engineering (MITAOE), Alandi, Pune"
+    },
+    {
+      "Sr No": "15",
+      "College Code": "06754",
+      "College Name": "International Institute of Information Technology (I²IT), Pune"
+    },
+    {
+      "Sr No": "16",
+      "College Code": "06207",
+      "College Name": "Dr. D.Y. Patil Institute of Technology, Pimpri, Pune"
+    },
+    {
+      "Sr No": "17",
+      "College Code": "06156",
+      "College Name": "Marathwada Mitra Mandal's College of Engineering, Pune"
+    },
+    {
+      "Sr No": "18",
+      "College Code": "06267",
+      "College Name": "Kolhapur Institute of Technology (KIT), Kolhapur"
+    },
+    {
+      "Sr No": "19",
+      "College Code": "06004",
+      "College Name": "Government College of Engineering & Research, Avasari Khurd"
+    },
+    {
+      "Sr No": "20",
+      "College Code": "06139",
+      "College Name": "Progressive Education Society's Modern College of Engineering, Pune"
+    },
+    {
+      "Sr No": "21",
+      "College Code": "06177",
+      "College Name": "Sinhgad College of Engineering, Vadgaon (BK), Pune"
+    },
+    {
+      "Sr No": "22",
+      "College Code": "06796",
+      "College Name": "Bharati Vidyapeeth College of Engineering, Lavale, Pune"
+    },
+    {
+      "Sr No": "23",
+      "College Code": "06285",
+      "College Name": "Bharati Vidyapeeth College of Engineering for Women, Pune"
+    },
+    {
+      "Sr No": "24",
+      "College Code": "06281",
+      "College Name": "Wadia College of Engineering, Pune"
+    },
+    {
+      "Sr No": "25",
+      "College Code": "06155",
+      "College Name": "G.H. Raisoni College of Engineering & Management, Wagholi, Pune"
+    },
+    {
+      "Sr No": "26",
+      "College Code": "06214",
+      "College Name": "Rajarambapu Institute of Technology (RIT), Sangli"
+    },
+    {
+      "Sr No": "27",
+      "College Code": "06145",
+      "College Name": "JSPM's Jaywantrao Sawant College of Engineering, Pune"
+    },
+    {
+      "Sr No": "28",
+      "College Code": "06284",
+      "College Name": "Vidya Pratishthan's Kamalnayan Bajaj Institute of Engineering & Technology, Baramati"
+    },
+    {
+      "Sr No": "29",
+      "College Code": "06178",
+      "College Name": "Smt. Kashibai Navale College of Engineering, Pune"
+    },
+    {
+      "Sr No": "30",
+      "College Code": "06222",
+      "College Name": "Textile & Engineering Institute, Ichalkaranji"
+    },
+    {
+      "Sr No": "31",
+      "College Code": "06755",
+      "College Name": "JSPM Narhe Technical Campus, Pune"
+    },
+    {
+      "Sr No": "32",
+      "College Code": "06036",
+      "College Name": "Government College of Engineering, Kolhapur"
+    },
+    {
+      "Sr No": "33",
+      "College Code": "06265",
+      "College Name": "Walchand Institute of Technology, Solapur"
+    },
+    {
+      "Sr No": "34",
+      "College Code": "06179",
+      "College Name": "Indira College of Engineering & Management, Pune"
+    },
+    {
+      "Sr No": "35",
+      "College Code": "06772",
+      "College Name": "NBN Sinhgad Technical Institutes Campus, Pune"
+    },
+    {
+      "Sr No": "36",
+      "College Code": "06182",
+      "College Name": "Sinhgad Institute of Technology and Science, Narhe, Pune"
+    },
+    {
+      "Sr No": "37",
+      "College Code": "06732",
+      "College Name": "Ajeenkya DY Patil School of Engineering, Pune"
+    },
+    {
+      "Sr No": "38",
+      "College Code": "06122",
+      "College Name": "PVPIT, Bavdhan, Pune"
+    },
+    {
+      "Sr No": "39",
+      "College Code": "06203",
+      "College Name": "Marathwada Mitra Mandal's Institute of Technology, Lohgaon, Pune"
+    },
+    {
+      "Sr No": "40",
+      "College Code": "06310",
+      "College Name": "Nutan Maharashtra Institute of Engineering & Technology, Pune"
+    },
+    {
+      "Sr No": "41",
+      "College Code": "06187",
+      "College Name": "Sinhgad Academy of Engineering, Pune"
+    },
+    {
+      "Sr No": "42",
+      "College Code": "06298",
+      "College Name": "Zeal College of Engineering & Research, Pune"
+    },
+    {
+      "Sr No": "43",
+      "College Code": "06250",
+      "College Name": "D.Y. Patil College of Engineering and Technology, Kolhapur"
+    },
+    {
+      "Sr No": "44",
+      "College Code": "06311",
+      "College Name": "Bhivarabai Sawant Institute of Technology & Research, Wagholi"
+    },
+    {
+      "Sr No": "45",
+      "College Code": "06769",
+      "College Name": "RMD Sinhgad Technical Institutes Campus, Pune"
+    },
+    {
+      "Sr No": "46",
+      "College Code": "06307",
+      "College Name": "Dhole Patil College of Engineering, Wagholi"
+    },
+    {
+      "Sr No": "47",
+      "College Code": "06185",
+      "College Name": "Sinhgad Institute of Technology, Pune"
+    },
+    {
+      "Sr No": "48",
+      "College Code": "06220",
+      "College Name": "SVERI College of Engineering, Pandharpur"
+    },
+    {
+      "Sr No": "49",
+      "College Code": "06794",
+      "College Name": "Anantrao Pawar College of Engineering & Research, Pune"
+    },
+    {
+      "Sr No": "50",
+      "College Code": "06275",
+      "College Name": "SVM College of Engineering, Baramati"
+    },
+    {
+      "Sr No": "51",
+      "College Code": "06634",
+      "College Name": "Trinity Academy of Engineering, Pune"
+    },
+    {
+      "Sr No": "52",
+      "College Code": "06643",
+      "College Name": "SKN Sinhgad College of Engineering, Pandharpur"
+    },
+    {
+      "Sr No": "53",
+      "College Code": "06283",
+      "College Name": "Annasaheb Dange College of Engineering & Technology, Sangli"
+    },
+    {
+      "Sr No": "54",
+      "College Code": "06649",
+      "College Name": "TSSM's Bhivarabai Sawant College of Engineering and Research, Narhe, Pune"
+    },
+    {
+      "Sr No": "55",
+      "College Code": "06622",
+      "College Name": "ISBM College Of Engineering Pune"
+    },
+    {
+      "Sr No": "56",
+      "College Code": "06834",
+      "College Name": "Dr.D.Y.Patil College Of Engineering & Innovation,Talegaon"
+    },
+    {
+      "Sr No": "57",
+      "College Code": "06206",
+      "College Name": "Pune District Education Association's College of Engineering, Manjari(Bk), Hadapsar, Pune"
+    },
+    {
+      "Sr No": "58",
+      "College Code": "06144",
+      "College Name": "Genba Sopanrao Moze College of Engineering, Baner-Balewadi, Pune"
+    },
+    {
+      "Sr No": "59",
+      "College Code": "06138",
+      "College Name": "Genba Sopanrao Moze Trust Parvatibai Genba Moze College of Engineering,Wagholi, Pune"
+    },
+    {
+      "Sr No": "60",
+      "College Code": "06268",
+      "College Name": "Tatyasaheb Kore Institute of Engineering and Technology, Warananagar"
+    },
+    {
+      "Sr No": "61",
+      "College Code": "06770",
+      "College Name": "SKN Sinhgad Institute of Technology & Science, Kusgaon(BK),Pune."
+    },
+    {
+      "Sr No": "62",
+      "College Code": "06184",
+      "College Name": "K. J.'s Educational Institut Trinity College of Engineering and Research, Pisoli, Haveli"
+    },
+    {
+      "Sr No": "63",
+      "College Code": "06325",
+      "College Name": "Alard Charitable Trust's Alard College of Engineering and Management, Pune"
+    },
+    {
+      "Sr No": "64",
+      "College Code": "06223",
+      "College Name": "Pradnya Niketan Education Society's Nagesh Karajagi Orchid College of Engineering & Technology, Solapur"
+    },
+    {
+      "Sr No": "65",
+      "College Code": "06640",
+      "College Name": "N. B. Navale Sinhgad College of Engineering, Kegaon, Solapur"
+    },
+    {
+      "Sr No": "66",
+      "College Code": "06288",
+      "College Name": "Bharati Vidyapeeth's College of Engineering, Kolhapur"
+    },
+    {
+      "Sr No": "67",
+      "College Code": "06028",
+      "College Name": "Department of Technology, Shivaji University, Kolhapur"
+    },
+    {
+      "Sr No": "68",
+      "College Code": "06277",
+      "College Name": "Dr. J. J. Magdum Charitable Trust's Dr. J.J. Magdum College of Engineering, Jaysingpur"
+    },
+    {
+      "Sr No": "69",
+      "College Code": "06991",
+      "College Name": "Dr. D.Y. Patil Technical Campus, Varale, Talegaon, Pune"
+    },
+    {
+      "Sr No": "70",
+      "College Code": "06270",
+      "College Name": "Rayat Shikshan Sanstha's Karmaveer Bhaurao Patil College of Engineering, Satara"
+    },
+    {
+      "Sr No": "71",
+      "College Code": "06320",
+      "College Name": "K.J.'s Educational Institute's K.J.College of Engineering & Management Research, Pisoli"
+    },
+    {
+      "Sr No": "72",
+      "College Code": "06811",
+      "College Name": "Sanjay Ghodawat Institute"
+    },
+    {
+      "Sr No": "73",
+      "College Code": "06803",
+      "College Name": "Sant Gajanan Maharaj College of Engineering, Gadhinglaj"
+    },
+    {
+      "Sr No": "74",
+      "College Code": "06839",
+      "College Name": "Dr. D Y Patil Pratishthan's College of Engineering, Kolhapur"
+    },
+    {
+      "Sr No": "75",
+      "College Code": "06317",
+      "College Name": "Sharad Institute of Technology College of Engineering, Yadrav(Ichalkaranji)"
+    },
+    {
+      "Sr No": "76",
+      "College Code": "06768",
+      "College Name": "P.K. Technical Campus, Pune."
+    },
+    {
+      "Sr No": "77",
+      "College Code": "06759",
+      "College Name": "Shree Ramchandra College of Engineering, Lonikand,Pune"
+    },
+    {
+      "Sr No": "78",
+      "College Code": "06149",
+      "College Name": "Siddhant College of Engineering, A/p Sudumbare, Tal.Maval, Dist-Pune"
+    },
+    {
+      "Sr No": "79",
+      "College Code": "06808",
+      "College Name": "Keystone School of Engineering, Pune"
+    },
+    {
+      "Sr No": "80",
+      "College Code": "06609",
+      "College Name": "Jaihind College Of Engineering,Kuran"
+    },
+    {
+      "Sr No": "81",
+      "College Code": "06303",
+      "College Name": "Dr. Ashok Gujar Technical Institute's Dr. Daulatrao Aher College of Engineering, Karad"
+    },
+    {
+      "Sr No": "82",
+      "College Code": "06815",
+      "College Name": "Vidya Prasarini Sabha's College of Engineering & Technology, Lonavala"
+    },
+    {
+      "Sr No": "83",
+      "College Code": "06780",
+      "College Name": "D.Y.Patil Education Society's,D.Y.Patil Technical Campus, Faculty of Engineering & Faculty of Management,Talsande,Kolhapur."
+    },
+    {
+      "Sr No": "84",
+      "College Code": "06758",
+      "College Name": "Sahyadri Valley College of Engineering & Technology, Rajuri, Pune."
+    },
+    {
+      "Sr No": "85",
+      "College Code": "06269",
+      "College Name": "Shetkari Shikshan Mandal's Pad. Vasantraodada Patil Institute of Technology, Budhgaon, Sangli"
+    },
+    {
+      "Sr No": "86",
+      "College Code": "06183",
+      "College Name": "Al-Ameen Educational and Medical Foundation, College of Engineering, Koregaon, Bhima"
+    },
+    {
+      "Sr No": "87",
+      "College Code": "06632",
+      "College Name": "Navsahyadri Education Society's Group of Institutions"
+    },
+    {
+      "Sr No": "88",
+      "College Code": "06322",
+      "College Name": "Shree Gajanan Maharaj Shikshan Prasarak Manda'l Sharadchandra Pawar College of Engineering, Dumbarwadi"
+    },
+    {
+      "Sr No": "89",
+      "College Code": "06308",
+      "College Name": "Shanti Education Society, A.G. Patil Institute of Technology, Soregaon, Solapur(North)"
+    },
+    {
+      "Sr No": "90",
+      "College Code": "06268",
+      "College Name": "Tatyasaheb Kore Institute of Engineering and Technology, Warananagar"
+    },
+    {
+      "Sr No": "91",
+      "College Code": "06635",
+      "College Name": "Samarth College of Engineering and Management"
+    },
+    {
+      "Sr No": "92",
+      "College Code": "06938",
+      "College Name": "Shree Siddheshwar Womens College Of Engineering Solapur."
+    },
+    {
+      "Sr No": "93",
+      "College Code": "06757",
+      "College Name": "Yashoda Technical Campus, Wadhe, Satara."
+    },
+    {
+      "Sr No": "94",
+      "College Code": "06324",
+      "College Name": "Rajgad Technical Campus"
+    },
+    {
+      "Sr No": "95",
+      "College Code": "06771",
+      "College Name": "Flora Institute of Technology, Khopi, Near Khed Shivapur Toll Plaza, Pune"
+    },
+    {
+      "Sr No": "96",
+      "College Code": "06795",
+      "College Name": "Shri.Someshwar Shikshan Prasarak Mandal, Sharadchandra Pawar College of Engineering & Technology, Someshwar Nagar"
+    },
+    {
+      "Sr No": "97",
+      "College Code": "06797",
+      "College Name": "Dnyanshree Institute Engineering and Technology, Satara"
+    },
+    {
+      "Sr No": "98",
+      "College Code": "06901",
+      "College Name": "MAEER's MIT College of Railway Engineering and Research, Jamgaon, Barshi"
+    },
+    {
+      "Sr No": "99",
+      "College Code": "06304",
+      "College Name": "Loknete Hanumantrao Charitable Trust's Adarsh Institute of Technology and Research Centre, Vita,Sangli"
+    },
+    {
+      "Sr No": "100",
+      "College Code": "06326",
+      "College Name": "Karmayogi Institute of Technology"
+    },
+    {
+      "Sr No": "101",
+      "College Code": "06468",
+      "College Name": "Swami Vivekananda Shikshan Sanstha, Dr. Bapuji Salunkhe Institute Of Engineering & Technology,Kolhapur"
+    },
+    {
+      "Sr No": "102",
+      "College Code": "06767",
+      "College Name": "Suman Ramesh Tulsiani Technical Campus Faculty of Engineering, Kamshet,Pune."
+    },
+    {
+      "Sr No": "103",
+      "College Code": "06217",
+      "College Name": "Shri. Balasaheb Mane Shikshan Prasarak Mandal's, Ashokrao Mane Group of Institutions"
+    },
+    {
+      "Sr No": "104",
+      "College Code": "06762",
+      "College Name": "Nanasaheb Mahadik College of Engineering,Walwa, Sangli."
+    },
+    {
+      "Sr No": "105",
+      "College Code": "06466",
+      "College Name": "Shree Santkrupa Shikshan Sanstha, Shree Santkrupa Institute Of Engineering & Technology, Karad"
+    },
+    {
+      "Sr No": "106",
+      "College Code": "06782",
+      "College Name": "Sahakar Maharshee Shankarrao Mohite Patil Institute of Technology & Research, Akluj"
+    },
+    {
+      "Sr No": "107",
+      "College Code": "06756",
+      "College Name": "Fabtech Technical Campus College of Engineering and Research, Sangola"
+    },
+    {
+      "Sr No": "108",
+      "College Code": "06628",
+      "College Name": "Dattakala Group Of Institutions, Swami - Chincholi Tal. Daund Dist. Pune"
+    },
+    {
+      "Sr No": "109",
+      "College Code": "06402",
+      "College Name": "NEW INSTITUTE OF TECHNOLOGY,KOLHAPUR"
+    },
+    {
+      "Sr No": "110",
+      "College Code": "06315",
+      "College Name": "Sanjeevan Group of Institutions"
+    },
+    {
+      "Sr No": "111",
+      "College Code": "06878",
+      "College Name": "Dr. A. D. Shinde College Of Engineering, Tal.Gadhinglaj, Kolhapur"
+    },
+    {
+      "Sr No": "112",
+      "College Code": "06321",
+      "College Name": "Vidya Vikas Pratishthan Institute of Engineering and Technology, Solapur"
+    },
+    {
+      "Sr No": "113",
+      "College Code": "06293",
+      "College Name": "Kai Amdar Bramhadevdada Mane Shikshan & Samajik Prathistan's Bramhadevdada Mane Institute of Technology, Solapur"
+    },
+    {
+      "Sr No": "114",
+      "College Code": "06644",
+      "College Name": "Shri. Ambabai Talim Sanstha's Sanjay Bhokare Group of Institutes, Miraj"
+    },
+    {
+      "Sr No": "115",
+      "College Code": "06545",
+      "College Name": "Samarth Education Trust's Arvind Gavali College Of Engineering Panwalewadi, Varye,Satara."
+    },
+    {
+      "Sr No": "116",
+      "College Code": "06313",
+      "College Name": "Jaywant College of Engineering & Polytechnic , Kille Macchindragad Tal. Walva District- Sangali"
+    },
+    {
+      "Sr No": "117",
+      "College Code": "06766",
+      "College Name": "Phaltan Education Society's College of Engineering Thakurki Tal- Phaltan Dist-Satara"
+    },
+    {
+      "Sr No": "118",
+      "College Code": "06319",
+      "College Name": "Shahajirao Patil Vikas Pratishthan, S.B.Patil College of Engineering, Vangali, Tal. Indapur"
+    },
+    {
+      "Sr No": "119",
+      "College Code": "06781",
+      "College Name": "Bhagwant Institute of Technology, Barshi"
+    },
+    {
+      "Sr No": "120",
+      "College Code": "16121",
+      "College Name": "Shri. Anandrao Abitkar College of Engineering, Pal"
+    },
+    {
+      "Sr No": "121",
+      "College Code": "06444",
+      "College Name": "Shriram Institute Of Engineering & Technology, (Poly), Paniv"
+    },
+    {
+      "Sr No": "122",
+      "College Code": "06714",
+      "College Name": "APPASAHEB ALIAS SA.RE.PATIL INSTITUTE OF TECHNOLOGY, Dattanagar Tal-Shirol, Dist Kolhapur"
+    },
+    {
+      "Sr No": "123",
+      "College Code": "06219",
+      "College Name": "KSGBS's Bharat- Ratna Indira Gandhi College of Engineering, Kegaon, Solapur"
+    },
+    {
+      "Sr No": "125",
+      "College Code": "06799",
+      "College Name": "Shivganga Charitable Trust, Sangli Vishveshwarya Technical Campus, Faculty of Diploma Engineering, Patgaon, Miraj"
+    },
+    {
+      "Sr No": "126",
+      "College Code": "06305",
+      "College Name": "Late Narayandas Bhawandas Chhabada Institute of Engineering & Technology, Satara"
+    }
+  ]
+}

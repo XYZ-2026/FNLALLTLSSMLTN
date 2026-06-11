@@ -1,0 +1,4452 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Branch Predictor — College Simplified</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800;900&display=swap"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --red: #e8161b;
+      --red-dark: #b50e12;
+      --red-light: #ff3338;
+      --bg: #0a0a0a;
+      --bg2: #111;
+      --bg3: #1a1a1a;
+      --surface: #1e1e1e;
+      --border: #2a2a2a;
+      --text: #f0f0f0;
+      --muted: #888;
+      --white: #fff;
+      --header-bg: rgba(10, 10, 10, .94);
+      --card-shadow: 0 2px 12px rgba(0, 0, 0, .4)
+    }
+
+    [data-theme="light"] {
+      --bg: #f4f5f7;
+      --bg2: #eaedf0;
+      --bg3: #dde0e6;
+      --surface: #ffffff;
+      --border: #dde0e6;
+      --text: #1a1d23;
+      --muted: #6b7280;
+      --white: #1a1d23;
+      --header-bg: rgba(255, 255, 255, .96);
+      --card-shadow: 0 2px 12px rgba(0, 0, 0, .08)
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--header-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      height: 64px;
+      transition: background .25s, border-color .25s
+    }
+
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .theme-label {
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: .4px;
+      text-transform: uppercase
+    }
+
+    .toggle-pill {
+      position: relative;
+      width: 48px;
+      height: 26px;
+      background: var(--border);
+      border-radius: 100px;
+      cursor: pointer;
+      transition: background .25s;
+      border: none;
+      padding: 0;
+      flex-shrink: 0
+    }
+
+    .toggle-pill.active {
+      background: var(--red)
+    }
+
+    .toggle-knob {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .3);
+      transition: transform .25s
+    }
+
+    .toggle-pill.active .toggle-knob {
+      transform: translateX(22px)
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 18px
+    }
+
+    .header-tag {
+      font-size: .75rem;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: .3px
+    }
+
+    .header-tag span {
+      color: var(--red);
+      font-weight: 700
+    }
+
+    .logo {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--text);
+      letter-spacing: -.3px;
+      transition: color .25s
+    }
+
+    .logo span {
+      color: var(--red)
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .3
+      }
+    }
+
+    #screen-hero {
+      min-height: calc(100vh - 60px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 24px;
+      position: relative;
+      overflow: hidden
+    }
+
+    #screen-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 50% at 50% 30%, rgba(232, 22, 27, .12) 0%, transparent 70%);
+      pointer-events: none
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(232, 22, 27, .12);
+      border: 1px solid rgba(232, 22, 27, .3);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: .78rem;
+      color: var(--red-light);
+      margin-bottom: 28px;
+      font-weight: 500;
+      letter-spacing: .4px
+    }
+
+    .hero-badge::before {
+      content: '\25CF';
+      font-size: .6rem;
+      animation: blink 1.4s infinite
+    }
+
+    .hero-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      max-width: 700px
+    }
+
+    .hero-title span {
+      color: var(--red)
+    }
+
+    .hero-sub {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 520px;
+      line-height: 1.65;
+      margin-bottom: 40px
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      margin-bottom: 44px;
+      flex-wrap: wrap;
+      justify-content: center
+    }
+
+    .stat {
+      text-align: center
+    }
+
+    .stat-num {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--white)
+    }
+
+    .stat-num span {
+      color: var(--red)
+    }
+
+    .stat-label {
+      font-size: .78rem;
+      color: var(--muted);
+      margin-top: 2px
+    }
+
+    .btn-primary {
+      background: var(--red);
+      color: #fff;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 14px 36px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .btn-primary:hover {
+      background: var(--red-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(232, 22, 27, .35)
+    }
+
+    .btn-primary:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+      transform: none
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      font-family: 'Inter', sans-serif;
+      font-size: .9rem;
+      font-weight: 500;
+      padding: 12px 28px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all .2s;
+      margin-left: 12px
+    }
+
+    .btn-outline:hover {
+      border-color: var(--red);
+      color: var(--red)
+    }
+
+    .btn-pdf {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: .9rem;
+      font-weight: 600;
+      padding: 11px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .btn-pdf:hover {
+      border-color: var(--red);
+      color: var(--red)
+    }
+
+    .btn-pdf:disabled {
+      opacity: .55;
+      cursor: not-allowed
+    }
+
+    #screen-loading {
+      min-height: calc(100vh - 60px);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 24px
+    }
+
+    .spinner {
+      width: 56px;
+      height: 56px;
+      border: 3px solid var(--border);
+      border-top-color: var(--red);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin-bottom: 24px
+    }
+
+    .loading-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 8px
+    }
+
+    .loading-sub {
+      color: var(--muted);
+      font-size: .9rem
+    }
+
+    #screen-quiz {
+      display: none;
+      min-height: calc(100vh - 60px);
+      flex-direction: column
+    }
+
+    .quiz-top-bar {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 60px;
+      z-index: 50
+    }
+
+    .qbar-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px
+    }
+
+    .qbar-section-tag {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      color: var(--red-light)
+    }
+
+    .qbar-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--text)
+    }
+
+    .qbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px
+    }
+
+    .qbar-counter {
+      font-family: 'Poppins', sans-serif;
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--muted);
+      white-space: nowrap
+    }
+
+    .qbar-counter span {
+      color: var(--white)
+    }
+
+    .qbar-progress-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 160px
+    }
+
+    .qbar-progress-label {
+      font-size: .68rem;
+      color: var(--muted);
+      text-align: right
+    }
+
+    .qbar-track {
+      height: 4px;
+      background: var(--border);
+      border-radius: 100px;
+      overflow: hidden
+    }
+
+    .qbar-fill {
+      height: 100%;
+      background: var(--red);
+      border-radius: 100px;
+      transition: width .5s ease
+    }
+
+    .section-dots {
+      display: flex;
+      gap: 6px;
+      align-items: center
+    }
+
+    .sdot {
+      width: 28px;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--border);
+      transition: all .3s
+    }
+
+    .sdot.done {
+      background: #3a7a3a
+    }
+
+    .sdot.active {
+      background: var(--red)
+    }
+
+    .question-stage {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 24px 40px
+    }
+
+    .question-wrap {
+      width: 100%;
+      max-width: 680px
+    }
+
+    @keyframes qSlideIn {
+      from {
+        opacity: 0;
+        transform: translateX(40px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0)
+      }
+    }
+
+    @keyframes qSlideOut {
+      from {
+        opacity: 1;
+        transform: translateX(0)
+      }
+
+      to {
+        opacity: 0;
+        transform: translateX(-40px)
+      }
+    }
+
+    .q-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 36px 32px;
+      animation: qSlideIn .28s ease both
+    }
+
+    .q-card.exiting {
+      animation: qSlideOut .2s ease both
+    }
+
+    .q-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px
+    }
+
+    .q-num-chip {
+      background: var(--red);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      font-size: .72rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 100px;
+      letter-spacing: .4px
+    }
+
+    .q-sec-label {
+      font-size: .75rem;
+      color: var(--muted)
+    }
+
+    .q-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 500;
+      line-height: 1.6;
+      color: var(--text);
+      margin-bottom: 28px
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px
+    }
+
+    .option-btn {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      text-align: left;
+      cursor: pointer;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: .95rem;
+      line-height: 1.45;
+      transition: all .18s;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%
+    }
+
+    .option-btn:hover {
+      border-color: var(--red);
+      background: rgba(232, 22, 27, .07);
+      transform: translateX(3px)
+    }
+
+    .option-btn.selected {
+      border-color: var(--red);
+      background: rgba(232, 22, 27, .14);
+      color: #fff
+    }
+
+    .opt-letter {
+      min-width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--border);
+      border-radius: 7px;
+      font-size: .78rem;
+      font-weight: 700;
+      transition: all .18s;
+      flex-shrink: 0
+    }
+
+    .option-btn.selected .opt-letter {
+      background: var(--red)
+    }
+
+    .q-bottom-nav {
+      border-top: 1px solid var(--border);
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg);
+      gap: 12px
+    }
+
+    .q-nav-hint {
+      font-size: .8rem;
+      color: var(--muted)
+    }
+
+    .q-nav-hint span {
+      color: var(--red);
+      font-weight: 600
+    }
+
+    .q-nav-btns {
+      display: flex;
+      gap: 10px;
+      align-items: center
+    }
+
+    @media(max-width:600px) {
+      .quiz-top-bar {
+        padding: 10px 16px
+      }
+
+      .question-stage {
+        padding: 20px 16px 24px
+      }
+
+      .q-card {
+        padding: 24px 18px
+      }
+
+      .qbar-progress-wrap {
+        display: none
+      }
+    }
+
+    #screen-analysis {
+      display: none;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+      animation: fadeIn .4s ease
+    }
+
+    .analysis-header {
+      text-align: center;
+      margin-bottom: 44px
+    }
+
+    .sec-badge {
+      display: inline-block;
+      background: rgba(232, 22, 27, .12);
+      border: 1px solid rgba(232, 22, 27, .3);
+      color: var(--red-light);
+      font-size: .75rem;
+      font-weight: 600;
+      padding: 5px 14px;
+      border-radius: 100px;
+      letter-spacing: .5px;
+      margin-bottom: 16px;
+      text-transform: uppercase
+    }
+
+    .analysis-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.1rem;
+      font-weight: 800;
+      margin-bottom: 10px
+    }
+
+    .analysis-sub {
+      color: var(--muted);
+      font-size: .95rem
+    }
+
+    .sec-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px
+    }
+
+    .sec-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 20px;
+      position: relative;
+      overflow: hidden;
+      animation: fadeIn .4s ease both
+    }
+
+    .sec-card-top {
+      height: 3px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      border-radius: 3px 3px 0 0
+    }
+
+    .sec-card-label {
+      font-size: .7rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      margin-bottom: 6px
+    }
+
+    .sec-card-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: .95rem;
+      font-weight: 700;
+      margin-bottom: 10px
+    }
+
+    .sec-card-score {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 4px
+    }
+
+    .sec-card-sub {
+      font-size: .78rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 10px
+    }
+
+    .trait-chip {
+      display: inline-block;
+      font-size: .7rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 100px;
+      margin-right: 4px;
+      margin-bottom: 4px
+    }
+
+    .charts-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 32px
+    }
+
+    @media(max-width:680px) {
+      .charts-row {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px
+    }
+
+    .chart-card-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      margin-bottom: 18px
+    }
+
+    .bar-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 13px
+    }
+
+    .bar-row {
+      display: flex;
+      flex-direction: column;
+      gap: 5px
+    }
+
+    .bar-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    .bar-sec-name {
+      font-size: .8rem;
+      font-weight: 500;
+      color: var(--text)
+    }
+
+    .bar-pct {
+      font-family: 'Poppins', sans-serif;
+      font-size: .8rem;
+      font-weight: 700
+    }
+
+    .bar-track {
+      height: 9px;
+      background: var(--border);
+      border-radius: 100px;
+      overflow: hidden
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 1s ease
+    }
+
+    #radar-svg {
+      display: block;
+      margin: 0 auto
+    }
+
+    .analysis-cta {
+      text-align: center;
+      margin-top: 12px
+    }
+
+    /* Domain strength cards */
+    .domain-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 32px
+    }
+
+    .domain-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      position: relative;
+      overflow: hidden
+    }
+
+    .domain-card-bar {
+      height: 4px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      border-radius: 0 0 12px 12px;
+      transition: width 1s ease
+    }
+
+    .domain-card-name {
+      font-size: .82rem;
+      font-weight: 600;
+      margin-bottom: 6px
+    }
+
+    .domain-card-score {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      line-height: 1
+    }
+
+    .domain-card-label {
+      font-size: .68rem;
+      color: var(--muted);
+      margin-top: 2px
+    }
+
+    #screen-results {
+      display: none;
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+      animation: fadeIn .4s ease
+    }
+
+    .results-header {
+      text-align: center;
+      margin-bottom: 44px
+    }
+
+    .results-badge {
+      display: inline-block;
+      background: rgba(232, 22, 27, .12);
+      border: 1px solid rgba(232, 22, 27, .3);
+      color: var(--red-light);
+      font-size: .75rem;
+      font-weight: 600;
+      padding: 5px 14px;
+      border-radius: 100px;
+      letter-spacing: .5px;
+      margin-bottom: 16px;
+      text-transform: uppercase
+    }
+
+    .results-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 12px
+    }
+
+    .results-sub {
+      color: var(--muted);
+      font-size: .95rem
+    }
+
+    .branches-list {
+      margin-bottom: 24px
+    }
+
+    .branch-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 22px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      cursor: pointer;
+      transition: all .22s;
+      animation: fadeIn .35s ease both
+    }
+
+    .branch-card:hover {
+      border-color: var(--red);
+      transform: translateX(4px);
+      background: rgba(232, 22, 27, .06)
+    }
+
+    .branch-card.top-1 {
+      border-color: rgba(232, 22, 27, .5);
+      background: rgba(232, 22, 27, .05)
+    }
+
+    .rank-badge {
+      min-width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 800;
+      font-size: .95rem;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--muted)
+    }
+
+    .branch-card.top-1 .rank-badge {
+      background: var(--red);
+      color: #fff;
+      border-color: var(--red)
+    }
+
+    .branch-card.top-2 .rank-badge {
+      background: rgba(232, 22, 27, .15);
+      color: var(--red-light);
+      border-color: rgba(232, 22, 27, .3)
+    }
+
+    .branch-card.top-3 .rank-badge {
+      background: rgba(232, 22, 27, .08);
+      color: rgba(232, 22, 27, .7);
+      border-color: rgba(232, 22, 27, .2)
+    }
+
+    .branch-info {
+      flex: 1
+    }
+
+    .branch-name {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 4px
+    }
+
+    .branch-tag {
+      font-size: .75rem;
+      color: var(--muted)
+    }
+
+    .match-bar-wrap {
+      min-width: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px
+    }
+
+    .match-pct {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--red-light)
+    }
+
+    .match-bar {
+      width: 110px;
+      height: 5px;
+      background: var(--border);
+      border-radius: 100px;
+      overflow: hidden
+    }
+
+    .match-fill {
+      height: 100%;
+      background: var(--red);
+      border-radius: 100px
+    }
+
+    .branch-arrow {
+      color: var(--muted);
+      font-size: 1.1rem
+    }
+
+    .view-more-btn {
+      width: 100%;
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      font-size: .9rem;
+      font-weight: 500;
+      transition: all .2s;
+      margin-bottom: 24px
+    }
+
+    .view-more-btn:hover {
+      border-color: var(--red);
+      color: var(--red);
+      background: rgba(232, 22, 27, .04)
+    }
+
+    .results-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 16px
+    }
+
+    .retake-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      font-size: .85rem;
+      padding: 10px 22px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .retake-btn:hover {
+      border-color: var(--red);
+      color: var(--red)
+    }
+
+    #screen-roadmap {
+      display: none;
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+      animation: fadeIn .4s ease
+    }
+
+    .roadmap-header {
+      margin-bottom: 40px
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      font-size: .85rem;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all .2s;
+      margin-bottom: 24px
+    }
+
+    .back-btn:hover {
+      border-color: var(--red);
+      color: var(--red)
+    }
+
+    .roadmap-branch-name {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      line-height: 1.2
+    }
+
+    .roadmap-branch-name span {
+      color: var(--red)
+    }
+
+    .roadmap-sub-txt {
+      color: var(--muted);
+      font-size: .95rem
+    }
+
+    .roadmap-actions {
+      margin-top: 16px
+    }
+
+    .roadmap-content {
+      line-height: 1.8;
+      margin-top: 32px
+    }
+
+    .roadmap-content h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--red-light);
+      margin: 36px 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .roadmap-content h2::before {
+      content: '';
+      width: 3px;
+      height: 20px;
+      background: var(--red);
+      border-radius: 2px;
+      display: block;
+      flex-shrink: 0
+    }
+
+    .roadmap-content h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin: 20px 0 8px
+    }
+
+    .roadmap-content p {
+      color: #bbb;
+      margin-bottom: 12px
+    }
+
+    .roadmap-content ul {
+      padding-left: 22px;
+      color: #bbb;
+      margin-bottom: 12px
+    }
+
+    .roadmap-content ul li {
+      margin-bottom: 6px
+    }
+
+    .roadmap-content strong {
+      color: var(--white)
+    }
+
+    .hidden {
+      display: none !important
+    }
+
+    [data-theme="light"] header {
+      box-shadow: 0 1px 0 var(--border)
+    }
+
+    [data-theme="light"] .hero-title {
+      color: #1a1d23
+    }
+
+    [data-theme="light"] .hero-badge {
+      background: rgba(232, 22, 27, .08);
+      border-color: rgba(232, 22, 27, .2)
+    }
+
+    [data-theme="light"] #screen-hero::before {
+      background: radial-gradient(ellipse 70% 50% at 50% 30%, rgba(232, 22, 27, .07) 0%, transparent 70%)
+    }
+
+    [data-theme="light"] .stat-num {
+      color: #1a1d23
+    }
+
+    [data-theme="light"] .quiz-top-bar {
+      background: var(--bg);
+      box-shadow: 0 1px 0 var(--border)
+    }
+
+    [data-theme="light"] .q-card {
+      box-shadow: var(--card-shadow);
+      background: #fff
+    }
+
+    [data-theme="light"] .option-btn {
+      background: #f8f9fb;
+      border-color: #dde0e6;
+      color: #1a1d23
+    }
+
+    [data-theme="light"] .option-btn:hover {
+      background: rgba(232, 22, 27, .05);
+      border-color: var(--red)
+    }
+
+    [data-theme="light"] .option-btn.selected {
+      background: rgba(232, 22, 27, .08);
+      color: #1a1d23
+    }
+
+    [data-theme="light"] .opt-letter {
+      background: #e5e7eb;
+      color: #374151
+    }
+
+    [data-theme="light"] .sec-card {
+      box-shadow: var(--card-shadow)
+    }
+
+    [data-theme="light"] .chart-card {
+      box-shadow: var(--card-shadow)
+    }
+
+    [data-theme="light"] .branch-card {
+      box-shadow: var(--card-shadow)
+    }
+
+    [data-theme="light"] .branch-card:hover {
+      background: rgba(232, 22, 27, .04)
+    }
+
+    [data-theme="light"] .roadmap-content p,
+    [data-theme="light"] .roadmap-content ul {
+      color: #4b5563
+    }
+
+    [data-theme="light"] .roadmap-content h2 {
+      color: var(--red)
+    }
+
+    [data-theme="light"] .roadmap-content h3 {
+      color: #1a1d23
+    }
+
+    [data-theme="light"] .roadmap-content strong {
+      color: #111
+    }
+
+    [data-theme="light"] .btn-outline {
+      border-color: #dde0e6;
+      color: #374151
+    }
+
+    [data-theme="light"] .btn-pdf {
+      background: #fff;
+      border-color: #dde0e6;
+      color: #374151
+    }
+
+    [data-theme="light"] .loading-sub {
+      color: #6b7280
+    }
+
+    [data-theme="light"] .spinner {
+      border-color: #e5e7eb;
+      border-top-color: var(--red)
+    }
+
+    [data-theme="light"] .qbar-track {
+      background: #e5e7eb
+    }
+
+    [data-theme="light"] .sdot {
+      background: #e5e7eb
+    }
+
+    [data-theme="light"] .q-bottom-nav {
+      background: var(--bg);
+      border-top-color: #dde0e6
+    }
+
+    [data-theme="light"] .results-title {
+      color: #1a1d23
+    }
+
+    [data-theme="light"] .analysis-title {
+      color: #1a1d23
+    }
+
+    [data-theme="light"] .roadmap-branch-name {
+      color: #1a1d23
+    }
+
+    [data-theme="light"] .roadmap-branch-name span {
+      color: var(--red)
+    }
+
+    [data-theme="light"] .back-btn {
+      background: #fff;
+      color: #374151
+    }
+
+    [data-theme="light"] .retake-btn {
+      background: #fff;
+      color: #374151;
+      border-color: #dde0e6
+    }
+
+    [data-theme="light"] .view-more-btn {
+      background: #fff;
+      border-color: #dde0e6;
+      color: #6b7280
+    }
+
+    [data-theme="light"] .sec-card-sub {
+      color: #6b7280
+    }
+
+    [data-theme="light"] .q-nav-hint {
+      color: #6b7280
+    }
+
+    [data-theme="light"] .qbar-counter {
+      color: #6b7280
+    }
+
+    [data-theme="light"] .hero-sub {
+      color: #6b7280
+    }
+
+    [data-theme="light"] .toggle-pill {
+      background: #d1d5db
+    }
+
+    [data-theme="light"] .toggle-pill.active {
+      background: var(--red)
+    }
+
+    [data-theme="light"] #radar-svg polygon:first-of-type,
+    [data-theme="light"] #radar-svg line {
+      stroke: #e5e7eb
+    }
+
+    [data-theme="light"] .domain-card {
+      box-shadow: var(--card-shadow)
+    }
+
+    @media(max-width:640px) {
+      .match-bar-wrap {
+        display: none
+      }
+
+      .hero-stats {
+        gap: 24px
+      }
+
+      header {
+        padding: 0 16px
+      }
+
+      #screen-analysis,
+      #screen-results,
+      #screen-roadmap {
+        padding: 24px 16px 60px
+      }
+    }
+
+    @media screen {
+      #bp-print-doc {
+        display: none !important
+      }
+
+      #bp-pdf-footer {
+        display: none !important
+      }
+    }
+
+    @media print {
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important
+      }
+
+      body>*:not(#bp-print-doc):not(#bp-pdf-footer) {
+        display: none !important
+      }
+
+      #bp-print-doc {
+        display: block !important
+      }
+
+      .bp-pg {
+        page-break-after: always;
+        break-after: page
+      }
+
+      .bp-pg:last-child {
+        page-break-after: auto;
+        break-after: auto
+      }
+
+      #bp-pdf-footer {
+        display: flex !important;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 14mm;
+        padding: 0 14mm;
+        align-items: center;
+        justify-content: space-between;
+        border-top: 1px solid #E5E7EB;
+        background: #fff;
+        font-size: 9.5px;
+        color: #9CA3AF;
+        font-family: 'Poppins', sans-serif;
+        z-index: 9999
+      }
+
+      .bp-pg {
+        padding-bottom: 16mm !important
+      }
+
+      @page {
+        margin: 0;
+        size: A4
+      }
+    }
+
+    #bp-print-doc {
+      font-family: 'Poppins', sans-serif;
+      font-size: 12px;
+      color: #111;
+      background: #fff;
+      line-height: 1.5
+    }
+
+    .bp-cover {
+      background: linear-gradient(160deg, #A01010 0%, #750000 100%);
+      color: #fff;
+      height: 297mm;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 50px 60px;
+      box-sizing: border-box;
+      position: relative
+    }
+
+    .bp-cover-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3.5px;
+      color: rgba(255, 255, 255, .5);
+      text-transform: uppercase;
+      margin-bottom: 32px
+    }
+
+    .bp-cover-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 62px;
+      font-weight: 900;
+      line-height: 1.05;
+      margin-bottom: 20px;
+      letter-spacing: -1px
+    }
+
+    .bp-cover-div {
+      width: 52px;
+      height: 2px;
+      background: rgba(255, 255, 255, .6);
+      margin: 0 auto 28px
+    }
+
+    .bp-cover-sub {
+      font-size: 13px;
+      color: rgba(255, 255, 255, .55);
+      margin-bottom: 28px;
+      max-width: 480px
+    }
+
+    .bp-cover-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 32px;
+      width: 100%;
+      max-width: 500px
+    }
+
+    .bp-cover-stat {
+      background: rgba(255, 255, 255, .1);
+      border-radius: 10px;
+      padding: 16px 12px;
+      text-align: center
+    }
+
+    .bp-cover-stat-v {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 1
+    }
+
+    .bp-cover-stat-l {
+      font-size: 9px;
+      color: rgba(255, 255, 255, .5);
+      margin-top: 6px;
+      text-transform: uppercase;
+      letter-spacing: .4px
+    }
+
+    .bp-cover-conf {
+      position: absolute;
+      bottom: 36px;
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: rgba(255, 255, 255, .28);
+      text-transform: uppercase
+    }
+
+    .bp-hdr-wrap {
+      padding-bottom: 12px;
+      border-bottom: 2px solid #111;
+      margin-bottom: 18px
+    }
+
+    .bp-hdr {
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    .bp-hdr-left {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .bp-hdr-logo {
+      width: 34px;
+      height: 34px;
+      background: #DC2626;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 900;
+      color: #fff;
+      flex-shrink: 0
+    }
+
+    .bp-hdr-brand {
+      font-size: 14px;
+      font-weight: 800;
+      color: #111;
+      letter-spacing: -.3px
+    }
+
+    .bp-hdr-eng {
+      font-size: 9px;
+      color: #9CA3AF;
+      font-weight: 600;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      margin-top: 1px
+    }
+
+    .bp-hdr-right {
+      text-align: right
+    }
+
+    .bp-hdr-pill {
+      display: inline-block;
+      background: #DC2626;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 4px;
+      letter-spacing: .4px;
+      margin-bottom: 4px
+    }
+
+    .bp-hdr-date {
+      font-size: 10px;
+      color: #6B7280;
+      font-weight: 700;
+      letter-spacing: .3px
+    }
+
+    .bp-ftr {
+      border-top: 1px solid #E5E7EB;
+      padding-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9.5px;
+      color: #9CA3AF;
+      margin-top: 12px
+    }
+
+    .bp-pg-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 30px;
+      font-weight: 900;
+      color: #111;
+      letter-spacing: -.6px;
+      margin-bottom: 3px
+    }
+
+    .bp-pg-sub {
+      font-size: 12px;
+      color: #9CA3AF;
+      font-weight: 500;
+      margin-bottom: 20px
+    }
+
+    .bp-score-row {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      gap: 14px;
+      margin-bottom: 20px
+    }
+
+    .bp-score-box {
+      border: 1.5px solid #E5E7EB;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 18px 14px;
+      text-align: center
+    }
+
+    .bp-score-big {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 56px;
+      font-weight: 900;
+      color: #DC2626;
+      line-height: 1
+    }
+
+    .bp-score-lbl {
+      font-size: 11px;
+      color: #6B7280;
+      font-weight: 600;
+      margin-top: 8px
+    }
+
+    .bp-score-desc {
+      border-left: 3px solid #DC2626;
+      background: #FFF8F8;
+      border-radius: 0 8px 8px 0;
+      padding: 16px;
+      font-size: 12px;
+      color: #374151;
+      line-height: 1.7;
+      display: flex;
+      align-items: center
+    }
+
+    .bp-sub-hd {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11.5px;
+      font-weight: 900;
+      color: #111;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      margin-bottom: 8px
+    }
+
+    .bp-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 16px
+    }
+
+    .bp-pill {
+      border: 1.5px solid #D1D5DB;
+      border-radius: 100px;
+      padding: 4px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #374151;
+      background: #fff
+    }
+
+    .bp-trait-row {
+      margin-bottom: 11px
+    }
+
+    .bp-trait-name {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 4px
+    }
+
+    .bp-trait-bar-bg {
+      height: 7px;
+      background: #F3F4F6;
+      border-radius: 100px;
+      overflow: hidden;
+      margin-bottom: 4px
+    }
+
+    .bp-trait-bar-fill {
+      height: 100%;
+      border-radius: 100px
+    }
+
+    .bp-career-item {
+      border: 1.5px solid #E5E7EB;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 10px
+    }
+
+    .bp-career-heading {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-bottom: 6px
+    }
+
+    .bp-career-num {
+      font-size: 13px;
+      font-weight: 900;
+      color: #DC2626
+    }
+
+    .bp-career-name {
+      font-size: 14px;
+      font-weight: 900;
+      color: #111
+    }
+
+    .bp-career-specs {
+      font-size: 11.5px;
+      color: #374151;
+      margin: 6px 0;
+      line-height: 1.8
+    }
+
+    .bp-career-specs strong {
+      color: #111
+    }
+
+    .bp-career-why {
+      font-size: 11.5px;
+      color: #6B7280;
+      line-height: 1.65
+    }
+
+    .bp-rm-row {
+      display: flex;
+      gap: 14px
+    }
+
+    .bp-rm-icon-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 42px;
+      flex-shrink: 0
+    }
+
+    .bp-rm-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #DC2626;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 900;
+      flex-shrink: 0
+    }
+
+    .bp-rm-line {
+      width: 2px;
+      flex: 1;
+      background: #F3F4F6;
+      margin: 4px 0;
+      min-height: 8px
+    }
+
+    .bp-rm-content {
+      padding-bottom: 16px;
+      flex: 1
+    }
+
+    .bp-rm-period {
+      font-size: 10px;
+      font-weight: 800;
+      color: #9CA3AF;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      margin-bottom: 3px
+    }
+
+    .bp-rm-title {
+      font-size: 13px;
+      font-weight: 900;
+      color: #111;
+      margin-bottom: 5px
+    }
+
+    .bp-rm-desc {
+      font-size: 11.5px;
+      color: #374151;
+      line-height: 1.6;
+      margin-bottom: 8px
+    }
+
+    .bp-rm-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px
+    }
+
+    .bp-rm-pill {
+      border: 1.5px solid #D1D5DB;
+      border-radius: 100px;
+      padding: 3px 12px;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #374151
+    }
+
+    .bp-resp-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1.5px solid #E5E7EB
+    }
+
+    .bp-resp-table tr:last-child td {
+      border-bottom: none
+    }
+
+    .bp-resp-q {
+      padding: 10px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #DC2626;
+      border-bottom: 1px solid #E5E7EB;
+      background: #FFF8F8;
+      width: 44%;
+      line-height: 1.4
+    }
+
+    .bp-resp-q.even {
+      background: #FEF2F2
+    }
+
+    .bp-resp-a {
+      padding: 10px 14px;
+      font-size: 11.5px;
+      color: #374151;
+      border-bottom: 1px solid #E5E7EB;
+      background: #fff;
+      line-height: 1.4
+    }
+
+    .bp-resp-a.even {
+      background: #F9FAFB
+    }
+
+    .bp-info-lbl {
+      font-size: 11px;
+      font-weight: 800;
+      color: #DC2626;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 8px
+    }
+
+    .bp-scores-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 18px
+    }
+
+    .bp-scard {
+      border: 1.5px solid #E5E7EB;
+      border-radius: 10px;
+      padding: 14px 8px;
+      text-align: center
+    }
+
+    .bp-scard-n {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 26px;
+      font-weight: 900;
+      color: #DC2626;
+      line-height: 1
+    }
+
+    .bp-scard-l {
+      font-size: 10px;
+      color: #6B7280;
+      font-weight: 600;
+      margin-top: 5px
+    }
+
+    .bp-journey-box {
+      border: 2px solid #E5E7EB;
+      border-radius: 14px;
+      padding: 24px;
+      text-align: center
+    }
+
+    .bp-journey-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: #DC2626;
+      margin-bottom: 10px
+    }
+
+    .bp-journey-text {
+      font-size: 12px;
+      color: #6B7280;
+      line-height: 1.7;
+      margin-bottom: 14px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto
+    }
+
+    .bp-journey-meta {
+      font-size: 11px;
+      color: #374151;
+      font-weight: 700;
+      line-height: 2
+    }
+
+    .bp-sector-card {
+      border: 1.5px solid #E5E7EB;
+      border-radius: 8px;
+      padding: 12px 15px;
+      margin-bottom: 10px
+    }
+
+    .bp-sector-hd {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px
+    }
+
+    .bp-sector-name {
+      font-size: 13px;
+      font-weight: 800;
+      color: #111;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .bp-sector-badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap
+    }
+
+    .bp-sbadge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 100px;
+      border: 1.5px solid
+    }
+
+    .bp-sbadge.hi {
+      color: #057A55;
+      border-color: #BBF7D0;
+      background: #F0FDF4
+    }
+
+    .bp-sbadge.vhi {
+      color: #D97706;
+      border-color: #FDE68A;
+      background: #FFFBEB
+    }
+
+    .bp-sbadge.med {
+      color: #0694A2;
+      border-color: #A5F3FC;
+      background: #ECFEFF
+    }
+
+    .bp-sector-desc {
+      font-size: 11.5px;
+      color: #6B7280;
+      line-height: 1.55
+    }
+
+    .bp-archetype-quote {
+      border-left: 4px solid #DC2626;
+      background: #FFF8F8;
+      padding: 13px 16px;
+      font-size: 12px;
+      color: #374151;
+      line-height: 1.7;
+      margin-bottom: 18px;
+      border-radius: 0 8px 8px 0
+    }
+
+    .bp-ftr-enhanced {
+      border-top: 0.5px solid #E0DDD5;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      color: #888;
+      height: 28px;
+      background: #F8F8F6;
+      padding: 0 14mm;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      font-family: 'Inter', sans-serif
+    }
+
+    .bp-hdr-bar {
+      display: flex;
+      align-items: center;
+      height: 40px;
+      border-left: 4px solid #DC2626;
+      padding-left: 12px;
+      margin-bottom: 16px;
+      gap: 10px
+    }
+
+    .bp-hdr-bar-logo {
+      width: 24px;
+      height: 24px;
+      background: #DC2626;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      font-weight: 900;
+      color: #fff;
+      flex-shrink: 0
+    }
+
+    .bp-hdr-bar-title {
+      flex: 1;
+      font-size: 12px;
+      font-weight: 700;
+      color: #111;
+      text-align: center
+    }
+
+    .bp-hdr-bar-date {
+      font-size: 10px;
+      color: #6B7280;
+      font-weight: 600;
+      white-space: nowrap
+    }
+
+    .bp-score-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 6px
+    }
+
+    .bp-score-bar-track {
+      width: 120px;
+      height: 6px;
+      background: #EEEDE8;
+      border-radius: 3px;
+      overflow: hidden;
+      flex-shrink: 0
+    }
+
+    .bp-score-bar-fill {
+      height: 100%;
+      border-radius: 3px
+    }
+
+    .bp-score-bar-text {
+      font-size: 13px;
+      font-weight: 700;
+      color: #111
+    }
+
+    .bp-score-bar-label {
+      font-size: 10px;
+      font-weight: 600;
+      margin-top: 2px
+    }
+
+    .bp-toc-entry {
+      display: flex;
+      align-items: center;
+      height: 32px;
+      font-size: 13px;
+      color: #111;
+      border-bottom: 0.5px solid #F0EDE5;
+      padding: 0 8px
+    }
+
+    .bp-toc-entry:nth-child(odd) {
+      background: #FAFAF8
+    }
+
+    .bp-toc-name {
+      font-weight: 600;
+      flex-shrink: 0
+    }
+
+    .bp-toc-dots {
+      flex: 1;
+      border-bottom: 1px dotted #D1D0CB;
+      margin: 0 8px;
+      height: 1px;
+      align-self: flex-end;
+      margin-bottom: 6px
+    }
+
+    .bp-toc-page {
+      font-weight: 700;
+      color: #DC2626;
+      font-size: 12px;
+      flex-shrink: 0
+    }
+
+    .bp-qa-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #EEF2FF;
+      color: #4338CA;
+      border-radius: 20px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-right: 6px;
+      flex-shrink: 0;
+      white-space: nowrap
+    }
+
+    .bp-resp-table-enhanced td {
+      font-size: 12px;
+      line-height: 1.6
+    }
+
+    .bp-resp-table-enhanced .bp-resp-q {
+      width: 38%
+    }
+
+    .bp-resp-table-enhanced .bp-resp-a {
+      width: 62%;
+      border-left: 3px solid #E8E6FF
+    }
+
+    .bp-salary-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin: 10px 0;
+      page-break-inside: avoid
+    }
+
+    .bp-salary-table th {
+      background: #1E1B4B;
+      color: #fff;
+      font-weight: 600;
+      padding: 10px 12px;
+      text-align: left
+    }
+
+    .bp-salary-table td {
+      padding: 8px 12px;
+      border-bottom: 0.5px solid #EEEDE8
+    }
+
+    .bp-salary-table tr:nth-child(odd) td {
+      background: #FAFAF8
+    }
+
+    .bp-salary-table tr:nth-child(even) td {
+      background: #fff
+    }
+
+    .bp-salary-caption {
+      font-size: 10px;
+      color: #999;
+      margin-top: 4px;
+      font-style: italic
+    }
+
+    .bp-takeaway-box {
+      background: #F0FDF4;
+      border-left: 4px solid #22C55E;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-top: 14px
+    }
+
+    .bp-takeaway-title {
+      color: #15803D;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px
+    }
+
+    .bp-takeaway-item {
+      font-size: 11.5px;
+      color: #374151;
+      line-height: 1.6;
+      margin-bottom: 4px;
+      display: flex;
+      gap: 6px
+    }
+
+    .bp-trait-pill {
+      display: inline-flex;
+      align-items: center;
+      background: #EEF2FF;
+      color: #4338CA;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      margin: 2px
+    }
+
+    .pdf-h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1E1B4B;
+      letter-spacing: -0.3px
+    }
+
+    .pdf-h2 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #312E81
+    }
+
+    .pdf-h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #3730A3
+    }
+
+    .pdf-body {
+      font-size: 12.5px;
+      font-weight: 400;
+      color: #374151;
+      line-height: 1.65
+    }
+
+    .pdf-caption {
+      font-size: 10.5px;
+      color: #9CA3AF
+    }
+
+    .bp-divider-pg {
+      height: 148.5mm;
+      background: #1E1B4B;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative
+    }
+
+    .bp-divider-title {
+      color: #fff;
+      font-size: 28px;
+      font-weight: 700;
+      font-family: 'Playfair Display', Georgia, serif;
+      margin-bottom: 8px
+    }
+
+    .bp-divider-sub {
+      color: rgba(255, 255, 255, .8);
+      font-size: 14px;
+      font-weight: 400
+    }
+
+    .bp-divider-icon {
+      margin-bottom: 16px
+    }
+
+    .bp-pg {
+      position: relative;
+      box-sizing: border-box
+    }
+
+    .bp-next-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px
+    }
+
+    .bp-next-card {
+      border: 1.5px solid #E5E7EB;
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start
+    }
+
+    .bp-next-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: #EEF2FF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .bp-next-num {
+      font-size: 14px;
+      font-weight: 900;
+      color: #DC2626;
+      margin-bottom: 2px
+    }
+
+    .bp-next-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 3px
+    }
+
+    .bp-next-desc {
+      font-size: 11px;
+      color: #6B7280;
+      line-height: 1.5
+    }
+  </style>
+</head>
+
+<body>
+  <a href="cet-landing.html" class="floating-back-btn" title="Back to MHT-CET Hub">
+    <style>
+      .floating-back-btn {
+        position: fixed;
+        bottom: 24px;
+        left: 24px;
+        background: #dc2626;
+        color: #ffffff !important;
+        padding: 10px 18px;
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 6px 20px rgba(220, 38, 38, 0.25);
+        text-decoration: none;
+        z-index: 9999;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        font-family: 'Lexend', sans-serif;
+        font-weight: 700;
+        font-size: 13px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+      .floating-back-btn:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(220, 38, 38, 0.35);
+        background: #b91c1c;
+      }
+      .floating-back-btn svg {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transition: transform 0.3s;
+      }
+      .floating-back-btn:hover svg {
+        transform: translateX(-3px);
+      }
+      @media print {
+        .floating-back-btn {
+          display: none !important;
+        }
+      }
+    </style>
+    <svg viewBox="0 0 24 24" fill="none"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    MHT-CET Hub
+  </a>
+
+  <div id="bp-print-doc"></div>
+  <div id="bp-pdf-footer" style="display:none">
+    <span>College Simplified &middot; Branch Predictor AI Report</span>
+    <span></span>
+    <span>Confidential &middot; Not for redistribution</span>
+  </div>
+
+  <header>
+    <div class="logo">College <span>Simplified</span></div>
+    <div class="header-right">
+      <span class="header-tag">Branch Predictor <span>AI</span></span>
+      <div class="theme-toggle" title="Toggle light/dark mode">
+        <span class="theme-label" id="theme-label">Dark</span>
+        <button class="toggle-pill active" id="theme-pill" onclick="toggleTheme()" aria-label="Toggle theme">
+          <span class="toggle-knob"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div id="screen-hero">
+    <div class="hero-badge">AI-Powered Branch Prediction</div>
+    <h1 class="hero-title">Find Your Perfect <span>Engineering Branch</span></h1>
+    <p class="hero-sub">Answer 60 scenario-based questions across 5 dimensions. Our deterministic AI engine maps your
+      strengths, interests, and personality to the ideal engineering branch with precision.</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">6<span>0</span></div>
+        <div class="stat-label">Questions</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">5</div>
+        <div class="stat-label">Sections</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">8</div>
+        <div class="stat-label">Domain Clusters</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num"><span>~</span>10</div>
+        <div class="stat-label">Minutes</div>
+      </div>
+    </div>
+    <div><button class="btn-primary" onclick="startTool()">Start Assessment &rarr;</button></div>
+    <p style="margin-top:20px;font-size:.8rem;color:var(--muted)">No registration required &middot; Deterministic scoring &middot;
+      Every answer shapes your profile</p>
+  </div>
+
+  <div id="screen-loading">
+    <div class="spinner"></div>
+    <div class="loading-title" id="loading-title">Generating your assessment&hellip;</div>
+    <div class="loading-sub" id="loading-sub">Our AI is crafting personalised questions for you</div>
+  </div>
+
+  <div id="screen-quiz">
+    <div class="quiz-top-bar">
+      <div class="qbar-left">
+        <div class="qbar-section-tag" id="qbar-section-tag">Section 1 of 5</div>
+        <div class="qbar-title" id="qbar-title">Section Title</div>
+      </div>
+      <div class="qbar-right">
+        <div class="section-dots" id="section-dots"></div>
+        <div class="qbar-counter">Q <span id="q-global-num">1</span> / 60</div>
+        <div class="qbar-progress-wrap">
+          <div class="qbar-progress-label" id="qbar-prog-label">0 / 60 answered</div>
+          <div class="qbar-track">
+            <div class="qbar-fill" id="qbar-fill" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="question-stage">
+      <div class="question-wrap">
+        <div id="q-card-container"></div>
+      </div>
+    </div>
+    <div class="q-bottom-nav">
+      <div class="q-nav-hint" id="q-nav-hint">Select an answer to continue</div>
+      <div class="q-nav-btns">
+        <button class="btn-outline" id="q-prev-btn" onclick="prevQuestion()" style="display:none">&larr; Back</button>
+        <button class="btn-primary" id="q-next-btn" onclick="nextQuestion()" disabled>Next &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-analysis">
+    <div class="analysis-header">
+      <div class="sec-badge">Your Engineering Profile</div>
+      <div class="analysis-title">Here's What We Found About You</div>
+      <div class="analysis-sub">A data-driven breakdown of your interests, aptitudes, and engineering domain strengths
+      </div>
+    </div>
+    <div class="chart-card" style="margin-bottom:24px">
+      <div class="chart-card-title">Engineering Domain Strengths</div>
+      <div class="bar-chart" id="domain-bar-chart"></div>
+    </div>
+    <div class="sec-cards-grid" id="sec-cards-grid"></div>
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-card-title">Section Scores</div>
+        <div class="bar-chart" id="bar-chart-wrap"></div>
+      </div>
+      <div class="chart-card" style="display:flex;flex-direction:column;align-items:center">
+        <div class="chart-card-title" style="align-self:flex-start">Domain Radar</div>
+        <svg id="radar-svg" width="260" height="260" viewBox="0 0 260 260" style="margin-top:8px"></svg>
+      </div>
+    </div>
+    <div class="analysis-cta">
+      <button class="btn-primary" onclick="proceedToResults()">View Branch Predictions &rarr;</button>
+    </div>
+  </div>
+
+  <div id="screen-results">
+    <div class="results-header">
+      <div class="results-badge">Branch Predictions</div>
+      <div class="results-title">Your Top Engineering Branches</div>
+      <div class="results-sub">Click any branch to get your detailed personalised career roadmap</div>
+    </div>
+    <div class="branches-list" id="top5-list"></div>
+    <button class="view-more-btn" id="view-more-btn" onclick="showMoreBranches()">+ View 5 More Branches</button>
+    <div class="branches-list hidden" id="more5-list"></div>
+    <div class="results-actions">
+      <button class="retake-btn" onclick="retake()">&#8634; Retake</button>
+      <button class="btn-pdf" id="pdf-btn-results" onclick="downloadPDF(this)">&darr; Download Report PDF</button>
+    </div>
+  </div>
+
+  <div id="screen-roadmap">
+    <div class="roadmap-header">
+      <button class="back-btn" onclick="backToResults()">&larr; Back to Results</button>
+      <div class="roadmap-branch-name" id="roadmap-branch-display">Roadmap</div>
+      <div class="roadmap-sub-txt">Your complete personalised engineering career roadmap</div>
+      <div class="roadmap-actions">
+        <button class="btn-pdf" id="pdf-btn-roadmap" onclick="downloadPDF(this)">&darr; Download Full Report PDF</button>
+      </div>
+    </div>
+    <div id="roadmap-content" class="roadmap-content"></div>
+  </div>
+
+  <script>
+    const MODEL_POOL = {
+      A: 'llama-3.3-70b-versatile',
+      B: 'openai/gpt-oss-120b',
+      C: 'llama-3.1-8b-instant',
+    };
+    const MODEL_LAST_CALL = { A: 0, B: 0, C: 0 };
+
+    const TOTAL_QUESTIONS = 60;
+    const QUESTIONS_PER_SECTION = 12;
+
+    const DOMAINS = {
+      CS_AI: { name: 'Computer Science & AI', color: '#6366f1', icon: '💻' },
+      ELECTRONICS: { name: 'Electronics & Communication', color: '#f59e0b', icon: '⚡' },
+      MECHANICAL: { name: 'Mechanical & Aerospace', color: '#ef4444', icon: '⚙️' },
+      CIVIL: { name: 'Civil & Infrastructure', color: '#10b981', icon: '🏗️' },
+      CHEMICAL_BIO: { name: 'Chemical & Biomedical', color: '#8b5cf6', icon: '🧬' },
+      DESIGN_ARCH: { name: 'Design & Architecture', color: '#ec4899', icon: '🎨' },
+      DATA_MATH: { name: 'Data Science & Mathematics', color: '#3b82f6', icon: '📊' },
+      ENERGY_ENV: { name: 'Energy & Environment', color: '#22c55e', icon: '🌱' },
+    };
+
+    const SECTIONS = [
+      { id: 1, title: 'Problem-Solving & Technical Aptitude', desc: 'How you think and tackle challenges', icon: '🧠', color: '#e8161b' },
+      { id: 2, title: 'Subject Interest & Domain Curiosity', desc: 'What fields and topics fascinate you', icon: '🔬', color: '#ff6b35' },
+      { id: 3, title: 'Creative Approach & Design Thinking', desc: 'How you create and innovate', icon: '🎨', color: '#f7c948' },
+      { id: 4, title: 'Work Style & Personality', desc: 'How you work and collaborate', icon: '💡', color: '#4ade80' },
+      { id: 5, title: 'Career Goals & Industry Vision', desc: 'What you want from your engineering career', icon: '🚀', color: '#60a5fa' },
+    ];
+
+    const WEIGHTED_QUESTIONS = [
+      [
+        {
+          question: "A city is experiencing severe traffic congestion. If you were part of the solution team, which aspect would you want to work on?",
+          options: [
+            { text: "Developing a smart AI traffic management system that predicts and optimizes flow in real-time", w: { CS_AI: 5, DATA_MATH: 3, ELECTRONICS: 1 } },
+            { text: "Designing better road infrastructure — flyovers, cloverleaf interchanges, and intersection geometry", w: { CIVIL: 5, MECHANICAL: 2, DESIGN_ARCH: 1 } },
+            { text: "Building IoT sensor networks and adaptive signal controllers for real-time traffic monitoring", w: { ELECTRONICS: 5, CS_AI: 2, DATA_MATH: 1 } },
+            { text: "Developing energy-efficient electric public transport systems to reduce congestion at source", w: { ENERGY_ENV: 5, MECHANICAL: 3, CIVIL: 1 } }
+          ]
+        },
+        {
+          question: "You discover a critical flaw in a product your team built. How do you approach the fix?",
+          options: [
+            { text: "Analyze system logs and data traces to isolate the root cause algorithmically", w: { CS_AI: 4, DATA_MATH: 4, ELECTRONICS: 1 } },
+            { text: "Inspect the physical components — check materials, tolerances, and stress points", w: { MECHANICAL: 5, CHEMICAL_BIO: 2, CIVIL: 1 } },
+            { text: "Redesign the interaction flow and user interface to prevent the issue", w: { DESIGN_ARCH: 5, CS_AI: 2 } },
+            { text: "Run chemical assays or biological tests to check for material degradation", w: { CHEMICAL_BIO: 5, ENERGY_ENV: 2, MECHANICAL: 1 } }
+          ]
+        },
+        {
+          question: "Your college hosts a 48-hour hackathon with complete freedom to build anything. What's your pitch?",
+          options: [
+            { text: "An AI-powered app that detects plant diseases from smartphone photos to help farmers", w: { CS_AI: 5, DATA_MATH: 3, ENERGY_ENV: 1 } },
+            { text: "A drone delivery system with autonomous navigation for medicines in remote areas", w: { ELECTRONICS: 4, MECHANICAL: 3, CS_AI: 2 } },
+            { text: "A low-cost portable water purification device using nanofiltration for disaster relief", w: { CHEMICAL_BIO: 4, ENERGY_ENV: 3, CIVIL: 2 } },
+            { text: "A smart building energy management dashboard that cuts electricity waste by 40%", w: { ENERGY_ENV: 4, ELECTRONICS: 2, CS_AI: 2, CIVIL: 1 } }
+          ]
+        },
+        {
+          question: "When solving a complex mathematical problem, what gives you the most satisfaction?",
+          options: [
+            { text: "Finding an elegant algorithm that solves it in O(log n) instead of O(n\u00B2)", w: { CS_AI: 4, DATA_MATH: 5 } },
+            { text: "Applying calculus and fluid dynamics to simulate real physical phenomena accurately", w: { MECHANICAL: 4, CIVIL: 3, DATA_MATH: 2 } },
+            { text: "Using it to model circuit behavior or electromagnetic wave propagation", w: { ELECTRONICS: 5, DATA_MATH: 3 } },
+            { text: "Applying statistical methods to derive actionable insights from messy real-world data", w: { DATA_MATH: 5, CS_AI: 3, ENERGY_ENV: 1 } }
+          ]
+        },
+        {
+          question: "A bridge in your city shows signs of structural stress. What do you instinctively want to do?",
+          options: [
+            { text: "Install IoT strain sensors and build a real-time structural health monitoring dashboard", w: { ELECTRONICS: 4, CS_AI: 3, CIVIL: 2 } },
+            { text: "Investigate the concrete and steel composition for corrosion, fatigue, or material flaws", w: { CHEMICAL_BIO: 3, CIVIL: 4, MECHANICAL: 2 } },
+            { text: "Redesign the bridge for better load distribution using modern engineering principles", w: { CIVIL: 5, DESIGN_ARCH: 3, MECHANICAL: 1 } },
+            { text: "Build a finite element analysis simulation to predict failure points", w: { MECHANICAL: 4, DATA_MATH: 3, CS_AI: 2 } }
+          ]
+        },
+        {
+          question: "Which of these emerging technology stories would you read first?",
+          options: [
+            { text: "GPT-5 achieves superhuman reasoning — implications for science and code generation", w: { CS_AI: 5, DATA_MATH: 3 } },
+            { text: "New graphene-based semiconductor promises 100x faster, cooler chips", w: { ELECTRONICS: 5, CHEMICAL_BIO: 3 } },
+            { text: "3D-printed earthquake-proof houses built in 24 hours for $10,000 each", w: { CIVIL: 4, MECHANICAL: 3, DESIGN_ARCH: 2 } },
+            { text: "CRISPR gene editing eliminates inherited heart disease in clinical trials", w: { CHEMICAL_BIO: 5, DATA_MATH: 2 } }
+          ]
+        },
+        {
+          question: "You're given unlimited resources to build one thing that changes the world. What is it?",
+          options: [
+            { text: "A general-purpose AI assistant that democratizes education globally", w: { CS_AI: 5, DATA_MATH: 3 } },
+            { text: "A self-sustaining space habitat on Mars with complete life support systems", w: { MECHANICAL: 4, ENERGY_ENV: 3, CIVIL: 2 } },
+            { text: "A carbon-negative material that captures CO\u2082 and reverses climate damage", w: { CHEMICAL_BIO: 4, ENERGY_ENV: 4 } },
+            { text: "A neural-computer interface that lets paralyzed people walk and communicate", w: { ELECTRONICS: 4, CHEMICAL_BIO: 3, CS_AI: 2 } }
+          ]
+        },
+        {
+          question: "In a team project, you naturally gravitate toward being the person who:",
+          options: [
+            { text: "Writes the core logic, builds the backend systems, and debugs the tricky issues", w: { CS_AI: 5, DATA_MATH: 2 } },
+            { text: "Builds the physical prototype — wiring, soldering, assembling hardware", w: { ELECTRONICS: 4, MECHANICAL: 3 } },
+            { text: "Creates the visual design, user experience, and presentation materials", w: { DESIGN_ARCH: 5, CS_AI: 1 } },
+            { text: "Analyzes data, validates the approach with research, and writes the documentation", w: { DATA_MATH: 5, CS_AI: 2, CHEMICAL_BIO: 1 } }
+          ]
+        },
+        {
+          question: "A factory's production output has dropped by 30%. You're hired to diagnose. Where do you start?",
+          options: [
+            { text: "Pull machine sensor data into a dashboard and identify anomalies statistically", w: { DATA_MATH: 5, CS_AI: 3 } },
+            { text: "Walk the floor — inspect machinery for mechanical wear, vibration, alignment issues", w: { MECHANICAL: 5, ELECTRONICS: 2 } },
+            { text: "Check raw material quality, chemical composition, and process parameters", w: { CHEMICAL_BIO: 5, MECHANICAL: 2 } },
+            { text: "Review the plant layout, workflow bottlenecks, and logistics for inefficiency", w: { CIVIL: 3, MECHANICAL: 3, DESIGN_ARCH: 2 } }
+          ]
+        },
+        {
+          question: "Which school subject combination made you most excited?",
+          options: [
+            { text: "Computer Science + Mathematics — loved algorithms, logic, and programming", w: { CS_AI: 5, DATA_MATH: 4 } },
+            { text: "Physics + Mathematics — fascinated by forces, motion, and how things work", w: { MECHANICAL: 3, ELECTRONICS: 3, CIVIL: 2, DATA_MATH: 2 } },
+            { text: "Chemistry + Biology — intrigued by reactions, molecules, and living systems", w: { CHEMICAL_BIO: 5, ENERGY_ENV: 2 } },
+            { text: "Art + Science (or Geography + Physics) — drawn to design, space, and environment", w: { DESIGN_ARCH: 4, CIVIL: 3, ENERGY_ENV: 2 } }
+          ]
+        },
+        {
+          question: "You find a complex bug in a system. What's your debugging approach?",
+          options: [
+            { text: "Add breakpoints, trace execution step by step, analyze stack traces methodically", w: { CS_AI: 5, DATA_MATH: 2 } },
+            { text: "Check all hardware connections — power rails, signal integrity, oscilloscope readings", w: { ELECTRONICS: 5, MECHANICAL: 2 } },
+            { text: "Review environmental conditions — temperature, humidity, vibration, contamination", w: { ENERGY_ENV: 3, CHEMICAL_BIO: 3, MECHANICAL: 2 } },
+            { text: "Compare against the design specification and check if reality matches intent", w: { DESIGN_ARCH: 3, CIVIL: 3, MECHANICAL: 2 } }
+          ]
+        },
+        {
+          question: "You're explaining your favorite concept to a friend. What topic gets you most animated?",
+          options: [
+            { text: "How neural networks learn to recognize faces, play games, and generate art", w: { CS_AI: 5, DATA_MATH: 3 } },
+            { text: "How jet engines generate 100,000 pounds of thrust through thermodynamics", w: { MECHANICAL: 5, ENERGY_ENV: 2 } },
+            { text: "How CRISPR edits DNA like a word processor edits text to cure diseases", w: { CHEMICAL_BIO: 5, DATA_MATH: 2 } },
+            { text: "How electricity transforms into radio waves and travels invisibly at light speed", w: { ELECTRONICS: 5, MECHANICAL: 1, DATA_MATH: 1 } }
+          ]
+        },
+      ],
+      [
+        {
+          question: "On a free weekend, which documentary would you choose to watch?",
+          options: [
+            { text: "AlphaGo — how Google's AI defeated the world champion at the most complex board game", w: { CS_AI: 5, DATA_MATH: 3 } },
+            { text: "Megastructures — how the Burj Khalifa, Channel Tunnel, and Three Gorges Dam were built", w: { CIVIL: 5, MECHANICAL: 3 } },
+            { text: "The Code That Broke the World — how hackers exploit chip vulnerabilities in processors", w: { ELECTRONICS: 4, CS_AI: 3 } },
+            { text: "Human Nature — how CRISPR gene editing could eliminate genetic diseases forever", w: { CHEMICAL_BIO: 5, ENERGY_ENV: 1 } }
+          ]
+        },
+        {
+          question: "Which lab experiment would keep you completely engaged for hours?",
+          options: [
+            { text: "Training a convolutional neural network to classify satellite images of deforestation", w: { CS_AI: 4, DATA_MATH: 4, ENERGY_ENV: 1 } },
+            { text: "Testing tensile strength, compressive loads, and fatigue limits on steel and concrete", w: { CIVIL: 4, MECHANICAL: 4, CHEMICAL_BIO: 1 } },
+            { text: "Designing, soldering, and testing a PCB that processes signals from multiple sensors", w: { ELECTRONICS: 5, CS_AI: 1 } },
+            { text: "Synthesizing a new polymer and characterizing its molecular structure with spectroscopy", w: { CHEMICAL_BIO: 5, ENERGY_ENV: 1 } }
+          ]
+        },
+        {
+          question: "A billion-dollar company offers you any role. Which do you choose?",
+          options: [
+            { text: "Lead AI researcher — building the next generation of multimodal foundation models", w: { CS_AI: 5, DATA_MATH: 3 } },
+            { text: "Chief architect — designing iconic buildings that redefine a city's skyline", w: { DESIGN_ARCH: 5, CIVIL: 3 } },
+            { text: "VP of Engineering — leading the autonomous electric vehicle division", w: { MECHANICAL: 3, ELECTRONICS: 3, ENERGY_ENV: 3, CS_AI: 2 } },
+            { text: "Head of R&D — developing revolutionary drug delivery nanotechnology", w: { CHEMICAL_BIO: 5, DATA_MATH: 2 } }
+          ]
+        },
+        {
+          question: "Which news headline makes you stop scrolling and read the full article?",
+          options: [
+            { text: "India's startup builds world's most efficient AI inference chip at 1/10th the cost", w: { ELECTRONICS: 5, CS_AI: 3 } },
+            { text: "Scientists create biodegradable plastic from agricultural waste that decomposes in 90 days", w: { CHEMICAL_BIO: 4, ENERGY_ENV: 4 } },
+            { text: "Quantum computing breakthrough solves protein folding problems in minutes, not years", w: { CS_AI: 4, DATA_MATH: 4, CHEMICAL_BIO: 1 } },
+            { text: "World's largest floating solar farm generates power for 5 million homes in India", w: { ENERGY_ENV: 5, CIVIL: 2, ELECTRONICS: 1 } }
+          ]
+        },
+        {
+          question: "You're browsing YouTube. Which creator's content pulls you into a 3-hour binge?",
+          options: [
+            { text: "Fireship / ThePrimeagen — fast-paced coding, system design, and tech deep-dives", w: { CS_AI: 5, DATA_MATH: 2 } },
+            { text: "Stuff Made Here / Mark Rober — incredible DIY mechanical and robotic builds", w: { MECHANICAL: 4, ELECTRONICS: 3, DESIGN_ARCH: 1 } },
+            { text: "Practical Engineering — how bridges, dams, sewage systems, and roads actually work", w: { CIVIL: 5, ENERGY_ENV: 2 } },
+            { text: "NileRed / Kurzgesagt — chemical transformations, biology, and mind-blowing science", w: { CHEMICAL_BIO: 5, DATA_MATH: 2 } }
+          ]
+        },
+        {
+          question: "Your ideal science fair project involves:",
+          options: [
+            { text: "A real-time sentiment analysis engine that maps public emotion from social media data", w: { CS_AI: 4, DATA_MATH: 4 } },
+            { text: "A scale model earthquake-resistant building with accelerometer feedback", w: { CIVIL: 4, ELECTRONICS: 2, MECHANICAL: 2 } },
+            { text: "A home biogas plant converting kitchen waste into cooking fuel and organic fertilizer", w: { ENERGY_ENV: 5, CHEMICAL_BIO: 3 } },
+            { text: "A prosthetic hand controlled by EMG muscle signals with 5 degrees of freedom", w: { ELECTRONICS: 4, CHEMICAL_BIO: 3, MECHANICAL: 2 } }
+          ]
+        },
+        {
+          question: "Which elective course would you rush to enroll in if it had limited seats?",
+          options: [
+            { text: "Advanced Deep Learning — GANs, Transformers, Diffusion Models, and LLMs from scratch", w: { CS_AI: 5, DATA_MATH: 4 } },
+            { text: "Structural Dynamics and Earthquake Engineering — protecting buildings from nature", w: { CIVIL: 5, MECHANICAL: 2 } },
+            { text: "Biomechanics and Medical Device Design — engineering for the human body", w: { CHEMICAL_BIO: 4, MECHANICAL: 3, DESIGN_ARCH: 2 } },
+            { text: "Power Electronics and Renewable Energy Systems — the future of clean power", w: { ELECTRONICS: 4, ENERGY_ENV: 4 } }
+          ]
+        },
+        {
+          question: "You discover a new material in a lab with unusual properties. Your first thought is:",
+          options: [
+            { text: "Can this become a better semiconductor? What does it mean for processor speed?", w: { ELECTRONICS: 5, CS_AI: 2 } },
+            { text: "How does it behave under compression and tension? Could it replace steel in buildings?", w: { CIVIL: 5, MECHANICAL: 2, ENERGY_ENV: 1 } },
+            { text: "What's its molecular structure? Could it have pharmaceutical or therapeutic applications?", w: { CHEMICAL_BIO: 5, DATA_MATH: 1 } },
+            { text: "Can it improve solar cell or battery efficiency? What's its thermal conductivity?", w: { ENERGY_ENV: 5, ELECTRONICS: 2, CHEMICAL_BIO: 1 } }
+          ]
+        },
+        {
+          question: "Which book title would you pick up first at a bookstore?",
+          options: [
+            { text: "Designing Data-Intensive Applications — the architecture behind systems at scale", w: { CS_AI: 5, DATA_MATH: 3 } },
+            { text: "Structures: Or Why Things Don't Fall Down — the hidden science of buildings", w: { CIVIL: 4, MECHANICAL: 3 } },
+            { text: "The Gene: An Intimate History — how DNA shapes every living thing", w: { CHEMICAL_BIO: 5 } },
+            { text: "The Design of Everyday Things — why good design is invisible and bad design kills", w: { DESIGN_ARCH: 5, CS_AI: 2 } }
+          ]
+        },
+        {
+          question: "Your final year project has total freedom. You choose to build:",
+          options: [
+            { text: "A full-stack AI platform with recommendation engine, NLP search, and analytics dashboard", w: { CS_AI: 5, DATA_MATH: 3 } },
+            { text: "A CNC machine or 3D metal printer fabricated from scratch in your workshop", w: { MECHANICAL: 5, ELECTRONICS: 2 } },
+            { text: "A portable air quality monitoring station that maps pollution in real-time across campus", w: { ENERGY_ENV: 4, ELECTRONICS: 3, CHEMICAL_BIO: 1 } },
+            { text: "An IoT-based precision agriculture system with soil and weather sensors", w: { ELECTRONICS: 3, ENERGY_ENV: 3, CS_AI: 2, CIVIL: 1 } }
+          ]
+        },
+        {
+          question: "What kind of mathematics do you find most beautiful and worth pursuing deeply?",
+          options: [
+            { text: "Algorithms, graph theory, computational complexity — the mathematics of computing", w: { CS_AI: 5, DATA_MATH: 5 } },
+            { text: "Differential equations, fluid mechanics, thermodynamics — the math of physical systems", w: { MECHANICAL: 4, CIVIL: 3, ENERGY_ENV: 1 } },
+            { text: "Linear algebra, signal processing, Fourier analysis — the math of waves and circuits", w: { ELECTRONICS: 4, DATA_MATH: 3 } },
+            { text: "Probability, Bayesian inference, multivariate statistics — the math of uncertainty", w: { DATA_MATH: 5, CS_AI: 3, CHEMICAL_BIO: 1 } }
+          ]
+        },
+        {
+          question: "Which real-world challenge would you devote your career to solving?",
+          options: [
+            { text: "Making AI safe, trustworthy, and beneficial for all of humanity", w: { CS_AI: 5, DATA_MATH: 3 } },
+            { text: "Building disaster-resilient, affordable infrastructure for developing nations", w: { CIVIL: 5, ENERGY_ENV: 2, DESIGN_ARCH: 1 } },
+            { text: "Curing cancer, Alzheimer's, or rare genetic disorders through bioengineering", w: { CHEMICAL_BIO: 5, DATA_MATH: 2 } },
+            { text: "Achieving 100% clean renewable energy worldwide within 20 years", w: { ENERGY_ENV: 5, ELECTRONICS: 2, MECHANICAL: 1 } }
+          ]
+        },
+      ],
+      [
+        {
+          question: "When you see a badly designed everyday product (a confusing app, a hard-to-use tool), your first thought is:",
+          options: [
+            { text: "The software architecture or algorithms behind it must be poorly engineered", w: { CS_AI: 4, DATA_MATH: 2 } },
+            { text: "The physical mechanism is fundamentally flawed — wrong materials or bad ergonomics", w: { MECHANICAL: 4, CHEMICAL_BIO: 2 } },
+            { text: "The user experience wasn't designed with empathy — nobody tested it with real users", w: { DESIGN_ARCH: 5, CS_AI: 2 } },
+            { text: "The efficiency and environmental impact weren't considered in the design process", w: { ENERGY_ENV: 4, CIVIL: 2 } }
+          ]
+        },
+        {
+          question: "When starting a creative project, what's your first move?",
+          options: [
+            { text: "Look at data — what do usage patterns, analytics, and user behavior tell us?", w: { DATA_MATH: 5, CS_AI: 3 } },
+            { text: "Understand the physics — what are the forces, constraints, and material limits?", w: { MECHANICAL: 4, CIVIL: 3, ELECTRONICS: 1 } },
+            { text: "Sketch the vision — how should the final thing look, feel, and flow for the user?", w: { DESIGN_ARCH: 5, CS_AI: 1 } },
+            { text: "Define the purpose — what problem does this solve for people and the planet?", w: { ENERGY_ENV: 3, CHEMICAL_BIO: 3, CIVIL: 2 } }
+          ]
+        },
+        {
+          question: "Your dream workspace looks like:",
+          options: [
+            { text: "Three monitors, a standing desk, ergonomic keyboard, code editors and terminals everywhere", w: { CS_AI: 5, DATA_MATH: 2 } },
+            { text: "A workshop with lathes, 3D printers, welding stations, and mechanical tools", w: { MECHANICAL: 5, DESIGN_ARCH: 2 } },
+            { text: "A spotless lab with fume hoods, analytical instruments, and chemical glassware", w: { CHEMICAL_BIO: 5, DATA_MATH: 1 } },
+            { text: "A bright studio with massive drawing boards, material samples, and design models", w: { DESIGN_ARCH: 5, CIVIL: 2 } }
+          ]
+        },
+        {
+          question: "You're redesigning your college campus from scratch. What's your top priority?",
+          options: [
+            { text: "Smart IoT infrastructure — automated lighting, climate, and security systems everywhere", w: { ELECTRONICS: 4, CS_AI: 3, ENERGY_ENV: 2 } },
+            { text: "Structural excellence — earthquake-resistant buildings with advanced construction materials", w: { CIVIL: 5, MECHANICAL: 2 } },
+            { text: "Stunning architecture — inspiring spaces, intuitive navigation, human-centric design", w: { DESIGN_ARCH: 5, CIVIL: 3 } },
+            { text: "Net-zero campus — solar panels, rainwater harvesting, zero-waste systems", w: { ENERGY_ENV: 5, CIVIL: 2, CHEMICAL_BIO: 1 } }
+          ]
+        },
+        {
+          question: "Which professional tool do you wish you had mastered already?",
+          options: [
+            { text: "PyTorch / TensorFlow / advanced ML frameworks for building intelligent systems", w: { CS_AI: 5, DATA_MATH: 3 } },
+            { text: "SolidWorks / CATIA / AutoCAD for precision 3D engineering and design", w: { MECHANICAL: 4, CIVIL: 3, DESIGN_ARCH: 3 } },
+            { text: "Figma / Blender / Adobe Creative Suite for visual and interaction design", w: { DESIGN_ARCH: 5, CS_AI: 1 } },
+            { text: "MATLAB / R / Tableau for advanced data analysis and scientific visualization", w: { DATA_MATH: 5, CS_AI: 2, CHEMICAL_BIO: 1 } }
+          ]
+        },
+        {
+          question: "A social enterprise asks you to build a product for rural India. What do you create?",
+          options: [
+            { text: "A mobile app with offline-first AI that provides healthcare diagnostics in local languages", w: { CS_AI: 4, CHEMICAL_BIO: 2, DATA_MATH: 2 } },
+            { text: "Low-cost prefabricated modular housing using locally sourced sustainable materials", w: { CIVIL: 5, DESIGN_ARCH: 3, ENERGY_ENV: 2 } },
+            { text: "Solar-powered cold storage units that preserve farmers' produce and reduce waste by 60%", w: { ENERGY_ENV: 5, MECHANICAL: 2, ELECTRONICS: 1 } },
+            { text: "A portable water testing and purification kit using advanced membrane nanotechnology", w: { CHEMICAL_BIO: 5, ENERGY_ENV: 2 } }
+          ]
+        },
+        {
+          question: "When you finish building something, which feedback gives you the deepest satisfaction?",
+          options: [
+            { text: "It's blazingly fast, handles millions of requests, and the code is clean", w: { CS_AI: 5, DATA_MATH: 2 } },
+            { text: "The engineering precision is remarkable — every tolerance is within spec", w: { MECHANICAL: 4, ELECTRONICS: 3 } },
+            { text: "It looks stunning, feels intuitive, and users love interacting with it", w: { DESIGN_ARCH: 5 } },
+            { text: "It has minimal environmental footprint and actually helps the planet", w: { ENERGY_ENV: 5, CHEMICAL_BIO: 2 } }
+          ]
+        },
+        {
+          question: "Your approach to innovation is best described as:",
+          options: [
+            { text: "Data-driven — run experiments, test hypotheses, let the numbers decide", w: { DATA_MATH: 5, CS_AI: 3 } },
+            { text: "Engineering-driven — optimize for performance, reliability, and technical excellence", w: { MECHANICAL: 4, ELECTRONICS: 3 } },
+            { text: "Human-centered — design for real people's needs, emotions, and daily frustrations", w: { DESIGN_ARCH: 4, CHEMICAL_BIO: 2, CS_AI: 1 } },
+            { text: "Impact-driven — focus on sustainability, social benefit, and long-term planetary health", w: { ENERGY_ENV: 4, CIVIL: 3 } }
+          ]
+        },
+        {
+          question: "You're given a malfunctioning robot that can't pick up objects reliably. How do you fix it?",
+          options: [
+            { text: "Retrain the computer vision model — fix the object detection algorithm", w: { CS_AI: 5, DATA_MATH: 2 } },
+            { text: "Redesign the gripper mechanism — adjust the gear ratios and grip force", w: { MECHANICAL: 5, DESIGN_ARCH: 1 } },
+            { text: "Debug the motor driver circuits and recalibrate the servo feedback loops", w: { ELECTRONICS: 5, MECHANICAL: 2 } },
+            { text: "Rethink the whole approach — maybe a soft robotic gripper using flexible materials", w: { CHEMICAL_BIO: 3, DESIGN_ARCH: 3, MECHANICAL: 2 } }
+          ]
+        },
+        {
+          question: "Which design competition would you enter without hesitation?",
+          options: [
+            { text: "ICPC or Google Code Jam — solving algorithmic challenges against the world's best coders", w: { CS_AI: 5, DATA_MATH: 4 } },
+            { text: "SAE Baja or Formula Student — building and racing a car you designed from scratch", w: { MECHANICAL: 5, ELECTRONICS: 1 } },
+            { text: "Smart India Hackathon — building solutions for real problems faced by Indian citizens", w: { CIVIL: 3, ENERGY_ENV: 3, CS_AI: 2 } },
+            { text: "Red Dot Design or product design sprint — creating objects people love using", w: { DESIGN_ARCH: 5, MECHANICAL: 1 } }
+          ]
+        },
+        {
+          question: "When you admire a modern skyscraper, what impresses you most?",
+          options: [
+            { text: "The building management system — smart elevators, automated climate, digital twin tech", w: { ELECTRONICS: 3, CS_AI: 3, ENERGY_ENV: 2 } },
+            { text: "The structural engineering — how it withstands wind, seismic forces, and gravity", w: { CIVIL: 5, MECHANICAL: 2 } },
+            { text: "The architectural beauty — the facade, spatial flow, and how it shapes the skyline", w: { DESIGN_ARCH: 5, CIVIL: 2 } },
+            { text: "The sustainable features — green roof, solar glass, zero-carbon footprint", w: { ENERGY_ENV: 5, CHEMICAL_BIO: 1, CIVIL: 1 } }
+          ]
+        },
+        {
+          question: "Your creative process typically follows this pattern:",
+          options: [
+            { text: "Research → Code → Test → Deploy → Iterate rapidly based on metrics", w: { CS_AI: 4, DATA_MATH: 3 } },
+            { text: "Sketch → Model in CAD → Fabricate prototype → Test → Refine physical design", w: { MECHANICAL: 4, DESIGN_ARCH: 3 } },
+            { text: "Observe → Empathize with users → Ideate broadly → Prototype with user testing", w: { DESIGN_ARCH: 4, CS_AI: 2, CHEMICAL_BIO: 1 } },
+            { text: "Hypothesize → Design experiment → Collect data → Analyze → Publish conclusions", w: { DATA_MATH: 4, CHEMICAL_BIO: 3, CS_AI: 1 } }
+          ]
+        },
+      ],
+      [
+        {
+          question: "You're most productive and in your 'flow state' when:",
+          options: [
+            { text: "Coding alone at 2 AM with headphones, solving a complex algorithmic challenge", w: { CS_AI: 5, DATA_MATH: 3 } },
+            { text: "In a workshop, hands covered in grease, calibrating a machine you're building", w: { MECHANICAL: 5, ELECTRONICS: 2 } },
+            { text: "Brainstorming with a creative team, whiteboarding ideas, debating approaches", w: { DESIGN_ARCH: 4, CS_AI: 2, CIVIL: 1 } },
+            { text: "In a lab running carefully controlled experiments and recording precise measurements", w: { CHEMICAL_BIO: 5, DATA_MATH: 2 } }
+          ]
+        },
+        {
+          question: "How do you handle ambiguity when the project requirements are unclear?",
+          options: [
+            { text: "Build a quick prototype / MVP and let real data from users guide next steps", w: { CS_AI: 4, DATA_MATH: 3, DESIGN_ARCH: 1 } },
+            { text: "Create physical scale models and test different engineering approaches hands-on", w: { MECHANICAL: 4, CIVIL: 3 } },
+            { text: "Research extensively — read papers, study existing solutions, consult domain experts", w: { DATA_MATH: 4, CHEMICAL_BIO: 3 } },
+            { text: "Sketch 10 different visual solutions and evaluate each for feasibility and beauty", w: { DESIGN_ARCH: 5, CIVIL: 2 } }
+          ]
+        },
+        {
+          question: "Fast forward 10 years — what does your ideal work environment look like?",
+          options: [
+            { text: "A tech company's engineering floor — whiteboards, standups, deploy to production daily", w: { CS_AI: 5, DATA_MATH: 2 } },
+            { text: "A construction site or factory floor — watching your designs come alive at scale", w: { CIVIL: 4, MECHANICAL: 4 } },
+            { text: "A cutting-edge research lab pushing the boundaries of human knowledge", w: { CHEMICAL_BIO: 4, DATA_MATH: 3, ELECTRONICS: 2 } },
+            { text: "A design studio creating products that change how millions of people experience the world", w: { DESIGN_ARCH: 5, MECHANICAL: 2 } }
+          ]
+        },
+        {
+          question: "When learning a new technical concept, what approach works best for you?",
+          options: [
+            { text: "Read docs, write code, build a project — learn by shipping something real", w: { CS_AI: 5, DATA_MATH: 2 } },
+            { text: "Take it apart and rebuild it — hands-on experimentation with the real thing", w: { MECHANICAL: 5, ELECTRONICS: 3 } },
+            { text: "Draw diagrams, visualize relationships, map the concept spatially in your mind", w: { DESIGN_ARCH: 4, CIVIL: 3, DATA_MATH: 2 } },
+            { text: "Run lab experiments, observe outcomes, and derive understanding from empirical data", w: { CHEMICAL_BIO: 5, ENERGY_ENV: 2 } }
+          ]
+        },
+        {
+          question: "Under extreme pressure with a deadline approaching, your superpower is:",
+          options: [
+            { text: "Breaking complex problems into small, solvable sub-tasks and executing systematically", w: { CS_AI: 4, DATA_MATH: 4 } },
+            { text: "Staying calm, working with your hands, and methodically building through the challenge", w: { MECHANICAL: 4, CIVIL: 3, ELECTRONICS: 1 } },
+            { text: "Thinking laterally — finding creative, unconventional solutions nobody else considered", w: { DESIGN_ARCH: 4, CS_AI: 3 } },
+            { text: "Relying on data, evidence, and proven methods to make confident decisions quickly", w: { DATA_MATH: 5, CHEMICAL_BIO: 2 } }
+          ]
+        },
+        {
+          question: "Your closest friends would describe you as:",
+          options: [
+            { text: "The tech guru who fixes everyone's computer, automates everything, and lives online", w: { CS_AI: 5, ELECTRONICS: 2 } },
+            { text: "The builder who's always tinkering — dismantling gadgets, fixing bikes, making things", w: { MECHANICAL: 5, ELECTRONICS: 2 } },
+            { text: "The creative one who notices design details, cares about aesthetics, has strong opinions on fonts", w: { DESIGN_ARCH: 5 } },
+            { text: "The science nerd who's fascinated by how things work at a molecular or cellular level", w: { CHEMICAL_BIO: 4, ENERGY_ENV: 3, DATA_MATH: 1 } }
+          ]
+        },
+        {
+          question: "In a heated group discussion about a project direction, you typically:",
+          options: [
+            { text: "Pull up data, cite research, and use logical arguments to support your position", w: { DATA_MATH: 5, CS_AI: 3 } },
+            { text: "Focus on practical feasibility — what can we actually build with our constraints?", w: { MECHANICAL: 4, CIVIL: 3, ELECTRONICS: 1 } },
+            { text: "Advocate for the user experience — what matters most to the people who'll use this?", w: { DESIGN_ARCH: 3, ENERGY_ENV: 2, CHEMICAL_BIO: 2, CS_AI: 1 } },
+            { text: "Push for ambitious innovation — yes it's hard, but this could be game-changing", w: { CS_AI: 3, ELECTRONICS: 3, CHEMICAL_BIO: 2 } }
+          ]
+        },
+        {
+          question: "Which type of failure would frustrate you the most?",
+          options: [
+            { text: "Your algorithm returns incorrect results because of a subtle edge case you missed", w: { CS_AI: 5, DATA_MATH: 3 } },
+            { text: "A mechanism you designed breaks down in the field after a week of real-world use", w: { MECHANICAL: 5, CIVIL: 2 } },
+            { text: "A structure or building you worked on develops stress fractures in a critical section", w: { CIVIL: 5, MECHANICAL: 2 } },
+            { text: "A lab experiment fails because of contaminated reagents or unreproducible conditions", w: { CHEMICAL_BIO: 5, DATA_MATH: 2 } }
+          ]
+        },
+        {
+          question: "Your reading and content consumption is dominated by:",
+          options: [
+            { text: "Hacker News, tech blogs, GitHub trending, coding YouTube, and AI research papers", w: { CS_AI: 5, DATA_MATH: 3 } },
+            { text: "Engineering magazines, mechanical design publications, and manufacturing trade journals", w: { MECHANICAL: 4, CIVIL: 3, ELECTRONICS: 1 } },
+            { text: "Scientific journals (Nature, Science), chemistry or biology research, medical news", w: { CHEMICAL_BIO: 5, DATA_MATH: 2 } },
+            { text: "Dezeen, ArchDaily, Behance, design magazines, architecture portfolios, sustainability reports", w: { DESIGN_ARCH: 4, ENERGY_ENV: 3 } }
+          ]
+        },
+        {
+          question: "You're most energized when working on problems that are:",
+          options: [
+            { text: "Abstract and elegant — mathematical beauty, computational complexity, algorithmic puzzles", w: { DATA_MATH: 5, CS_AI: 4 } },
+            { text: "Tangible and physical — you can see, touch, and test the results in the real world", w: { MECHANICAL: 4, CIVIL: 3, ELECTRONICS: 2 } },
+            { text: "Directly life-changing — improving someone's health, safety, or quality of life", w: { CHEMICAL_BIO: 4, ENERGY_ENV: 3 } },
+            { text: "Aesthetically challenging — where functionality and beauty must coexist harmoniously", w: { DESIGN_ARCH: 5, CIVIL: 2 } }
+          ]
+        },
+        {
+          question: "How do you stay updated in your areas of interest?",
+          options: [
+            { text: "Follow tech leaders on Twitter/X, read HN daily, watch conference talks, subscribe to newsletters", w: { CS_AI: 5, DATA_MATH: 2 } },
+            { text: "Build hobby projects, subscribe to hardware YouTube channels, attend maker faires", w: { MECHANICAL: 4, ELECTRONICS: 4 } },
+            { text: "Read research papers, attend webinars, follow academic journals and lab publications", w: { CHEMICAL_BIO: 4, DATA_MATH: 3 } },
+            { text: "Follow design portfolios, visit exhibitions, study architecture firms and sustainability blogs", w: { DESIGN_ARCH: 4, CIVIL: 2, ENERGY_ENV: 2 } }
+          ]
+        },
+        {
+          question: "Your patience is tested most when:",
+          options: [
+            { text: "Code won't compile, build takes forever, or a deployement fails for mysterious reasons", w: { CS_AI: 5, DATA_MATH: 2 } },
+            { text: "A physical prototype doesn't fit together because tolerances are off by 0.5mm", w: { MECHANICAL: 5, ELECTRONICS: 2 } },
+            { text: "Experimental results are inconsistent, contaminated, or refuse to be reproducible", w: { CHEMICAL_BIO: 5, DATA_MATH: 3 } },
+            { text: "A design looks wrong but you can't articulate what needs to change", w: { DESIGN_ARCH: 5, CS_AI: 1 } }
+          ]
+        },
+      ],
+      [
+        {
+          question: "Your dream employer in 5 years:",
+          options: [
+            { text: "Google DeepMind, OpenAI, Microsoft Research, or a pre-IPO AI startup", w: { CS_AI: 5, DATA_MATH: 3 } },
+            { text: "ISRO, Boeing, Airbus, Tesla, or SpaceX — engineering the future of transport", w: { MECHANICAL: 4, ELECTRONICS: 2, ENERGY_ENV: 2 } },
+            { text: "Biocon, Pfizer, Medtronic, or a breakthrough biotech startup developing cures", w: { CHEMICAL_BIO: 5 } },
+            { text: "Zaha Hadid Architects, IDEO, Apple Design, or a leading sustainable design firm", w: { DESIGN_ARCH: 5, CIVIL: 2, ENERGY_ENV: 1 } }
+          ]
+        },
+        {
+          question: "What does 'success' look like to you in 15 years?",
+          options: [
+            { text: "Building technology that a billion people use every single day", w: { CS_AI: 5, DATA_MATH: 2 } },
+            { text: "Designing infrastructure that transforms a nation's skyline and serves generations", w: { CIVIL: 5, DESIGN_ARCH: 3 } },
+            { text: "Publishing groundbreaking research that fundamentally advances human knowledge", w: { CHEMICAL_BIO: 4, DATA_MATH: 4 } },
+            { text: "Leading clean energy projects that measurably reverse climate change", w: { ENERGY_ENV: 5, CIVIL: 1, MECHANICAL: 1 } }
+          ]
+        },
+        {
+          question: "Which industry's future trajectory excites you the most?",
+          options: [
+            { text: "AI, cloud computing, cybersecurity, and the future of autonomous intelligence", w: { CS_AI: 5, DATA_MATH: 3, ELECTRONICS: 1 } },
+            { text: "Renewable energy, EVs, smart grids, hydrogen fuel — the clean energy revolution", w: { ENERGY_ENV: 5, ELECTRONICS: 3, MECHANICAL: 2 } },
+            { text: "Genomics, precision medicine, CRISPR, and personalized healthcare", w: { CHEMICAL_BIO: 5, DATA_MATH: 2 } },
+            { text: "Smart cities, sustainable architecture, urban planning, and resilient infrastructure", w: { CIVIL: 4, DESIGN_ARCH: 4, ENERGY_ENV: 2 } }
+          ]
+        },
+        {
+          question: "In terms of day-to-day career growth, what matters most to you?",
+          options: [
+            { text: "Continuous learning — always pushing intellectual boundaries and mastering new tech", w: { CS_AI: 4, DATA_MATH: 4 } },
+            { text: "Building tangible things — seeing visible impact in the physical world", w: { MECHANICAL: 4, CIVIL: 4 } },
+            { text: "Doing meaningful work that directly improves people's health and quality of life", w: { CHEMICAL_BIO: 3, ENERGY_ENV: 3, DESIGN_ARCH: 2 } },
+            { text: "Financial growth and global opportunities in high-demand industries", w: { CS_AI: 3, ELECTRONICS: 3, DATA_MATH: 2 } }
+          ]
+        },
+        {
+          question: "You want your life's work to impact:",
+          options: [
+            { text: "How the world processes, stores, communicates, and makes sense of information", w: { CS_AI: 5, DATA_MATH: 3, ELECTRONICS: 1 } },
+            { text: "How cities are built, how people live and move, and how nations develop", w: { CIVIL: 5, DESIGN_ARCH: 2, ENERGY_ENV: 1 } },
+            { text: "How diseases are understood, treated, and ultimately prevented or cured", w: { CHEMICAL_BIO: 5, DATA_MATH: 1 } },
+            { text: "How energy is generated, distributed, and consumed sustainably worldwide", w: { ENERGY_ENV: 5, ELECTRONICS: 2, MECHANICAL: 1 } }
+          ]
+        },
+        {
+          question: "Your ideal career day-to-day involves:",
+          options: [
+            { text: "Writing code, reviewing code, deploying systems, and analyzing data at a screen", w: { CS_AI: 5, DATA_MATH: 3 } },
+            { text: "Moving between construction sites, manufacturing plants, and an engineering office", w: { CIVIL: 4, MECHANICAL: 4 } },
+            { text: "Running experiments methodically in a lab, analyzing results, writing research papers", w: { CHEMICAL_BIO: 4, DATA_MATH: 3, ENERGY_ENV: 1 } },
+            { text: "Creating designs in a studio, meeting clients, iterating on visual and spatial concepts", w: { DESIGN_ARCH: 5, CIVIL: 2 } }
+          ]
+        },
+        {
+          question: "Which government initiative would you want to be a core contributor to?",
+          options: [
+            { text: "Digital India — building AI infrastructure, digital payments, and tech for 1.4 billion", w: { CS_AI: 5, ELECTRONICS: 2 } },
+            { text: "Smart Cities Mission + Gati Shakti — transforming India's urban and transport infrastructure", w: { CIVIL: 5, DESIGN_ARCH: 2, ENERGY_ENV: 1 } },
+            { text: "National Green Hydrogen Mission — clean fuel for decarbonizing India's economy", w: { ENERGY_ENV: 5, CHEMICAL_BIO: 3 } },
+            { text: "Make in India 2.0 — building world-class domestic manufacturing and semiconductor fabs", w: { MECHANICAL: 4, ELECTRONICS: 4 } }
+          ]
+        },
+        {
+          question: "What type of startup would you co-found if a VC offered you \u20B910 crore?",
+          options: [
+            { text: "A SaaS or AI company solving a billion-dollar enterprise or consumer problem", w: { CS_AI: 5, DATA_MATH: 3 } },
+            { text: "A hardware or robotics company building physical products for the real world", w: { MECHANICAL: 4, ELECTRONICS: 4 } },
+            { text: "A biotech or cleantech company creating breakthrough science-based solutions", w: { CHEMICAL_BIO: 4, ENERGY_ENV: 4 } },
+            { text: "A design studio or proptech firm creating beautiful, sustainable living spaces", w: { DESIGN_ARCH: 5, CIVIL: 3 } }
+          ]
+        },
+        {
+          question: "Your engineering legacy will ideally be:",
+          options: [
+            { text: "An algorithm, platform, or AI system that transformed how an industry operates", w: { CS_AI: 5, DATA_MATH: 3 } },
+            { text: "A landmark bridge, building, or infrastructure that serves millions for decades", w: { CIVIL: 5, DESIGN_ARCH: 2, MECHANICAL: 1 } },
+            { text: "A scientific discovery — a new material, drug, or biotechnology that saves lives", w: { CHEMICAL_BIO: 5, DATA_MATH: 2 } },
+            { text: "A breakthrough in clean energy or pollution removal that helps save the planet", w: { ENERGY_ENV: 5, MECHANICAL: 2, ELECTRONICS: 1 } }
+          ]
+        },
+        {
+          question: "What salary and career trade-off are you most comfortable with?",
+          options: [
+            { text: "High pay in tech/AI (20+ LPA fresher), fast-paced, willing to grind intense hours", w: { CS_AI: 5, DATA_MATH: 2 } },
+            { text: "Moderate pay in core engineering (6-12 LPA), but deeply satisfying, tangible work", w: { MECHANICAL: 3, CIVIL: 3, ELECTRONICS: 3 } },
+            { text: "Variable pay depending on research grants, but freedom to explore and discover", w: { CHEMICAL_BIO: 4, DATA_MATH: 4 } },
+            { text: "Creative freedom with impact-driven compensation — sustainability and design matter more than \u20B9", w: { DESIGN_ARCH: 3, ENERGY_ENV: 4, CIVIL: 1 } }
+          ]
+        },
+        {
+          question: "Which interdisciplinary field excites you the most?",
+          options: [
+            { text: "Computational Biology or Bioinformatics — using code to decode life's secrets", w: { CS_AI: 3, CHEMICAL_BIO: 4, DATA_MATH: 3 } },
+            { text: "Mechatronics or Robotics — fusing mechanical systems with electronics and AI", w: { MECHANICAL: 4, ELECTRONICS: 4, CS_AI: 1 } },
+            { text: "Sustainable Architecture and Green Building Design — beautiful and planet-friendly", w: { DESIGN_ARCH: 4, CIVIL: 3, ENERGY_ENV: 3 } },
+            { text: "Data-driven Environmental Modeling — predicting climate change and pollution patterns", w: { DATA_MATH: 4, ENERGY_ENV: 3, CS_AI: 2 } }
+          ]
+        },
+        {
+          question: "If you could attend one conference anywhere in the world this year, it would be:",
+          options: [
+            { text: "NeurIPS or Google I/O — the cutting edge of AI, machine learning, and computing", w: { CS_AI: 5, DATA_MATH: 4 } },
+            { text: "Paris Air Show or Auto Expo — stunning vehicles, aircraft, and mechanical marvels", w: { MECHANICAL: 5, ELECTRONICS: 2 } },
+            { text: "World Architecture Festival or Milan Design Week — iconic design and spatial innovation", w: { DESIGN_ARCH: 5, CIVIL: 2 } },
+            { text: "Nature Biotechnology Conference or WHO Health Innovation Summit — science that saves lives", w: { CHEMICAL_BIO: 5, ENERGY_ENV: 2 } }
+          ]
+        },
+      ],
+    ];
+
+    const BRANCH_PROFILES = [
+      { b: "Computer Science and Engineering", d: { CS_AI: 1.0, DATA_MATH: 0.4, ELECTRONICS: 0.1 } },
+      { b: "Computer Science", d: { CS_AI: 1.0, DATA_MATH: 0.4 } },
+      { b: "Computer Engineering", d: { CS_AI: 0.9, ELECTRONICS: 0.3, DATA_MATH: 0.2 } },
+      { b: "Information Technology", d: { CS_AI: 0.9, DATA_MATH: 0.3, ELECTRONICS: 0.1 } },
+      { b: "Computer Science and Business", d: { CS_AI: 0.8, DATA_MATH: 0.4 } },
+      { b: "Computer Technology", d: { CS_AI: 0.8, ELECTRONICS: 0.2, DATA_MATH: 0.2 } },
+      { b: "Computer Science and Information Technology", d: { CS_AI: 0.9, DATA_MATH: 0.3 } },
+      { b: "Computer Science and Business Systems", d: { CS_AI: 0.7, DATA_MATH: 0.5 } },
+      { b: "Artificial Intelligence", d: { CS_AI: 0.9, DATA_MATH: 0.6 } },
+      { b: "Artificial Intelligence and Machine Learning", d: { CS_AI: 0.9, DATA_MATH: 0.6 } },
+      { b: "Artificial Intelligence and Data Science", d: { CS_AI: 0.8, DATA_MATH: 0.7 } },
+      { b: "Artificial Intelligence and Data Engineering", d: { CS_AI: 0.8, DATA_MATH: 0.6, ELECTRONICS: 0.1 } },
+      { b: "Data Science and Artificial Intelligence", d: { CS_AI: 0.7, DATA_MATH: 0.8 } },
+      { b: "Computer Science Engineering (Artificial Intelligence and Machine Learning)", d: { CS_AI: 0.9, DATA_MATH: 0.5 } },
+      { b: "Computer Science and Engineering (Artificial Intelligence)", d: { CS_AI: 0.9, DATA_MATH: 0.5 } },
+      { b: "Computer Science and Engineering with Major in Artificial Intelligence", d: { CS_AI: 0.9, DATA_MATH: 0.5 } },
+      { b: "Data Science and Engineering", d: { DATA_MATH: 0.8, CS_AI: 0.7 } },
+      { b: "Data Science", d: { DATA_MATH: 0.9, CS_AI: 0.6 } },
+      { b: "Computer Science Engineering (Data Science)", d: { CS_AI: 0.7, DATA_MATH: 0.7 } },
+      { b: "Computational and Data Science", d: { DATA_MATH: 0.8, CS_AI: 0.6 } },
+      { b: "Statistics and Data Science", d: { DATA_MATH: 0.9, CS_AI: 0.4 } },
+      { b: "Quantitative Economics and Data Science", d: { DATA_MATH: 0.8, CS_AI: 0.3 } },
+      { b: "Cyber Security", d: { CS_AI: 0.8, ELECTRONICS: 0.3, DATA_MATH: 0.2 } },
+      { b: "Computer Science and Engineering (Cyber Security)", d: { CS_AI: 0.8, ELECTRONICS: 0.3 } },
+      { b: "Computer Science and Engineering with specialization in Cyber Security", d: { CS_AI: 0.8, ELECTRONICS: 0.3 } },
+      { b: "Electronics and Communication Engineering", d: { ELECTRONICS: 1.0, CS_AI: 0.2, DATA_MATH: 0.1 } },
+      { b: "Electronics Engineering", d: { ELECTRONICS: 1.0, MECHANICAL: 0.1 } },
+      { b: "Electronic Engineering", d: { ELECTRONICS: 1.0 } },
+      { b: "Electronics and Electrical Engineering", d: { ELECTRONICS: 0.8, ENERGY_ENV: 0.3 } },
+      { b: "Electronics and Electrical Communication Engineering", d: { ELECTRONICS: 0.9, CS_AI: 0.2 } },
+      { b: "Electronics and Telecommunication Engineering", d: { ELECTRONICS: 0.9, CS_AI: 0.2 } },
+      { b: "Electronics and Instrumentation Engineering", d: { ELECTRONICS: 0.9, MECHANICAL: 0.2 } },
+      { b: "Electronics and VLSI Engineering", d: { ELECTRONICS: 1.0, DATA_MATH: 0.2 } },
+      { b: "Microelectronics and VLSI Engineering", d: { ELECTRONICS: 1.0, DATA_MATH: 0.2 } },
+      { b: "VLSI Design and Technology", d: { ELECTRONICS: 1.0, CS_AI: 0.2 } },
+      { b: "Integrated Circuit Design and Technology", d: { ELECTRONICS: 1.0, CS_AI: 0.1 } },
+      { b: "Electrical Engineering (IC Design and Technology)", d: { ELECTRONICS: 0.9, CS_AI: 0.2 } },
+      { b: "Electrical Engineering (Power and Automation)", d: { ELECTRONICS: 0.7, ENERGY_ENV: 0.4, MECHANICAL: 0.2 } },
+      { b: "Electrical and Electronics Engineering", d: { ELECTRONICS: 0.9, ENERGY_ENV: 0.3 } },
+      { b: "Electrical Engineering", d: { ELECTRONICS: 0.7, ENERGY_ENV: 0.4, MECHANICAL: 0.1 } },
+      { b: "Electronics and Computer Engineering", d: { ELECTRONICS: 0.7, CS_AI: 0.5 } },
+      { b: "Robotics and Automation", d: { ELECTRONICS: 0.5, MECHANICAL: 0.5, CS_AI: 0.3 } },
+      { b: "Robotics and AI", d: { CS_AI: 0.5, ELECTRONICS: 0.4, MECHANICAL: 0.4 } },
+      { b: "Mechatronics Engineering", d: { MECHANICAL: 0.5, ELECTRONICS: 0.5, CS_AI: 0.2 } },
+      { b: "Mechatronics and Automation Engineering", d: { MECHANICAL: 0.5, ELECTRONICS: 0.5 } },
+      { b: "Mechanical and Automation Engineering", d: { MECHANICAL: 0.7, ELECTRONICS: 0.3, CS_AI: 0.1 } },
+      { b: "Smart Manufacturing", d: { MECHANICAL: 0.6, ELECTRONICS: 0.3, CS_AI: 0.2 } },
+      { b: "Industrial Internet of Things", d: { ELECTRONICS: 0.5, CS_AI: 0.4, MECHANICAL: 0.2 } },
+      { b: "Internet of Things", d: { ELECTRONICS: 0.5, CS_AI: 0.4 } },
+      { b: "Computer Science and Engineering (IoT)", d: { CS_AI: 0.5, ELECTRONICS: 0.5 } },
+      { b: "Electronics and Communication Engineering (Internet of Things)", d: { ELECTRONICS: 0.6, CS_AI: 0.4 } },
+      { b: "Mechanical Engineering", d: { MECHANICAL: 1.0, ELECTRONICS: 0.1 } },
+      { b: "Aerospace Engineering", d: { MECHANICAL: 0.8, ELECTRONICS: 0.2, ENERGY_ENV: 0.1 } },
+      { b: "Aeronautical Engineering", d: { MECHANICAL: 0.8, ELECTRONICS: 0.2 } },
+      { b: "Production Engineering", d: { MECHANICAL: 0.8, DESIGN_ARCH: 0.2 } },
+      { b: "Manufacturing Science and Engineering", d: { MECHANICAL: 0.8, CHEMICAL_BIO: 0.2 } },
+      { b: "Industrial Engineering and Operations Research", d: { MECHANICAL: 0.5, DATA_MATH: 0.5, CS_AI: 0.1 } },
+      { b: "Industrial and Production Engineering", d: { MECHANICAL: 0.7, DATA_MATH: 0.3 } },
+      { b: "Automobile Engineering", d: { MECHANICAL: 0.9, ELECTRONICS: 0.2, ENERGY_ENV: 0.1 } },
+      { b: "Instrumentation and Control Engineering", d: { ELECTRONICS: 0.6, MECHANICAL: 0.4 } },
+      { b: "Instrumentation Engineering", d: { ELECTRONICS: 0.6, MECHANICAL: 0.4 } },
+      { b: "Space Science and Engineering", d: { MECHANICAL: 0.6, ELECTRONICS: 0.3, DATA_MATH: 0.2 } },
+      { b: "Aviation Engineering", d: { MECHANICAL: 0.7, ELECTRONICS: 0.3 } },
+      { b: "Safety and Fire Engineering", d: { MECHANICAL: 0.5, CIVIL: 0.4, CHEMICAL_BIO: 0.2 } },
+      { b: "Civil Engineering", d: { CIVIL: 1.0, DESIGN_ARCH: 0.2, ENERGY_ENV: 0.1 } },
+      { b: "Ocean Engineering and Naval Architecture", d: { CIVIL: 0.5, MECHANICAL: 0.5, DESIGN_ARCH: 0.2 } },
+      { b: "Naval Architecture and Ocean Engineering", d: { MECHANICAL: 0.5, CIVIL: 0.5, DESIGN_ARCH: 0.2 } },
+      { b: "Mining Engineering", d: { CIVIL: 0.6, MECHANICAL: 0.3, ENERGY_ENV: 0.2 } },
+      { b: "Mining Machinery Engineering", d: { MECHANICAL: 0.5, CIVIL: 0.4, ENERGY_ENV: 0.2 } },
+      { b: "Chemical Engineering", d: { CHEMICAL_BIO: 0.9, ENERGY_ENV: 0.2, MECHANICAL: 0.1 } },
+      { b: "Chemical Science and Technology", d: { CHEMICAL_BIO: 0.9, DATA_MATH: 0.2 } },
+      { b: "Chemical and Biochemical Engineering", d: { CHEMICAL_BIO: 1.0 } },
+      { b: "Biomedical Engineering", d: { CHEMICAL_BIO: 0.7, ELECTRONICS: 0.3, DESIGN_ARCH: 0.1 } },
+      { b: "Bioengineering", d: { CHEMICAL_BIO: 0.8, MECHANICAL: 0.2 } },
+      { b: "Biological Engineering", d: { CHEMICAL_BIO: 0.8, ENERGY_ENV: 0.2 } },
+      { b: "Bio Engineering", d: { CHEMICAL_BIO: 0.8, MECHANICAL: 0.2 } },
+      { b: "Biotechnology and Biochemical Engineering", d: { CHEMICAL_BIO: 1.0 } },
+      { b: "Biotechnology and Bioinformatics", d: { CHEMICAL_BIO: 0.7, CS_AI: 0.3, DATA_MATH: 0.2 } },
+      { b: "Biotechnology", d: { CHEMICAL_BIO: 0.9, DATA_MATH: 0.1 } },
+      { b: "Instrumentation and Biomedical Engineering", d: { ELECTRONICS: 0.4, CHEMICAL_BIO: 0.5, MECHANICAL: 0.2 } },
+      { b: "Electronics and Biomedical Engineering", d: { ELECTRONICS: 0.4, CHEMICAL_BIO: 0.5 } },
+      { b: "Biosciences and Bioengineering", d: { CHEMICAL_BIO: 0.9, DATA_MATH: 0.2 } },
+      { b: "Biochemical Engineering", d: { CHEMICAL_BIO: 1.0 } },
+      { b: "Pharmaceutical Engineering and Technology", d: { CHEMICAL_BIO: 0.9, DESIGN_ARCH: 0.1 } },
+      { b: "Polymer Engineering and Technology", d: { CHEMICAL_BIO: 0.7, MECHANICAL: 0.2, ENERGY_ENV: 0.1 } },
+      { b: "Industrial Chemistry", d: { CHEMICAL_BIO: 0.8, ENERGY_ENV: 0.2 } },
+      { b: "Surface Coating Technology", d: { CHEMICAL_BIO: 0.7, MECHANICAL: 0.3 } },
+      { b: "Dyestuff Technology", d: { CHEMICAL_BIO: 0.8, DESIGN_ARCH: 0.2 } },
+      { b: "Materials Engineering", d: { CHEMICAL_BIO: 0.6, MECHANICAL: 0.4 } },
+      { b: "Materials Science and Engineering", d: { CHEMICAL_BIO: 0.6, MECHANICAL: 0.3, ENERGY_ENV: 0.2 } },
+      { b: "Materials Science and Metallurgical Engineering", d: { CHEMICAL_BIO: 0.5, MECHANICAL: 0.4 } },
+      { b: "Metallurgical and Materials Engineering", d: { CHEMICAL_BIO: 0.5, MECHANICAL: 0.4 } },
+      { b: "Metallurgical Engineering", d: { CHEMICAL_BIO: 0.4, MECHANICAL: 0.5 } },
+      { b: "Mineral and Metallurgical Engineering", d: { CHEMICAL_BIO: 0.4, CIVIL: 0.3, MECHANICAL: 0.3 } },
+      { b: "Ceramic Engineering", d: { CHEMICAL_BIO: 0.7, MECHANICAL: 0.2, DESIGN_ARCH: 0.1 } },
+      { b: "Architecture", d: { DESIGN_ARCH: 0.9, CIVIL: 0.4 } },
+      { b: "Design", d: { DESIGN_ARCH: 1.0, CS_AI: 0.1 } },
+      { b: "Industrial Design", d: { DESIGN_ARCH: 0.9, MECHANICAL: 0.2 } },
+      { b: "Design Engineering", d: { DESIGN_ARCH: 0.7, MECHANICAL: 0.3 } },
+      { b: "Engineering Design", d: { DESIGN_ARCH: 0.6, MECHANICAL: 0.4 } },
+      { b: "Textile Technology", d: { DESIGN_ARCH: 0.5, CHEMICAL_BIO: 0.3, MECHANICAL: 0.2 } },
+      { b: "Textile Engineering", d: { DESIGN_ARCH: 0.4, CHEMICAL_BIO: 0.3, MECHANICAL: 0.3 } },
+      { b: "Fashion Technology", d: { DESIGN_ARCH: 0.8, CHEMICAL_BIO: 0.2 } },
+      { b: "Handloom and Textile Technology", d: { DESIGN_ARCH: 0.5, CHEMICAL_BIO: 0.3 } },
+      { b: "Carpet and Textile Technology", d: { DESIGN_ARCH: 0.4, CHEMICAL_BIO: 0.3, MECHANICAL: 0.2 } },
+      { b: "Fashion and Apparel Engineering", d: { DESIGN_ARCH: 0.7, CHEMICAL_BIO: 0.2 } },
+      { b: "Printing and Packaging Technology", d: { DESIGN_ARCH: 0.5, MECHANICAL: 0.3, CHEMICAL_BIO: 0.2 } },
+      { b: "Animation and VFX", d: { DESIGN_ARCH: 0.7, CS_AI: 0.4 } },
+      { b: "Mathematics and Computing", d: { DATA_MATH: 0.9, CS_AI: 0.5 } },
+      { b: "Engineering Physics", d: { DATA_MATH: 0.6, ELECTRONICS: 0.3, MECHANICAL: 0.2 } },
+      { b: "Mathematics and Scientific Computing", d: { DATA_MATH: 0.9, CS_AI: 0.4 } },
+      { b: "Computational Engineering", d: { DATA_MATH: 0.6, CS_AI: 0.4, MECHANICAL: 0.2 } },
+      { b: "Engineering and Computational Mechanics", d: { MECHANICAL: 0.5, DATA_MATH: 0.5 } },
+      { b: "Physics and Computational Engineering", d: { DATA_MATH: 0.5, MECHANICAL: 0.3, ELECTRONICS: 0.2 } },
+      { b: "Engineering Science", d: { DATA_MATH: 0.4, MECHANICAL: 0.3, CS_AI: 0.3 } },
+      { b: "Environmental Engineering", d: { ENERGY_ENV: 0.9, CIVIL: 0.3, CHEMICAL_BIO: 0.1 } },
+      { b: "Environmental Science and Engineering", d: { ENERGY_ENV: 0.8, CHEMICAL_BIO: 0.3 } },
+      { b: "Energy Engineering", d: { ENERGY_ENV: 0.9, ELECTRONICS: 0.2, MECHANICAL: 0.1 } },
+      { b: "Sustainable Energy Technologies", d: { ENERGY_ENV: 0.9, ELECTRONICS: 0.2 } },
+      { b: "Energy and Electrical Vehicle Engineering", d: { ENERGY_ENV: 0.6, ELECTRONICS: 0.3, MECHANICAL: 0.3 } },
+      { b: "Petroleum Engineering", d: { ENERGY_ENV: 0.5, CHEMICAL_BIO: 0.3, CIVIL: 0.2, MECHANICAL: 0.2 } },
+      { b: "Agricultural Engineering", d: { ENERGY_ENV: 0.5, MECHANICAL: 0.3, CIVIL: 0.2 } },
+      { b: "Agricultural and Food Engineering", d: { ENERGY_ENV: 0.4, CHEMICAL_BIO: 0.3, MECHANICAL: 0.3 } },
+      { b: "Food Technology", d: { CHEMICAL_BIO: 0.6, ENERGY_ENV: 0.3 } },
+      { b: "Food Engineering and Technology", d: { CHEMICAL_BIO: 0.5, ENERGY_ENV: 0.3, MECHANICAL: 0.2 } },
+      { b: "Food Process Engineering", d: { CHEMICAL_BIO: 0.5, MECHANICAL: 0.3, ENERGY_ENV: 0.2 } },
+      { b: "Food Technology and Management", d: { CHEMICAL_BIO: 0.5, ENERGY_ENV: 0.2, DATA_MATH: 0.2 } },
+      { b: "Digital Agriculture", d: { CS_AI: 0.3, ENERGY_ENV: 0.4, ELECTRONICS: 0.3 } },
+      { b: "Dairy Engineering", d: { CHEMICAL_BIO: 0.4, MECHANICAL: 0.3, ENERGY_ENV: 0.3 } },
+      { b: "Applied Geophysics", d: { ENERGY_ENV: 0.5, DATA_MATH: 0.4, CIVIL: 0.2 } },
+      { b: "Exploration Geophysics", d: { ENERGY_ENV: 0.5, DATA_MATH: 0.4 } },
+      { b: "Applied Geology", d: { CIVIL: 0.4, ENERGY_ENV: 0.5 } },
+      { b: "Earth Sciences", d: { ENERGY_ENV: 0.6, CIVIL: 0.3, DATA_MATH: 0.2 } },
+      { b: "Oil Technology", d: { CHEMICAL_BIO: 0.5, ENERGY_ENV: 0.4, MECHANICAL: 0.2 } },
+      { b: "Plastic Technology", d: { CHEMICAL_BIO: 0.7, MECHANICAL: 0.2 } },
+      { b: "Rubber Technology", d: { CHEMICAL_BIO: 0.7, MECHANICAL: 0.2 } },
+      { b: "Leather Technology", d: { CHEMICAL_BIO: 0.5, DESIGN_ARCH: 0.3 } },
+    ];
+
+    const SCREENS = ['screen-hero', 'screen-loading', 'screen-quiz', 'screen-analysis', 'screen-results', 'screen-roadmap'];
+    function show(id) {
+      SCREENS.forEach(s => { document.getElementById(s).style.display = 'none'; });
+      const el = document.getElementById(id);
+      if (id === 'screen-quiz') { el.style.display = 'flex'; el.style.flexDirection = 'column'; }
+      else if (['screen-analysis', 'screen-results', 'screen-roadmap'].includes(id)) { el.style.display = 'block'; }
+      else { el.style.display = 'flex'; }
+    }
+
+    async function callAI(prompt, sys = '', maxTok = 2000, poolId = 'A') {
+      const modelId = MODEL_POOL[poolId] || MODEL_POOL.A;
+
+      const now = Date.now();
+      const elapsed = now - (MODEL_LAST_CALL[poolId] || 0);
+      const MIN_GAP = 6000;
+      if (elapsed < MIN_GAP) {
+        await new Promise(r => setTimeout(r, MIN_GAP - elapsed));
+      }
+
+      const msgs = sys ? [{ role: 'system', content: sys }, { role: 'user', content: prompt }] : [{ role: 'user', content: prompt }];
+      const response = await fetch('/.netlify/functions/branch-prediction-api', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: modelId, max_tokens: Math.min(maxTok, 8000), temperature: 0.65, messages: msgs })
+      });
+
+      MODEL_LAST_CALL[poolId] = Date.now();
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        const retryAfter = response.headers.get('retry-after');
+        const errMsg = data.error?.message || `HTTP ${response.status}`;
+        const err = new Error(errMsg);
+        err.status = response.status;
+        err.retryAfter = retryAfter ? parseInt(retryAfter, 10) * 1000 : null;
+        throw err;
+      }
+
+      const data = await response.json();
+      const content = data.choices?.[0]?.message?.content || '';
+      if (!content.trim()) throw new Error('Empty response from AI');
+      return content.trim();
+    }
+
+    async function callAIWithRetry(prompt, sys = '', maxTok = 2000, poolId = 'A', maxRetries = 4) {
+      let lastError;
+      for (let attempt = 0; attempt < maxRetries; attempt++) {
+        try {
+          return await callAI(prompt, sys, maxTok, poolId);
+        } catch (err) {
+          lastError = err;
+          const isRateLimit = err.status === 429 || err.message.includes('429') || err.message.includes('Rate') || err.message.includes('rate');
+          if (isRateLimit && attempt < maxRetries - 1) {
+            const waitMs = err.retryAfter || (Math.pow(2, attempt + 1) * 10000);
+            await new Promise(r => setTimeout(r, waitMs));
+          } else if (!isRateLimit) {
+            throw err;
+          }
+        }
+      }
+      throw lastError;
+    }
+
+    function setLoading(t, s) {
+      document.getElementById('loading-title').textContent = t;
+      document.getElementById('loading-sub').textContent = s;
+    }
+
+    function calculateDomainScores() {
+      const scores = {};
+      Object.keys(DOMAINS).forEach(d => scores[d] = 0);
+
+      for (let si = 0; si < 5; si++) {
+        for (let qi = 0; qi < QUESTIONS_PER_SECTION; qi++) {
+          const key = `s${si}q${qi}`;
+          const optIdx = answers[key];
+          if (optIdx === undefined || optIdx === null) continue;
+          const option = WEIGHTED_QUESTIONS[si][qi].options[optIdx];
+          if (!option || !option.w) continue;
+          for (const [domain, weight] of Object.entries(option.w)) {
+            scores[domain] = (scores[domain] || 0) + weight;
+          }
+        }
+      }
+
+      const maxPossible = {};
+      Object.keys(DOMAINS).forEach(d => maxPossible[d] = 0);
+      for (let si = 0; si < 5; si++) {
+        for (let qi = 0; qi < QUESTIONS_PER_SECTION; qi++) {
+          const q = WEIGHTED_QUESTIONS[si][qi];
+          Object.keys(DOMAINS).forEach(d => {
+            let maxW = 0;
+            q.options.forEach(opt => { maxW = Math.max(maxW, opt.w[d] || 0); });
+            maxPossible[d] += maxW;
+          });
+        }
+      }
+
+      const normalized = {};
+      Object.keys(DOMAINS).forEach(d => {
+        normalized[d] = maxPossible[d] > 0 ? Math.round((scores[d] / maxPossible[d]) * 100) : 0;
+      });
+
+      return normalized;
+    }
+
+    function calculateBranchRankings(normalizedScores) {
+      const results = [];
+
+      for (const bp of BRANCH_PROFILES) {
+        let score = 0;
+        let maxScore = 0;
+        for (const [domain, weight] of Object.entries(bp.d)) {
+          score += weight * (normalizedScores[domain] || 0);
+          maxScore += weight * 100;
+        }
+        const matchPct = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
+
+        const topDomains = Object.entries(bp.d)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 2)
+          .map(([d]) => DOMAINS[d].name);
+
+        results.push({
+          branch: bp.b,
+          match: matchPct,
+          domains: bp.d,
+          reason: `Strong alignment with your ${topDomains.join(' and ')} profile`,
+          topDomains: topDomains
+        });
+      }
+
+      results.sort((a, b) => b.match - a.match || a.branch.localeCompare(b.branch));
+      results.forEach((r, i) => r.rank = i + 1);
+
+      return results;
+    }
+
+    function calculateSectionScores() {
+      const sectionScores = [];
+      for (let si = 0; si < 5; si++) {
+        let totalWeight = 0;
+        let maxWeight = 0;
+        for (let qi = 0; qi < QUESTIONS_PER_SECTION; qi++) {
+          const key = `s${si}q${qi}`;
+          const optIdx = answers[key];
+          if (optIdx === undefined) continue;
+          const option = WEIGHTED_QUESTIONS[si][qi].options[optIdx];
+          if (!option) continue;
+          const ws = Object.values(option.w);
+          totalWeight += ws.reduce((a, b) => a + b, 0);
+          const allOpts = WEIGHTED_QUESTIONS[si][qi].options;
+          let maxOptWeight = 0;
+          allOpts.forEach(o => {
+            const s = Object.values(o.w).reduce((a, b) => a + b, 0);
+            maxOptWeight = Math.max(maxOptWeight, s);
+          });
+          maxWeight += maxOptWeight;
+        }
+        sectionScores.push(maxWeight > 0 ? Math.round((totalWeight / maxWeight) * 100) : 0);
+      }
+      return sectionScores;
+    }
+
+    function startTool() {
+      answers = {}; currentSection = 0; currentQuestion = 0;
+      allBranches = []; sectionAnalysis = []; roadmapRaw = ''; selectedBranch = '';
+      domainScores = {}; top5Roadmaps = {};
+
+      show('screen-loading');
+      setLoading('Preparing your assessment&hellip;', '60 scenario-based questions across 5 dimensions');
+      setTimeout(() => { show('screen-quiz'); renderQuestion(); }, 500);
+    }
+
+    function globalQNum() { return currentSection * QUESTIONS_PER_SECTION + currentQuestion + 1; }
+    function currentKey() { return `s${currentSection}q${currentQuestion}`; }
+
+    function updateSectionDots() {
+      const el = document.getElementById('section-dots');
+      if (!el) return;
+      el.innerHTML = SECTIONS.map((_, i) => {
+        const done = isSectionDone(i), active = i === currentSection;
+        return `<div class="sdot ${active ? 'active' : done ? 'done' : ''}" title="${SECTIONS[i].title}"></div>`;
+      }).join('');
+    }
+
+    function renderQuestion() {
+      const sec = SECTIONS[currentSection];
+      const q = WEIGHTED_QUESTIONS[currentSection][currentQuestion];
+      const key = currentKey();
+      const sel = answers[key];
+      const gn = globalQNum();
+      const tot = Object.keys(answers).length;
+
+      document.getElementById('qbar-section-tag').textContent = `Section ${currentSection + 1} of 5`;
+      document.getElementById('qbar-title').textContent = sec.title;
+      document.getElementById('q-global-num').textContent = gn;
+      document.getElementById('qbar-prog-label').textContent = `${tot} / ${TOTAL_QUESTIONS} answered`;
+      document.getElementById('qbar-fill').style.width = `${(tot / TOTAL_QUESTIONS) * 100}%`;
+      updateSectionDots();
+
+      const isLast = currentSection === 4 && currentQuestion === QUESTIONS_PER_SECTION - 1;
+      const nextBtn = document.getElementById('q-next-btn');
+      nextBtn.textContent = isLast ? 'Submit & Analyse →' : (currentQuestion === QUESTIONS_PER_SECTION - 1 ? 'Next Section →' : 'Next →');
+      nextBtn.disabled = sel === undefined;
+      document.getElementById('q-prev-btn').style.display = (currentSection === 0 && currentQuestion === 0) ? 'none' : 'inline-flex';
+      document.getElementById('q-nav-hint').innerHTML = sel !== undefined
+        ? `<span>${currentQuestion + 1}/${QUESTIONS_PER_SECTION}</span> in this section`
+        : `Select an answer to continue &nbsp;&middot;&nbsp; <span>${currentQuestion + 1}/${QUESTIONS_PER_SECTION}</span>`;
+
+      const container = document.getElementById('q-card-container');
+      const L = ['A', 'B', 'C', 'D'];
+      container.innerHTML = `<div class="q-card">
+    <div class="q-meta">
+      <span class="q-num-chip">Q${gn} / ${TOTAL_QUESTIONS}</span>
+      <span class="q-sec-label">${sec.icon} ${sec.title}</span>
+    </div>
+    <div class="q-text">${q.question}</div>
+    <div class="options-list">
+      ${q.options.map((opt, oi) => {
+        const s = sel === oi ? 'selected' : '';
+        return `<button class="option-btn ${s}" onclick="pickOption(${oi}, this)">
+          <span class="opt-letter">${L[oi]}</span><span>${opt.text}</span>
+        </button>`;
+      }).join('')}
+    </div>
+  </div>`;
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function pickOption(idx, btn) {
+      const key = currentKey();
+      answers[key] = idx;
+      btn.closest('.options-list').querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('q-next-btn').disabled = false;
+      const tot = Object.keys(answers).length;
+      document.getElementById('qbar-prog-label').textContent = `${tot} / ${TOTAL_QUESTIONS} answered`;
+      document.getElementById('qbar-fill').style.width = `${(tot / TOTAL_QUESTIONS) * 100}%`;
+      document.getElementById('q-nav-hint').innerHTML = `<span>${currentQuestion + 1}/${QUESTIONS_PER_SECTION}</span> in this section`;
+
+      const isLast = currentSection === 4 && currentQuestion === QUESTIONS_PER_SECTION - 1;
+      if (!isLast) {
+        setTimeout(() => { if (answers[currentKey()] === idx) nextQuestion(); }, 400);
+      }
+    }
+
+    function isSectionDone(si) {
+      for (let qi = 0; qi < QUESTIONS_PER_SECTION; qi++) if (answers[`s${si}q${qi}`] === undefined) return false;
+      return true;
+    }
+
+    function nextQuestion() {
+      const isLastQ = currentQuestion === QUESTIONS_PER_SECTION - 1;
+      const isLastSec = currentSection === 4;
+      if (isLastQ && isLastSec) { submitQuiz(); return; }
+      if (isLastQ) { currentSection++; currentQuestion = 0; }
+      else { currentQuestion++; }
+      const old = document.querySelector('.q-card');
+      if (old) { old.classList.add('exiting'); setTimeout(renderQuestion, 200); }
+      else renderQuestion();
+    }
+
+    function prevQuestion() {
+      if (currentQuestion > 0) currentQuestion--;
+      else if (currentSection > 0) { currentSection--; currentQuestion = QUESTIONS_PER_SECTION - 1; }
+      else return;
+      const old = document.querySelector('.q-card');
+      if (old) { old.classList.add('exiting'); setTimeout(renderQuestion, 200); }
+      else renderQuestion();
+    }
+
+    async function submitQuiz() {
+      show('screen-loading');
+      setLoading('Calculating your engineering profile&hellip;', 'Analyzing 60 answers across 8 domain clusters&hellip;');
+
+      domainScores = calculateDomainScores();
+      allBranches = calculateBranchRankings(domainScores);
+
+      setLoading('Building your personality profile&hellip;', 'Mapping your domain strengths to engineering pathways&hellip;');
+      sectionAnalysis = generateSmartAnalysis();
+
+      await new Promise(r => setTimeout(r, 800));
+
+      renderAnalysis();
+      renderResults();
+      show('screen-analysis');
+    }
+
+    function generateSmartAnalysis() {
+      const secScores = calculateSectionScores();
+      const sorted = Object.entries(domainScores).sort((a, b) => b[1] - a[1]);
+      const top1 = sorted[0], top2 = sorted[1], top3 = sorted[2];
+      const d1 = DOMAINS[top1[0]].name, d2 = DOMAINS[top2[0]].name, d3 = DOMAINS[top3[0]].name;
+      const s1 = top1[1], s2 = top2[1];
+
+      const domainTraits = {
+        CS_AI: ['Algorithmic Thinker', 'Code-Oriented', 'Systems Builder', 'Tech Enthusiast', 'Digital Native', 'Logic-Driven'],
+        ELECTRONICS: ['Circuit Thinker', 'Signal-Oriented', 'Hardware Enthusiast', 'Precision-Focused', 'Sensor-Curious', 'IoT Explorer'],
+        MECHANICAL: ['Hands-On Builder', 'Physics Intuitive', 'Design-Minded', 'Mechanism Thinker', 'Materials-Aware', 'Fabricator'],
+        CIVIL: ['Infrastructure Thinker', 'Structural Intuition', 'Community-Minded', 'Scale Planner', 'Safety-First', 'Urban Visionary'],
+        CHEMICAL_BIO: ['Molecular Thinker', 'Lab Enthusiast', 'Reaction-Oriented', 'Bio-Curious', 'Research-Driven', 'Precision Analyst'],
+        DESIGN_ARCH: ['Visual Thinker', 'Aesthetically Driven', 'User-Empathetic', 'Creative Problem-Solver', 'Detail-Oriented', 'Spatial Intuition'],
+        DATA_MATH: ['Pattern Seeker', 'Quantitative Mind', 'Evidence-Based', 'Statistical Thinker', 'Analytical Rigour', 'Model Builder'],
+        ENERGY_ENV: ['Sustainability Champion', 'Impact-Driven', 'Systems Thinker', 'Planet-Conscious', 'Future-Oriented', 'Green Innovator'],
+      };
+
+      const sectionInsights = [
+        {
+          getDetails: () => {
+            if (s1 >= 70) return `Your problem-solving approach strongly reflects ${d1} thinking patterns. You gravitate toward ${d1.toLowerCase()}-oriented challenges and demonstrate a clear preference for ${s1 > 80 ? 'deep, systematic' : 'structured, methodical'} analysis. When faced with complex problems, your instinct is to apply ${d1.toLowerCase()} frameworks, which is a strong foundation for technical engineering work.`;
+            return `You show a balanced problem-solving approach spanning ${d1} and ${d2}. Your technical aptitude is versatile, suggesting you'd thrive in interdisciplinary roles that blend multiple engineering perspectives.`;
+          },
+          getTraits: () => [domainTraits[top1[0]][0], domainTraits[top1[0]][2], 'Systematic'],
+          getRelevance: () => `Your problem-solving style maps directly to careers in ${d1} where analytical thinking and technical depth are crucial differentiators.`
+        },
+        {
+          getDetails: () => {
+            if (s1 >= 70) return `You show a decisive passion for ${d1}-related subjects and topics. Your curiosity pattern reveals ${s1 > 85 ? 'laser-focused' : 'strong'} interest in this domain, with secondary awareness of ${d2}. This clear subject preference means you'll likely find sustained motivation and engagement in ${d1.toLowerCase()} coursework.`;
+            return `Your academic interests are distributed across ${d1} and ${d2}, indicating intellectual breadth. This cross-domain curiosity often leads to innovation at the intersection of multiple engineering fields.`;
+          },
+          getTraits: () => [domainTraits[top1[0]][3], domainTraits[top2[0]][1], 'Curious'],
+          getRelevance: () => `Your subject interests align with a growing demand for ${d1} specialists, especially those who also understand ${d2.split(' ')[0].toLowerCase()} fundamentals.`
+        },
+        {
+          getDetails: () => {
+            const hasDesign = sorted.some(([d, s]) => d === 'DESIGN_ARCH' && s > 40);
+            if (hasDesign) return `You bring a strong design sensibility to your creative process. Your approach combines ${d1.toLowerCase()} technical skills with aesthetic awareness, making you well-suited for roles where engineering meets user experience and visual design.`;
+            return `Your creative approach is rooted in ${d1.toLowerCase()} methodology — you innovate through technical excellence and systematic iteration rather than purely artistic expression. This engineering-first creativity is highly valued in ${d1} industries.`;
+          },
+          getTraits: () => {
+            const hasDesign = domainScores.DESIGN_ARCH > 40;
+            return hasDesign ? ['Creative Engineer', domainTraits[top1[0]][1], 'Design-Aware'] : [domainTraits[top1[0]][2], 'Iterative Innovator', 'Solution-Focused'];
+          },
+          getRelevance: () => `Your creative style translates well into ${d1} product development, R&D, and innovation roles where ${domainScores.DESIGN_ARCH > 40 ? 'design thinking' : 'technical depth'} drives advancement.`
+        },
+        {
+          getDetails: () => {
+            const isHandsOn = domainScores.MECHANICAL > 50 || domainScores.ELECTRONICS > 50;
+            const isAcademic = domainScores.DATA_MATH > 50 || domainScores.CHEMICAL_BIO > 50;
+            if (isHandsOn) return `You're a hands-on operator who learns best by building, testing, and iterating in the real world. Your work style thrives in workshops, labs, and prototype-heavy environments. You prefer tangible results over theoretical exploration.`;
+            if (isAcademic) return `You exhibit a research-oriented work style with strong analytical discipline. You prefer evidence-based decision-making and methodical approaches, making you well-suited for R&D, data-intensive, and academic-track career paths.`;
+            return `Your work personality favours ${domainScores.CS_AI > 50 ? 'deep solo focus sessions with code and systems' : 'collaborative teamwork with diverse perspectives'}. You're most productive when ${domainScores.CS_AI > 50 ? 'solving complex problems independently' : 'working toward a shared mission'}.`;
+          },
+          getTraits: () => {
+            const isHandsOn = domainScores.MECHANICAL > 50 || domainScores.ELECTRONICS > 50;
+            return isHandsOn ? ['Hands-On', domainTraits[top1[0]][0], 'Builder'] : [domainTraits[top1[0]][4] || 'Focused', 'Self-Directed', domainTraits[top2[0]][0]];
+          },
+          getRelevance: () => `Your work style aligns well with ${d1} environments where ${domainScores.MECHANICAL > 50 || domainScores.ELECTRONICS > 50 ? 'hands-on technical execution' : domainScores.DATA_MATH > 50 ? 'data-driven analysis' : 'deep technical focus'} is the core daily activity.`
+        },
+        {
+          getDetails: () => {
+            if (s1 >= 75) return `Your career vision is firmly rooted in ${d1}. You see yourself building a future in this space and are drawn to its industry trajectory. With a ${s1}% domain match, your goals align strongly with the highest-demand sectors of ${d1.toLowerCase()} engineering.`;
+            return `Your career ambitions span across ${d1} and ${d2}, suggesting you value versatility and cross-functional impact. Interdisciplinary roles in these domains offer the best alignment with your long-term professional vision.`;
+          },
+          getTraits: () => [domainTraits[top1[0]][5] || 'Ambitious', 'Industry-Aware', 'Goal-Directed'],
+          getRelevance: () => `Your career trajectory aligns with the top-paying and fastest-growing segments of ${d1}, where demand for skilled engineers continues to accelerate.`
+        },
+      ];
+
+      return SECTIONS.map((sec, i) => {
+        const insight = sectionInsights[i];
+        return {
+          section: i + 1,
+          score: secScores[i] || 70,
+          title: sec.title,
+          details: insight.getDetails(),
+          traits: insight.getTraits(),
+          engineeringRelevance: insight.getRelevance()
+        };
+      });
+    }
+
+    function renderAnalysis() {
+      const colors = ['#e8161b', '#ff6b35', '#f7c948', '#4ade80', '#60a5fa'];
+
+      const sortedDomains = Object.entries(domainScores).sort((a, b) => b[1] - a[1]);
+      const domainColors = Object.fromEntries(Object.entries(DOMAINS).map(([k, v]) => [k, v.color]));
+      document.getElementById('domain-bar-chart').innerHTML = sortedDomains.map(([d, score]) => {
+        const col = domainColors[d];
+        return `<div class="bar-row">
+      <div class="bar-label-row">
+        <span class="bar-sec-name">${DOMAINS[d].icon} ${DOMAINS[d].name}</span>
+        <span class="bar-pct" style="color:${col}">${score}%</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${score}%;background:${col}"></div>
+      </div>
+    </div>`;
+      }).join('');
+
+      document.getElementById('sec-cards-grid').innerHTML = sectionAnalysis.map((sa, i) => {
+        const sec = SECTIONS[i], col = colors[i];
+        const traits = (sa.traits || []).map(t => `<span class="trait-chip" style="background:${col}18;color:${col};border:1px solid ${col}40">${t}</span>`).join('');
+        return `<div class="sec-card" style="animation-delay:${i * 0.08}s">
+      <div class="sec-card-top" style="background:${col}"></div>
+      <div class="sec-card-label">Section ${i + 1}</div>
+      <div class="sec-card-title">${sec.icon} ${sec.title}</div>
+      <div class="sec-card-score" style="color:${col}">${sa.score}<span style="font-size:1rem;font-weight:500;color:var(--muted)">/100</span></div>
+      <div class="sec-card-sub">${sa.details || 'Profile analysis'}</div>
+      <div style="margin-top:8px;font-size:0.75rem;color:var(--muted);line-height:1.5;">${sa.engineeringRelevance || ''}</div>
+      <div>${traits}</div>
+    </div>`;
+      }).join('');
+
+      const secScores = calculateSectionScores();
+      document.getElementById('bar-chart-wrap').innerHTML = secScores.map((score, i) => {
+        const sec = SECTIONS[i], col = colors[i];
+        return `<div class="bar-row">
+      <div class="bar-label-row">
+        <span class="bar-sec-name">${sec.icon} ${sec.title.split(' ').slice(0, 2).join(' ')}</span>
+        <span class="bar-pct" style="color:${col}">${score}%</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:${score}%;background:${col}"></div></div>
+    </div>`;
+      }).join('');
+
+      drawRadar(sortedDomains, domainColors);
+    }
+
+    function drawRadar(sortedDomains, domainColors) {
+      const svg = document.getElementById('radar-svg');
+      const cx = 130, cy = 130, r = 90, n = 8;
+      const labels = sortedDomains.map(([d]) => DOMAINS[d].name.split(' ')[0]);
+      const scores = sortedDomains.map(([, s]) => s);
+      const cols = sortedDomains.map(([d]) => domainColors[d]);
+      const angle = (i) => (Math.PI * 2 / n) * i - Math.PI / 2;
+      const pt = (i, scale) => [cx + r * scale * (scores[i] / 100) * Math.cos(angle(i)), cy + r * scale * (scores[i] / 100) * Math.sin(angle(i))];
+      const gpt = (i, scale) => [cx + r * scale * Math.cos(angle(i)), cy + r * scale * Math.sin(angle(i))];
+
+      let html = '';
+      [.25, .5, .75, 1].forEach(s => {
+        const pts = Array.from({ length: n }, (_, i) => gpt(i, s).join(',')).join(' ');
+        html += `<polygon points="${pts}" fill="none" stroke="#2a2a2a" stroke-width="0.8"/>`;
+      });
+      for (let i = 0; i < n; i++) {
+        const [x, y] = gpt(i, 1);
+        html += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#2a2a2a" stroke-width="0.5"/>`;
+      }
+      const dpts = Array.from({ length: n }, (_, i) => pt(i, 1).join(',')).join(' ');
+      html += `<polygon points="${dpts}" fill="rgba(232,22,27,0.15)" stroke="#e8161b" stroke-width="2"/>`;
+      for (let i = 0; i < n; i++) {
+        const [dx, dy] = pt(i, 1), [lx, ly] = gpt(i, 1.25);
+        html += `<circle cx="${dx}" cy="${dy}" r="4" fill="${cols[i]}" stroke="#0a0a0a" stroke-width="1.5"/>`;
+        html += `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" fill="#888" font-size="8" font-family="Inter,sans-serif">${labels[i]}</text>`;
+      }
+      svg.innerHTML = html;
+    }
+
+    function proceedToResults() { show('screen-results'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+    function renderResults() {
+      document.getElementById('top5-list').innerHTML = allBranches.slice(0, 5).map(branchCard).join('');
+      document.getElementById('more5-list').innerHTML = allBranches.slice(5, 10).map(branchCard).join('');
+      document.getElementById('view-more-btn').style.display = allBranches.length > 5 ? 'block' : 'none';
+      document.getElementById('more5-list').classList.add('hidden');
+    }
+
+    function branchCard(b) {
+      const tc = b.rank <= 3 ? `top-${b.rank}` : '';
+      return `<div class="branch-card ${tc}" onclick="selectBranch('${b.branch.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}')" style="animation-delay:${(b.rank - 1) * 0.06}s">
+    <div class="rank-badge">#${b.rank}</div>
+    <div class="branch-info">
+      <div class="branch-name">${b.branch}</div>
+      <div class="branch-tag">${b.reason}</div>
+    </div>
+    <div class="match-bar-wrap">
+      <div class="match-pct">${b.match}%</div>
+      <div class="match-bar"><div class="match-fill" style="width:${b.match}%"></div></div>
+    </div>
+    <div class="branch-arrow">&rarr;</div>
+  </div>`;
+    }
+
+    function showMoreBranches() {
+      document.getElementById('more5-list').classList.remove('hidden');
+      document.getElementById('view-more-btn').style.display = 'none';
+    }
+
+    async function selectBranch(branch) {
+      selectedBranch = branch;
+
+      if (top5Roadmaps[branch] && top5Roadmaps[branch].length > 300) {
+        roadmapRaw = top5Roadmaps[branch];
+        document.getElementById('roadmap-branch-display').innerHTML = `Your Complete Roadmap: <span>${branch}</span>`;
+        document.getElementById('roadmap-content').innerHTML = mdToHTML(roadmapRaw);
+        show('screen-roadmap');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      show('screen-loading');
+      setLoading('Building your roadmap&hellip;', `Creating detailed career plan for ${branch}`);
+
+      const prompt = buildRoadmapPrompt(branch);
+
+      try {
+        roadmapRaw = await callAIWithRetry(prompt, 'You are India\'s #1 engineering career counsellor. Use markdown with ## and ###. Be specific with names, numbers, salary figures.', 4000, 'A', 3);
+        if (!roadmapRaw || roadmapRaw.length < 200) throw new Error('Incomplete');
+        top5Roadmaps[branch] = roadmapRaw;
+      } catch (e) {
+        console.warn('LLM roadmap failed, using deterministic fallback:', e.message);
+        roadmapRaw = generateFallbackRoadmap(branch);
+        top5Roadmaps[branch] = roadmapRaw;
+      }
+
+      document.getElementById('roadmap-branch-display').innerHTML = `Your Complete Roadmap: <span>${branch}</span>`;
+      document.getElementById('roadmap-content').innerHTML = mdToHTML(roadmapRaw);
+      show('screen-roadmap');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function buildRoadmapPrompt(branch) {
+      return `Create a career roadmap for "${branch}" for an Indian engineering student. Markdown format with ## sections and ### subsections.
+
+Include these sections:
+## 1. Why ${branch} (4 sentences, in-demand reasons)
+## 2. 4-Year Academic Plan
+### Year 1 (foundation subjects, clubs)
+### Year 2 (core + first internship)
+### Year 3 (specialisation, competitions, internship)
+### Year 4 (project, placement, post-grad)
+## 3. Core Skills (10 bullet points)
+## 4. Career Paths (8 roles with Rs salary LPA)
+## 5. Recruiting Companies (15+ names)
+## 6. Salary (Fresher/Mid/Senior ranges in LPA)
+## 7. Higher Education Options
+## 8. Future Trends (5 trends)
+
+Be SPECIFIC with company names, skills, and salary numbers. 1000-1500 words.`;
+    }
+
+    function mdToHTML(md) {
+      return md
+        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/^- (.+)$/gm, '<li>$1</li>')
+        .replace(/(<li>[\s\S]*?<\/li>)/g, m => `<ul>${m}</ul>`)
+        .replace(/<\/ul>\s*<ul>/g, '')
+        .replace(/^(?!<[hul])(.*\S.*)$/gm, '<p>$1</p>');
+    }
+
+    function generateFallbackRoadmap(branchName) {
+      const bp = BRANCH_PROFILES.find(p => p.b === branchName);
+      const topDomainKeys = bp ? Object.entries(bp.d).sort((a, b) => b[1] - a[1]).map(([k]) => k) : ['CS_AI'];
+      const primaryDomain = topDomainKeys[0];
+      const secondaryDomain = topDomainKeys[1] || primaryDomain;
+
+      const domainData = {
+        CS_AI: {
+          skills: ['Data Structures & Algorithms', 'Object-Oriented Programming', 'Database Management Systems (SQL & NoSQL)', 'Operating Systems & System Design', 'Computer Networks & Security', 'Machine Learning & Deep Learning', 'Web Development (Full Stack)', 'Cloud Computing (AWS/GCP/Azure)', 'DevOps & CI/CD Pipelines', 'Software Engineering Principles'],
+          tools: ['Python, Java, C++, JavaScript', 'Git, Docker, Kubernetes', 'TensorFlow, PyTorch', 'React, Node.js, Django', 'PostgreSQL, MongoDB, Redis', 'Linux, VS Code, IntelliJ'],
+          careers: ['Software Development Engineer (Rs 8-25 LPA)', 'Machine Learning Engineer (Rs 12-35 LPA)', 'Data Scientist (Rs 10-30 LPA)', 'Full Stack Developer (Rs 6-20 LPA)', 'Cloud Architect (Rs 15-40 LPA)', 'DevOps Engineer (Rs 8-25 LPA)', 'Cybersecurity Analyst (Rs 8-22 LPA)', 'Product Manager (Rs 12-35 LPA)'],
+          companies: ['Google, Microsoft, Amazon, Apple, Meta', 'Flipkart, Swiggy, Zomato, Razorpay', 'TCS, Infosys, Wipro, HCL Tech', 'Atlassian, Adobe, Salesforce, Oracle', 'ISRO, DRDO, BARC (Government)'],
+          trends: ['Generative AI and Large Language Models', 'Edge Computing and IoT Intelligence', 'Quantum Computing applications', 'Autonomous Systems and Robotics', 'Privacy-preserving Machine Learning'],
+          year1: 'Programming fundamentals (C/C++, Python), Mathematics (Discrete Math, Linear Algebra), Digital Logic, Computer Organization, Engineering Physics & Chemistry',
+          year2: 'Data Structures, Algorithms, OOP, Database Systems, Computer Networks, Operating Systems, Web Technologies, Statistics & Probability',
+          year3: 'Machine Learning, Compiler Design, Software Engineering, Electives (AI/Cloud/Security), Internship (summer), Open-source contributions, Competitive programming',
+          year4: 'Final year project (research or industry), Placement preparation, Advanced electives, Industry certifications (AWS/GCP), Portfolio building'
+        },
+        ELECTRONICS: {
+          skills: ['Analog & Digital Electronics', 'VLSI Design & Verification', 'Embedded Systems & Microcontrollers', 'Signal Processing (DSP)', 'Communication Systems', 'Control Systems', 'PCB Design & Fabrication', 'IoT & Sensor Networks', 'Semiconductor Physics', 'RF & Microwave Engineering'],
+          tools: ['MATLAB, Simulink, LabVIEW', 'Cadence Virtuoso, Xilinx Vivado', 'Arduino, Raspberry Pi, ESP32', 'Altium Designer, KiCad', 'Verilog, VHDL, SystemVerilog', 'Oscilloscope, Signal Analyzer'],
+          careers: ['VLSI Design Engineer (Rs 8-25 LPA)', 'Embedded Systems Engineer (Rs 6-20 LPA)', 'Hardware Design Engineer (Rs 7-22 LPA)', 'RF Engineer (Rs 8-24 LPA)', 'IoT Solutions Architect (Rs 10-28 LPA)', 'Signal Processing Engineer (Rs 8-22 LPA)', 'Semiconductor Process Engineer (Rs 8-25 LPA)', 'Telecom Network Engineer (Rs 6-18 LPA)'],
+          companies: ['Intel, Qualcomm, Texas Instruments, NVIDIA', 'Samsung, MediaTek, Broadcom, AMD', 'Bosch, Siemens, ABB, Honeywell', 'ISRO, DRDO, BEL, HAL', 'TCS, Wipro, L&T Technology Services'],
+          trends: ['5G/6G Communication Systems', 'AI-on-Edge chip design', 'Quantum sensing and computing', 'Advanced semiconductor nodes (3nm, 2nm)', 'Neuromorphic computing architectures'],
+          year1: 'Basic Electronics, Circuit Theory, Mathematics, Physics, Programming basics (C/Python), Workshop Practice',
+          year2: 'Analog Electronics, Digital Electronics, Signals & Systems, Electromagnetic Theory, Network Analysis, Microprocessors',
+          year3: 'VLSI Design, Communication Systems, DSP, Control Systems, Embedded Systems lab, Summer internship at semiconductor/telecom firm',
+          year4: 'Advanced electives (RFIC/IoT/AI Hardware), Final year project, Industry certifications, Placement preparation, GATE preparation (optional)'
+        },
+        MECHANICAL: {
+          skills: ['Engineering Mechanics & Thermodynamics', 'Fluid Mechanics & Heat Transfer', 'Machine Design & Kinematics', 'Manufacturing Processes', 'Strength of Materials', 'Automotive Engineering', 'Robotics & Mechatronics', 'CAD/CAM/CAE', 'Finite Element Analysis', 'Industrial Engineering'],
+          tools: ['SolidWorks, CATIA, AutoCAD, Creo', 'ANSYS, Abaqus, COMSOL', 'MATLAB, Python for simulation', 'CNC Programming, 3D Printing', 'GD&T, Six Sigma tools', 'LabVIEW for testing'],
+          careers: ['Design Engineer (Rs 5-18 LPA)', 'Manufacturing Engineer (Rs 5-16 LPA)', 'Automotive Engineer (Rs 6-20 LPA)', 'Aerospace Engineer (Rs 8-25 LPA)', 'Robotics Engineer (Rs 8-22 LPA)', 'Quality Control Engineer (Rs 5-15 LPA)', 'R&D Scientist (Rs 8-25 LPA)', 'Project Manager (Rs 10-30 LPA)'],
+          companies: ['Tata Motors, Mahindra, Maruti Suzuki, Hyundai', 'Larsen & Toubro, Godrej, Thermax', 'Boeing, Airbus, GE Aviation, Rolls-Royce', 'ISRO, HAL, DRDO, BHEL', 'Bosch, Siemens, ABB, Cummins'],
+          trends: ['Electric Vehicles and Battery Technology', 'Additive Manufacturing (3D Metal Printing)', 'Digital Twin simulation', 'Autonomous vehicles and drones', 'Sustainable manufacturing processes'],
+          year1: 'Engineering Mechanics, Engineering Drawing, Mathematics, Physics, Chemistry, Workshop Practice, Basic Manufacturing',
+          year2: 'Thermodynamics, Fluid Mechanics, Strength of Materials, Kinematics of Machines, Material Science, Manufacturing Processes',
+          year3: 'Machine Design, Heat Transfer, Dynamics of Machines, CAD/CAM, Industrial Engineering, Summer internship at manufacturing firm',
+          year4: 'Electives (Robotics/Automotive/Aerospace), Final year project, GATE preparation, Placement season, Industry certifications'
+        },
+        CIVIL: {
+          skills: ['Structural Analysis & Design', 'Geotechnical Engineering', 'Transportation Engineering', 'Hydraulics & Water Resources', 'Construction Management', 'Environmental Engineering', 'Surveying & Remote Sensing', 'Earthquake Engineering', 'Urban Planning', 'Building Information Modeling (BIM)'],
+          tools: ['AutoCAD, Revit, SketchUp', 'STAAD Pro, ETABS, SAP2000', 'GIS (ArcGIS, QGIS)', 'Primavera, MS Project', 'MATLAB for analysis', 'Total Station, GPS'],
+          careers: ['Structural Engineer (Rs 5-18 LPA)', 'Transportation Engineer (Rs 5-16 LPA)', 'Construction Manager (Rs 6-22 LPA)', 'Urban Planner (Rs 5-15 LPA)', 'Geotechnical Engineer (Rs 5-18 LPA)', 'Water Resources Engineer (Rs 5-16 LPA)', 'Environmental Consultant (Rs 6-18 LPA)', 'Government Engineer - PWD/NHAI (Rs 6-12 LPA + benefits)'],
+          companies: ['Larsen & Toubro, Shapoorji Pallonji, Tata Projects', 'NHAI, CPWD, State PWDs (Government)', 'DLF, Godrej Properties, Sobha Ltd', 'AECOM, Jacobs, Mott MacDonald', 'RITES, NHPC, NTPC, Indian Railways'],
+          trends: ['Smart City infrastructure and IoT', 'Green building and sustainable construction', 'Prefabricated and modular construction', '3D printed structures', 'AI-driven structural health monitoring'],
+          year1: 'Engineering Mechanics, Engineering Drawing, Mathematics, Surveying, Geology, Building Materials, Workshop Practice',
+          year2: 'Strength of Materials, Fluid Mechanics, Structural Analysis, Geotechnical Engineering, Building Construction, Concrete Technology',
+          year3: 'Structural Design (RCC & Steel), Transportation Engineering, Hydraulics, Environmental Engineering, Construction Management, Summer internship',
+          year4: 'Electives (Earthquake Engg/Bridge Engg/Urban Planning), Final year project, GATE preparation, Placement, Government exam preparation'
+        },
+        CHEMICAL_BIO: {
+          skills: ['Chemical Reaction Engineering', 'Mass Transfer & Separation Processes', 'Process Control & Instrumentation', 'Biochemistry & Molecular Biology', 'Pharmaceutical Engineering', 'Polymer Science', 'Biomedical Device Design', 'Process Simulation', 'Quality Assurance & GMP', 'Bioprocess Engineering'],
+          tools: ['Aspen Plus, Aspen HYSYS', 'MATLAB, ChemCAD', 'COMSOL Multiphysics', 'R, Python for data analysis', 'Spectroscopy instruments (NMR, MS, HPLC)', 'Bioreactor systems'],
+          careers: ['Process Engineer (Rs 5-18 LPA)', 'Biomedical Engineer (Rs 6-20 LPA)', 'Pharmaceutical Scientist (Rs 6-22 LPA)', 'Research Scientist (Rs 8-25 LPA)', 'Quality Assurance Manager (Rs 6-18 LPA)', 'Clinical Engineer (Rs 7-20 LPA)', 'Biotechnology Consultant (Rs 8-24 LPA)', 'Environmental Health Specialist (Rs 5-16 LPA)'],
+          companies: ['Reliance Industries, IOCL, BPCL, HPCL', 'Biocon, Dr. Reddy\'s, Cipla, Sun Pharma', 'BASF, Dow Chemical, DuPont, 3M', 'Medtronic, Johnson & Johnson, Stryker', 'CSIR labs, IITs, TIFR (Research)'],
+          trends: ['CRISPR and gene therapy', 'Personalized medicine and diagnostics', 'Green chemistry and sustainable processes', 'Biofuels and bio-based materials', 'Nanomedicine and drug delivery systems'],
+          year1: 'Chemistry (Organic, Inorganic, Physical), Mathematics, Physics, Biology fundamentals, Engineering Drawing, Workshop',
+          year2: 'Chemical Engineering Thermodynamics, Fluid Mechanics, Heat Transfer, Mass Transfer, Material Science, Biochemistry',
+          year3: 'Chemical Reaction Engineering, Process Control, Separation Processes, Process Design, Bioprocess Engineering, Summer internship',
+          year4: 'Electives (Pharma/Biomedical/Polymer), Final year project/thesis, GATE/GRE preparation, Placement, Research opportunities'
+        },
+        DESIGN_ARCH: {
+          skills: ['Design Thinking & Human-Centered Design', 'Architectural Design & Planning', 'User Experience (UX) Design', 'Industrial & Product Design', 'Visual Communication', 'Building Science & Sustainability', 'Ergonomics & Accessibility', '3D Modeling & Rendering', 'Interaction Design', 'Design Research Methods'],
+          tools: ['Figma, Adobe Creative Suite (XD, Illustrator, Photoshop)', 'Rhino, Grasshopper, SketchUp', 'Blender, 3ds Max, V-Ray', 'AutoCAD, Revit', 'InVision, Framer, Principle', 'Physical prototyping tools'],
+          careers: ['UX/UI Designer (Rs 6-25 LPA)', 'Architect (Rs 5-20 LPA)', 'Industrial Designer (Rs 5-18 LPA)', 'Product Designer (Rs 8-28 LPA)', 'Interior Designer (Rs 4-15 LPA)', 'Design Researcher (Rs 7-22 LPA)', 'Creative Director (Rs 15-40 LPA)', 'Sustainable Design Consultant (Rs 6-20 LPA)'],
+          companies: ['Apple, Google, Microsoft (Design teams)', 'Zaha Hadid Architects, Foster + Partners', 'IDEO, Frog Design, Designit', 'Flipkart, Swiggy, Razorpay (Product Design)', 'Hafeez Contractor, CP Kukreja Architects'],
+          trends: ['AI-assisted generative design', 'Parametric and computational design', 'Sustainable and biophilic architecture', 'AR/VR in design visualization', 'Design for neurodiversity and accessibility'],
+          year1: 'Design fundamentals, Drawing & Visualization, History of Art & Design, Mathematics, Physics, Digital Tools basics',
+          year2: 'Design Studio, Materials & Manufacturing, Typography, Human Factors, Computer-Aided Design, Design History & Theory',
+          year3: 'Advanced Studio projects, UX Research Methods, Sustainable Design, Professional Practice, Industry internship (summer)',
+          year4: 'Thesis/Capstone project, Portfolio development, Design competitions, Placement/freelance preparation'
+        },
+        DATA_MATH: {
+          skills: ['Probability & Statistics', 'Linear Algebra & Optimization', 'Machine Learning & Deep Learning', 'Data Visualization', 'Big Data Technologies', 'Mathematical Modeling', 'Numerical Methods', 'Time Series Analysis', 'Natural Language Processing', 'Operations Research'],
+          tools: ['Python (NumPy, Pandas, Scikit-learn)', 'R, SAS, SPSS', 'SQL, Spark, Hadoop', 'Tableau, Power BI, matplotlib', 'TensorFlow, PyTorch', 'MATLAB, Mathematica, Julia'],
+          careers: ['Data Scientist (Rs 10-35 LPA)', 'Quantitative Analyst (Rs 15-50 LPA)', 'Machine Learning Engineer (Rs 12-35 LPA)', 'Business Analyst (Rs 6-18 LPA)', 'Statistician (Rs 8-22 LPA)', 'Operations Research Analyst (Rs 7-20 LPA)', 'Actuarial Analyst (Rs 8-25 LPA)', 'Research Scientist (Rs 10-30 LPA)'],
+          companies: ['Goldman Sachs, JP Morgan, Morgan Stanley', 'Google, Microsoft, Amazon, Meta', 'McKinsey, BCG, Bain (Analytics)', 'Mu Sigma, Fractal Analytics, Tiger Analytics', 'ISRO, BARC, DRDO (Research)'],
+          trends: ['AI-driven scientific discovery', 'Federated learning and privacy-preserving ML', 'Quantum machine learning', 'Automated machine learning (AutoML)', 'Real-time streaming analytics'],
+          year1: 'Calculus, Linear Algebra, Programming (Python/C), Discrete Mathematics, Physics, Probability Theory',
+          year2: 'Statistics, Algorithms, Data Structures, Numerical Methods, Database Systems, Optimization',
+          year3: 'Machine Learning, Stochastic Processes, Big Data Analytics, Data Visualization, Research project, Summer internship',
+          year4: 'Deep Learning, Electives (NLP/CV/Quant Finance), Thesis, GATE/GRE preparation, Placement preparation'
+        },
+        ENERGY_ENV: {
+          skills: ['Renewable Energy Systems', 'Environmental Impact Assessment', 'Energy Storage & Battery Technology', 'Climate Science & Modeling', 'Waste Management & Recycling', 'Solar & Wind Energy Engineering', 'Power Systems & Smart Grids', 'Sustainable Development', 'Water Treatment Technologies', 'Carbon Capture & Sequestration'],
+          tools: ['PVsyst, HOMER, RETScreen', 'MATLAB, Python for modeling', 'GIS (ArcGIS, QGIS)', 'AutoCAD, SketchUp', 'Environmental monitoring instruments', 'Life Cycle Assessment (LCA) tools'],
+          careers: ['Renewable Energy Engineer (Rs 6-20 LPA)', 'Environmental Consultant (Rs 5-18 LPA)', 'Sustainability Manager (Rs 8-25 LPA)', 'Energy Auditor (Rs 5-15 LPA)', 'Climate Scientist (Rs 7-22 LPA)', 'Water Resources Engineer (Rs 5-16 LPA)', 'Green Building Consultant (Rs 6-18 LPA)', 'Policy Analyst - Clean Energy (Rs 7-20 LPA)'],
+          companies: ['Adani Green, Tata Power, ReNew Power', 'NTPC, NHPC, ONGC, Power Grid', 'Siemens Gamesa, Vestas, Suzlon Energy', 'Centre for Science & Environment (CSE)', 'TERI, WWF, Greenpeace, World Bank'],
+          trends: ['Green Hydrogen economy', 'Offshore wind and floating solar farms', 'Advanced battery technologies (solid-state)', 'Carbon capture and direct air capture', 'Smart grid and vehicle-to-grid systems'],
+          year1: 'Physics, Chemistry, Mathematics, Environmental Science, Engineering Drawing, Introduction to Energy Systems',
+          year2: 'Thermodynamics, Fluid Mechanics, Electrical Engineering basics, Environmental Chemistry, Ecology, Renewable Energy fundamentals',
+          year3: 'Solar Energy Engineering, Wind Energy, Energy Storage Systems, Environmental Impact Assessment, Internship at renewable energy firm',
+          year4: 'Electives (Smart Grid/Climate Modeling/Waste Management), Final year project, Certifications (LEED/GRIHA), Placement preparation'
+        }
+      };
+
+      const d1 = domainData[primaryDomain] || domainData.CS_AI;
+      const d2 = domainData[secondaryDomain] || d1;
+
+      return `## 1. Why ${branchName} is Right For You
+
+${branchName} is one of the most impactful engineering disciplines, sitting at the intersection of ${DOMAINS[primaryDomain]?.name || 'technology'} and ${DOMAINS[secondaryDomain]?.name || 'innovation'}. This branch offers a unique combination of theoretical depth and practical application, preparing you for some of the most sought-after careers in India and globally. With rapid advancements in technology and growing industry demand, graduates from this field are consistently among the most employable in the engineering landscape. Your assessment profile shows strong alignment with the core competencies this branch demands.
+
+## 2. Complete 4-Year Academic Roadmap
+
+### Year 1 - Foundation Building
+${d1.year1}. Join relevant technical clubs and student chapters. Start building basic project skills.
+
+### Year 2 - Core Development
+${d1.year2}. Begin competitive exams/hackathon participation. Start a personal project portfolio.
+
+### Year 3 - Specialisation & Industry Exposure
+${d1.year3}. Target top companies for summer internship. Begin specializing in your area of interest.
+
+### Year 4 - Career Launch
+${d1.year4}. Build a strong LinkedIn and professional network. Target dream companies aggressively.
+
+## 3. Core Technical Skills
+
+${d1.skills.map(s => `- **${s}**`).join('\n')}
+
+### Essential Tools & Technologies
+${d1.tools.map(t => `- ${t}`).join('\n')}
+
+## 4. Career Pathways
+
+${d1.careers.map(c => `- **${c}**`).join('\n')}
+
+## 5. Top Recruiting Companies in India
+
+${d1.companies.map(c => `- ${c}`).join('\n')}
+
+## 6. Salary Expectations (2025-2026)
+
+- **Fresher (0-2 years)**: Rs 4-15 LPA (varies significantly by company tier)
+- **Mid-Level (3-7 years)**: Rs 12-35 LPA
+- **Senior (8-15 years)**: Rs 25-60+ LPA
+- **PSU salary**: Rs 6-12 LPA starting + DA, HRA, and pension benefits
+- **Top-tier companies**: Can offer Rs 20-50+ LPA for exceptional freshers
+
+## 7. Higher Education Options
+
+- **M.Tech** from IITs/NITs in specialized areas (fully funded with stipend)
+- **MS/PhD** from top universities abroad (USA, Germany, Canada, UK)
+- **MBA** from IIMs for those targeting management roles
+- **Popular specialisations**: ${d1.skills.slice(0, 4).join(', ')}
+
+## 8. Future Trends Reshaping This Field
+
+${d1.trends.map(t => `- **${t}**`).join('\n')}
+
+These trends represent massive career opportunities for students entering ${branchName} today. The industry is actively seeking graduates who combine strong fundamentals with awareness of these emerging areas.`;
+    }
+
+    async function downloadPDF(btn) {
+      if (!allBranches.length) { alert('Please complete the assessment first.'); return; }
+      const orig = btn.textContent; btn.textContent = '⏳ Generating PDF&hellip;'; btn.disabled = true;
+
+      try {
+        const top5 = allBranches.slice(0, 5);
+        const toFetch = top5.filter(b => !top5Roadmaps[b.branch] || top5Roadmaps[b.branch].length < 300);
+
+        if (toFetch.length) {
+          const poolAssignment = ['A', 'A', 'B', 'B', 'C'];
+          const poolGroups = {};
+          toFetch.forEach((b, i) => {
+            const pool = poolAssignment[i] || 'C';
+            if (!poolGroups[pool]) poolGroups[pool] = [];
+            poolGroups[pool].push({ branch: b, index: i, pool });
+          });
+
+          const allTasks = [];
+          for (const [poolId, items] of Object.entries(poolGroups)) {
+            const task = (async () => {
+              for (let j = 0; j < items.length; j++) {
+                const { branch: b, index: idx } = items[j];
+                btn.textContent = `⏳ Roadmap ${idx + 1}/${toFetch.length} (Pool ${poolId})&hellip;`;
+
+                if (j > 0) {
+                  btn.textContent = `⏳ Pool ${poolId}: waiting&hellip; ${idx + 1}/${toFetch.length}`;
+                  await new Promise(r => setTimeout(r, 12000));
+                }
+
+                try {
+                  const prompt = buildRoadmapPrompt(b.branch);
+                  const raw = await callAIWithRetry(
+                    prompt,
+                    'You are India\'s #1 engineering career counsellor. Use markdown. Be specific with company names, salary numbers, and real advice.',
+                    3500, poolId, 3
+                  );
+                  if (raw && raw.length > 300) {
+                    top5Roadmaps[b.branch] = raw;
+                  } else {
+                    throw new Error('Response too short');
+                  }
+                } catch (e) {
+                  console.warn(`⚠️ Pool ${poolId} failed for "${b.branch}": ${e.message}. Using fallback.`);
+                  top5Roadmaps[b.branch] = generateFallbackRoadmap(b.branch);
+                }
+              }
+            })();
+            allTasks.push(task);
+          }
+
+          await Promise.all(allTasks);
+        }
+
+        if (roadmapRaw && selectedBranch && roadmapRaw.length > 300) {
+          top5Roadmaps[selectedBranch] = roadmapRaw;
+        }
+
+        btn.textContent = '⏳ Building PDF&hellip;';
+        buildPremiumPDF(top5);
+      } catch (err) { console.error(err); alert('PDF error: ' + err.message); }
+      finally { btn.textContent = orig; btn.disabled = false; }
+    }
+
+    function buildPremiumPDF(top5) {
+      const dateStr = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+      const e = s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+      /* ENHANCED: P1-C Reusable page header function */
+      function renderPageHeader(pageTitle) {
+        try {
+          return `<div class="bp-hdr-bar"><div class="bp-hdr-bar-logo">CS</div><div class="bp-hdr-bar-title">${e(pageTitle || 'Branch Prediction Report')}</div><div class="bp-hdr-bar-date">${e(dateStr)}</div></div>`;
+        } catch (err) { return '<div class="bp-hdr-bar"></div>'; /* ENHANCED: P1-C fallback */ }
+      }
+
+      /* ENHANCED: P1-D Score context helpers */
+      function getScoreColor(s) { return s >= 90 ? '#22C55E' : s >= 70 ? '#F59E0B' : '#EF4444'; }
+      function getScoreLabel(s) { return s >= 90 ? 'Exceptional' : s >= 75 ? 'Strong' : s >= 60 ? 'Good' : 'Developing'; }
+      function renderScoreContext(score, col) {
+        try {
+          const barCol = getScoreColor(score);
+          const label = getScoreLabel(score);
+          return `<div class="bp-score-bar-wrap"><div class="bp-score-bar-track"><div class="bp-score-bar-fill" style="width:${score}%;background:${barCol}"></div></div><span class="bp-score-bar-text">${score} / 100</span></div><div class="bp-score-bar-label" style="color:${barCol}">${label}</div>`;
+        } catch (err) { return `<div>${score}/100</div>`; /* ENHANCED: P1-D fallback */ }
+      }
+
+      /* ENHANCED: P1-C Consistent page header on every page except cover */
+      function pageOpen(title, num) {
+        return `<div style="padding:14mm 14mm 0;box-sizing:border-box">
+      ${renderPageHeader(title)}`;
+      }
+      /* ENHANCED: P1-B Dynamic page footer with Page N of Total */
+      let _totalPages = 1; /* ENHANCED: set before rendering */
+      function pageClose(num) {
+        return `</div><div class="bp-ftr-enhanced"><span style="font-weight:600">College Simplified</span><span>Page ${num} of ${_totalPages}</span><span>${e(dateStr)}</span></div>`;
+      }
+
+      const sortedDomains = Object.entries(domainScores).sort((a, b) => b[1] - a[1]);
+      const topDomain = sortedDomains[0];
+      const topBranch = allBranches[0];
+
+      /* COVER — ENHANCED: P3-B Match score ring replaces flat stat */
+      const matchScore = topBranch?.match || 0;
+      const circumference = 2 * Math.PI * 54;
+      const dashOffset = circumference - (matchScore / 100) * circumference;
+      const pg1 = `<div class="bp-pg bp-cover">
+    <div class="bp-cover-eyebrow">College Simplified &middot; AI Career Intelligence</div>
+    <div class="bp-cover-title">Engineering Branch<br>Prediction Report</div>
+    <div class="bp-cover-div"></div>
+    <div class="bp-cover-sub">A comprehensive AI-driven analysis of your aptitude across 8 engineering domains, based on 60 scenario-based questions.</div>
+    <div class="bp-cover-stats">
+      <div class="bp-cover-stat"><div class="bp-cover-stat-v">60</div><div class="bp-cover-stat-l">Questions</div></div>
+      <div class="bp-cover-stat"><div class="bp-cover-stat-v">8</div><div class="bp-cover-stat-l">Domains</div></div>
+      <div class="bp-cover-stat"><div class="bp-cover-stat-v">${allBranches.length}+</div><div class="bp-cover-stat-l">Branches</div></div>
+      <!-- ENHANCED: P3-B SVG progress ring for top match -->
+      <div class="bp-cover-stat" style="padding:8px">
+        <svg width="68" height="68" viewBox="0 0 130 130">
+          <circle cx="65" cy="65" r="54" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="10"/>
+          <circle cx="65" cy="65" r="54" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-dasharray="${circumference}" stroke-dashoffset="${dashOffset}" transform="rotate(-90 65 65)"/>
+          <text x="65" y="60" text-anchor="middle" fill="#fff" font-size="28" font-weight="900" font-family="Playfair Display,Georgia,serif">${matchScore}%</text>
+          <text x="65" y="78" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="11" font-weight="600">Match</text>
+        </svg>
+      </div>
+    </div>
+    <div style="background:rgba(255,255,255,.12);border-radius:10px;padding:16px 24px;max-width:480px;width:100%">
+      <div style="font-size:9px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px">Your #1 Recommended Branch</div>
+      <div style="font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:900;margin-bottom:4px">${e(topBranch?.branch || '')}</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.6)">${e(topBranch?.reason || '')}</div>
+    </div>
+    <div class="bp-cover-conf">Generated ${e(dateStr)}</div>
+  </div>`;
+
+      /* DOMAIN PROFILE — ENHANCED: P3-A Radar chart + P2-B SVG domain bars */
+      const colors = { CS_AI: '#6366F1', ELECTRONICS: '#F59E0B', MECHANICAL: '#EF4444', CIVIL: '#10B981', CHEMICAL_BIO: '#8B5CF6', DESIGN_ARCH: '#EC4899', DATA_MATH: '#3B82F6', ENERGY_ENV: '#22C55E' };
+
+      /* ENHANCED: P3-A Build octagonal SVG radar chart */
+      let radarSVG = '';
+      try {
+        const rcx = 110, rcy = 110, rr = 90, rn = 8;
+        const rAngle = (i) => (Math.PI * 2 / rn) * i - Math.PI / 2;
+        const rPt = (i, s) => [rcx + rr * s * Math.cos(rAngle(i)), rcy + rr * s * Math.sin(rAngle(i))];
+        // Grid lines
+        [0.2, 0.4, 0.6, 0.8, 1.0].forEach(s => {
+          const pts = Array.from({ length: rn }, (_, i) => rPt(i, s).join(',')).join(' ');
+          radarSVG += `<polygon points="${pts}" fill="none" stroke="#EEEDE8" stroke-width="0.8"/>`;
+        });
+        // Axis lines
+        for (let i = 0; i < rn; i++) { const [x, y] = rPt(i, 1); radarSVG += `<line x1="${rcx}" y1="${rcy}" x2="${x}" y2="${y}" stroke="#EEEDE8" stroke-width="0.5"/>`; }
+        // Data polygon
+        const dpts = sortedDomains.map(([d, sc], i) => { const s = sc / 100; return [rcx + rr * s * Math.cos(rAngle(i)), rcy + rr * s * Math.sin(rAngle(i))].join(','); }).join(' ');
+        radarSVG += `<polygon points="${dpts}" fill="rgba(220,38,38,0.15)" stroke="#DC2626" stroke-width="1.5"/>`;
+        // Dots + labels
+        sortedDomains.forEach(([d, sc], i) => {
+          const s = sc / 100; const [dx, dy] = [rcx + rr * s * Math.cos(rAngle(i)), rcy + rr * s * Math.sin(rAngle(i))];
+          const [lx, ly] = rPt(i, 1.22);
+          radarSVG += `<circle cx="${dx}" cy="${dy}" r="3.5" fill="${colors[d] || '#DC2626'}" stroke="#fff" stroke-width="1"/>`;
+          radarSVG += `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" fill="#666" font-size="8" font-family="Inter,sans-serif">${e((DOMAINS[d]?.name || d).split(' ')[0])}</text>`;
+        });
+      } catch (err) { radarSVG = ''; /* ENHANCED: P3-A fallback */ }
+
+      /* ENHANCED: P2-B SVG-based domain score bars */
+      const domainBarsSVG = sortedDomains.map(([d, score], i) => {
+        const col = colors[d] || '#DC2626';
+        const fillCol = score >= 60 ? '#22C55E' : score >= 30 ? '#F59E0B' : '#D1D0CB';
+        const barW = 200, barH = 10, fillW = Math.round((score / 100) * barW);
+        return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <div style="width:160px;font-size:11.5px;font-weight:600;color:#111;flex-shrink:0">${e(DOMAINS[d]?.name || d)}</div>
+          <svg width="${barW}" height="${barH}" style="flex-grow:1"><rect x="0" y="0" width="${barW}" height="${barH}" rx="5" fill="#EEEDE8"/><rect x="0" y="0" width="${fillW}" height="${barH}" rx="5" fill="${fillCol}"/></svg>
+          <div style="width:42px;text-align:right;font-size:12px;font-weight:700;color:${col};flex-shrink:0">${score}%</div>
+        </div>`;
+      }).join('');
+
+      const pg2 = `<div class="bp-pg" style="background:#fff">${pageOpen('Domain Profile', 2)}
+    <div class="bp-pg-title pdf-h1">&#9889; Your Engineering Domain Profile</div>
+    <div class="bp-pg-sub pdf-caption">Normalized strength scores across 8 engineering domain clusters</div>
+    <div class="bp-score-row">
+      <div class="bp-score-box"><div class="bp-score-big">${topDomain?.[1] || 0}%</div><div class="bp-score-lbl">Top Domain Score</div>${renderScoreContext(topDomain?.[1] || 0)}</div>
+      <div class="bp-score-desc pdf-body">Your strongest domain is ${e(DOMAINS[topDomain?.[0]]?.name || '')} at ${topDomain?.[1] || 0}%. This score reflects your natural affinity for this engineering cluster.</div>
+    </div>
+    <!-- ENHANCED: P3-A/P2-B Two-column layout: radar left, bars right -->
+    <div style="display:flex;gap:20px;margin-bottom:16px">
+      <div style="width:50%;display:flex;align-items:center;justify-content:center">
+        <svg width="220" height="220" viewBox="0 0 220 220">${radarSVG}</svg>
+      </div>
+      <div style="width:50%;display:flex;flex-direction:column;justify-content:center">${domainBarsSVG}</div>
+    </div>
+    <div class="bp-sub-hd" style="margin-top:8px"><span>&#10004;</span> Top Strengths</div>
+    <div class="bp-pills">${sortedDomains.slice(0, 3).map(([d]) => `<span class="bp-trait-pill">${e(DOMAINS[d]?.name || d)}</span>`).join('')}</div>
+  ${pageClose(2)}</div>`;
+
+      /* TOP 10 BRANCHES — ENHANCED: P3-C Match bars + gold star for #1 */
+      const branchCards = allBranches.slice(0, 10).map((b, i) => {
+        const fillCol = i === 0 ? '#22C55E' : i < 3 ? '#4ADE80' : '#86EFAC';
+        const normScore = Math.max(0, Math.min(100, ((b.match - 90) / 10) * 100)); /* ENHANCED: P3-C exaggerated scale 90-100 */
+        const starBadge = i === 0 ? '<span style="color:#F59E0B;font-size:16px;margin-right:4px">&#9733;</span>' : ''; /* ENHANCED: P3-C gold star */
+        return `<div class="bp-career-item" ${i < 3 ? 'style="border-color:#DC2626"' : ''}>
+    <div class="bp-career-heading"><span class="bp-career-num">&rarr; #${b.rank}</span><span class="bp-career-name">${starBadge}${e(b.branch)}</span></div>
+    <div style="display:flex;align-items:center;gap:10px;margin:6px 0">
+      <div class="bp-career-specs" style="margin:0"><strong>Match Score:</strong> ${b.match}%</div>
+      <!-- ENHANCED: P3-C match bar -->
+      <svg width="140" height="6" style="flex-shrink:0"><rect x="0" y="0" width="140" height="6" rx="3" fill="#EEEDE8"/><rect x="0" y="0" width="${Math.round(normScore * 1.4)}" height="6" rx="3" fill="${fillCol}"/></svg>
+    </div>
+    <div class="bp-career-why pdf-body">${e(b.reason || '')}</div>
+  </div>`;
+      }).join('');
+
+      const pg3 = `<div class="bp-pg" style="background:#fff">${pageOpen('Top Branch Predictions', 3)}
+    <div class="bp-pg-title pdf-h1">&#127919; Top 10 Branch Predictions</div>
+    <div class="bp-pg-sub pdf-caption">Ranked by deterministic match scoring across 8 domain clusters</div>
+    ${branchCards}
+  ${pageClose(3)}</div>`;
+
+      /* SECTION ANALYSIS PAGES — ENHANCED: P1-D score context, P2-C Q&A styling, P4-A trait pills */
+      const SEC_COLORS = ['#DC2626', '#FF6B35', '#DCAA32', '#4AB464', '#608CDC'];
+      const sectionPages = SECTIONS.map((sec, si) => {
+        const sa = sectionAnalysis[si] || { score: 70, traits: [], details: '', engineeringRelevance: '' };
+        const col = SEC_COLORS[si];
+        /* ENHANCED: P4-A Styled trait pills */
+        const traits = (sa.traits || []).map(t => `<span class="bp-trait-pill">${e(t)}</span>`).join('');
+        let qaRows = '';
+        for (let qi = 0; qi < QUESTIONS_PER_SECTION; qi++) {
+          const k = `s${si}q${qi}`, q = WEIGHTED_QUESTIONS[si]?.[qi];
+          if (!q) continue;
+          const optIdx = answers[k];
+          const ans = optIdx !== undefined ? e(q.options[optIdx].text) : 'Not answered';
+          /* ENHANCED: P2-C Zebra striping + Q pill badge */
+          const bgQ = qi % 2 === 0 ? '#FAFAF8' : '#FFF';
+          const bgA = qi % 2 === 0 ? '#FAFAF8' : '#FFF';
+          const qNum = si * QUESTIONS_PER_SECTION + qi + 1;
+          qaRows += `<tr><td class="bp-resp-q" style="background:${bgQ};width:38%;font-size:12px;line-height:1.6"><span class="bp-qa-pill">Q${qNum}</span>${e(q.question)}</td><td class="bp-resp-a" style="background:${bgA};width:62%;border-left:3px solid #E8E6FF;font-size:12px;line-height:1.6">${ans}</td></tr>`;
+        }
+        return `<div class="bp-pg" style="background:#fff;page-break-before:always">${pageOpen(e(sec.title), si + 4)}
+      <div class="bp-pg-title pdf-h1" style="display:flex;align-items:center;gap:10px">
+        <span style="display:inline-flex;width:36px;height:36px;border-radius:50%;background:${col};color:#fff;align-items:center;justify-content:center;font-size:16px;font-weight:900;flex-shrink:0">${si + 1}</span>
+        ${e(sec.title)}
+      </div>
+      <div class="bp-pg-sub pdf-caption">Section ${si + 1} of 5 &middot; ${QUESTIONS_PER_SECTION} questions</div>
+      <div class="bp-score-row">
+        <div class="bp-score-box">
+          <div class="bp-score-big" style="color:${col}">${sa.score}</div>
+          <div class="bp-score-lbl">Section Score</div>
+          <!-- ENHANCED: P1-D Score context bar + label -->
+          ${renderScoreContext(sa.score, col)}
+        </div>
+        <div class="bp-score-desc pdf-body">${e(sa.details || 'Profile analysis for this section.')}</div>
+      </div>
+      ${traits ? `<div class="bp-sub-hd"><span>&#10004;</span> Key Traits</div><div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px">${traits}</div>` : ''}
+      ${sa.engineeringRelevance ? `<div class="bp-archetype-quote pdf-body">${e(sa.engineeringRelevance)}</div>` : ''}
+      <div class="bp-sub-hd"><span>&#128203;</span> Your Response Summary</div>
+      <table class="bp-resp-table bp-resp-table-enhanced">${qaRows}</table>
+    ${pageClose(si + 4)}</div>`;
+      }).join('');
+
+      /* ROADMAP PAGES — ENHANCED: P2-D stage headers, P3-D takeaway boxes, P2-F page breaks */
+      const roadmapPages = top5.slice(0, 5).map((b, ri) => {
+        const mdText = top5Roadmaps[b.branch] || `Career roadmap for ${b.branch}. Please retry generation.`;
+        const lines = (mdText || '').split('\n');
+        let content = '', stageIdx = 0, opened = false;
+        let salaryLine = '', eduLine = '', firstAction = ''; /* ENHANCED: P3-D data extraction */
+        for (const line of lines) {
+          const t = line.trim();
+          if (!t) continue;
+          /* ENHANCED: P3-D Extract takeaway data from roadmap */
+          try {
+            if (t.toLowerCase().includes('fresher') && t.includes('LPA')) salaryLine = t.replace(/^-\s*/, '').replace(/\*\*/g, '');
+            if (t.toLowerCase().includes('m.tech') || t.toLowerCase().includes('ms/phd') || t.toLowerCase().includes('mba')) { if (!eduLine) eduLine = t.replace(/^-\s*/, '').replace(/\*\*/g, ''); }
+            if (stageIdx === 1 && t.startsWith('- ') && !firstAction) firstAction = t.replace(/^-\s*/, '').replace(/\*\*/g, '');
+          } catch (err) { /* ENHANCED: P3-D extraction fallback */ }
+
+          if (t.startsWith('## ')) {
+            if (opened) content += `</div></div>`;
+            stageIdx++;
+            /* ENHANCED: P2-D Circle badge stage header with padding and rule */
+            content += `<div style="padding-top:${stageIdx > 1 ? '20px' : '0'}">
+              ${stageIdx > 1 ? '<hr style="border:none;border-top:0.5px solid #EEEDE8;margin-bottom:12px">' : ''}
+              <div class="bp-rm-row"><div class="bp-rm-icon-col">
+                <div style="width:28px;height:28px;border-radius:50%;background:#DC2626;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">${stageIdx}</div>
+                <div class="bp-rm-line"></div>
+              </div><div class="bp-rm-content" style="padding-left:36px">
+                <div class="bp-rm-period">STAGE ${stageIdx}</div>
+                <div class="bp-rm-title pdf-h2">${e(t.replace(/^## /, ''))}</div>`;
+            opened = true;
+          } else if (t.startsWith('### ')) {
+            content += `<div style="font-size:12px;font-weight:800;color:#111;margin:8px 0 4px;display:flex;align-items:center;gap:6px"><span style="width:3px;height:14px;background:#DC2626;border-radius:2px;flex-shrink:0"></span>${e(t.replace(/^### /, ''))}</div>`;
+          } else if (t.startsWith('- ')) {
+            content += `<div style="font-size:11px;color:#374151;display:flex;gap:6px;line-height:1.5;margin-bottom:3px"><span style="color:#DC2626;font-weight:700;flex-shrink:0">&rarr;</span><span>${e(t.replace(/^- /, '').replace(/\*\*(.+?)\*\*/g, '$1'))}</span></div>`;
+          } else if (!t.startsWith('#')) {
+            content += `<div class="bp-rm-desc pdf-body">${e(t.replace(/\*\*(.+?)\*\*/g, '$1').replace(/\*(.+?)\*/g, '$1'))}</div>`;
+          }
+        }
+        if (opened) content += `</div></div></div>`;
+
+        /* ENHANCED: P3-D Key Takeaways box */
+        let takeawayBox = '';
+        try {
+          takeawayBox = `<div class="bp-takeaway-box">
+            <div class="bp-takeaway-title">&#10003; Quick Takeaways</div>
+            <div class="bp-takeaway-item"><span style="color:#22C55E;font-weight:700">&bull;</span><span>${e(salaryLine || 'Fresher salary ranges from 4-15 LPA depending on company tier')}</span></div>
+            <div class="bp-takeaway-item"><span style="color:#22C55E;font-weight:700">&bull;</span><span>${e(eduLine || 'M.Tech from IITs/NITs or MS/PhD abroad for specialization')}</span></div>
+            <div class="bp-takeaway-item"><span style="color:#22C55E;font-weight:700">&bull;</span><span>${e(firstAction || 'Start building foundational skills and join relevant clubs in Year 1')}</span></div>
+          </div>`;
+        } catch (err) { /* ENHANCED: P3-D takeaway fallback */ }
+
+        return `<div class="bp-pg" style="background:#fff;page-break-before:always">${pageOpen(e(b.branch) + ' Roadmap', ri + 9)}
+      <div style="background:linear-gradient(135deg,#111,#1a1a1a,#2d0707);color:#fff;border-radius:10px;padding:18px 22px;margin-bottom:16px">
+        <div style="font-size:9px;font-weight:800;color:rgba(220,38,38,.8);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">Career Roadmap &middot; Rank #${b.rank}</div>
+        <div style="font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:900;margin-bottom:4px">${e(b.branch)}</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px">
+          ${[['Match', b.match + '%'], ['Rank', '#' + b.rank], ['Duration', '4 Yr']].map(([l, v]) => `<div style="background:rgba(255,255,255,.08);border-radius:8px;padding:10px;text-align:center"><div style="font-size:16px;font-weight:900;font-family:'Playfair Display',Georgia,serif">${e(v)}</div><div style="font-size:8px;color:rgba(255,255,255,.4);margin-top:2px;text-transform:uppercase;letter-spacing:.3px">${l}</div></div>`).join('')}
+        </div>
+      </div>
+      ${content}
+      ${takeawayBox}
+    ${pageClose(ri + 9)}</div>`;
+      }).join('');
+
+      /* ENHANCED: P2-A Table of Contents page */
+      const pgTOC = `<div class="bp-pg" style="background:#fff">${pageOpen('Table of Contents', 2)}
+    <div class="bp-pg-title pdf-h1" style="margin-bottom:24px">Table of Contents</div>
+    <div style="max-width:500px">
+      <div class="bp-toc-entry"><span class="bp-toc-name">Domain Profile</span><span class="bp-toc-dots"></span><span class="bp-toc-page">3</span></div>
+      <div class="bp-toc-entry"><span class="bp-toc-name">Top Branch Predictions</span><span class="bp-toc-dots"></span><span class="bp-toc-page">4</span></div>
+      <div class="bp-toc-entry"><span class="bp-toc-name">Assessment Breakdown</span><span class="bp-toc-dots"></span><span class="bp-toc-page">5&ndash;10</span></div>
+      <div class="bp-toc-entry"><span class="bp-toc-name">Career Roadmaps</span><span class="bp-toc-dots"></span><span class="bp-toc-page">11&ndash;16</span></div>
+      <div class="bp-toc-entry"><span class="bp-toc-name">Your Journey Summary</span><span class="bp-toc-dots"></span><span class="bp-toc-page">17</span></div>
+      <div class="bp-toc-entry"><span class="bp-toc-name">Your Next Steps</span><span class="bp-toc-dots"></span><span class="bp-toc-page">18</span></div>
+    </div>
+  ${pageClose(2)}</div>`;
+
+      /* ENHANCED: P4-C Section divider banner — Assessment */
+      const dividerAssessment = `<div class="bp-pg" style="page-break-before:always">
+    <div class="bp-divider-pg">
+      <div class="bp-divider-icon"><svg width="48" height="48" viewBox="0 0 48 48"><rect x="8" y="6" width="32" height="36" rx="4" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2"/><line x1="14" y1="16" x2="34" y2="16" stroke="rgba(255,255,255,.4)" stroke-width="1.5"/><line x1="14" y1="22" x2="30" y2="22" stroke="rgba(255,255,255,.4)" stroke-width="1.5"/><line x1="14" y1="28" x2="26" y2="28" stroke="rgba(255,255,255,.4)" stroke-width="1.5"/></svg></div>
+      <div class="bp-divider-title">Assessment Breakdown</div>
+      <div class="bp-divider-sub">Detailed analysis of your responses across 5 dimensions</div>
+    </div>
+  </div>`;
+
+      /* ENHANCED: P4-C Section divider banner — Career Roadmaps */
+      const dividerRoadmap = `<div class="bp-pg" style="page-break-before:always">
+    <div class="bp-divider-pg">
+      <div class="bp-divider-icon"><svg width="48" height="48" viewBox="0 0 48 48"><path d="M24 4 L24 44" stroke="rgba(255,255,255,.3)" stroke-width="2" stroke-dasharray="4 3"/><circle cx="24" cy="10" r="4" fill="rgba(255,255,255,.6)"/><circle cx="24" cy="24" r="4" fill="rgba(255,255,255,.6)"/><circle cx="24" cy="38" r="4" fill="rgba(255,255,255,.6)"/></svg></div>
+      <div class="bp-divider-title">Career Roadmaps</div>
+      <div class="bp-divider-sub">Personalised career pathways for your top 5 branches</div>
+    </div>
+  </div>`;
+
+      /* FINAL PAGE */
+      const pgFinal = `<div class="bp-pg" style="background:#fff;page-break-before:always">${pageOpen('Summary', 17)}
+    <div class="bp-pg-title pdf-h1">&#10024; Your Engineering Journey</div>
+    <div class="bp-pg-sub pdf-caption">A personalised summary of your branch prediction results</div>
+    <div class="bp-archetype-quote pdf-body">Based on your responses across 60 scenario-based questions spanning 5 assessment dimensions and 8 engineering domain clusters, your strongest alignment is with <strong>${e(topBranch?.branch || '')}</strong> at a ${topBranch?.match || 0}% match score.</div>
+    <div class="bp-scores-grid">
+      ${sortedDomains.slice(0, 4).map(([d, s]) => `<div class="bp-scard"><div class="bp-scard-n">${s}%</div><div class="bp-scard-l">${e(DOMAINS[d]?.name || d)}</div></div>`).join('')}
+    </div>
+    <div class="bp-journey-box">
+      <div class="bp-journey-title">Your Journey Starts Here</div>
+      <div class="bp-journey-text pdf-body">This report is the beginning of your engineering career discovery. Use these insights as your compass. Your path is unique, your potential is unlimited, and College Simplified is here to guide every step of the way.</div>
+      <div class="bp-journey-meta"><strong>College Simplified</strong> &middot; collegesimplified.in<br><span>Generated: ${e(dateStr)}</span></div>
+    </div>
+  ${pageClose(17)}</div>`;
+
+      /* ENHANCED: P3-E Next Steps final page */
+      const pgNextSteps = `<div class="bp-pg" style="background:#fff;page-break-before:always">${pageOpen('Your Next Steps', 18)}
+    <div class="bp-pg-title pdf-h1" style="color:#DC2626">What To Do Now</div>
+    <div class="bp-pg-sub pdf-caption">5 actionable steps to kickstart your engineering journey</div>
+    <div class="bp-next-grid">
+      <div class="bp-next-card">
+        <div class="bp-next-icon"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="2" y="4" width="16" height="12" rx="2" fill="none" stroke="#4338CA" stroke-width="1.5"/><polyline points="2,4 10,11 18,4" fill="none" stroke="#4338CA" stroke-width="1.5"/></svg></div>
+        <div><div class="bp-next-num">1</div><div class="bp-next-title">Explore Colleges</div><div class="bp-next-desc">Browse CS/IT and engineering colleges on CollegeSimplified.in</div></div>
+      </div>
+      <div class="bp-next-card">
+        <div class="bp-next-icon"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M3 14 L8 9 L12 13 L17 6" fill="none" stroke="#4338CA" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div><div class="bp-next-num">2</div><div class="bp-next-title">Compare Cutoffs</div><div class="bp-next-desc">Match branch cutoffs with your JEE/CET rank for realistic targets</div></div>
+      </div>
+      <div class="bp-next-card">
+        <div class="bp-next-icon"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="2" width="12" height="16" rx="2" fill="none" stroke="#4338CA" stroke-width="1.5"/><line x1="7" y1="6" x2="13" y2="6" stroke="#4338CA" stroke-width="1"/><line x1="7" y1="9" x2="13" y2="9" stroke="#4338CA" stroke-width="1"/></svg></div>
+        <div><div class="bp-next-num">3</div><div class="bp-next-title">Share This Report</div><div class="bp-next-desc">Save this PDF and share with your parents or school counsellor</div></div>
+      </div>
+      <div class="bp-next-card">
+        <div class="bp-next-icon"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="#4338CA" stroke-width="1.5"/><path d="M10 6 L10 10 L13 12" fill="none" stroke="#4338CA" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div><div class="bp-next-num">4</div><div class="bp-next-title">College Predictor</div><div class="bp-next-desc">Try the College Predictor tool next for personalised college lists</div></div>
+      </div>
+      <div class="bp-next-card" style="grid-column:1/-1">
+        <div class="bp-next-icon"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="7" cy="10" r="3" fill="none" stroke="#4338CA" stroke-width="1.5"/><circle cx="13" cy="10" r="3" fill="none" stroke="#4338CA" stroke-width="1.5"/><path d="M10 8 Q10 12 10 12" stroke="#4338CA" stroke-width="1"/></svg></div>
+        <div><div class="bp-next-num">5</div><div class="bp-next-title">Join the Community</div><div class="bp-next-desc">Connect with peers on the CollegeSimplified community for insights and guidance</div></div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:28px;padding-top:16px;border-top:1px solid #E5E7EB">
+      <div style="font-size:14px;font-weight:800;color:#DC2626;margin-bottom:4px">College Simplified</div>
+      <div class="pdf-caption">collegesimplified.in</div>
+      <div class="pdf-caption" style="margin-top:2px">Instagram &middot; YouTube &middot; LinkedIn</div>
+    </div>
+  ${pageClose(18)}</div>`;
+
+      /* ENHANCED: P1-B Calculate total page count before rendering */
+      _totalPages = 18; /* cover(1) + TOC(1) + domain(1) + top10(1) + divider(1) + 5 sections + divider(1) + 5 roadmaps + summary(1) + next steps(1) */
+
+      // Inject and print
+      const printDoc = document.getElementById('bp-print-doc');
+      /* ENHANCED: P2-A TOC after cover, P4-C dividers before sections and roadmaps, P3-E Next Steps at end */
+      printDoc.innerHTML = pg1 + pgTOC + pg2 + pg3 + dividerAssessment + sectionPages + dividerRoadmap + roadmapPages + pgFinal + pgNextSteps;
+      const fixedFtr = document.getElementById('bp-pdf-footer');
+      if (fixedFtr) fixedFtr.style.display = 'flex';
+      setTimeout(() => {
+        window.print();
+        setTimeout(() => { printDoc.innerHTML = ''; if (fixedFtr) fixedFtr.style.display = 'none'; }, 3000);
+      }, 600);
+    }
+
+
+
+    /* â•â•â• MISC â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+    function backToResults() { show('screen-results'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+    function retake() {
+      answers = {}; currentSection = 0; currentQuestion = 0;
+      allBranches = []; sectionAnalysis = []; roadmapRaw = ''; selectedBranch = '';
+      domainScores = {}; top5Roadmaps = {};
+      show('screen-hero'); window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    let isDark = true;
+    function toggleTheme() {
+      isDark = !isDark;
+      document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      const pill = document.getElementById('theme-pill');
+      const label = document.getElementById('theme-label');
+      if (isDark) { pill.classList.add('active'); label.textContent = 'Dark'; }
+      else { pill.classList.remove('active'); label.textContent = 'Light'; }
+    }
+
+    show('screen-hero');
+  </script>
+</body>
+
+</html>

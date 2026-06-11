@@ -1,0 +1,204 @@
+{
+  "GFTI_PLACEMENTS": [
+    {
+      "Institute": "BIT Mesra Ranchi",
+      "Category": "GFTI",
+      "Tier": "Tier 2",
+      "Avg Package": "₹10 LPA",
+      "Median Package": "₹8 LPA",
+      "Highest Package": "₹36 LPA",
+      "Placement %": "76%",
+      "Location": "Ranchi, JH"
+    },
+    {
+      "Institute": "Punjab Engineering College Chandigarh",
+      "Category": "GFTI",
+      "Tier": "Tier 2",
+      "Avg Package": "₹11 LPA",
+      "Median Package": "₹9 LPA",
+      "Highest Package": "₹40 LPA",
+      "Placement %": "80%",
+      "Location": "Chandigarh"
+    },
+    {
+      "Institute": "School of Planning & Architecture Delhi",
+      "Category": "GFTI",
+      "Tier": "Tier 2",
+      "Avg Package": "₹10 LPA",
+      "Median Package": "₹8 LPA",
+      "Highest Package": "₹32 LPA",
+      "Placement %": "78%",
+      "Location": "New Delhi"
+    },
+    {
+      "Institute": "University of Hyderabad",
+      "Category": "GFTI",
+      "Tier": "Tier 2",
+      "Avg Package": "₹9 LPA",
+      "Median Package": "₹7.5 LPA",
+      "Highest Package": "₹30 LPA",
+      "Placement %": "72%",
+      "Location": "Hyderabad, TG"
+    },
+    {
+      "Institute": "IIIT Naya Raipur",
+      "Category": "GFTI",
+      "Tier": "Tier 3",
+      "Avg Package": "₹8 LPA",
+      "Median Package": "₹6.5 LPA",
+      "Highest Package": "₹28 LPA",
+      "Placement %": "70%",
+      "Location": "Naya Raipur, CG"
+    },
+    {
+      "Institute": "IIIT Bhubaneswar",
+      "Category": "GFTI",
+      "Tier": "Tier 3",
+      "Avg Package": "₹8 LPA",
+      "Median Package": "₹6.5 LPA",
+      "Highest Package": "₹28 LPA",
+      "Placement %": "70%",
+      "Location": "Bhubaneswar, OD"
+    },
+    {
+      "Institute": "ICT Mumbai – IOC Odisha Campus",
+      "Category": "GFTI",
+      "Tier": "Tier 3",
+      "Avg Package": "₹8 LPA",
+      "Median Package": "₹6.5 LPA",
+      "Highest Package": "₹28 LPA",
+      "Placement %": "70%",
+      "Location": "Bhubaneswar, OD"
+    },
+    {
+      "Institute": "SMVDU Katra J&K",
+      "Category": "GFTI",
+      "Tier": "Tier 3",
+      "Avg Package": "₹8 LPA",
+      "Median Package": "₹6.5 LPA",
+      "Highest Package": "₹26 LPA",
+      "Placement %": "68%",
+      "Location": "Katra, JK"
+    },
+    {
+      "Institute": "Shri GS Institute of Technology & Science Indore",
+      "Category": "GFTI",
+      "Tier": "Tier 3",
+      "Avg Package": "₹8 LPA",
+      "Median Package": "₹6.5 LPA",
+      "Highest Package": "₹28 LPA",
+      "Placement %": "70%",
+      "Location": "Indore, MP"
+    },
+    {
+      "Institute": "IITRAM Ahmedabad",
+      "Category": "GFTI",
+      "Tier": "Tier 3",
+      "Avg Package": "₹7 LPA",
+      "Median Package": "₹5.5 LPA",
+      "Highest Package": "₹22 LPA",
+      "Placement %": "64%",
+      "Location": "Ahmedabad, GJ"
+    },
+    {
+      "Institute": "NIAMT Ranchi",
+      "Category": "GFTI",
+      "Tier": "Tier 3",
+      "Avg Package": "₹7 LPA",
+      "Median Package": "₹5.5 LPA",
+      "Highest Package": "₹20 LPA",
+      "Placement %": "62%",
+      "Location": "Ranchi, JH"
+    },
+    {
+      "Institute": "Sant Longowal Institute of Engineering & Technology",
+      "Category": "GFTI",
+      "Tier": "Tier 3",
+      "Avg Package": "₹7 LPA",
+      "Median Package": "₹5.5 LPA",
+      "Highest Package": "₹22 LPA",
+      "Placement %": "63%",
+      "Location": "Longowal, PB"
+    },
+    {
+      "Institute": "School of Engineering Tezpur University",
+      "Category": "GFTI",
+      "Tier": "Tier 3",
+      "Avg Package": "₹7 LPA",
+      "Median Package": "₹5.5 LPA",
+      "Highest Package": "₹22 LPA",
+      "Placement %": "64%",
+      "Location": "Tezpur, AS"
+    },
+    {
+      "Institute": "School of Planning & Architecture Bhopal",
+      "Category": "GFTI",
+      "Tier": "Tier 3",
+      "Avg Package": "₹7 LPA",
+      "Median Package": "₹5.5 LPA",
+      "Highest Package": "₹20 LPA",
+      "Placement %": "68%",
+      "Location": "Bhopal, MP"
+    },
+    {
+      "Institute": "School of Planning & Architecture Vijayawada",
+      "Category": "GFTI",
+      "Tier": "Tier 3",
+      "Avg Package": "₹7 LPA",
+      "Median Package": "₹5.5 LPA",
+      "Highest Package": "₹20 LPA",
+      "Placement %": "65%",
+      "Location": "Vijayawada, AP"
+    },
+    {
+      "Institute": "Puducherry Technological University",
+      "Category": "GFTI",
+      "Tier": "Tier 3",
+      "Avg Package": "₹7 LPA",
+      "Median Package": "₹5.5 LPA",
+      "Highest Package": "₹22 LPA",
+      "Placement %": "64%",
+      "Location": "Puducherry"
+    },
+    {
+      "Institute": "Gati Shakti Vishwavidyalaya Vadodara",
+      "Category": "GFTI",
+      "Tier": "Tier 3",
+      "Avg Package": "₹7 LPA",
+      "Median Package": "₹5.5 LPA",
+      "Highest Package": "₹22 LPA",
+      "Placement %": "64%",
+      "Location": "Vadodara, GJ"
+    },
+    {
+      "Institute": "Rajiv Gandhi National Aviation University",
+      "Category": "GFTI",
+      "Tier": "Tier 3",
+      "Avg Package": "₹7 LPA",
+      "Median Package": "₹5.5 LPA",
+      "Highest Package": "₹22 LPA",
+      "Placement %": "64%",
+      "Location": "Fursatganj, UP"
+    },
+    {
+      "Institute": "Assam University Silchar",
+      "Category": "GFTI",
+      "Tier": "Tier 3",
+      "Avg Package": "₹6 LPA",
+      "Median Package": "₹5 LPA",
+      "Highest Package": "₹18 LPA",
+      "Placement %": "60%",
+      "Location": "Silchar, AS"
+    },
+    {
+      "Institute": "Central University of Rajasthan",
+      "Category": "GFTI",
+      "Tier": "Tier 3",
+      "Avg Package": "₹6.5 LPA",
+      "Median Package": "₹5.5 LPA",
+      "Highest Package": "₹20 LPA",
+      "Placement %": "62%",
+      "Location": "Kishangarh, RJ"
+    }
+  ]
+}

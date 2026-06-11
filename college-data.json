@@ -1,0 +1,2608 @@
+{
+  "college-data": [
+    {
+      "Sr. No.": 1,
+      "Institute Code": 1002,
+      "Institute Name": "Government College of Engineering, Amravati",
+      "Status": "Government, Autonomous",
+      "Total Intake": 390
+    },
+    {
+      "Sr. No.": 2,
+      "Institute Code": 1005,
+      "Institute Name": "Sant Gadge Baba Amravati University,Amravati",
+      "Status": "University Department",
+      "Total Intake": 60
+    },
+    {
+      "Sr. No.": 3,
+      "Institute Code": 1012,
+      "Institute Name": "Government College of Engineering,Yavatmal",
+      "Status": "Government",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 4,
+      "Institute Code": 1101,
+      "Institute Name": "Shri Sant Gajanan Maharaj College of Engineering,Shegaon",
+      "Status": "Un-Aided",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 5,
+      "Institute Code": 1105,
+      "Institute Name": "Prof. Ram Meghe Institute of Technology & Research, Amravati",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 900
+    },
+    {
+      "Sr. No.": 6,
+      "Institute Code": 1107,
+      "Institute Name": "P. R. Pote Patil College of Engineering & Management, Amravati",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 780
+    },
+    {
+      "Sr. No.": 7,
+      "Institute Code": 1114,
+      "Institute Name": "Sipna Shikshan Prasarak Mandal College of Engineering & Technology, Amravati",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 600
+    },
+    {
+      "Sr. No.": 8,
+      "Institute Code": 1116,
+      "Institute Name": "Shri Shivaji Education Society's College of Engineering and Technology, Akola",
+      "Status": "Un-Aided",
+      "Total Intake": 480
+    },
+    {
+      "Sr. No.": 9,
+      "Institute Code": 1117,
+      "Institute Name": "Janata Shikshan Prasarak Mandals Babasaheb Naik College Of Engineering, Pusad",
+      "Status": "Un-Aided",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 10,
+      "Institute Code": 1119,
+      "Institute Name": "ANURADHA COLLEGE OF ENGINEERING & TECHNOLOGY",
+      "Status": "Un-Aided",
+      "Total Intake": 345
+    },
+    {
+      "Sr. No.": 11,
+      "Institute Code": 1120,
+      "Institute Name": "Jawaharlal Darda Institute of Engineering and Technology, Yavatmal",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Hindi",
+      "Total Intake": 390
+    },
+    {
+      "Sr. No.": 12,
+      "Institute Code": 1121,
+      "Institute Name": "Shri Hanuman Vyayam Prasarak Mandals College of Engineering & Technology, Amravati",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 13,
+      "Institute Code": 1123,
+      "Institute Name": "Dr.Rajendra Gode Institute of Technology & Research, Amravati",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 14,
+      "Institute Code": 1125,
+      "Institute Name": "Dwarka Bahu Uddeshiya Gramin Vikas Foundation, Rajarshi Shahu College of Engineering, Buldhana",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 15,
+      "Institute Code": 1126,
+      "Institute Name": "Takshashila Institute of Engineering & Technology, Darapur, Amravati",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 16,
+      "Institute Code": 1127,
+      "Institute Name": "Jagadambha Bahuuddeshiya Gramin Vikas Sanstha's Jagdambha College of Engineering and Technology, Yavatmal",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 540
+    },
+    {
+      "Sr. No.": 17,
+      "Institute Code": 1128,
+      "Institute Name": "Prof Ram Meghe College of Engineering and Management, Badnera",
+      "Status": "Un-Aided",
+      "Total Intake": 480
+    },
+    {
+      "Sr. No.": 18,
+      "Institute Code": 1130,
+      "Institute Name": "Vision Buldhana Educational & Welfare Society's Pankaj Laddhad Institute of Technology & Management Studies, Yelgaon",
+      "Status": "Un-Aided",
+      "Total Intake": 180
+    },
+    {
+      "Sr. No.": 19,
+      "Institute Code": 1180,
+      "Institute Name": "Sanmati Engineering College, Sawargaon Barde, Washim",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 20,
+      "Institute Code": 1182,
+      "Institute Name": "Padmashri Dr. V.B. Kolte College of Engineering, Malkapur, Buldhana",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 21,
+      "Institute Code": 1265,
+      "Institute Name": "Mauli Group of Institutions, College of Engineering and Technology, Shegaon.",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 22,
+      "Institute Code": 1268,
+      "Institute Name": "Siddhivinayak Technical Campus, School of Engineering & Research Technology, Shirasgon, Nile",
+      "Status": "Un-Aided",
+      "Total Intake": 210
+    },
+    {
+      "Sr. No.": 23,
+      "Institute Code": 1276,
+      "Institute Name": "Manav School of Engineering & Technology, Gut No. 1035 Nagpur Surat Highway, NH No. 6 Tal.Vyala, Balapur, Akola, 444302",
+      "Status": "Un-Aided",
+      "Total Intake": 267
+    },
+    {
+      "Sr. No.": 24,
+      "Institute Code": 2008,
+      "Institute Name": "Government College of Engineering, Chhatrapati Sambhajinagar",
+      "Status": "Government, Autonomous",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 25,
+      "Institute Code": 2015,
+      "Institute Name": "PURANMAL LAHOTI GOVERNMENT INSTITUTE OF ENGINEERING AND TECHNOLOGY, LATUR",
+      "Status": "Government",
+      "Total Intake": 180
+    },
+    {
+      "Sr. No.": 26,
+      "Institute Code": 2020,
+      "Institute Name": "Shri Guru Gobind Singhji Institute of Engineering and Technology, Nanded",
+      "Status": "Government-Aided, Autonomous",
+      "Total Intake": 610
+    },
+    {
+      "Sr. No.": 27,
+      "Institute Code": 2021,
+      "Institute Name": "University Department of Chemical Technology, Aurangabad",
+      "Status": "University Department",
+      "Total Intake": 22
+    },
+    {
+      "Sr. No.": 28,
+      "Institute Code": 2032,
+      "Institute Name": "Institute of Chemical Technology, Mumbai Marathwada off campus, Jalna",
+      "Status": "University Managed, Autonomous",
+      "Total Intake": 60
+    },
+    {
+      "Sr. No.": 29,
+      "Institute Code": 2111,
+      "Institute Name": "Everest Education Society, Group of Institutions (Integrated Campus), Ohar",
+      "Status": "Un-Aided, Religious Minority - Muslim",
+      "Total Intake": 330
+    },
+    {
+      "Sr. No.": 30,
+      "Institute Code": 2112,
+      "Institute Name": "Shree Yash Pratishthan, Shreeyash College of Engineering and Technology, Aurangabad",
+      "Status": "Un-Aided",
+      "Total Intake": 600
+    },
+    {
+      "Sr. No.": 31,
+      "Institute Code": 2113,
+      "Institute Name": "G. S. Mandal's Maharashtra Institute of Technology, Aurangabad",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 1350
+    },
+    {
+      "Sr. No.": 32,
+      "Institute Code": 2114,
+      "Institute Name": "Deogiri Institute of Engineering and Management Studies, Aurangabad",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 540
+    },
+    {
+      "Sr. No.": 33,
+      "Institute Code": 2116,
+      "Institute Name": "Matoshri Pratishan's Group of Institutions (Integrated Campus), Kupsarwadi , Nanded",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 34,
+      "Institute Code": 2127,
+      "Institute Name": "Mahatma Gandhi Missions College of Engineering, Hingoli Rd, Nanded.",
+      "Status": "Un-Aided",
+      "Total Intake": 600
+    },
+    {
+      "Sr. No.": 35,
+      "Institute Code": 2129,
+      "Institute Name": "M.S. Bidve Engineering College, Latur",
+      "Status": "Un-Aided",
+      "Total Intake": 480
+    },
+    {
+      "Sr. No.": 36,
+      "Institute Code": 2130,
+      "Institute Name": "Terna Public Charitable Trust's College of Engineering, Osmanabad",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 37,
+      "Institute Code": 2131,
+      "Institute Name": "Shree Tuljabhavani College of Engineering, Tuljapur",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 38,
+      "Institute Code": 2133,
+      "Institute Name": "Mahatma Basaweshwar Education Society's College of Engineering, Ambejogai",
+      "Status": "Un-Aided",
+      "Total Intake": 450
+    },
+    {
+      "Sr. No.": 39,
+      "Institute Code": 2134,
+      "Institute Name": "Peoples Education Society's College of Engineering, Aurangabad",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 40,
+      "Institute Code": 2135,
+      "Institute Name": "Hi-Tech Institute of Technology, Aurangabad",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 41,
+      "Institute Code": 2136,
+      "Institute Name": "Aditya Engineering College , Beed",
+      "Status": "Un-Aided",
+      "Total Intake": 780
+    },
+    {
+      "Sr. No.": 42,
+      "Institute Code": 2137,
+      "Institute Name": "Nagnathappa Halge Engineering College, Parli, Beed",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 43,
+      "Institute Code": 2138,
+      "Institute Name": "Matsyodari Shikshan Sansatha's College of Engineering and Technology, Jalna",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 44,
+      "Institute Code": 2146,
+      "Institute Name": "Adarsh Shikshan Prasarak Mandal's K. T. Patil College of Engineering and Technology, Osmanabad",
+      "Status": "Un-Aided",
+      "Total Intake": 150
+    },
+    {
+      "Sr. No.": 45,
+      "Institute Code": 2189,
+      "Institute Name": "Vishweshwarayya Institute Of Engineering And Technology, Almala, Tq. Ausa, Dist. Latur",
+      "Status": "Un-Aided",
+      "Total Intake": 180
+    },
+    {
+      "Sr. No.": 46,
+      "Institute Code": 2250,
+      "Institute Name": "Aurangabad College of Engineering, Naygaon Savangi, Aurangabad",
+      "Status": "Un-Aided",
+      "Total Intake": 375
+    },
+    {
+      "Sr. No.": 47,
+      "Institute Code": 2252,
+      "Institute Name": "Marathwada Shikshan Prasarak Mandal's Shri Shivaji Institute of Engineering and Management Studies, Parbhani",
+      "Status": "Un-Aided",
+      "Total Intake": 210
+    },
+    {
+      "Sr. No.": 48,
+      "Institute Code": 2254,
+      "Institute Name": "Vilasrao Deshmukh Foundation Group of Institutions, Latur",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 49,
+      "Institute Code": 2282,
+      "Institute Name": "Mitthulalji Sarada Institute Of Technology, Nalwandi Road, Beed",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 50,
+      "Institute Code": 2508,
+      "Institute Name": "GRAMIN TECHNICAL AND MANAGEMENT CAMPUS NANDED.",
+      "Status": "Un-Aided",
+      "Total Intake": 570
+    },
+    {
+      "Sr. No.": 51,
+      "Institute Code": 2516,
+      "Institute Name": "International Centre Of Excellence In Engineering and Management (ICEEM)",
+      "Status": "Un-Aided",
+      "Total Intake": 270
+    },
+    {
+      "Sr. No.": 52,
+      "Institute Code": 2522,
+      "Institute Name": "STMEI's Sandipani Technical Campus-Faculty of Engineering, Latur.",
+      "Status": "Un-Aided",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 53,
+      "Institute Code": 2533,
+      "Institute Name": "CSMSS Chh. Shahu College of Engineering, Aurangabad",
+      "Status": "Un-Aided",
+      "Total Intake": 840
+    },
+    {
+      "Sr. No.": 54,
+      "Institute Code": 2634,
+      "Institute Name": "Eaglewood Polytechnic Institute, A.P Phulepimpalgaon",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 55,
+      "Institute Code": 2637,
+      "Institute Name": "Jijau Institute of Engineering Technology and Management, Khandgaon (Bendri), Taluka Naigaon, District Nanded",
+      "Status": "Un-Aided",
+      "Total Intake": 330
+    },
+    {
+      "Sr. No.": 56,
+      "Institute Code": 2641,
+      "Institute Name": "Dr. V.K. Patil College of Engineering & Technology",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 57,
+      "Institute Code": 2666,
+      "Institute Name": "Mangaldeep College of Engineering",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 58,
+      "Institute Code": 2758,
+      "Institute Name": "Sant Eknath College of Engineering",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 59,
+      "Institute Code": 2770,
+      "Institute Name": "Shetkari Shikshan Prasarak Mandal's Mahesh Institute of Engineering and Technology , Ashti",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 60,
+      "Institute Code": 2771,
+      "Institute Name": "Amolak College of Engineering Kada",
+      "Status": "Un-Aided, Religious Minority - Jain",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 61,
+      "Institute Code": 2772,
+      "Institute Name": "JSPM College of Engineering, Latur",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 62,
+      "Institute Code": 2777,
+      "Institute Name": "CDS College of Engineering",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 63,
+      "Institute Code": 2779,
+      "Institute Name": "NKSPT INSTITUTE OF ENGINEERING AND TECHNOLOGY PATHIKAR CAMPUS",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 64,
+      "Institute Code": 3012,
+      "Institute Name": "Veermata Jijabai Technological Institute(VJTI), Matunga, Mumbai",
+      "Status": "Government-Aided, Autonomous",
+      "Total Intake": 540
+    },
+    {
+      "Sr. No.": 65,
+      "Institute Code": 3014,
+      "Institute Name": "Sardar Patel College of Engineering, Andheri",
+      "Status": "Government-Aided, Autonomous",
+      "Total Intake": 180
+    },
+    {
+      "Sr. No.": 66,
+      "Institute Code": 3025,
+      "Institute Name": "Svkm's Shri Bhagubhai Mafatlal Polytechnic & College of Engineering",
+      "Status": "Government-Aided, Linguistic Minority - Gujarathi",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 67,
+      "Institute Code": 3033,
+      "Institute Name": "Dr. Babasaheb Ambedkar Technological University, Lonere",
+      "Status": "University",
+      "Total Intake": 558
+    },
+    {
+      "Sr. No.": 68,
+      "Institute Code": 3035,
+      "Institute Name": "Usha Mittal Institute of Technology SNDT Women's University, Mumbai",
+      "Status": "University Managed (Un-Aided)",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 69,
+      "Institute Code": 3036,
+      "Institute Name": "Institute of Chemical Technology, Matunga, Mumbai",
+      "Status": "Deemed University, Autonomous",
+      "Total Intake": 209
+    },
+    {
+      "Sr. No.": 70,
+      "Institute Code": 3042,
+      "Institute Name": "Loknete Shamrao Peje Government College of Engineering, Ratnagiri",
+      "Status": "Government",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 71,
+      "Institute Code": 3135,
+      "Institute Name": "Manjara Charitable Trust's Rajiv Gandhi Institute of Technology, Mumbai",
+      "Status": "Un-Aided",
+      "Total Intake": 480
+    },
+    {
+      "Sr. No.": 72,
+      "Institute Code": 3139,
+      "Institute Name": "Vidyalankar Institute of Technology,Wadala, Mumbai",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 660
+    },
+    {
+      "Sr. No.": 73,
+      "Institute Code": 3143,
+      "Institute Name": "Thakur Shyamnarayan Engineering College, Mumbai",
+      "Status": "Un-Aided, Linguistic Minority - Hindi",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 74,
+      "Institute Code": 3146,
+      "Institute Name": "Jawahar Education Society's Annasaheb Chudaman Patil College of Engineering,Kharghar, Navi Mumbai",
+      "Status": "Un-Aided",
+      "Total Intake": 600
+    },
+    {
+      "Sr. No.": 75,
+      "Institute Code": 3147,
+      "Institute Name": "Saraswati Education Society, Yadavrao Tasgaonkar Institute of Engineering & Technology, Karjat",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 76,
+      "Institute Code": 3148,
+      "Institute Name": "Mahavir Education Trust's Shah & Anchor Kutchhi Engineering College, Mumbai",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Gujarathi(Jain)",
+      "Total Intake": 720
+    },
+    {
+      "Sr. No.": 77,
+      "Institute Code": 3154,
+      "Institute Name": "Saraswati Education Society's Saraswati College of Engineering,Kharghar Navi Mumbai",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 600
+    },
+    {
+      "Sr. No.": 78,
+      "Institute Code": 3175,
+      "Institute Name": "M.G.M.'s College of Engineering and Technology, Kamothe, Navi Mumbai",
+      "Status": "Un-Aided",
+      "Total Intake": 810
+    },
+    {
+      "Sr. No.": 79,
+      "Institute Code": 3176,
+      "Institute Name": "Thakur College of Engineering and Technology, Kandivali, Mumbai",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Hindi",
+      "Total Intake": 1620
+    },
+    {
+      "Sr. No.": 80,
+      "Institute Code": 3182,
+      "Institute Name": "Thadomal Shahani Engineering College, Bandra, Mumbai",
+      "Status": "Un-Aided, Linguistic Minority - Sindhi",
+      "Total Intake": 540
+    },
+    {
+      "Sr. No.": 81,
+      "Institute Code": 3183,
+      "Institute Name": "Anjuman-I-Islam's M.H. Saboo Siddik College of Engineering, Byculla, Mumbai",
+      "Status": "Un-Aided, Religious Minority - Muslim",
+      "Total Intake": 540
+    },
+    {
+      "Sr. No.": 82,
+      "Institute Code": 3184,
+      "Institute Name": "Fr. Conceicao Rodrigues College of Engineering, Bandra,Mumbai",
+      "Status": "Un-Aided, Autonomous, Religious Minority - Christian",
+      "Total Intake": 480
+    },
+    {
+      "Sr. No.": 83,
+      "Institute Code": 3185,
+      "Institute Name": "Vivekanand Education Society's Institute of Technology, Chembur, Mumbai",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Sindhi",
+      "Total Intake": 720
+    },
+    {
+      "Sr. No.": 84,
+      "Institute Code": 3187,
+      "Institute Name": "N.Y.S.S.'s Datta Meghe College of Engineering, Airoli, Navi Mumbai",
+      "Status": "Un-Aided",
+      "Total Intake": 960
+    },
+    {
+      "Sr. No.": 85,
+      "Institute Code": 3188,
+      "Institute Name": "Vasantdada Patil Pratishthan's College Of Engineering and Visual Arts, Sion, Mumbai",
+      "Status": "Un-Aided",
+      "Total Intake": 540
+    },
+    {
+      "Sr. No.": 86,
+      "Institute Code": 3189,
+      "Institute Name": "Bharati Vidyapeeth College of Engineering, Navi Mumbai",
+      "Status": "Un-Aided",
+      "Total Intake": 540
+    },
+    {
+      "Sr. No.": 87,
+      "Institute Code": 3190,
+      "Institute Name": "Terna Engineering College, Nerul, Navi Mumbai",
+      "Status": "Un-Aided",
+      "Total Intake": 660
+    },
+    {
+      "Sr. No.": 88,
+      "Institute Code": 3192,
+      "Institute Name": "Smt. Indira Gandhi College of Engineering, Navi Mumbai",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 89,
+      "Institute Code": 3193,
+      "Institute Name": "Shivajirao S. Jondhale College of Engineering, Dombivali,Mumbai",
+      "Status": "Un-Aided",
+      "Total Intake": 340
+    },
+    {
+      "Sr. No.": 90,
+      "Institute Code": 3194,
+      "Institute Name": "Vidyavardhini's College of Engineering and Technology, Vasai",
+      "Status": "Un-Aided",
+      "Total Intake": 720
+    },
+    {
+      "Sr. No.": 91,
+      "Institute Code": 3196,
+      "Institute Name": "Lokmanya Tilak College of Engineering, Kopar Khairane, Navi Mumbai",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Hindi",
+      "Total Intake": 660
+    },
+    {
+      "Sr. No.": 92,
+      "Institute Code": 3197,
+      "Institute Name": "Agnel Charities' FR. C. Rodrigues Institute of Technology, Vashi, Navi Mumbai",
+      "Status": "Un-Aided, Autonomous, Religious Minority - Christian",
+      "Total Intake": 480
+    },
+    {
+      "Sr. No.": 93,
+      "Institute Code": 3198,
+      "Institute Name": "Konkan Gyanpeeth College of Engineering, Karjat",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 94,
+      "Institute Code": 3199,
+      "Institute Name": "Shri Vile Parle Kelvani Mandal's Dwarkadas J. Sanghvi College of Engineering, Vile Parle,Mumbai",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Gujarathi",
+      "Total Intake": 1140
+    },
+    {
+      "Sr. No.": 95,
+      "Institute Code": 3200,
+      "Institute Name": "Hope Foundation and research center's Finolex Academy of Management and Technology, Ratnagiri",
+      "Status": "Un-Aided",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 96,
+      "Institute Code": 3201,
+      "Institute Name": "Rizvi Education Society's Rizvi College of Engineering, Bandra,Mumbai",
+      "Status": "Un-Aided, Religious Minority - Muslim",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 97,
+      "Institute Code": 3202,
+      "Institute Name": "Rajendra Mane College of Engineering & Technology Ambav Deorukh",
+      "Status": "Un-Aided",
+      "Total Intake": 180
+    },
+    {
+      "Sr. No.": 98,
+      "Institute Code": 3203,
+      "Institute Name": "Atharva College of Engineering,Malad(West),Mumbai",
+      "Status": "Un-Aided",
+      "Total Intake": 480
+    },
+    {
+      "Sr. No.": 99,
+      "Institute Code": 3204,
+      "Institute Name": "St. Francis Institute of Technology,Borivali, Mumbai",
+      "Status": "Un-Aided, Autonomous, Religious Minority - Christian",
+      "Total Intake": 660
+    },
+    {
+      "Sr. No.": 100,
+      "Institute Code": 3206,
+      "Institute Name": "S.S.P.M.'s College of Engineering, Kankavli",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 101,
+      "Institute Code": 3207,
+      "Institute Name": "Mahatma Education Society's Pillai College of Engineering, New Panvel",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Malyalam",
+      "Total Intake": 660
+    },
+    {
+      "Sr. No.": 102,
+      "Institute Code": 3208,
+      "Institute Name": "Don Bosco Institute of Technology, Mumbai",
+      "Status": "Un-Aided, Autonomous, Religious Minority - Roman Catholics",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 103,
+      "Institute Code": 3209,
+      "Institute Name": "K J Somaiya Institute of Technology",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Gujarathi",
+      "Total Intake": 480
+    },
+    {
+      "Sr. No.": 104,
+      "Institute Code": 3210,
+      "Institute Name": "Excelsior Education Society's K.C. College of Engineering and Management Studies and Research, Kopri, Thane (E)",
+      "Status": "Un-Aided, Linguistic Minority - Punjabi",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 105,
+      "Institute Code": 3211,
+      "Institute Name": "S.I.E.S. Graduate School of Technology, Nerul, Navi Mumbai",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Tamil",
+      "Total Intake": 660
+    },
+    {
+      "Sr. No.": 106,
+      "Institute Code": 3212,
+      "Institute Name": "Watumull Institute of Engineering & Technology, Ulhasnagar",
+      "Status": "Un-Aided, Linguistic Minority - Sindhi",
+      "Total Intake": 210
+    },
+    {
+      "Sr. No.": 107,
+      "Institute Code": 3214,
+      "Institute Name": "Xavier Institute Of Engineering C/O Xavier Technical Institute,Mahim,Mumbai",
+      "Status": "Un-Aided, Autonomous, Religious Minority - Christian",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 108,
+      "Institute Code": 3215,
+      "Institute Name": "Bhartiya Vidya Bhavan's Sardar Patel Institute of Technology , Andheri, Mumbai",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 480
+    },
+    {
+      "Sr. No.": 109,
+      "Institute Code": 3216,
+      "Institute Name": "Gharda Foundation's Gharda Institute of Technology,Khed, Ratnagiri",
+      "Status": "Un-Aided",
+      "Total Intake": 330
+    },
+    {
+      "Sr. No.": 110,
+      "Institute Code": 3217,
+      "Institute Name": "Vighnaharata Trust's Shivajirao S. Jondhale College of Engineering & Technology, Shahapur, Asangaon, Dist Thane",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 111,
+      "Institute Code": 3218,
+      "Institute Name": "Aldel Education Trust's St. John College of Engineering & Management, Vevoor, Palghar",
+      "Status": "Un-Aided, Autonomous, Religious Minority - Christian",
+      "Total Intake": 480
+    },
+    {
+      "Sr. No.": 112,
+      "Institute Code": 3219,
+      "Institute Name": "Koti Vidya Charitable Trust's Smt. Alamuri Ratnamala Institute of Engineering and Technology, Sapgaon, Tal. Shahapur",
+      "Status": "Un-Aided, Linguistic Minority - Hindi",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 113,
+      "Institute Code": 3220,
+      "Institute Name": "Yadavrao Tasgaonkar College of Engineering & Management",
+      "Status": "Un-Aided",
+      "Total Intake": 294
+    },
+    {
+      "Sr. No.": 114,
+      "Institute Code": 3221,
+      "Institute Name": "Vishnu Waman Thakur Charitable Trust's VIVA Institute of Technology, Virar",
+      "Status": "Un-Aided",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 115,
+      "Institute Code": 3222,
+      "Institute Name": "Haji Jamaluddin Thim Trust's Theem College of Engineering, At. Villege Betegaon, Boisar",
+      "Status": "Un-Aided, Religious Minority - Muslim",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 116,
+      "Institute Code": 3223,
+      "Institute Name": "Mahatma Education Society's Pillai HOC College of Engineering & Technology, Tal. Khalapur. Dist. Raigad",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Malyalam",
+      "Total Intake": 600
+    },
+    {
+      "Sr. No.": 117,
+      "Institute Code": 3224,
+      "Institute Name": "Leela Education Society, G.V. Acharya Institute of Engineering and Technology, Shelu, Karjat",
+      "Status": "Un-Aided",
+      "Total Intake": 270
+    },
+    {
+      "Sr. No.": 118,
+      "Institute Code": 3257,
+      "Institute Name": "Vidya Prasarak Mandal's College of Engineering, Thane",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 119,
+      "Institute Code": 3277,
+      "Institute Name": "Pravin Rohidas Patil College of Engineering & Technology",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 120,
+      "Institute Code": 3351,
+      "Institute Name": "Bharat College of Engineering, Kanhor, Badlapur(W)",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 121,
+      "Institute Code": 3353,
+      "Institute Name": "Dilkap Research Institute Of Engineering and Management Studies, At.Mamdapur, Post- Neral, Tal- Karjat, Mumbai",
+      "Status": "Un-Aided",
+      "Total Intake": 390
+    },
+    {
+      "Sr. No.": 122,
+      "Institute Code": 3423,
+      "Institute Name": "Shree L.R. Tiwari College of Engineering, Mira Road, Mumbai",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Hindi",
+      "Total Intake": 720
+    },
+    {
+      "Sr. No.": 123,
+      "Institute Code": 3436,
+      "Institute Name": "B.R. Harne College of Engineering & Technology, Karav, Tal-Ambernath.",
+      "Status": "Un-Aided",
+      "Total Intake": 330
+    },
+    {
+      "Sr. No.": 124,
+      "Institute Code": 3439,
+      "Institute Name": "Anjuman-I-Islam's Kalsekar Technical Campus, Panvel",
+      "Status": "Un-Aided, Autonomous, Religious Minority - Muslim",
+      "Total Intake": 510
+    },
+    {
+      "Sr. No.": 125,
+      "Institute Code": 3440,
+      "Institute Name": "Metropolitan Institute of Technology & Management, Sukhalwad, Sindhudurg.",
+      "Status": "Un-Aided",
+      "Total Intake": 270
+    },
+    {
+      "Sr. No.": 126,
+      "Institute Code": 3445,
+      "Institute Name": "Vishwatmak Jangli Maharaj Ashram Trust (Kokamthan), Atma Malik Institute Of Technology & Research",
+      "Status": "Un-Aided",
+      "Total Intake": 210
+    },
+    {
+      "Sr. No.": 127,
+      "Institute Code": 3447,
+      "Institute Name": "G.M.Vedak Institute of Technology, Tala, Raigad.",
+      "Status": "Un-Aided",
+      "Total Intake": 120
+    },
+    {
+      "Sr. No.": 128,
+      "Institute Code": 3462,
+      "Institute Name": "VPM's Maharshi Parshuram College of Engineering, Velneshwar, Ratnagiri.",
+      "Status": "Un-Aided",
+      "Total Intake": 180
+    },
+    {
+      "Sr. No.": 129,
+      "Institute Code": 3465,
+      "Institute Name": "Ideal Institute of Technology, Wada, Dist.Thane",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 130,
+      "Institute Code": 3467,
+      "Institute Name": "Vishwaniketan's Institute of Management Entrepreneurship and Engineering Technology(i MEET), Khalapur Dist Raigad",
+      "Status": "Un-Aided",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 131,
+      "Institute Code": 3470,
+      "Institute Name": "YASHWANTRAO BHONSALE INSTITUTE OF TECHNOLOGY",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 132,
+      "Institute Code": 3471,
+      "Institute Name": "New Horizon Institute of Technology & Management, Thane",
+      "Status": "Un-Aided",
+      "Total Intake": 540
+    },
+    {
+      "Sr. No.": 133,
+      "Institute Code": 3475,
+      "Institute Name": "A. P. Shah Institute of Technology, Thane",
+      "Status": "Un-Aided, Religious Minority - Jain",
+      "Total Intake": 720
+    },
+    {
+      "Sr. No.": 134,
+      "Institute Code": 3477,
+      "Institute Name": "Chhartrapati Shivaji Maharaj Institute of Technology, Shedung, Panvel",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 135,
+      "Institute Code": 3503,
+      "Institute Name": "Indala College Of Engineering, Bapsai Tal.Kalyan",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 136,
+      "Institute Code": 3546,
+      "Institute Name": "Devi Mahalaxmi College of Engineering and Technology",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 137,
+      "Institute Code": 3723,
+      "Institute Name": "Navjeevan Education Society's College of Engineering, Bhandup(W), Mumbai",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 138,
+      "Institute Code": 3724,
+      "Institute Name": "Thakur Shree DPS College of Engineering & Management",
+      "Status": "Un-Aided, Linguistic Minority - Hindi",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 139,
+      "Institute Code": 3725,
+      "Institute Name": "MAEER's Maharashtra Institute of Technology, Thane",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 140,
+      "Institute Code": 3726,
+      "Institute Name": "Imperial College of Engineering",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 141,
+      "Institute Code": 4004,
+      "Institute Name": "Government College of Engineering, Chandrapur",
+      "Status": "Government",
+      "Total Intake": 330
+    },
+    {
+      "Sr. No.": 142,
+      "Institute Code": 4025,
+      "Institute Name": "Government College of Engineering, Nagpur",
+      "Status": "Government",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 143,
+      "Institute Code": 4104,
+      "Institute Name": "Kavi Kulguru Institute of Technology & Science, Ramtek",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 540
+    },
+    {
+      "Sr. No.": 144,
+      "Institute Code": 4116,
+      "Institute Name": "Ankush Shikshan Sanstha's G.H.Raisoni College of Engineering, Nagpur",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Hindi",
+      "Total Intake": 1260
+    },
+    {
+      "Sr. No.": 145,
+      "Institute Code": 4118,
+      "Institute Name": "Bapurao Deshmukh College of Engineering, Sevagram",
+      "Status": "Un-Aided",
+      "Total Intake": 273
+    },
+    {
+      "Sr. No.": 146,
+      "Institute Code": 4123,
+      "Institute Name": "Lokmanya Tilak Jankalyan Shikshan Sanstha, Priyadarshani College of Engineering, Nagpur",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Hindi",
+      "Total Intake": 1440
+    },
+    {
+      "Sr. No.": 147,
+      "Institute Code": 4133,
+      "Institute Name": "Sanmarg Shikshan Sanstha's Smt. Radhikatai Pandav College of Engineering, Nagpur",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 148,
+      "Institute Code": 4134,
+      "Institute Name": "Guru Nanak Institute of Engineering & Technology,Kalmeshwar, Nagpur",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 149,
+      "Institute Code": 4135,
+      "Institute Name": "Amar Seva Mandal's Shree Govindrao Vanjari College of Engineering & Technology, Nagpur",
+      "Status": "Un-Aided",
+      "Total Intake": 570
+    },
+    {
+      "Sr. No.": 150,
+      "Institute Code": 4137,
+      "Institute Name": "Sir Shantilal Badjate Charitable Trust's S. B. Jain Institute of technology, Management & Research, Nagpur",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Hindi",
+      "Total Intake": 720
+    },
+    {
+      "Sr. No.": 151,
+      "Institute Code": 4138,
+      "Institute Name": "Jaidev Education Society, J D College of Engineering and Management, Nagpur",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Hindi",
+      "Total Intake": 990
+    },
+    {
+      "Sr. No.": 152,
+      "Institute Code": 4139,
+      "Institute Name": "Samridhi Sarwajanik Charitable Trust, Jhulelal Institute of Technology, Nagpur",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Sindhi",
+      "Total Intake": 720
+    },
+    {
+      "Sr. No.": 153,
+      "Institute Code": 4141,
+      "Institute Name": "Shriram Gram Vikas Shikshan Sanstha, Vilasrao Deshmukh College of Engineering and Technology, Nagpur",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 154,
+      "Institute Code": 4142,
+      "Institute Name": "G H Raisoni College of Engineering & Management, Nagpur",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Hindi",
+      "Total Intake": 780
+    },
+    {
+      "Sr. No.": 155,
+      "Institute Code": 4143,
+      "Institute Name": "Sanmarg Shikshan Sanstha, Mandukarrao Pandav College of Engineering, Bhandara",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 156,
+      "Institute Code": 4144,
+      "Institute Name": "Shri. Sai Shikshan Sanstha, Nagpur Institute of Technology, Nagpur",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 157,
+      "Institute Code": 4145,
+      "Institute Name": "Wainganga College of Engineering and Management, Dongargaon, Nagpur",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 600
+    },
+    {
+      "Sr. No.": 158,
+      "Institute Code": 4147,
+      "Institute Name": "K.D.K. College of Engineering, Nagpur",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 630
+    },
+    {
+      "Sr. No.": 159,
+      "Institute Code": 4151,
+      "Institute Name": "Tulsiramji Gaikwad Patil College of Engineering & Technology, Nagpur",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 1320
+    },
+    {
+      "Sr. No.": 160,
+      "Institute Code": 4163,
+      "Institute Name": "Rajiv Gandhi College of Engineering Research & Technology Chandrapur",
+      "Status": "Un-Aided",
+      "Total Intake": 570
+    },
+    {
+      "Sr. No.": 161,
+      "Institute Code": 4167,
+      "Institute Name": "Yeshwantrao Chavan College of Engineering,Wanadongri, Nagpur",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 1500
+    },
+    {
+      "Sr. No.": 162,
+      "Institute Code": 4172,
+      "Institute Name": "Anjuman College of Engineering & Technology, Nagpur",
+      "Status": "Un-Aided, Religious Minority - Muslim",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 163,
+      "Institute Code": 4174,
+      "Institute Name": "ST. Vincent Pallotti College of Engineering & Technology, Nagpur",
+      "Status": "Un-Aided, Autonomous, Religious Minority - Christian",
+      "Total Intake": 780
+    },
+    {
+      "Sr. No.": 164,
+      "Institute Code": 4175,
+      "Institute Name": "JMSS Shri Shankarprasad Agnihotri College of Engineering, Wardha",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 165,
+      "Institute Code": 4177,
+      "Institute Name": "Priyadarshini Bhagwati College of Engineering, Harpur Nagar, Umred Road,Nagpur",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Hindi",
+      "Total Intake": 720
+    },
+    {
+      "Sr. No.": 166,
+      "Institute Code": 4181,
+      "Institute Name": "Swaminarayan Siddhanta Institute Of Technology, Nagpur",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 167,
+      "Institute Code": 4188,
+      "Institute Name": "Krushi Jivan Vikas Pratishthan, Ballarpur Institute of Technology, Mouza Bamni",
+      "Status": "Un-Aided",
+      "Total Intake": 450
+    },
+    {
+      "Sr. No.": 168,
+      "Institute Code": 4190,
+      "Institute Name": "M.D. Yergude Memorial Shikshan Prasarak Mandal's Shri Sai College of Engineering & Technology, Bhadrawati",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 169,
+      "Institute Code": 4192,
+      "Institute Name": "Maitraya Education Society, Nagarjuna Institute of Engineering Technology & Management, Nagpur",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 170,
+      "Institute Code": 4193,
+      "Institute Name": "K.D.M. Education Society, Vidharbha Institute of Technology,Umred Road ,Nagpur",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Hindi",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 171,
+      "Institute Code": 4196,
+      "Institute Name": "Gurunanak Educational Society's Gurunanak Institute of Technology, Nagpur",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 172,
+      "Institute Code": 4197,
+      "Institute Name": "Jai Mahakali Shikshan Sanstha, Agnihotri College of Engineering, Sindhi(Meghe)",
+      "Status": "Un-Aided",
+      "Total Intake": 210
+    },
+    {
+      "Sr. No.": 173,
+      "Institute Code": 4302,
+      "Institute Name": "Gondia Education Society's Manoharbhai Patel Institute Of Engineering & Technology, Shahapur, Bhandara",
+      "Status": "Un-Aided",
+      "Total Intake": 114
+    },
+    {
+      "Sr. No.": 174,
+      "Institute Code": 4304,
+      "Institute Name": "Cummins College of Engineering For Women, Sukhali (Gupchup), Tal. Hingna Hingna Nagpur",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 175,
+      "Institute Code": 4613,
+      "Institute Name": "Suryodaya College of Engineering & Technology, Nagpur",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 176,
+      "Institute Code": 4648,
+      "Institute Name": "R.V. Parankar College of Engineering & Technology, Arvi, Dist Wardha",
+      "Status": "Un-Aided",
+      "Total Intake": 180
+    },
+    {
+      "Sr. No.": 177,
+      "Institute Code": 4649,
+      "Institute Name": "Bajaj Institute of Technology, Wardha",
+      "Status": "Un-Aided, Linguistic Minority - Hindi",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 178,
+      "Institute Code": 4679,
+      "Institute Name": "Karanjekar College of Engineering & Management, Sakoli",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 179,
+      "Institute Code": 4703,
+      "Institute Name": "Somayya Institute of Technology, Chandrapur",
+      "Status": "Un-Aided",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 180,
+      "Institute Code": 5003,
+      "Institute Name": "University Institute of Chemical Technology, North Maharashtra University, Jalgaon",
+      "Status": "University Department",
+      "Total Intake": 120
+    },
+    {
+      "Sr. No.": 181,
+      "Institute Code": 5004,
+      "Institute Name": "Government College of Engineering, Jalgaon",
+      "Status": "Government, Autonomous",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 182,
+      "Institute Code": 5103,
+      "Institute Name": "Shri Shivaji Vidya Prasarak Sanstha's Late Bapusaheb Shivaji Rao Deore College of Engineering,Dhule",
+      "Status": "Un-Aided",
+      "Total Intake": 720
+    },
+    {
+      "Sr. No.": 183,
+      "Institute Code": 5104,
+      "Institute Name": "Shramsadhana Bombay Trust, College of Engineering & Technology, Jalgaon",
+      "Status": "Un-Aided",
+      "Total Intake": 450
+    },
+    {
+      "Sr. No.": 184,
+      "Institute Code": 5106,
+      "Institute Name": "Khandesh College Education Society's College Of Engineering And Management, Jalgaon",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 330
+    },
+    {
+      "Sr. No.": 185,
+      "Institute Code": 5108,
+      "Institute Name": "Maratha Vidya Prasarak Samaj's Karmaveer Adv. Baburao Ganpatrao Thakare College Of Engineering, Nashik",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 1020
+    },
+    {
+      "Sr. No.": 186,
+      "Institute Code": 5109,
+      "Institute Name": "Sandip Foundation, Sandip Institute of Technology and Research Centre, Mahiravani, Nashik",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 960
+    },
+    {
+      "Sr. No.": 187,
+      "Institute Code": 5121,
+      "Institute Name": "K. K. Wagh Institute of Engineering Education and Research, Nashik",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 1080
+    },
+    {
+      "Sr. No.": 188,
+      "Institute Code": 5124,
+      "Institute Name": "Jagadamba Education Soc. Nashik's S.N.D. College of Engineering & Reserch, Babulgaon",
+      "Status": "Un-Aided",
+      "Total Intake": 540
+    },
+    {
+      "Sr. No.": 189,
+      "Institute Code": 5125,
+      "Institute Name": "Pravara Rural Education Society's Sir Visvesvaraya Institute of Technology, Chincholi Dist. Nashik",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 190,
+      "Institute Code": 5130,
+      "Institute Name": "Brahma Valley College of Engineering & Research, Trimbakeshwar, Nashik",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 191,
+      "Institute Code": 5139,
+      "Institute Name": "Pravara Rural College of Engineering, Loni, Pravaranagar, Ahmednagar.",
+      "Status": "Un-Aided",
+      "Total Intake": 720
+    },
+    {
+      "Sr. No.": 192,
+      "Institute Code": 5151,
+      "Institute Name": "MET Bhujbal Knowledge City MET League's Engineering College, Adgaon, Nashik.",
+      "Status": "Un-Aided",
+      "Total Intake": 720
+    },
+    {
+      "Sr. No.": 193,
+      "Institute Code": 5152,
+      "Institute Name": "G H Raisoni College of Engineering and Management, Jalgaon",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Hindi",
+      "Total Intake": 780
+    },
+    {
+      "Sr. No.": 194,
+      "Institute Code": 5160,
+      "Institute Name": "Sanjivani Rural Education Society's Sanjivani College of Engineering, Kopargaon",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 720
+    },
+    {
+      "Sr. No.": 195,
+      "Institute Code": 5161,
+      "Institute Name": "Dr. Vithalrao Vikhe Patil College of Engineering, Ahmednagar",
+      "Status": "Un-Aided",
+      "Total Intake": 600
+    },
+    {
+      "Sr. No.": 196,
+      "Institute Code": 5162,
+      "Institute Name": "Amrutvahini Sheti & Shikshan Vikas Sanstha's Amrutvahini College of Engineering, Sangamner",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 1020
+    },
+    {
+      "Sr. No.": 197,
+      "Institute Code": 5164,
+      "Institute Name": "P.S.G.V.P. Mandal's D.N. Patel College of Engineering, Shahada, Dist. Nandurbar",
+      "Status": "Un-Aided, Linguistic Minority - Gujar",
+      "Total Intake": 348
+    },
+    {
+      "Sr. No.": 198,
+      "Institute Code": 5168,
+      "Institute Name": "T.M.E. Society's J.T.Mahajan College of Engineering, Faizpur",
+      "Status": "Un-Aided",
+      "Total Intake": 210
+    },
+    {
+      "Sr. No.": 199,
+      "Institute Code": 5169,
+      "Institute Name": "Nagaon Education Society's Gangamai College of Engineering, Nagaon, Tal Dist Dhule",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 200,
+      "Institute Code": 5170,
+      "Institute Name": "Hindi Seva Mandal's Shri Sant Gadgebaba College of Engineering & Technology, Bhusawal",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Hindi",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 201,
+      "Institute Code": 5171,
+      "Institute Name": "Godavari Foundation's Godavari College Of Engineering, Jalgaon",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 202,
+      "Institute Code": 5172,
+      "Institute Name": "R. C. Patel Institute of Technology, Shirpur",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Gujarathi",
+      "Total Intake": 900
+    },
+    {
+      "Sr. No.": 203,
+      "Institute Code": 5173,
+      "Institute Name": "SNJB's Late Sau. Kantabai Bhavarlalji Jain College of Engineering, (Jain Gurukul), Neminagar,Chandwad,(Nashik)",
+      "Status": "Un-Aided, Autonomous, Religious Minority - Jain",
+      "Total Intake": 480
+    },
+    {
+      "Sr. No.": 204,
+      "Institute Code": 5177,
+      "Institute Name": "Matoshri College of Engineering and Research Centre, Eklahare, Nashik",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 780
+    },
+    {
+      "Sr. No.": 205,
+      "Institute Code": 5179,
+      "Institute Name": "Vishwabharati Academy's College of Engineering, Ahmednagar",
+      "Status": "Un-Aided",
+      "Total Intake": 390
+    },
+    {
+      "Sr. No.": 206,
+      "Institute Code": 5181,
+      "Institute Name": "Gokhale Education Society's, R.H. Sapat College of Engineering, Management Studies and Research, Nashik",
+      "Status": "Un-Aided",
+      "Total Intake": 600
+    },
+    {
+      "Sr. No.": 207,
+      "Institute Code": 5182,
+      "Institute Name": "Kalyani Charitable Trust, Late Gambhirrao Natuba Sapkal College of Engineering, Anjaneri, Trimbakeshwar Road, Nashik",
+      "Status": "Un-Aided",
+      "Total Intake": 480
+    },
+    {
+      "Sr. No.": 208,
+      "Institute Code": 5184,
+      "Institute Name": "Amruta Vaishnavi Education & Welfare Trust's Shatabdi Institute of Engineering & Research, Agaskhind Tal. Sinnar",
+      "Status": "Un-Aided, Religious Minority - Christian",
+      "Total Intake": 138
+    },
+    {
+      "Sr. No.": 209,
+      "Institute Code": 5223,
+      "Institute Name": "SMT. SHARCHCHANDRIKA SURESH PATIL INSTITUTE OF TECHNOLOGY (ENGINEERING & POLYTECHNIC), CHOPDA",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 210,
+      "Institute Code": 5239,
+      "Institute Name": "JAMIA INSTITUTE OF TECHNOLOGY",
+      "Status": "Un-Aided, Religious Minority - Muslim",
+      "Total Intake": 120
+    },
+    {
+      "Sr. No.": 211,
+      "Institute Code": 5244,
+      "Institute Name": "MET's Institute of Technology Polytechnic, Bhujbal Knowledge City, Adgaon Nashik",
+      "Status": "Un-Aided",
+      "Total Intake": 180
+    },
+    {
+      "Sr. No.": 212,
+      "Institute Code": 5249,
+      "Institute Name": "Trimurti Shikshan Prasarak Mandal, Trimurti Institute Of Technology, Paladhi Bk, Jalgaon",
+      "Status": "Un-Aided",
+      "Total Intake": 216
+    },
+    {
+      "Sr. No.": 213,
+      "Institute Code": 5256,
+      "Institute Name": "Matoshri Aasarabai Institute of Technology and Research Centre",
+      "Status": "Un-Aided",
+      "Total Intake": 180
+    },
+    {
+      "Sr. No.": 214,
+      "Institute Code": 5263,
+      "Institute Name": "Matoshri Education Soceity, Matoshri Institute Of Technology, Dhanore, Nashik",
+      "Status": "Un-Aided",
+      "Total Intake": 180
+    },
+    {
+      "Sr. No.": 215,
+      "Institute Code": 5303,
+      "Institute Name": "Hon. Shri. Babanrao Pachpute Vichardhara Trust, Group of Institutions (Integrated Campus)-Parikrama, Kashti Shrigondha,",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 216,
+      "Institute Code": 5330,
+      "Institute Name": "PUNE VIDYARTHI GRIHAS COLLEGE OF ENGINEERING & SHRIKRUSHNA S. DHAMANKAR INSTITUTE OF MANAGEMENT, NASHIK",
+      "Status": "Un-Aided",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 217,
+      "Institute Code": 5331,
+      "Institute Name": "Sandip Foundation's, Sandip Institute of Engineering & Management, Nashik",
+      "Status": "Un-Aided",
+      "Total Intake": 600
+    },
+    {
+      "Sr. No.": 218,
+      "Institute Code": 5365,
+      "Institute Name": "Vardhaman Education & Welfare Society, Ahinsa Institute of Technology, Post. Dondaicha, Dhule",
+      "Status": "Un-Aided, Religious Minority - Jain",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 219,
+      "Institute Code": 5370,
+      "Institute Name": "Kedareshwar Gramin Vikas Pratishthan, Samajbhushan Eknathrao Dhakane College, of Engineering, Shevgaon",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 220,
+      "Institute Code": 5380,
+      "Institute Name": "Adsul's Technical Campus, Chas Dist. Ahmednagar",
+      "Status": "Un-Aided",
+      "Total Intake": 810
+    },
+    {
+      "Sr. No.": 221,
+      "Institute Code": 5381,
+      "Institute Name": "Shri. Jaykumar Rawal Institute of Technology, Dondaicha.",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 222,
+      "Institute Code": 5382,
+      "Institute Name": "Ahmednagar Jilha Maratha Vidya Prasarak Samajache, Shri. Chhatrapati Shivaji Maharaj College of Engineering, Nepti",
+      "Status": "Un-Aided",
+      "Total Intake": 480
+    },
+    {
+      "Sr. No.": 223,
+      "Institute Code": 5390,
+      "Institute Name": "K.V.N. Naik S. P. Sansth's Loknete Gopinathji Munde Institute of Engineering Education & Research, Nashik.",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 224,
+      "Institute Code": 5395,
+      "Institute Name": "Ashok Institute of Engineering & Technology",
+      "Status": "Un-Aided",
+      "Total Intake": 180
+    },
+    {
+      "Sr. No.": 225,
+      "Institute Code": 5396,
+      "Institute Name": "College of Engineering and Technology ,North Maharashtra Knowledge City, Jalgaon",
+      "Status": "Un-Aided",
+      "Total Intake": 120
+    },
+    {
+      "Sr. No.": 226,
+      "Institute Code": 5399,
+      "Institute Name": "Sanghavi College of Engineering, Varvandi, Nashik.",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 227,
+      "Institute Code": 5401,
+      "Institute Name": "Jawahar Education Society's Institute of Technology, Management & Research, Nashik.",
+      "Status": "Un-Aided",
+      "Total Intake": 586
+    },
+    {
+      "Sr. No.": 228,
+      "Institute Code": 5408,
+      "Institute Name": "Vidya Niketan College of Engineering, Bota Sangamner",
+      "Status": "Un-Aided",
+      "Total Intake": 270
+    },
+    {
+      "Sr. No.": 229,
+      "Institute Code": 5409,
+      "Institute Name": "Rajiv Gandhi College of Engineering, At Post Karjule Hariya Tal.Parner, Dist.Ahmednagar",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 230,
+      "Institute Code": 5411,
+      "Institute Name": "Maulana Mukhtar Ahmad Nadvi Technical Campus, Malegaon.",
+      "Status": "Un-Aided, Religious Minority - Muslim",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 231,
+      "Institute Code": 5414,
+      "Institute Name": "Nikam Institute of Technology(Polytechnic),Dhule",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 232,
+      "Institute Code": 5418,
+      "Institute Name": "Guru Gobind Singh College of Engineering & Research Centre, Nashik.",
+      "Status": "Un-Aided",
+      "Total Intake": 480
+    },
+    {
+      "Sr. No.": 233,
+      "Institute Code": 5433,
+      "Institute Name": "R.C. Patel College of Engineering and Polytechnic, Shirpur",
+      "Status": "Un-Aided, Linguistic Minority - Gujarathi",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 234,
+      "Institute Code": 5497,
+      "Institute Name": "P.G. College of Engineering & Technology, Nandurbar",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 235,
+      "Institute Code": 5509,
+      "Institute Name": "Shri Swami Samarth Institute of Management and Technology, Malwadi-Bota",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 236,
+      "Institute Code": 5513,
+      "Institute Name": "MKD Institute of Technology, Nadurbar",
+      "Status": "Un-Aided",
+      "Total Intake": 180
+    },
+    {
+      "Sr. No.": 237,
+      "Institute Code": 5545,
+      "Institute Name": "Shri Vile Parle Kelavani Mandal's College of Engineering, Shirpur",
+      "Status": "Un-Aided, Linguistic Minority - Gujarathi",
+      "Total Intake": 480
+    },
+    {
+      "Sr. No.": 238,
+      "Institute Code": 5597,
+      "Institute Name": "VAMANRAO ITHAPE COLLEGE OF ENGINEERING AND MANAGEMENT",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 239,
+      "Institute Code": 6004,
+      "Institute Name": "Government College of Engineering & Research, Avasari Khurd",
+      "Status": "Government",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 240,
+      "Institute Code": 6005,
+      "Institute Name": "Government College of Engineering, Karad",
+      "Status": "Government, Autonomous",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 241,
+      "Institute Code": 6007,
+      "Institute Name": "Walchand College of Engineering, Sangli",
+      "Status": "Government-Aided, Autonomous",
+      "Total Intake": 660
+    },
+    {
+      "Sr. No.": 242,
+      "Institute Code": 6028,
+      "Institute Name": "Department of Technology, Shivaji University, Kolhapur",
+      "Status": "University Department",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 243,
+      "Institute Code": 6036,
+      "Institute Name": "Government College of Engineering, Kolhapur",
+      "Status": "Government",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 244,
+      "Institute Code": 6122,
+      "Institute Name": "TSSMS's Pd. Vasantdada Patil Institute of Technology, Bavdhan, Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 600
+    },
+    {
+      "Sr. No.": 245,
+      "Institute Code": 6138,
+      "Institute Name": "Genba Sopanrao Moze Trust Parvatibai Genba Moze College of Engineering,Wagholi, Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 246,
+      "Institute Code": 6139,
+      "Institute Name": "Progressive Education Society's Modern College of Engineering, Pune",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 960
+    },
+    {
+      "Sr. No.": 247,
+      "Institute Code": 6141,
+      "Institute Name": "Jaywant Shikshan Prasarak Mandal's,Rajarshi Shahu College of Engineering, Tathawade, Pune",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 840
+    },
+    {
+      "Sr. No.": 248,
+      "Institute Code": 6144,
+      "Institute Name": "Genba Sopanrao Moze College of Engineering, Baner-Balewadi, Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 480
+    },
+    {
+      "Sr. No.": 249,
+      "Institute Code": 6145,
+      "Institute Name": "JSPM'S Jaywantrao Sawant College of Engineering,Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 600
+    },
+    {
+      "Sr. No.": 250,
+      "Institute Code": 6146,
+      "Institute Name": "MIT Academy of Engineering,Alandi, Pune",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 1440
+    },
+    {
+      "Sr. No.": 251,
+      "Institute Code": 6149,
+      "Institute Name": "Siddhant College of Engineering, A/p Sudumbare, Tal.Maval, Dist-Pune",
+      "Status": "Un-Aided, Linguistic Minority - Hindi",
+      "Total Intake": 960
+    },
+    {
+      "Sr. No.": 252,
+      "Institute Code": 6155,
+      "Institute Name": "G.H.Raisoni College of Engineering & Management, Wagholi, Pune",
+      "Status": "Un-Aided, Autonomous, Linguistic Minority - Hindi",
+      "Total Intake": 1230
+    },
+    {
+      "Sr. No.": 253,
+      "Institute Code": 6156,
+      "Institute Name": "Marathwada Mitra Mandal's College of Engineering, Karvenagar, Pune",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 900
+    },
+    {
+      "Sr. No.": 254,
+      "Institute Code": 6175,
+      "Institute Name": "Pimpri Chinchwad Education Trust, Pimpri Chinchwad College of Engineering, Pune",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 960
+    },
+    {
+      "Sr. No.": 255,
+      "Institute Code": 6177,
+      "Institute Name": "Sinhgad College of Engineering, Vadgaon (BK), Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 1140
+    },
+    {
+      "Sr. No.": 256,
+      "Institute Code": 6178,
+      "Institute Name": "Sinhgad Technical Education Society's Smt. Kashibai Navale College of Engineering,Vadgaon,Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 1050
+    },
+    {
+      "Sr. No.": 257,
+      "Institute Code": 6179,
+      "Institute Name": "Indira College of Engineering & Management, Pune",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 258,
+      "Institute Code": 6182,
+      "Institute Name": "Sinhgad Technical Education Society, Sinhgad Institute of Technology and Science, Narhe (Ambegaon)",
+      "Status": "Un-Aided",
+      "Total Intake": 510
+    },
+    {
+      "Sr. No.": 259,
+      "Institute Code": 6183,
+      "Institute Name": "Al-Ameen Educational and Medical Foundation, College of Engineering, Koregaon, Bhima",
+      "Status": "Un-Aided, Religious Minority - Muslim",
+      "Total Intake": 138
+    },
+    {
+      "Sr. No.": 260,
+      "Institute Code": 6184,
+      "Institute Name": "K. J.'s Educational Institut Trinity College of Engineering and Research, Pisoli, Haveli",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 261,
+      "Institute Code": 6185,
+      "Institute Name": "Sinhgad Institute of Technology",
+      "Status": "Un-Aided",
+      "Total Intake": 630
+    },
+    {
+      "Sr. No.": 262,
+      "Institute Code": 6187,
+      "Institute Name": "Sinhgad Academy of Engineering, Kondhwa (BK) Kondhwa-Saswad Road, Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 600
+    },
+    {
+      "Sr. No.": 263,
+      "Institute Code": 6203,
+      "Institute Name": "Marathwada Mitra Mandal's Institute of Technology, Lohgaon, Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 510
+    },
+    {
+      "Sr. No.": 264,
+      "Institute Code": 6206,
+      "Institute Name": "Pune District Education Association's College of Engineering, Manjari(Bk), Hadapsar, Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 265,
+      "Institute Code": 6207,
+      "Institute Name": "Dr. D. Y. Patil Unitech Society's Dr. D. Y. Patil Institute of Technology, Pimpri, Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 1110
+    },
+    {
+      "Sr. No.": 266,
+      "Institute Code": 6214,
+      "Institute Name": "K. E. Society's Rajarambapu Institute of Technology, Walwa, Sangli",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 990
+    },
+    {
+      "Sr. No.": 267,
+      "Institute Code": 6217,
+      "Institute Name": "Shri. Balasaheb Mane Shikshan Prasarak Mandal's, Ashokrao Mane Group of Institutions",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 600
+    },
+    {
+      "Sr. No.": 268,
+      "Institute Code": 6219,
+      "Institute Name": "KSGBS's Bharat- Ratna Indira Gandhi College of Engineering, Kegaon, Solapur",
+      "Status": "Un-Aided",
+      "Total Intake": 342
+    },
+    {
+      "Sr. No.": 269,
+      "Institute Code": 6220,
+      "Institute Name": "SVERI's College of Engineering, Pandharpur",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 660
+    },
+    {
+      "Sr. No.": 270,
+      "Institute Code": 6222,
+      "Institute Name": "Dattajirao Kadam Technical Education Society's Textile & Engineering Institute, Ichalkaranji.",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 810
+    },
+    {
+      "Sr. No.": 271,
+      "Institute Code": 6223,
+      "Institute Name": "Pradnya Niketan Education Society's Nagesh Karajagi Orchid College of Engineering & Technology, Solapur",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 540
+    },
+    {
+      "Sr. No.": 272,
+      "Institute Code": 6250,
+      "Institute Name": "D.Y. Patil College of Engineering and Technology, Kolhapur",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 1140
+    },
+    {
+      "Sr. No.": 273,
+      "Institute Code": 6265,
+      "Institute Name": "Walchand Institute of Technology, Solapur",
+      "Status": "Un-Aided, Autonomous, Religious Minority - Jain",
+      "Total Intake": 660
+    },
+    {
+      "Sr. No.": 274,
+      "Institute Code": 6267,
+      "Institute Name": "Kolhapur Institute of Technology's College of Engineering(Autonomous), Kolhapur",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 1140
+    },
+    {
+      "Sr. No.": 275,
+      "Institute Code": 6268,
+      "Institute Name": "Tatyasaheb Kore Institute of Engineering and Technology, Warananagar",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 1080
+    },
+    {
+      "Sr. No.": 276,
+      "Institute Code": 6269,
+      "Institute Name": "Shetkari Shikshan Mandal's Pad. Vasantraodada Patil Institute of Technology, Budhgaon, Sangli",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 630
+    },
+    {
+      "Sr. No.": 277,
+      "Institute Code": 6270,
+      "Institute Name": "Rayat Shikshan Sanstha's Karmaveer Bhaurao Patil College of Engineering, Satara",
+      "Status": "Un-Aided",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 278,
+      "Institute Code": 6271,
+      "Institute Name": "Pune Institute of Computer Technology",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 780
+    },
+    {
+      "Sr. No.": 279,
+      "Institute Code": 6272,
+      "Institute Name": "Dr. D. Y. Patil Pratishthan's D.Y.Patil College of Engineering Akurdi, Pune",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 1080
+    },
+    {
+      "Sr. No.": 280,
+      "Institute Code": 6273,
+      "Institute Name": "Bansilal Ramnath Agarawal Charitable Trust's Vishwakarma Institute of Technology, Bibwewadi, Pune",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 3720
+    },
+    {
+      "Sr. No.": 281,
+      "Institute Code": 6274,
+      "Institute Name": "PVG's College of Engineering, Technology & Management",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 660
+    },
+    {
+      "Sr. No.": 282,
+      "Institute Code": 6275,
+      "Institute Name": "Shivnagar Vidya Prasarak Mandal's College of Engineering, Malegaon-Baramati",
+      "Status": "Un-Aided",
+      "Total Intake": 540
+    },
+    {
+      "Sr. No.": 283,
+      "Institute Code": 6276,
+      "Institute Name": "MKSSS's Cummins College of Engineering for Women, Karvenagar,Pune",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 600
+    },
+    {
+      "Sr. No.": 284,
+      "Institute Code": 6277,
+      "Institute Name": "Dr. J. J. Magdum Charitable Trust's Dr. J.J. Magdum College of Engineering, Jaysingpur",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 285,
+      "Institute Code": 6278,
+      "Institute Name": "All India Shri Shivaji Memorial Society's College of Engineering, Pune",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 840
+    },
+    {
+      "Sr. No.": 286,
+      "Institute Code": 6281,
+      "Institute Name": "Modern Education Society's Wadia College of Engineering, Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 540
+    },
+    {
+      "Sr. No.": 287,
+      "Institute Code": 6282,
+      "Institute Name": "All India Shri Shivaji Memorial Society's Institute of Information Technology,Pune",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 780
+    },
+    {
+      "Sr. No.": 288,
+      "Institute Code": 6283,
+      "Institute Name": "Annasaheb Dange College of Engineering and Technology, Ashta, Sangli",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 750
+    },
+    {
+      "Sr. No.": 289,
+      "Institute Code": 6284,
+      "Institute Name": "Vidya Pratishthan's Kamalnayan Bajaj Institute of Engineering & Technology, Baramati Dist.Pune",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 900
+    },
+    {
+      "Sr. No.": 290,
+      "Institute Code": 6285,
+      "Institute Name": "Bharati Vidyapeeth's College of Engineering for Women, Katraj, Dhankawadi, Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 291,
+      "Institute Code": 6288,
+      "Institute Name": "Bharati Vidyapeeth's College of Engineering, Kolhapur",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 292,
+      "Institute Code": 6293,
+      "Institute Name": "Kai Amdar Bramhadevdada Mane Shikshan & Samajik Prathistan's Bramhadevdada Mane Institute of Technology, Solapur",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 293,
+      "Institute Code": 6298,
+      "Institute Name": "Zeal Education Society's Zeal College of Engineering & Reserch, Narhe, Pune",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 2100
+    },
+    {
+      "Sr. No.": 294,
+      "Institute Code": 6303,
+      "Institute Name": "Dr. Ashok Gujar Technical Institute's Dr. Daulatrao Aher College of Engineering, Karad",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 295,
+      "Institute Code": 6304,
+      "Institute Name": "Loknete Hanumantrao Charitable Trust's Adarsh Institute of Technology and Research Centre, Vita,Sangli",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 390
+    },
+    {
+      "Sr. No.": 296,
+      "Institute Code": 6305,
+      "Institute Name": "Late Narayandas Bhawandas Chhabada Institute of Engineering & Technology, Satara",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 210
+    },
+    {
+      "Sr. No.": 297,
+      "Institute Code": 6307,
+      "Institute Name": "Dhole Patil Education Society, Dhole Patil College of Engineering, Wagholi, Tal. Haveli",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 298,
+      "Institute Code": 6308,
+      "Institute Name": "Shanti Education Society, A.G. Patil Institute of Technology, Soregaon, Solapur(North)",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 299,
+      "Institute Code": 6310,
+      "Institute Name": "Nutan Maharashtra Vidya Prasarak Mandal, Nutan Maharashtra Institute of Engineering &Technology, Talegaon station, Pune",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 1080
+    },
+    {
+      "Sr. No.": 300,
+      "Institute Code": 6311,
+      "Institute Name": "Jayawant Shikshan Prasarak Mandal, Bhivarabai Sawant Institute of Technology & Research, Wagholi",
+      "Status": "Un-Aided",
+      "Total Intake": 540
+    },
+    {
+      "Sr. No.": 301,
+      "Institute Code": 6313,
+      "Institute Name": "Jaywant College of Engineering & Polytechnic , Kille Macchindragad Tal. Walva District- Sangali",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 302,
+      "Institute Code": 6315,
+      "Institute Name": "Sanjeevan Group of Institutions",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 303,
+      "Institute Code": 6317,
+      "Institute Name": "Sharad Institute of Technology College of Engineering, Yadrav(Ichalkaranji)",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 690
+    },
+    {
+      "Sr. No.": 304,
+      "Institute Code": 6319,
+      "Institute Name": "Shahajirao Patil Vikas Pratishthan, S.B.Patil College of Engineering, Vangali, Tal. Indapur",
+      "Status": "Un-Aided",
+      "Total Intake": 390
+    },
+    {
+      "Sr. No.": 305,
+      "Institute Code": 6320,
+      "Institute Name": "K.J.'s Educational Institute's K.J.College of Engineering & Management Research, Pisoli",
+      "Status": "Un-Aided",
+      "Total Intake": 570
+    },
+    {
+      "Sr. No.": 306,
+      "Institute Code": 6321,
+      "Institute Name": "Vidya Vikas Pratishthan Institute of Engineering and Technology, Solapur",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 307,
+      "Institute Code": 6322,
+      "Institute Name": "Shree Gajanan Maharaj Shikshan Prasarak Manda'l Sharadchandra Pawar College of Engineering, Dumbarwadi",
+      "Status": "Un-Aided",
+      "Total Intake": 210
+    },
+    {
+      "Sr. No.": 308,
+      "Institute Code": 6324,
+      "Institute Name": "Rajgad Technical Campus",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 309,
+      "Institute Code": 6325,
+      "Institute Name": "Alard Charitable Trust's Alard College of Engineering and Management, Pune",
+      "Status": "Un-Aided, Linguistic Minority - Hindi",
+      "Total Intake": 480
+    },
+    {
+      "Sr. No.": 310,
+      "Institute Code": 6326,
+      "Institute Name": "Karmayogi Institute of Technology",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 311,
+      "Institute Code": 6402,
+      "Institute Name": "NEW INSTITUTE OF TECHNOLOGY,KOLHAPUR",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 312,
+      "Institute Code": 6444,
+      "Institute Name": "Shriram Institute Of Engineering & Technology, (Poly), Paniv",
+      "Status": "Un-Aided",
+      "Total Intake": 180
+    },
+    {
+      "Sr. No.": 313,
+      "Institute Code": 6466,
+      "Institute Name": "Shree Santkrupa Shikshan Sanstha, Shree Santkrupa Institute Of Engineering & Technology, Karad",
+      "Status": "Un-Aided",
+      "Total Intake": 180
+    },
+    {
+      "Sr. No.": 314,
+      "Institute Code": 6467,
+      "Institute Name": "Swami Vivekanand Institute Of Technology, Solapur",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 315,
+      "Institute Code": 6468,
+      "Institute Name": "Swami Vivekananda Shikshan Sanstha, Dr. Bapuji Salunkhe Institute Of Engineering & Technology,Kolhapur",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 316,
+      "Institute Code": 6545,
+      "Institute Name": "Samarth Education Trust's Arvind Gavali College Of Engineering Panwalewadi, Varye,Satara.",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 317,
+      "Institute Code": 6609,
+      "Institute Name": "Jaihind College Of Engineering,Kuran",
+      "Status": "Un-Aided",
+      "Total Intake": 450
+    },
+    {
+      "Sr. No.": 318,
+      "Institute Code": 6622,
+      "Institute Name": "ISBM College Of Engineering Pune",
+      "Status": "Un-Aided, Linguistic Minority - Hindi",
+      "Total Intake": 630
+    },
+    {
+      "Sr. No.": 319,
+      "Institute Code": 6625,
+      "Institute Name": "Universal College of Engineering & Research, Sasewadi",
+      "Status": "Un-Aided",
+      "Total Intake": 91
+    },
+    {
+      "Sr. No.": 320,
+      "Institute Code": 6628,
+      "Institute Name": "Dattakala Group Of Institutions, Swami - Chincholi Tal. Daund Dist. Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 321,
+      "Institute Code": 6632,
+      "Institute Name": "Navsahyadri Education Society's Group of Institutions",
+      "Status": "Un-Aided",
+      "Total Intake": 690
+    },
+    {
+      "Sr. No.": 322,
+      "Institute Code": 6634,
+      "Institute Name": "KJEI's Trinity Academy of Engineering, Yewalewadi, Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 323,
+      "Institute Code": 6635,
+      "Institute Name": "Samarth College of Engineering and Management",
+      "Status": "Un-Aided",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 324,
+      "Institute Code": 6640,
+      "Institute Name": "N. B. Navale Sinhgad College of Engineering, Kegaon, solapur",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 325,
+      "Institute Code": 6643,
+      "Institute Name": "S K N Sinhgad College of Engineering, Korti Tal. Pandharpur Dist Solapur",
+      "Status": "Un-Aided",
+      "Total Intake": 480
+    },
+    {
+      "Sr. No.": 326,
+      "Institute Code": 6644,
+      "Institute Name": "Shri. Ambabai Talim Sanstha's Sanjay Bhokare Group of Institutes, Miraj",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 327,
+      "Institute Code": 6649,
+      "Institute Name": "TSSM's Bhivarabai Sawant College of Engineering and Research, Narhe, Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 328,
+      "Institute Code": 6714,
+      "Institute Name": "APPASAHEB ALIAS SA.RE.PATIL INSTITUTE OF TECHNOLOGY, Dattanagar Tal-Shirol, Dist Kolhapur",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 329,
+      "Institute Code": 6715,
+      "Institute Name": "Babasaheb Phadtare Engineering & Technology Kalamb-Walchandnagar Tal Indapur Dist Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 120
+    },
+    {
+      "Sr. No.": 330,
+      "Institute Code": 6732,
+      "Institute Name": "Ajeenkya DY Patil School of Engineering, Lohegaon, Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 840
+    },
+    {
+      "Sr. No.": 331,
+      "Institute Code": 6754,
+      "Institute Name": "International Institute of Information Technology (I²IT), Pune.",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 332,
+      "Institute Code": 6755,
+      "Institute Name": "JSPM Narhe Technical Campus, Pune.",
+      "Status": "Un-Aided",
+      "Total Intake": 480
+    },
+    {
+      "Sr. No.": 333,
+      "Institute Code": 6756,
+      "Institute Name": "Fabtech Technical Campus College of Engineering and Research, Sangola",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 334,
+      "Institute Code": 6757,
+      "Institute Name": "Yashoda Technical Campus, Wadhe, Satara.",
+      "Status": "Un-Aided",
+      "Total Intake": 720
+    },
+    {
+      "Sr. No.": 335,
+      "Institute Code": 6758,
+      "Institute Name": "Sahyadri Valley College of Engineering & Technology, Rajuri, Pune.",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 336,
+      "Institute Code": 6759,
+      "Institute Name": "Shree Ramchandra College of Engineering, Lonikand,Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 210
+    },
+    {
+      "Sr. No.": 337,
+      "Institute Code": 6762,
+      "Institute Name": "Nanasaheb Mahadik College of Engineering,Walwa, Sangli.",
+      "Status": "Un-Aided",
+      "Total Intake": 390
+    },
+    {
+      "Sr. No.": 338,
+      "Institute Code": 6766,
+      "Institute Name": "Phaltan Education Society's College of Engineering Thakurki Tal- Phaltan Dist-Satara",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 339,
+      "Institute Code": 6767,
+      "Institute Name": "Suman Ramesh Tulsiani Technical Campus Faculty of Engineering, Kamshet,Pune.",
+      "Status": "Un-Aided",
+      "Total Intake": 540
+    },
+    {
+      "Sr. No.": 340,
+      "Institute Code": 6768,
+      "Institute Name": "P.K. Technical Campus, Pune.",
+      "Status": "Un-Aided",
+      "Total Intake": 120
+    },
+    {
+      "Sr. No.": 341,
+      "Institute Code": 6769,
+      "Institute Name": "Rasiklal M. Dhariwal Sinhgad Technical Institutes Campus, Warje, Pune.",
+      "Status": "Un-Aided",
+      "Total Intake": 480
+    },
+    {
+      "Sr. No.": 342,
+      "Institute Code": 6770,
+      "Institute Name": "SKN Sinhgad Institute of Technology & Science, Kusgaon(BK),Pune.",
+      "Status": "Un-Aided",
+      "Total Intake": 210
+    },
+    {
+      "Sr. No.": 343,
+      "Institute Code": 6771,
+      "Institute Name": "Flora Institute of Technology, Khopi, Near Khed Shivapur Toll Plaza, Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 150
+    },
+    {
+      "Sr. No.": 344,
+      "Institute Code": 6772,
+      "Institute Name": "NBN Sinhgad Technical Institutes Campus, Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 450
+    },
+    {
+      "Sr. No.": 345,
+      "Institute Code": 6780,
+      "Institute Name": "D.Y.Patil Education Society's,D.Y.Patil Technical Campus, Faculty of Engineering & Faculty of Management,Talsande,Kolhapur.",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 346,
+      "Institute Code": 6781,
+      "Institute Name": "Bhagwant Institute of Technology, Barshi",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 347,
+      "Institute Code": 6782,
+      "Institute Name": "Sahakar Maharshee Shankarrao Mohite Patil Institute of Technology & Research, Akluj",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 348,
+      "Institute Code": 6794,
+      "Institute Name": "Anantrao Pawar College of Engineering & Research, Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 480
+    },
+    {
+      "Sr. No.": 349,
+      "Institute Code": 6795,
+      "Institute Name": "Shri.Someshwar Shikshan Prasarak Mandal, Sharadchandra Pawar College of Engineering & Technology, Someshwar Nagar",
+      "Status": "Un-Aided",
+      "Total Intake": 210
+    },
+    {
+      "Sr. No.": 350,
+      "Institute Code": 6796,
+      "Institute Name": "Bharati Vidyapeeth's College of Engineering,Lavale, Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 351,
+      "Institute Code": 6797,
+      "Institute Name": "Dnyanshree Institute Engineering and Technology, Satara",
+      "Status": "Un-Aided",
+      "Total Intake": 330
+    },
+    {
+      "Sr. No.": 352,
+      "Institute Code": 6799,
+      "Institute Name": "Shivganga Charitable Trust, Sangli Vishveshwarya Technical Campus, Faculty of Diploma Engineering, Patgaon, Miraj",
+      "Status": "Un-Aided",
+      "Total Intake": 150
+    },
+    {
+      "Sr. No.": 353,
+      "Institute Code": 6803,
+      "Institute Name": "Sant Gajanan Maharaj College of Engineering, Gadhinglaj",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 354,
+      "Institute Code": 6808,
+      "Institute Name": "Keystone School of Engineering, Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 474
+    },
+    {
+      "Sr. No.": 355,
+      "Institute Code": 6811,
+      "Institute Name": "Sanjay Ghodawat Institute",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 356,
+      "Institute Code": 6815,
+      "Institute Name": "Vidya Prasarini Sabha's College of Engineering & Technology, Lonavala",
+      "Status": "Un-Aided",
+      "Total Intake": 120
+    },
+    {
+      "Sr. No.": 357,
+      "Institute Code": 6822,
+      "Institute Name": "Pimpri Chinchwad Education Trust's Pimpri Chinchwad College Of Engineering And Research, Ravet",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 600
+    },
+    {
+      "Sr. No.": 358,
+      "Institute Code": 6834,
+      "Institute Name": "Dr.D.Y.Patil College Of Engineering & Innovation,Talegaon",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 420
+    },
+    {
+      "Sr. No.": 359,
+      "Institute Code": 6839,
+      "Institute Name": "Dr. D Y Patil Pratishthan's College of Engineering, Kolhapur",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 360,
+      "Institute Code": 6878,
+      "Institute Name": "Dr. A. D. Shinde College Of Engineering, Tal.Gadhinglaj, Kolhapur",
+      "Status": "Un-Aided",
+      "Total Intake": 390
+    },
+    {
+      "Sr. No.": 361,
+      "Institute Code": 6901,
+      "Institute Name": "MAEER's MIT College of Railway Engineering and Research, Jamgaon, Barshi",
+      "Status": "Un-Aided",
+      "Total Intake": 330
+    },
+    {
+      "Sr. No.": 362,
+      "Institute Code": 6938,
+      "Institute Name": "Shree Siddheshwar Womens College Of Engineering Solapur.",
+      "Status": "Un-Aided",
+      "Total Intake": 390
+    },
+    {
+      "Sr. No.": 363,
+      "Institute Code": 6991,
+      "Institute Name": "Dr. D.Y. Patil Technical Campus, Varale, Talegaon, Pune",
+      "Status": "Un-Aided",
+      "Total Intake": 600
+    },
+    {
+      "Sr. No.": 364,
+      "Institute Code": 14005,
+      "Institute Name": "Laxminarayan Innovation Technological University, Nagpur",
+      "Status": "University, Autonomous",
+      "Total Intake": 150
+    },
+    {
+      "Sr. No.": 365,
+      "Institute Code": 16006,
+      "Institute Name": "COEP Technological University",
+      "Status": "University, Autonomous",
+      "Total Intake": 1185
+    },
+    {
+      "Sr. No.": 366,
+      "Institute Code": 16121,
+      "Institute Name": "Shri. Anandrao Abitkar College of Engineering, Pal",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 367,
+      "Institute Code": 16351,
+      "Institute Name": "Vidya Niketan Institute of Engineering & Technology, Lakhewadi",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 368,
+      "Institute Code": 16352,
+      "Institute Name": "Yashoda Mahadeo Kakade College of Engineering, Talegaon",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 369,
+      "Institute Code": 16354,
+      "Institute Name": "DNYANVILAS COLLEGE OF ENGINEERING",
+      "Status": "Un-Aided",
+      "Total Intake": 300
+    },
+    {
+      "Sr. No.": 370,
+      "Institute Code": 16355,
+      "Institute Name": "Audyogik Shikshan Mandal's Nextgen Technical Campus",
+      "Status": "Un-Aided",
+      "Total Intake": 360
+    },
+    {
+      "Sr. No.": 371,
+      "Institute Code": 16357,
+      "Institute Name": "MES MUKUNDDAS LOHIA COLLEGE OF ENGINEERING",
+      "Status": "Un-Aided",
+      "Total Intake": 240
+    },
+    {
+      "Sr. No.": 372,
+      "Institute Code": 16361,
+      "Institute Name": "Zeal College of Engineering & Research, Induri, Pune (Off Campus-Induri)",
+      "Status": "Un-Aided, Autonomous",
+      "Total Intake": 360
+    }
+  ]
+}

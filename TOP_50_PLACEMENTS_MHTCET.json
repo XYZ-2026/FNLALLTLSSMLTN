@@ -1,0 +1,354 @@
+{
+  "TOP_50_PLACEMENTS_MHTCET": [
+    {
+      "Sr No": "1",
+      "College": "COEP Technological University",
+      "Highest (LPA)": "52",
+      "Average (LPA)": "17.5",
+      "Median (LPA)": "15.5"
+    },
+    {
+      "Sr No": "2",
+      "College": "VJTI, Matunga, Mumbai",
+      "Highest (LPA)": "54",
+      "Average (LPA)": "16.3",
+      "Median (LPA)": "N/A"
+    },
+    {
+      "Sr No": "3",
+      "College": "Sardar Patel Institute of Technology (SPIT)",
+      "Highest (LPA)": "33",
+      "Average (LPA)": "11–12",
+      "Median (LPA)": "9–10"
+    },
+    {
+      "Sr No": "4",
+      "College": "Pune Institute of Computer Technology (PICT)",
+      "Highest (LPA)": "33.6",
+      "Average (LPA)": "10.1",
+      "Median (LPA)": "7.1"
+    },
+    {
+      "Sr No": "5",
+      "College": "Institute of Chemical Technology (ICT Mumbai)",
+      "Highest (LPA)": "40",
+      "Average (LPA)": "9–10",
+      "Median (LPA)": "8"
+    },
+    {
+      "Sr No": "6",
+      "College": "Dwarkadas J. Sanghvi College of Engineering (DJSCE)",
+      "Highest (LPA)": "52",
+      "Average (LPA)": "10–12",
+      "Median (LPA)": "8–9"
+    },
+    {
+      "Sr No": "7",
+      "College": "Cummins College of Engineering for Women",
+      "Highest (LPA)": "44",
+      "Average (LPA)": "8–9",
+      "Median (LPA)": "7"
+    },
+    {
+      "Sr No": "8",
+      "College": "Walchand College of Engineering",
+      "Highest (LPA)": "42",
+      "Average (LPA)": "9–10",
+      "Median (LPA)": "8"
+    },
+    {
+      "Sr No": "9",
+      "College": "Vishwakarma Institute of Technology (VIT Pune)",
+      "Highest (LPA)": "51",
+      "Average (LPA)": "9–10",
+      "Median (LPA)": "8"
+    },
+    {
+      "Sr No": "10",
+      "College": "Thadomal Shahani Engineering College (TSEC)",
+      "Highest (LPA)": "21",
+      "Average (LPA)": "7–8",
+      "Median (LPA)": "6.5"
+    },
+    {
+      "Sr No": "11",
+      "College": "Pimpri Chinchwad College of Engineering (PCCOE)",
+      "Highest (LPA)": "44",
+      "Average (LPA)": "8–9",
+      "Median (LPA)": "7"
+    },
+    {
+      "Sr No": "12",
+      "College": "VESIT, Chembur",
+      "Highest (LPA)": "25",
+      "Average (LPA)": "7–8",
+      "Median (LPA)": "6.5"
+    },
+    {
+      "Sr No": "13",
+      "College": "LIT Nagpur",
+      "Highest (LPA)": "18",
+      "Average (LPA)": "6–7",
+      "Median (LPA)": "6"
+    },
+    {
+      "Sr No": "14",
+      "College": "Fr. Conceicao Rodrigues College of Engineering (CRCE)",
+      "Highest (LPA)": "20",
+      "Average (LPA)": "6–7",
+      "Median (LPA)": "6"
+    },
+    {
+      "Sr No": "15",
+      "College": "K J Somaiya Institute of Technology",
+      "Highest (LPA)": "54",
+      "Average (LPA)": "9–10",
+      "Median (LPA)": "8"
+    },
+    {
+      "Sr No": "16",
+      "College": "PVG College of Engineering",
+      "Highest (LPA)": "18",
+      "Average (LPA)": "6–7",
+      "Median (LPA)": "6"
+    },
+    {
+      "Sr No": "17",
+      "College": "D.Y. Patil College of Engineering, Akurdi",
+      "Highest (LPA)": "21",
+      "Average (LPA)": "6.5–7.5",
+      "Median (LPA)": "6"
+    },
+    {
+      "Sr No": "18",
+      "College": "Government College of Engineering, Chhatrapati Sambhajinagar",
+      "Highest (LPA)": "15",
+      "Average (LPA)": "5.5–6.5",
+      "Median (LPA)": "5.5"
+    },
+    {
+      "Sr No": "19",
+      "College": "Government College of Engineering, Amravati",
+      "Highest (LPA)": "15",
+      "Average (LPA)": "5.5–6.5",
+      "Median (LPA)": "5.5"
+    },
+    {
+      "Sr No": "20",
+      "College": "Vidyalankar Institute of Technology",
+      "Highest (LPA)": "37",
+      "Average (LPA)": "7–8",
+      "Median (LPA)": "6.5"
+    },
+    {
+      "Sr No": "21",
+      "College": "Sardar Patel College of Engineering (SPCE)",
+      "Highest (LPA)": "24",
+      "Average (LPA)": "7–8",
+      "Median (LPA)": "6.5"
+    },
+    {
+      "Sr No": "22",
+      "College": "Government College of Engineering, Karad",
+      "Highest (LPA)": "14",
+      "Average (LPA)": "5.5–6.5",
+      "Median (LPA)": "5.5"
+    },
+    {
+      "Sr No": "23",
+      "College": "Thakur College of Engineering & Technology (TCET)",
+      "Highest (LPA)": "25",
+      "Average (LPA)": "6–7",
+      "Median (LPA)": "6"
+    },
+    {
+      "Sr No": "24",
+      "College": "Government College of Engineering, Nagpur",
+      "Highest (LPA)": "14",
+      "Average (LPA)": "5.5–6.5",
+      "Median (LPA)": "5.5"
+    },
+    {
+      "Sr No": "25",
+      "College": "FR. C. Rodrigues Institute of Technology (FCRIT)",
+      "Highest (LPA)": "15",
+      "Average (LPA)": "5.5–6.5",
+      "Median (LPA)": "5.5"
+    },
+    {
+      "Sr No": "26",
+      "College": "AISSMS College of Engineering",
+      "Highest (LPA)": "18",
+      "Average (LPA)": "6–7",
+      "Median (LPA)": "6"
+    },
+    {
+      "Sr No": "27",
+      "College": "AISSMS Institute of Information Technology",
+      "Highest (LPA)": "15",
+      "Average (LPA)": "6–7",
+      "Median (LPA)": "6"
+    },
+    {
+      "Sr No": "28",
+      "College": "Rajarshi Shahu College of Engineering",
+      "Highest (LPA)": "18",
+      "Average (LPA)": "6–7",
+      "Median (LPA)": "6"
+    },
+    {
+      "Sr No": "29",
+      "College": "PCCOE&R Ravet",
+      "Highest (LPA)": "15",
+      "Average (LPA)": "5.5–6.5",
+      "Median (LPA)": "5.5"
+    },
+    {
+      "Sr No": "30",
+      "College": "SGGSIE&T Nanded",
+      "Highest (LPA)": "20",
+      "Average (LPA)": "6–7",
+      "Median (LPA)": "6"
+    },
+    {
+      "Sr No": "31",
+      "College": "MIT Academy of Engineering",
+      "Highest (LPA)": "20",
+      "Average (LPA)": "6–7",
+      "Median (LPA)": "6"
+    },
+    {
+      "Sr No": "32",
+      "College": "Don Bosco Institute of Technology",
+      "Highest (LPA)": "18",
+      "Average (LPA)": "5.5–6.5",
+      "Median (LPA)": "5.5"
+    },
+    {
+      "Sr No": "33",
+      "College": "I²IT Pune",
+      "Highest (LPA)": "25",
+      "Average (LPA)": "7–8",
+      "Median (LPA)": "6.5"
+    },
+    {
+      "Sr No": "34",
+      "College": "D.Y. Patil Institute of Technology, Pimpri",
+      "Highest (LPA)": "18",
+      "Average (LPA)": "6–7",
+      "Median (LPA)": "6"
+    },
+    {
+      "Sr No": "35",
+      "College": "MMCOE Pune",
+      "Highest (LPA)": "15",
+      "Average (LPA)": "5.5–6.5",
+      "Median (LPA)": "5.5"
+    },
+    {
+      "Sr No": "36",
+      "College": "St. Francis Institute of Technology",
+      "Highest (LPA)": "18",
+      "Average (LPA)": "5–6",
+      "Median (LPA)": "5"
+    },
+    {
+      "Sr No": "37",
+      "College": "KIT Kolhapur",
+      "Highest (LPA)": "15",
+      "Average (LPA)": "5.5–6.5",
+      "Median (LPA)": "5.5"
+    },
+    {
+      "Sr No": "38",
+      "College": "Rajiv Gandhi Institute of Technology",
+      "Highest (LPA)": "15",
+      "Average (LPA)": "5–6",
+      "Median (LPA)": "5"
+    },
+    {
+      "Sr No": "39",
+      "College": "Xavier Institute of Engineering",
+      "Highest (LPA)": "12",
+      "Average (LPA)": "4.5–5.5",
+      "Median (LPA)": "5"
+    },
+    {
+      "Sr No": "40",
+      "College": "Government College of Engineering & Research, Avasari",
+      "Highest (LPA)": "12",
+      "Average (LPA)": "5–6",
+      "Median (LPA)": "5"
+    },
+    {
+      "Sr No": "41",
+      "College": "Government College of Engineering & Research, Avasari (duplicate)",
+      "Highest (LPA)": "12",
+      "Average (LPA)": "5–6",
+      "Median (LPA)": "5"
+    },
+    {
+      "Sr No": "42",
+      "College": "Modern College of Engineering",
+      "Highest (LPA)": "18",
+      "Average (LPA)": "6–7",
+      "Median (LPA)": "6"
+    },
+    {
+      "Sr No": "43",
+      "College": "K. K. Wagh Institute of Engineering",
+      "Highest (LPA)": "15",
+      "Average (LPA)": "6–7",
+      "Median (LPA)": "6"
+    },
+    {
+      "Sr No": "44",
+      "College": "SIES Graduate School of Technology",
+      "Highest (LPA)": "18",
+      "Average (LPA)": "5–6",
+      "Median (LPA)": "5"
+    },
+    {
+      "Sr No": "45",
+      "College": "University Dept. of Chemical Technology, Aurangabad",
+      "Highest (LPA)": "15",
+      "Average (LPA)": "6–7",
+      "Median (LPA)": "6"
+    },
+    {
+      "Sr No": "46",
+      "College": "YCCE Nagpur",
+      "Highest (LPA)": "22",
+      "Average (LPA)": "6.5–7.5",
+      "Median (LPA)": "6.5"
+    },
+    {
+      "Sr No": "47",
+      "College": "Thakur Shyamnarayan Engineering College",
+      "Highest (LPA)": "12",
+      "Average (LPA)": "4.5–5.5",
+      "Median (LPA)": "5"
+    },
+    {
+      "Sr No": "48",
+      "College": "Bharati Vidyapeeth College of Engineering, Navi Mumbai",
+      "Highest (LPA)": "15",
+      "Average (LPA)": "5–6",
+      "Median (LPA)": "5"
+    },
+    {
+      "Sr No": "49",
+      "College": "Sinhgad College of Engineering",
+      "Highest (LPA)": "18",
+      "Average (LPA)": "6–7",
+      "Median (LPA)": "6"
+    },
+    {
+      "Sr No": "50",
+      "College": "ICT Jalna",
+      "Highest (LPA)": "12",
+      "Average (LPA)": "5–6",
+      "Median (LPA)": "5"
+    }
+  ]
+}

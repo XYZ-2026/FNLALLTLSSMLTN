@@ -1,0 +1,364 @@
+{
+  "MANIPAL_CUTOFF": [
+    {
+      "Sr. No": "1",
+      "Campus": "MIT Manipal\nManipal",
+      "Branch": "B.Tech Computer  Science and Engineering",
+      "Round 1": "3,479",
+      "Round 2": "4,484",
+      "Round 3": "5,129",
+      "Round 4": "5,606"
+    },
+    {
+      "Sr. No": "2",
+      "Campus": "MIT Manipal\nManipal",
+      "Branch": "B.Tech Computer Science and Financial Technology",
+      "Round 1": "3,786",
+      "Round 2": "4,827",
+      "Round 3": "5,521",
+      "Round 4": "5,892"
+    },
+    {
+      "Sr. No": "3",
+      "Campus": "MIT Manipal\nManipal",
+      "Branch": "B.Tech Mathematics and Computing",
+      "Round 1": "3,981",
+      "Round 2": "4,932",
+      "Round 3": "5,633",
+      "Round 4": "6,082"
+    },
+    {
+      "Sr. No": "4",
+      "Campus": "MIT Manipal\nManipal",
+      "Branch": "B.Tech Electronics and Communication Engineering",
+      "Round 1": "5,286",
+      "Round 2": "6,107",
+      "Round 3": "6,789",
+      "Round 4": "7,362"
+    },
+    {
+      "Sr. No": "5",
+      "Campus": "MIT Manipal\nManipal",
+      "Branch": "B.Tech Electronics Engineering with Specialization in VLSI Design and Technology",
+      "Round 1": "5,880",
+      "Round 2": "7,200",
+      "Round 3": "8,150",
+      "Round 4": "8,835"
+    },
+    {
+      "Sr. No": "6",
+      "Campus": "MIT Bengaluru\nBengaluru",
+      "Branch": "B.Tech Computer Science & Engineering",
+      "Round 1": "9,362",
+      "Round 2": "11,331",
+      "Round 3": "12,751",
+      "Round 4": "13,834"
+    },
+    {
+      "Sr. No": "7",
+      "Campus": "MIT Bengaluru\nBengaluru",
+      "Branch": "B.Tech Electronics & Communication Engineering",
+      "Round 1": "9,820",
+      "Round 2": "11,880",
+      "Round 3": "13,370",
+      "Round 4": "14,501"
+    },
+    {
+      "Sr. No": "8",
+      "Campus": "MIT Bengaluru\nBengaluru",
+      "Branch": "B.Tech Electronics & Computer Engineering",
+      "Round 1": "11,220",
+      "Round 2": "13,570",
+      "Round 3": "15,280",
+      "Round 4": "16,572"
+    },
+    {
+      "Sr. No": "9",
+      "Campus": "MIT Bengaluru\nBengaluru",
+      "Branch": "B.Tech Robotics and Artificial Intelligence",
+      "Round 1": "12,540",
+      "Round 2": "15,180",
+      "Round 3": "17,080",
+      "Round 4": "18,529"
+    },
+    {
+      "Sr. No": "10",
+      "Campus": "MIT Manipal\nManipal",
+      "Branch": "B.Tech Electrical and Electronics Engineering",
+      "Round 1": "12,560",
+      "Round 2": "13,580",
+      "Round 3": "14,010",
+      "Round 4": "14,447"
+    },
+    {
+      "Sr. No": "11",
+      "Campus": "MIT Bengaluru\nBengaluru",
+      "Branch": "B.Tech Electronics Engineering with Specialization in VLSI Design and Technology",
+      "Round 1": "13,010",
+      "Round 2": "15,740",
+      "Round 3": "17,710",
+      "Round 4": "19,212"
+    },
+    {
+      "Sr. No": "12",
+      "Campus": "MIT Manipal\nManipal",
+      "Branch": "B.Tech Aeronautical Engineering",
+      "Round 1": "13,980",
+      "Round 2": "15,100",
+      "Round 3": "15,590",
+      "Round 4": "16,069"
+    },
+    {
+      "Sr. No": "13",
+      "Campus": "MIT Manipal\nManipal",
+      "Branch": "B.Tech Electronics and Instrumentation Engineering",
+      "Round 1": "14,600",
+      "Round 2": "15,770",
+      "Round 3": "16,270",
+      "Round 4": "16,776"
+    },
+    {
+      "Sr. No": "14",
+      "Campus": "MIT Manipal\nManipal",
+      "Branch": "B.Tech Cyber Physical Systems",
+      "Round 1": "15,140",
+      "Round 2": "16,360",
+      "Round 3": "16,880",
+      "Round 4": "17,399"
+    },
+    {
+      "Sr. No": "15",
+      "Campus": "MIT Manipal\nManipal",
+      "Branch": "B.Tech Mechatronics",
+      "Round 1": "15,550",
+      "Round 2": "16,800",
+      "Round 3": "17,340",
+      "Round 4": "17,874"
+    },
+    {
+      "Sr. No": "16",
+      "Campus": "MIT Manipal\nManipal",
+      "Branch": "B.Tech Biotechnology",
+      "Round 1": "16,930",
+      "Round 2": "18,290",
+      "Round 3": "18,880",
+      "Round 4": "19,462"
+    },
+    {
+      "Sr. No": "17",
+      "Campus": "MIT Manipal\nManipal",
+      "Branch": "B.Tech Mechanical Engineering",
+      "Round 1": "17,037",
+      "Round 2": "18,450",
+      "Round 3": "19,258",
+      "Round 4": "19,635"
+    },
+    {
+      "Sr. No": "18",
+      "Campus": "MIT Manipal\nManipal",
+      "Branch": "B.Tech Chemical Engineering",
+      "Round 1": "17,648",
+      "Round 2": "20,878",
+      "Round 3": "21,813",
+      "Round 4": "22,425"
+    },
+    {
+      "Sr. No": "19",
+      "Campus": "MIT Manipal\nManipal",
+      "Branch": "B.Tech Automobile Engineering",
+      "Round 1": "19,910",
+      "Round 2": "21,520",
+      "Round 3": "22,200",
+      "Round 4": "22,890"
+    },
+    {
+      "Sr. No": "20",
+      "Campus": "MIT Manipal\nManipal",
+      "Branch": "B.Tech Biomedical Engineering",
+      "Round 1": "21,670",
+      "Round 2": "23,200",
+      "Round 3": "24,730",
+      "Round 4": "25,490"
+    },
+    {
+      "Sr. No": "21",
+      "Campus": "MIT Manipal\nManipal",
+      "Branch": "B.Tech Electrical and Electronics Engineering (Dual Degree with Macquarie University)",
+      "Round 1": "23,680",
+      "Round 2": "25,350",
+      "Round 3": "27,020",
+      "Round 4": "27,859"
+    },
+    {
+      "Sr. No": "22",
+      "Campus": "MIT Manipal\nManipal",
+      "Branch": "B.Tech Industrial Engineering",
+      "Round 1": "23,870",
+      "Round 2": "25,550",
+      "Round 3": "27,230",
+      "Round 4": "28,076"
+    },
+    {
+      "Sr. No": "23",
+      "Campus": "MIT Manipal\nManipal",
+      "Branch": "B.Tech Civil Engineering",
+      "Round 1": "25,526",
+      "Round 2": "27,202",
+      "Round 3": "29,232",
+      "Round 4": "30,133"
+    },
+    {
+      "Sr. No": "24",
+      "Campus": "MIT Manipal\nManipal",
+      "Branch": "B.Tech Mechatronics (Dual Degree with Deakin University)",
+      "Round 1": "26,990",
+      "Round 2": "28,900",
+      "Round 3": "30,800",
+      "Round 4": "31,754"
+    },
+    {
+      "Sr. No": "25",
+      "Campus": "MIT Manipal\nManipal",
+      "Branch": "B.Tech Mechanical Engineering (Dual Degree with Deakin University)",
+      "Round 1": "30,100",
+      "Round 2": "32,230",
+      "Round 3": "34,350",
+      "Round 4": "35,417"
+    },
+    {
+      "Sr. No": "26",
+      "Campus": "MUJ Jaipur\nJaipur",
+      "Branch": "B.Tech Computer Science and Engineering",
+      "Round 1": "30,100",
+      "Round 2": "32,632",
+      "Round 3": "33,571",
+      "Round 4": "39,307"
+    },
+    {
+      "Sr. No": "27",
+      "Campus": "MUJ Jaipur\nJaipur",
+      "Branch": "B.Tech Chemical Engineering",
+      "Round 1": "31,220",
+      "Round 2": "33,830",
+      "Round 3": "34,810",
+      "Round 4": "40,759"
+    },
+    {
+      "Sr. No": "28",
+      "Campus": "MUJ Jaipur\nJaipur",
+      "Branch": "B.Tech Robotics and Artificial Intelligence",
+      "Round 1": "32,180",
+      "Round 2": "34,870",
+      "Round 3": "35,870",
+      "Round 4": "42,006"
+    },
+    {
+      "Sr. No": "29",
+      "Campus": "MUJ Jaipur\nJaipur",
+      "Branch": "B.Tech Civil Engineering",
+      "Round 1": "32,510",
+      "Round 2": "35,220",
+      "Round 3": "36,240",
+      "Round 4": "42,435"
+    },
+    {
+      "Sr. No": "30",
+      "Campus": "SMIT Sikkim\nMajitar (Sikkim)",
+      "Branch": "B.Tech Computer Science and Engineering",
+      "Round 1": "34,254",
+      "Round 2": "46,768",
+      "Round 3": "–",
+      "Round 4": "–"
+    },
+    {
+      "Sr. No": "31",
+      "Campus": "MUJ Jaipur\nJaipur",
+      "Branch": "B.Tech Mechatronics",
+      "Round 1": "35,980",
+      "Round 2": "38,980",
+      "Round 3": "40,110",
+      "Round 4": "46,968"
+    },
+    {
+      "Sr. No": "32",
+      "Campus": "MUJ Jaipur\nJaipur",
+      "Branch": "B.Tech Electronics Engineering with Specialization in VLSI Design and Technology",
+      "Round 1": "37,790",
+      "Round 2": "40,940",
+      "Round 3": "42,130",
+      "Round 4": "49,330"
+    },
+    {
+      "Sr. No": "33",
+      "Campus": "MUJ Jaipur\nJaipur",
+      "Branch": "B.Tech Mechanical Engineering",
+      "Round 1": "38,260",
+      "Round 2": "41,450",
+      "Round 3": "42,670",
+      "Round 4": "49,945"
+    },
+    {
+      "Sr. No": "34",
+      "Campus": "MUJ Jaipur\nJaipur",
+      "Branch": "B.Tech Biotechnology",
+      "Round 1": "38,750",
+      "Round 2": "41,990",
+      "Round 3": "43,200",
+      "Round 4": "50,589"
+    },
+    {
+      "Sr. No": "35",
+      "Campus": "MUJ Jaipur\nJaipur",
+      "Branch": "B.Tech Computer Science and Biosciences",
+      "Round 1": "39,270",
+      "Round 2": "42,550",
+      "Round 3": "43,780",
+      "Round 4": "51,264"
+    },
+    {
+      "Sr. No": "36",
+      "Campus": "MUJ Jaipur\nJaipur",
+      "Branch": "B.Tech Electrical and Computer Engineering",
+      "Round 1": "40,070",
+      "Round 2": "43,420",
+      "Round 3": "44,670",
+      "Round 4": "52,311"
+    },
+    {
+      "Sr. No": "37",
+      "Campus": "MUJ Jaipur\nJaipur",
+      "Branch": "B.Tech Computer Science and Engineering (Dual Degree with Deakin University)",
+      "Round 1": "40,280",
+      "Round 2": "43,650",
+      "Round 3": "44,910",
+      "Round 4": "52,587"
+    },
+    {
+      "Sr. No": "38",
+      "Campus": "MUJ Jaipur\nJaipur",
+      "Branch": "B.Tech Electronics and Communication Engineering",
+      "Round 1": "40,380",
+      "Round 2": "43,760",
+      "Round 3": "45,020",
+      "Round 4": "52,717"
+    },
+    {
+      "Sr. No": "39",
+      "Campus": "MIT Manipal\nManipal",
+      "Branch": "B.Tech Civil Engineering (Dual Degree with Macquarie University)",
+      "Round 1": "40,740",
+      "Round 2": "43,610",
+      "Round 3": "46,490",
+      "Round 4": "47,927"
+    },
+    {
+      "Sr. No": "40",
+      "Campus": "SMIT Sikkim\nMajitar (Sikkim)",
+      "Branch": "B.Tech Mechanical Engineering",
+      "Round 1": "40,999",
+      "Round 2": "–",
+      "Round 3": "–",
+      "Round 4": "–"
+    }
+  ]
+}
