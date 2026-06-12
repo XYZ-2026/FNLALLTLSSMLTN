@@ -1,0 +1,1474 @@
+{
+  "MHT CET percentile vs rank": [
+    {
+      "Percentile": "100",
+      "Minimum Rank": "1",
+      "Maximum Rank": "1"
+    },
+    {
+      "Percentile": "99.99",
+      "Minimum Rank": "32",
+      "Maximum Rank": "37"
+    },
+    {
+      "Percentile": "99.95",
+      "Minimum Rank": "151",
+      "Maximum Rank": "176"
+    },
+    {
+      "Percentile": "99.90",
+      "Minimum Rank": "301",
+      "Maximum Rank": "351"
+    },
+    {
+      "Percentile": "99.85",
+      "Minimum Rank": "452",
+      "Maximum Rank": "527"
+    },
+    {
+      "Percentile": "99.80",
+      "Minimum Rank": "602",
+      "Maximum Rank": "702"
+    },
+    {
+      "Percentile": "99.75",
+      "Minimum Rank": "751",
+      "Maximum Rank": "876"
+    },
+    {
+      "Percentile": "99.70",
+      "Minimum Rank": "901",
+      "Maximum Rank": "1051"
+    },
+    {
+      "Percentile": "99.65",
+      "Minimum Rank": "1051",
+      "Maximum Rank": "1226"
+    },
+    {
+      "Percentile": "99.60",
+      "Minimum Rank": "1202",
+      "Maximum Rank": "1402"
+    },
+    {
+      "Percentile": "99.55",
+      "Minimum Rank": "1352",
+      "Maximum Rank": "1577"
+    },
+    {
+      "Percentile": "99.50",
+      "Minimum Rank": "1502",
+      "Maximum Rank": "1752"
+    },
+    {
+      "Percentile": "99.45",
+      "Minimum Rank": "1652",
+      "Maximum Rank": "1927"
+    },
+    {
+      "Percentile": "99.40",
+      "Minimum Rank": "1802",
+      "Maximum Rank": "2102"
+    },
+    {
+      "Percentile": "99.35",
+      "Minimum Rank": "1952",
+      "Maximum Rank": "2277"
+    },
+    {
+      "Percentile": "99.30",
+      "Minimum Rank": "2102",
+      "Maximum Rank": "2452"
+    },
+    {
+      "Percentile": "99.25",
+      "Minimum Rank": "2251",
+      "Maximum Rank": "2626"
+    },
+    {
+      "Percentile": "99.20",
+      "Minimum Rank": "2401",
+      "Maximum Rank": "2801"
+    },
+    {
+      "Percentile": "99.15",
+      "Minimum Rank": "2551",
+      "Maximum Rank": "2976"
+    },
+    {
+      "Percentile": "99.1",
+      "Minimum Rank": "2702",
+      "Maximum Rank": "3152"
+    },
+    {
+      "Percentile": "99.05",
+      "Minimum Rank": "2852",
+      "Maximum Rank": "3327"
+    },
+    {
+      "Percentile": "99",
+      "Minimum Rank": "3001",
+      "Maximum Rank": "3501"
+    },
+    {
+      "Percentile": "98.95",
+      "Minimum Rank": "3151",
+      "Maximum Rank": "3676"
+    },
+    {
+      "Percentile": "98.9",
+      "Minimum Rank": "3301",
+      "Maximum Rank": "3851"
+    },
+    {
+      "Percentile": "98.85",
+      "Minimum Rank": "3452",
+      "Maximum Rank": "4027"
+    },
+    {
+      "Percentile": "98.8",
+      "Minimum Rank": "3602",
+      "Maximum Rank": "4202"
+    },
+    {
+      "Percentile": "98.75",
+      "Minimum Rank": "3751",
+      "Maximum Rank": "4376"
+    },
+    {
+      "Percentile": "98.7",
+      "Minimum Rank": "3901",
+      "Maximum Rank": "4551"
+    },
+    {
+      "Percentile": "98.65",
+      "Minimum Rank": "4051",
+      "Maximum Rank": "4726"
+    },
+    {
+      "Percentile": "98.60",
+      "Minimum Rank": "4201",
+      "Maximum Rank": "4901"
+    },
+    {
+      "Percentile": "98.55",
+      "Minimum Rank": "4351",
+      "Maximum Rank": "5076"
+    },
+    {
+      "Percentile": "98.50",
+      "Minimum Rank": "4501",
+      "Maximum Rank": "5251"
+    },
+    {
+      "Percentile": "98.45",
+      "Minimum Rank": "4651",
+      "Maximum Rank": "5426"
+    },
+    {
+      "Percentile": "98.40",
+      "Minimum Rank": "4801",
+      "Maximum Rank": "5601"
+    },
+    {
+      "Percentile": "98.35",
+      "Minimum Rank": "4951",
+      "Maximum Rank": "5776"
+    },
+    {
+      "Percentile": "98.30",
+      "Minimum Rank": "5101",
+      "Maximum Rank": "5951"
+    },
+    {
+      "Percentile": "98.25",
+      "Minimum Rank": "5251",
+      "Maximum Rank": "6126"
+    },
+    {
+      "Percentile": "98.20",
+      "Minimum Rank": "5401",
+      "Maximum Rank": "6301"
+    },
+    {
+      "Percentile": "98.15",
+      "Minimum Rank": "5551",
+      "Maximum Rank": "6476"
+    },
+    {
+      "Percentile": "98.10",
+      "Minimum Rank": "5701",
+      "Maximum Rank": "6651"
+    },
+    {
+      "Percentile": "98.05",
+      "Minimum Rank": "5851",
+      "Maximum Rank": "6826"
+    },
+    {
+      "Percentile": "98.00",
+      "Minimum Rank": "6001",
+      "Maximum Rank": "7001"
+    },
+    {
+      "Percentile": "97.95",
+      "Minimum Rank": "6151",
+      "Maximum Rank": "7176"
+    },
+    {
+      "Percentile": "97.90",
+      "Minimum Rank": "6301",
+      "Maximum Rank": "7351"
+    },
+    {
+      "Percentile": "97.85",
+      "Minimum Rank": "6451",
+      "Maximum Rank": "7526"
+    },
+    {
+      "Percentile": "97.80",
+      "Minimum Rank": "6601",
+      "Maximum Rank": "7701"
+    },
+    {
+      "Percentile": "97.75",
+      "Minimum Rank": "6751",
+      "Maximum Rank": "7876"
+    },
+    {
+      "Percentile": "97.70",
+      "Minimum Rank": "6901",
+      "Maximum Rank": "8051"
+    },
+    {
+      "Percentile": "97.65",
+      "Minimum Rank": "7051",
+      "Maximum Rank": "8226"
+    },
+    {
+      "Percentile": "97.60",
+      "Minimum Rank": "7201",
+      "Maximum Rank": "8401"
+    },
+    {
+      "Percentile": "97.55",
+      "Minimum Rank": "7351",
+      "Maximum Rank": "8576"
+    },
+    {
+      "Percentile": "97.50",
+      "Minimum Rank": "7501",
+      "Maximum Rank": "8751"
+    },
+    {
+      "Percentile": "97.45",
+      "Minimum Rank": "7651",
+      "Maximum Rank": "8926"
+    },
+    {
+      "Percentile": "97.4",
+      "Minimum Rank": "7801",
+      "Maximum Rank": "9101"
+    },
+    {
+      "Percentile": "97.35",
+      "Minimum Rank": "7951",
+      "Maximum Rank": "9276"
+    },
+    {
+      "Percentile": "97.3",
+      "Minimum Rank": "8101",
+      "Maximum Rank": "9451"
+    },
+    {
+      "Percentile": "97.25",
+      "Minimum Rank": "8251",
+      "Maximum Rank": "9626"
+    },
+    {
+      "Percentile": "97.2",
+      "Minimum Rank": "8401",
+      "Maximum Rank": "9801"
+    },
+    {
+      "Percentile": "97.15",
+      "Minimum Rank": "8551",
+      "Maximum Rank": "9976"
+    },
+    {
+      "Percentile": "97.1",
+      "Minimum Rank": "8701",
+      "Maximum Rank": "10151"
+    },
+    {
+      "Percentile": "97.05",
+      "Minimum Rank": "8851",
+      "Maximum Rank": "10326"
+    },
+    {
+      "Percentile": "97",
+      "Minimum Rank": "9001",
+      "Maximum Rank": "10501"
+    },
+    {
+      "Percentile": "96.95",
+      "Minimum Rank": "9151",
+      "Maximum Rank": "10676"
+    },
+    {
+      "Percentile": "96.90",
+      "Minimum Rank": "9301",
+      "Maximum Rank": "10851"
+    },
+    {
+      "Percentile": "96.85",
+      "Minimum Rank": "9451",
+      "Maximum Rank": "11026"
+    },
+    {
+      "Percentile": "96.80",
+      "Minimum Rank": "9601",
+      "Maximum Rank": "11201"
+    },
+    {
+      "Percentile": "96.75",
+      "Minimum Rank": "9751",
+      "Maximum Rank": "11376"
+    },
+    {
+      "Percentile": "96.70",
+      "Minimum Rank": "9901",
+      "Maximum Rank": "11551"
+    },
+    {
+      "Percentile": "96.65",
+      "Minimum Rank": "10051",
+      "Maximum Rank": "11726"
+    },
+    {
+      "Percentile": "96.60",
+      "Minimum Rank": "10201",
+      "Maximum Rank": "11901"
+    },
+    {
+      "Percentile": "96.55",
+      "Minimum Rank": "10351",
+      "Maximum Rank": "12076"
+    },
+    {
+      "Percentile": "96.50",
+      "Minimum Rank": "10501",
+      "Maximum Rank": "12251"
+    },
+    {
+      "Percentile": "96.45",
+      "Minimum Rank": "10651",
+      "Maximum Rank": "12426"
+    },
+    {
+      "Percentile": "96.40",
+      "Minimum Rank": "10801",
+      "Maximum Rank": "12601"
+    },
+    {
+      "Percentile": "96.35",
+      "Minimum Rank": "10951",
+      "Maximum Rank": "12776"
+    },
+    {
+      "Percentile": "96.30",
+      "Minimum Rank": "11101",
+      "Maximum Rank": "12951"
+    },
+    {
+      "Percentile": "96.25",
+      "Minimum Rank": "11251",
+      "Maximum Rank": "13126"
+    },
+    {
+      "Percentile": "96.20",
+      "Minimum Rank": "11401",
+      "Maximum Rank": "13301"
+    },
+    {
+      "Percentile": "96.15",
+      "Minimum Rank": "11551",
+      "Maximum Rank": "13476"
+    },
+    {
+      "Percentile": "96.10",
+      "Minimum Rank": "11701",
+      "Maximum Rank": "13651"
+    },
+    {
+      "Percentile": "96.05",
+      "Minimum Rank": "11851",
+      "Maximum Rank": "13826"
+    },
+    {
+      "Percentile": "96.00",
+      "Minimum Rank": "12001",
+      "Maximum Rank": "14001"
+    },
+    {
+      "Percentile": "95.95",
+      "Minimum Rank": "12151",
+      "Maximum Rank": "14176"
+    },
+    {
+      "Percentile": "95.90",
+      "Minimum Rank": "12301",
+      "Maximum Rank": "14351"
+    },
+    {
+      "Percentile": "95.85",
+      "Minimum Rank": "12451",
+      "Maximum Rank": "14526"
+    },
+    {
+      "Percentile": "95.80",
+      "Minimum Rank": "12601",
+      "Maximum Rank": "14701"
+    },
+    {
+      "Percentile": "95.75",
+      "Minimum Rank": "12751",
+      "Maximum Rank": "14876"
+    },
+    {
+      "Percentile": "95.7",
+      "Minimum Rank": "12901",
+      "Maximum Rank": "15051"
+    },
+    {
+      "Percentile": "95.65",
+      "Minimum Rank": "13051",
+      "Maximum Rank": "15226"
+    },
+    {
+      "Percentile": "95.6",
+      "Minimum Rank": "13201",
+      "Maximum Rank": "15401"
+    },
+    {
+      "Percentile": "95.55",
+      "Minimum Rank": "13351",
+      "Maximum Rank": "15576"
+    },
+    {
+      "Percentile": "95.5",
+      "Minimum Rank": "13501",
+      "Maximum Rank": "15751"
+    },
+    {
+      "Percentile": "95.45",
+      "Minimum Rank": "13651",
+      "Maximum Rank": "15926"
+    },
+    {
+      "Percentile": "95.4",
+      "Minimum Rank": "13801",
+      "Maximum Rank": "16101"
+    },
+    {
+      "Percentile": "95.35",
+      "Minimum Rank": "13951",
+      "Maximum Rank": "16276"
+    },
+    {
+      "Percentile": "95.3",
+      "Minimum Rank": "14101",
+      "Maximum Rank": "16451"
+    },
+    {
+      "Percentile": "95.25",
+      "Minimum Rank": "14251",
+      "Maximum Rank": "16626"
+    },
+    {
+      "Percentile": "95.2",
+      "Minimum Rank": "14401",
+      "Maximum Rank": "16801"
+    },
+    {
+      "Percentile": "95.15",
+      "Minimum Rank": "14551",
+      "Maximum Rank": "16976"
+    },
+    {
+      "Percentile": "95.1",
+      "Minimum Rank": "14701",
+      "Maximum Rank": "17151"
+    },
+    {
+      "Percentile": "95.05",
+      "Minimum Rank": "14851",
+      "Maximum Rank": "17326"
+    },
+    {
+      "Percentile": "95.00",
+      "Minimum Rank": "15001",
+      "Maximum Rank": "17501"
+    },
+    {
+      "Percentile": "94.95",
+      "Minimum Rank": "15151",
+      "Maximum Rank": "17676"
+    },
+    {
+      "Percentile": "94.90",
+      "Minimum Rank": "15301",
+      "Maximum Rank": "17851"
+    },
+    {
+      "Percentile": "94.85",
+      "Minimum Rank": "15451",
+      "Maximum Rank": "18026"
+    },
+    {
+      "Percentile": "94.80",
+      "Minimum Rank": "15601",
+      "Maximum Rank": "18201"
+    },
+    {
+      "Percentile": "94.75",
+      "Minimum Rank": "15751",
+      "Maximum Rank": "18376"
+    },
+    {
+      "Percentile": "94.70",
+      "Minimum Rank": "15901",
+      "Maximum Rank": "18551"
+    },
+    {
+      "Percentile": "94.65",
+      "Minimum Rank": "16051",
+      "Maximum Rank": "18726"
+    },
+    {
+      "Percentile": "94.60",
+      "Minimum Rank": "16201",
+      "Maximum Rank": "18901"
+    },
+    {
+      "Percentile": "94.55",
+      "Minimum Rank": "16351",
+      "Maximum Rank": "19076"
+    },
+    {
+      "Percentile": "94.50",
+      "Minimum Rank": "16501",
+      "Maximum Rank": "19251"
+    },
+    {
+      "Percentile": "94.45",
+      "Minimum Rank": "16651",
+      "Maximum Rank": "19426"
+    },
+    {
+      "Percentile": "94.40",
+      "Minimum Rank": "16801",
+      "Maximum Rank": "19601"
+    },
+    {
+      "Percentile": "94.35",
+      "Minimum Rank": "16951",
+      "Maximum Rank": "19776"
+    },
+    {
+      "Percentile": "94.30",
+      "Minimum Rank": "17101",
+      "Maximum Rank": "19951"
+    },
+    {
+      "Percentile": "94.25",
+      "Minimum Rank": "17251",
+      "Maximum Rank": "20126"
+    },
+    {
+      "Percentile": "94.20",
+      "Minimum Rank": "17401",
+      "Maximum Rank": "20301"
+    },
+    {
+      "Percentile": "94.15",
+      "Minimum Rank": "17551",
+      "Maximum Rank": "20476"
+    },
+    {
+      "Percentile": "94.10",
+      "Minimum Rank": "17701",
+      "Maximum Rank": "20651"
+    },
+    {
+      "Percentile": "94.05",
+      "Minimum Rank": "17851",
+      "Maximum Rank": "20826"
+    },
+    {
+      "Percentile": "94.00",
+      "Minimum Rank": "18001",
+      "Maximum Rank": "21001"
+    },
+    {
+      "Percentile": "93.95",
+      "Minimum Rank": "18151",
+      "Maximum Rank": "21176"
+    },
+    {
+      "Percentile": "93.90",
+      "Minimum Rank": "18301",
+      "Maximum Rank": "21351"
+    },
+    {
+      "Percentile": "93.85",
+      "Minimum Rank": "18451",
+      "Maximum Rank": "21526"
+    },
+    {
+      "Percentile": "93.8",
+      "Minimum Rank": "18601",
+      "Maximum Rank": "21701"
+    },
+    {
+      "Percentile": "93.75",
+      "Minimum Rank": "18751",
+      "Maximum Rank": "21876"
+    },
+    {
+      "Percentile": "93.7",
+      "Minimum Rank": "18901",
+      "Maximum Rank": "22051"
+    },
+    {
+      "Percentile": "93.65",
+      "Minimum Rank": "19051",
+      "Maximum Rank": "22226"
+    },
+    {
+      "Percentile": "93.6",
+      "Minimum Rank": "19201",
+      "Maximum Rank": "22401"
+    },
+    {
+      "Percentile": "93.55",
+      "Minimum Rank": "19351",
+      "Maximum Rank": "22576"
+    },
+    {
+      "Percentile": "93.5",
+      "Minimum Rank": "19501",
+      "Maximum Rank": "22751"
+    },
+    {
+      "Percentile": "93.45",
+      "Minimum Rank": "19651",
+      "Maximum Rank": "22926"
+    },
+    {
+      "Percentile": "93.4",
+      "Minimum Rank": "19801",
+      "Maximum Rank": "23101"
+    },
+    {
+      "Percentile": "93.35",
+      "Minimum Rank": "19951",
+      "Maximum Rank": "23276"
+    },
+    {
+      "Percentile": "93.30",
+      "Minimum Rank": "20101",
+      "Maximum Rank": "23451"
+    },
+    {
+      "Percentile": "93.25",
+      "Minimum Rank": "20251",
+      "Maximum Rank": "23626"
+    },
+    {
+      "Percentile": "93.20",
+      "Minimum Rank": "20401",
+      "Maximum Rank": "23801"
+    },
+    {
+      "Percentile": "93.15",
+      "Minimum Rank": "20551",
+      "Maximum Rank": "23976"
+    },
+    {
+      "Percentile": "93.10",
+      "Minimum Rank": "20701",
+      "Maximum Rank": "24151"
+    },
+    {
+      "Percentile": "93.05",
+      "Minimum Rank": "20851",
+      "Maximum Rank": "24326"
+    },
+    {
+      "Percentile": "93.00",
+      "Minimum Rank": "21001",
+      "Maximum Rank": "24501"
+    },
+    {
+      "Percentile": "92.95",
+      "Minimum Rank": "21151",
+      "Maximum Rank": "24676"
+    },
+    {
+      "Percentile": "92.90",
+      "Minimum Rank": "21301",
+      "Maximum Rank": "24851"
+    },
+    {
+      "Percentile": "92.85",
+      "Minimum Rank": "21451",
+      "Maximum Rank": "25026"
+    },
+    {
+      "Percentile": "92.80",
+      "Minimum Rank": "21601",
+      "Maximum Rank": "25201"
+    },
+    {
+      "Percentile": "92.75",
+      "Minimum Rank": "21751",
+      "Maximum Rank": "25376"
+    },
+    {
+      "Percentile": "92.70",
+      "Minimum Rank": "21901",
+      "Maximum Rank": "25551"
+    },
+    {
+      "Percentile": "92.65",
+      "Minimum Rank": "22051",
+      "Maximum Rank": "25726"
+    },
+    {
+      "Percentile": "92.60",
+      "Minimum Rank": "22201",
+      "Maximum Rank": "25901"
+    },
+    {
+      "Percentile": "92.55",
+      "Minimum Rank": "22351",
+      "Maximum Rank": "26076"
+    },
+    {
+      "Percentile": "92.50",
+      "Minimum Rank": "22501",
+      "Maximum Rank": "26251"
+    },
+    {
+      "Percentile": "92.45",
+      "Minimum Rank": "22651",
+      "Maximum Rank": "26426"
+    },
+    {
+      "Percentile": "92.40",
+      "Minimum Rank": "22801",
+      "Maximum Rank": "26601"
+    },
+    {
+      "Percentile": "92.35",
+      "Minimum Rank": "22951",
+      "Maximum Rank": "26776"
+    },
+    {
+      "Percentile": "92.30",
+      "Minimum Rank": "23101",
+      "Maximum Rank": "26951"
+    },
+    {
+      "Percentile": "92.25",
+      "Minimum Rank": "23251",
+      "Maximum Rank": "27126"
+    },
+    {
+      "Percentile": "92.20",
+      "Minimum Rank": "23401",
+      "Maximum Rank": "27301"
+    },
+    {
+      "Percentile": "92.15",
+      "Minimum Rank": "23551",
+      "Maximum Rank": "27476"
+    },
+    {
+      "Percentile": "92.1",
+      "Minimum Rank": "23701",
+      "Maximum Rank": "27651"
+    },
+    {
+      "Percentile": "92.05",
+      "Minimum Rank": "23851",
+      "Maximum Rank": "27826"
+    },
+    {
+      "Percentile": "92",
+      "Minimum Rank": "24001",
+      "Maximum Rank": "28001"
+    },
+    {
+      "Percentile": "91.95",
+      "Minimum Rank": "24151",
+      "Maximum Rank": "28176"
+    },
+    {
+      "Percentile": "91.9",
+      "Minimum Rank": "24301",
+      "Maximum Rank": "28351"
+    },
+    {
+      "Percentile": "91.85",
+      "Minimum Rank": "24451",
+      "Maximum Rank": "28526"
+    },
+    {
+      "Percentile": "91.8",
+      "Minimum Rank": "24601",
+      "Maximum Rank": "28701"
+    },
+    {
+      "Percentile": "91.75",
+      "Minimum Rank": "24751",
+      "Maximum Rank": "28876"
+    },
+    {
+      "Percentile": "91.7",
+      "Minimum Rank": "24901",
+      "Maximum Rank": "29051"
+    },
+    {
+      "Percentile": "91.65",
+      "Minimum Rank": "25051",
+      "Maximum Rank": "29226"
+    },
+    {
+      "Percentile": "91.60",
+      "Minimum Rank": "25201",
+      "Maximum Rank": "29401"
+    },
+    {
+      "Percentile": "91.55",
+      "Minimum Rank": "25351",
+      "Maximum Rank": "29576"
+    },
+    {
+      "Percentile": "91.50",
+      "Minimum Rank": "25501",
+      "Maximum Rank": "29751"
+    },
+    {
+      "Percentile": "91.45",
+      "Minimum Rank": "25651",
+      "Maximum Rank": "29926"
+    },
+    {
+      "Percentile": "91.40",
+      "Minimum Rank": "25801",
+      "Maximum Rank": "30101"
+    },
+    {
+      "Percentile": "91.35",
+      "Minimum Rank": "25951",
+      "Maximum Rank": "30276"
+    },
+    {
+      "Percentile": "91.3",
+      "Minimum Rank": "26101",
+      "Maximum Rank": "30451"
+    },
+    {
+      "Percentile": "91.25",
+      "Minimum Rank": "26251",
+      "Maximum Rank": "30626"
+    },
+    {
+      "Percentile": "91.20",
+      "Minimum Rank": "26401",
+      "Maximum Rank": "30801"
+    },
+    {
+      "Percentile": "91.15",
+      "Minimum Rank": "26551",
+      "Maximum Rank": "30976"
+    },
+    {
+      "Percentile": "91.10",
+      "Minimum Rank": "26701",
+      "Maximum Rank": "31151"
+    },
+    {
+      "Percentile": "91.05",
+      "Minimum Rank": "26851",
+      "Maximum Rank": "31326"
+    },
+    {
+      "Percentile": "91.00",
+      "Minimum Rank": "27001",
+      "Maximum Rank": "31501"
+    },
+    {
+      "Percentile": "90.5",
+      "Minimum Rank": "28501",
+      "Maximum Rank": "33251"
+    },
+    {
+      "Percentile": "90.00",
+      "Minimum Rank": "30001",
+      "Maximum Rank": "35001"
+    },
+    {
+      "Percentile": "89.50",
+      "Minimum Rank": "31501",
+      "Maximum Rank": "36751"
+    },
+    {
+      "Percentile": "89",
+      "Minimum Rank": "33001",
+      "Maximum Rank": "38501"
+    },
+    {
+      "Percentile": "88.50",
+      "Minimum Rank": "34501",
+      "Maximum Rank": "40251"
+    },
+    {
+      "Percentile": "88.00",
+      "Minimum Rank": "36001",
+      "Maximum Rank": "42001"
+    },
+    {
+      "Percentile": "87.50",
+      "Minimum Rank": "37501",
+      "Maximum Rank": "43751"
+    },
+    {
+      "Percentile": "87",
+      "Minimum Rank": "39001",
+      "Maximum Rank": "45501"
+    },
+    {
+      "Percentile": "86.50",
+      "Minimum Rank": "40501",
+      "Maximum Rank": "47251"
+    },
+    {
+      "Percentile": "86.00",
+      "Minimum Rank": "42001",
+      "Maximum Rank": "49001"
+    },
+    {
+      "Percentile": "85.5",
+      "Minimum Rank": "43501",
+      "Maximum Rank": "50751"
+    },
+    {
+      "Percentile": "85.00",
+      "Minimum Rank": "45001",
+      "Maximum Rank": "52501"
+    },
+    {
+      "Percentile": "84.50",
+      "Minimum Rank": "46501",
+      "Maximum Rank": "54251"
+    },
+    {
+      "Percentile": "84.00",
+      "Minimum Rank": "48001",
+      "Maximum Rank": "56001"
+    },
+    {
+      "Percentile": "83.5",
+      "Minimum Rank": "49501",
+      "Maximum Rank": "57751"
+    },
+    {
+      "Percentile": "83.00",
+      "Minimum Rank": "51001",
+      "Maximum Rank": "59501"
+    },
+    {
+      "Percentile": "82.50",
+      "Minimum Rank": "52501",
+      "Maximum Rank": "61251"
+    },
+    {
+      "Percentile": "82",
+      "Minimum Rank": "54001",
+      "Maximum Rank": "63001"
+    },
+    {
+      "Percentile": "81.50",
+      "Minimum Rank": "55501",
+      "Maximum Rank": "64751"
+    },
+    {
+      "Percentile": "81.00",
+      "Minimum Rank": "57001",
+      "Maximum Rank": "66501"
+    },
+    {
+      "Percentile": "80.50",
+      "Minimum Rank": "58501",
+      "Maximum Rank": "68251"
+    },
+    {
+      "Percentile": "80",
+      "Minimum Rank": "60001",
+      "Maximum Rank": "70001"
+    },
+    {
+      "Percentile": "79.50",
+      "Minimum Rank": "61501",
+      "Maximum Rank": "71751"
+    },
+    {
+      "Percentile": "79.00",
+      "Minimum Rank": "63001",
+      "Maximum Rank": "73501"
+    },
+    {
+      "Percentile": "78.5",
+      "Minimum Rank": "64501",
+      "Maximum Rank": "75251"
+    },
+    {
+      "Percentile": "78.00",
+      "Minimum Rank": "66001",
+      "Maximum Rank": "77001"
+    },
+    {
+      "Percentile": "77.50",
+      "Minimum Rank": "67501",
+      "Maximum Rank": "78751"
+    },
+    {
+      "Percentile": "77.00",
+      "Minimum Rank": "69001",
+      "Maximum Rank": "80501"
+    },
+    {
+      "Percentile": "76.5",
+      "Minimum Rank": "70501",
+      "Maximum Rank": "82251"
+    },
+    {
+      "Percentile": "76.00",
+      "Minimum Rank": "72001",
+      "Maximum Rank": "84001"
+    },
+    {
+      "Percentile": "75.50",
+      "Minimum Rank": "73501",
+      "Maximum Rank": "85751"
+    },
+    {
+      "Percentile": "75",
+      "Minimum Rank": "75001",
+      "Maximum Rank": "87501"
+    },
+    {
+      "Percentile": "74.50",
+      "Minimum Rank": "76501",
+      "Maximum Rank": "89251"
+    },
+    {
+      "Percentile": "74.00",
+      "Minimum Rank": "78001",
+      "Maximum Rank": "91001"
+    },
+    {
+      "Percentile": "73.50",
+      "Minimum Rank": "79501",
+      "Maximum Rank": "92751"
+    },
+    {
+      "Percentile": "73",
+      "Minimum Rank": "81001",
+      "Maximum Rank": "94501"
+    },
+    {
+      "Percentile": "72.5",
+      "Minimum Rank": "82501",
+      "Maximum Rank": "96251"
+    },
+    {
+      "Percentile": "72.00",
+      "Minimum Rank": "84001",
+      "Maximum Rank": "98001"
+    },
+    {
+      "Percentile": "71.50",
+      "Minimum Rank": "85501",
+      "Maximum Rank": "99751"
+    },
+    {
+      "Percentile": "71",
+      "Minimum Rank": "87001",
+      "Maximum Rank": "101501"
+    },
+    {
+      "Percentile": "70.50",
+      "Minimum Rank": "88501",
+      "Maximum Rank": "103251"
+    },
+    {
+      "Percentile": "70",
+      "Minimum Rank": "90001",
+      "Maximum Rank": "105001"
+    },
+    {
+      "Percentile": "69",
+      "Minimum Rank": "93001",
+      "Maximum Rank": "108501"
+    },
+    {
+      "Percentile": "68",
+      "Minimum Rank": "96001",
+      "Maximum Rank": "112001"
+    },
+    {
+      "Percentile": "67",
+      "Minimum Rank": "99001",
+      "Maximum Rank": "115501"
+    },
+    {
+      "Percentile": "66",
+      "Minimum Rank": "102001",
+      "Maximum Rank": "119001"
+    },
+    {
+      "Percentile": "65",
+      "Minimum Rank": "105001",
+      "Maximum Rank": "122501"
+    },
+    {
+      "Percentile": "64",
+      "Minimum Rank": "108001",
+      "Maximum Rank": "126001"
+    },
+    {
+      "Percentile": "63",
+      "Minimum Rank": "111001",
+      "Maximum Rank": "129501"
+    },
+    {
+      "Percentile": "62",
+      "Minimum Rank": "114001",
+      "Maximum Rank": "133001"
+    },
+    {
+      "Percentile": "61",
+      "Minimum Rank": "117001",
+      "Maximum Rank": "136501"
+    },
+    {
+      "Percentile": "60",
+      "Minimum Rank": "120001",
+      "Maximum Rank": "140001"
+    },
+    {
+      "Percentile": "59",
+      "Minimum Rank": "123001",
+      "Maximum Rank": "143501"
+    },
+    {
+      "Percentile": "58",
+      "Minimum Rank": "126001",
+      "Maximum Rank": "147001"
+    },
+    {
+      "Percentile": "57",
+      "Minimum Rank": "129001",
+      "Maximum Rank": "150501"
+    },
+    {
+      "Percentile": "56",
+      "Minimum Rank": "132001",
+      "Maximum Rank": "154001"
+    },
+    {
+      "Percentile": "55",
+      "Minimum Rank": "135001",
+      "Maximum Rank": "157501"
+    },
+    {
+      "Percentile": "54",
+      "Minimum Rank": "138001",
+      "Maximum Rank": "161001"
+    },
+    {
+      "Percentile": "53",
+      "Minimum Rank": "141001",
+      "Maximum Rank": "164501"
+    },
+    {
+      "Percentile": "52",
+      "Minimum Rank": "144001",
+      "Maximum Rank": "168001"
+    },
+    {
+      "Percentile": "51",
+      "Minimum Rank": "147001",
+      "Maximum Rank": "171501"
+    },
+    {
+      "Percentile": "50",
+      "Minimum Rank": "150001",
+      "Maximum Rank": "175001"
+    },
+    {
+      "Percentile": "49",
+      "Minimum Rank": "153001",
+      "Maximum Rank": "178501"
+    },
+    {
+      "Percentile": "48",
+      "Minimum Rank": "156001",
+      "Maximum Rank": "182001"
+    },
+    {
+      "Percentile": "47",
+      "Minimum Rank": "159001",
+      "Maximum Rank": "185501"
+    },
+    {
+      "Percentile": "46",
+      "Minimum Rank": "162001",
+      "Maximum Rank": "189001"
+    },
+    {
+      "Percentile": "45",
+      "Minimum Rank": "165001",
+      "Maximum Rank": "192501"
+    },
+    {
+      "Percentile": "44",
+      "Minimum Rank": "168001",
+      "Maximum Rank": "196001"
+    },
+    {
+      "Percentile": "43",
+      "Minimum Rank": "171001",
+      "Maximum Rank": "199501"
+    },
+    {
+      "Percentile": "42",
+      "Minimum Rank": "174001",
+      "Maximum Rank": "203001"
+    },
+    {
+      "Percentile": "41",
+      "Minimum Rank": "177001",
+      "Maximum Rank": "206501"
+    },
+    {
+      "Percentile": "40",
+      "Minimum Rank": "180001",
+      "Maximum Rank": "210001"
+    },
+    {
+      "Percentile": "39",
+      "Minimum Rank": "183001",
+      "Maximum Rank": "213501"
+    },
+    {
+      "Percentile": "38",
+      "Minimum Rank": "186001",
+      "Maximum Rank": "217001"
+    },
+    {
+      "Percentile": "37",
+      "Minimum Rank": "189001",
+      "Maximum Rank": "220501"
+    },
+    {
+      "Percentile": "36",
+      "Minimum Rank": "192001",
+      "Maximum Rank": "224001"
+    },
+    {
+      "Percentile": "35",
+      "Minimum Rank": "195001",
+      "Maximum Rank": "227501"
+    },
+    {
+      "Percentile": "34",
+      "Minimum Rank": "198001",
+      "Maximum Rank": "231001"
+    },
+    {
+      "Percentile": "33",
+      "Minimum Rank": "201001",
+      "Maximum Rank": "234501"
+    },
+    {
+      "Percentile": "32",
+      "Minimum Rank": "204001",
+      "Maximum Rank": "238001"
+    },
+    {
+      "Percentile": "31",
+      "Minimum Rank": "207001",
+      "Maximum Rank": "241501"
+    },
+    {
+      "Percentile": "30",
+      "Minimum Rank": "210001",
+      "Maximum Rank": "245001"
+    },
+    {
+      "Percentile": "29",
+      "Minimum Rank": "213001",
+      "Maximum Rank": "248501"
+    },
+    {
+      "Percentile": "28",
+      "Minimum Rank": "216001",
+      "Maximum Rank": "252001"
+    },
+    {
+      "Percentile": "27",
+      "Minimum Rank": "219001",
+      "Maximum Rank": "255501"
+    },
+    {
+      "Percentile": "26",
+      "Minimum Rank": "222001",
+      "Maximum Rank": "259001"
+    },
+    {
+      "Percentile": "25",
+      "Minimum Rank": "225001",
+      "Maximum Rank": "262501"
+    },
+    {
+      "Percentile": "24",
+      "Minimum Rank": "228001",
+      "Maximum Rank": "266001"
+    },
+    {
+      "Percentile": "23",
+      "Minimum Rank": "231001",
+      "Maximum Rank": "269501"
+    },
+    {
+      "Percentile": "22",
+      "Minimum Rank": "234001",
+      "Maximum Rank": "273001"
+    },
+    {
+      "Percentile": "21",
+      "Minimum Rank": "237001",
+      "Maximum Rank": "276501"
+    },
+    {
+      "Percentile": "20",
+      "Minimum Rank": "240001",
+      "Maximum Rank": "280001"
+    },
+    {
+      "Percentile": "19",
+      "Minimum Rank": "243001",
+      "Maximum Rank": "283501"
+    },
+    {
+      "Percentile": "18",
+      "Minimum Rank": "246001",
+      "Maximum Rank": "287001"
+    },
+    {
+      "Percentile": "17",
+      "Minimum Rank": "249001",
+      "Maximum Rank": "290501"
+    },
+    {
+      "Percentile": "16",
+      "Minimum Rank": "252001",
+      "Maximum Rank": "294001"
+    },
+    {
+      "Percentile": "15",
+      "Minimum Rank": "255001",
+      "Maximum Rank": "297501"
+    },
+    {
+      "Percentile": "14",
+      "Minimum Rank": "258001",
+      "Maximum Rank": "301001"
+    },
+    {
+      "Percentile": "13",
+      "Minimum Rank": "261001",
+      "Maximum Rank": "304501"
+    },
+    {
+      "Percentile": "12",
+      "Minimum Rank": "264001",
+      "Maximum Rank": "308001"
+    },
+    {
+      "Percentile": "11",
+      "Minimum Rank": "267001",
+      "Maximum Rank": "311501"
+    },
+    {
+      "Percentile": "10",
+      "Minimum Rank": "270001",
+      "Maximum Rank": "315001"
+    },
+    {
+      "Percentile": "9",
+      "Minimum Rank": "273001",
+      "Maximum Rank": "318501"
+    },
+    {
+      "Percentile": "8",
+      "Minimum Rank": "276001",
+      "Maximum Rank": "322001"
+    },
+    {
+      "Percentile": "7",
+      "Minimum Rank": "279001",
+      "Maximum Rank": "325501"
+    },
+    {
+      "Percentile": "6",
+      "Minimum Rank": "282001",
+      "Maximum Rank": "329001"
+    },
+    {
+      "Percentile": "5",
+      "Minimum Rank": "285001",
+      "Maximum Rank": "332501"
+    },
+    {
+      "Percentile": "4",
+      "Minimum Rank": "288001",
+      "Maximum Rank": "336001"
+    },
+    {
+      "Percentile": "3",
+      "Minimum Rank": "291001",
+      "Maximum Rank": "339501"
+    },
+    {
+      "Percentile": "2",
+      "Minimum Rank": "294001",
+      "Maximum Rank": "343001"
+    },
+    {
+      "Percentile": "1",
+      "Minimum Rank": "297001",
+      "Maximum Rank": "346501"
+    },
+    {
+      "Percentile": "0",
+      "Minimum Rank": "300001",
+      "Maximum Rank": "350001"
+    }
+  ]
+}

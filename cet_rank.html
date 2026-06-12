@@ -2,21 +2,24 @@
 <html lang="en" data-theme="light">
 
 <head>
-    <!-- SEO Optimization Meta Tags -->
-    <title>MHT-CET Percentile vs Rank Predictor — College Simplified</title>
-    <meta name="keywords" content="Counselling, mhtcet, josaa counselling, college simplified, mhtcet counselling, concept simplified, mhtcet counseling, josaa counseling, counseling, college predictor, college predictors, engineering college predictor, college admission predictor, mhtcet percentile vs rank, state rank predictor, cap round planning, general merit rank">
-    <meta name="description" content="Convert your MHT-CET percentile into an estimated state rank using official CAP round data trends for precise seat planning.">
-    <link rel="icon" type="image/png" href="favicon.png">
-    
-    <!-- Open Graph / Facebook Meta Tags -->
-    <meta property="og:title" content="MHT-CET Percentile vs Rank Predictor — College Simplified">
-    <meta property="og:description" content="Convert your MHT-CET percentile into an estimated state rank using official CAP round data trends for precise seat planning.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://counselling.collegesimplified.in/cet_rank.html">
-    <meta property="og:site_name" content="College Simplified">
-    
-    <!-- Structured Data (JSON-LD) for Search Engines -->
-    <script type="application/ld+json">
+  <!-- SEO Optimization Meta Tags -->
+  <title>MHT-CET Percentile vs Rank Predictor — College Simplified</title>
+  <meta name="keywords"
+    content="Counselling, mhtcet, josaa counselling, college simplified, mhtcet counselling, concept simplified, mhtcet counseling, josaa counseling, counseling, college predictor, college predictors, engineering college predictor, college admission predictor, mhtcet percentile vs rank, state rank predictor, cap round planning, general merit rank">
+  <meta name="description"
+    content="Convert your MHT-CET percentile into an estimated state rank using official CAP round data trends for precise seat planning.">
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- Open Graph / Facebook Meta Tags -->
+  <meta property="og:title" content="MHT-CET Percentile vs Rank Predictor — College Simplified">
+  <meta property="og:description"
+    content="Convert your MHT-CET percentile into an estimated state rank using official CAP round data trends for precise seat planning.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://counselling.collegesimplified.in/cet_rank.html">
+  <meta property="og:site_name" content="College Simplified">
+
+  <!-- Structured Data (JSON-LD) for Search Engines -->
+  <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
@@ -228,10 +231,10 @@
 
     .res-val {
       font-family: 'Poppins', sans-serif;
-      font-size: 32px;
+      font-size: 24px;
       font-weight: 800;
       color: var(--ink);
-      line-height: 1;
+      line-height: 1.2;
     }
 
     .res-box.primary .res-val {
@@ -273,7 +276,7 @@
       }
 
       .res-val {
-        font-size: 28px;
+        font-size: 20px;
       }
     }
   </style>
@@ -293,7 +296,8 @@
 
         <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-top: 16px;">
           <button class="btn" onclick="calcRank()">Calculate Rank</button>
-          <button class="btn" onclick="resetForm()" style="background: var(--bg); color: var(--ink); border: 1.5px solid var(--stroke);">Reset</button>
+          <button class="btn" onclick="resetForm()"
+            style="background: var(--bg); color: var(--ink); border: 1.5px solid var(--stroke);">Reset</button>
         </div>
       </div>
 
@@ -340,26 +344,76 @@
   <script>
     'use strict';
 
+    var rankRangeData = [];
+
+    function getRankRange(pct) {
+      if (!rankRangeData || rankRangeData.length === 0) {
+        // Fallback to old formula if JSON fails to load
+        var total = 300000;
+        var est = Math.max(1, Math.round((100 - pct) / 100 * total));
+        return { min: est, max: est };
+      }
+
+      // Handle exact match or boundaries
+      if (pct >= rankRangeData[0].percentile) {
+        return { min: rankRangeData[0].minRank, max: rankRangeData[0].maxRank };
+      }
+      if (pct <= rankRangeData[rankRangeData.length - 1].percentile) {
+        return { 
+          min: rankRangeData[rankRangeData.length - 1].minRank, 
+          max: rankRangeData[rankRangeData.length - 1].maxRank 
+        };
+      }
+
+      // Find bounding entries
+      for (var i = 0; i < rankRangeData.length - 1; i++) {
+        var upper = rankRangeData[i];
+        var lower = rankRangeData[i + 1];
+        if (pct <= upper.percentile && pct >= lower.percentile) {
+          var range = upper.percentile - lower.percentile;
+          if (range === 0) {
+            return { min: upper.minRank, max: upper.maxRank };
+          }
+          var factor = (upper.percentile - pct) / range;
+          var min = Math.round(upper.minRank + factor * (lower.minRank - upper.minRank));
+          var max = Math.round(upper.maxRank + factor * (lower.maxRank - upper.maxRank));
+          return { min: min, max: max };
+        }
+      }
+
+      return { min: 1, max: 1 };
+    }
+
     function calcRank() {
       var pct = parseFloat(document.getElementById('inPercentile').value);
       if (isNaN(pct) || pct < 0 || pct > 100) return alert('Enter a valid percentile (0-100)');
 
-      var total = 520000;
-      var rank = Math.max(1, Math.round((100 - pct) / 100 * total));
-      var rankTentative = Math.max(1, Math.round(rank * 0.9));
+      var range = getRankRange(pct);
+      
+      var minStr = range.min.toLocaleString('en-IN');
+      var maxStr = range.max.toLocaleString('en-IN');
+      var displayRank = minStr === maxStr ? minStr : minStr + ' - ' + maxStr;
 
-      document.getElementById('resRank').textContent = rank.toLocaleString('en-IN');
-      document.getElementById('resRankTentative').textContent = rankTentative.toLocaleString('en-IN');
+      var minTentative = Math.max(1, Math.round(range.min * 0.9));
+      var maxTentative = Math.max(1, Math.round(range.max * 0.9));
+      var minTentativeStr = minTentative.toLocaleString('en-IN');
+      var maxTentativeStr = maxTentative.toLocaleString('en-IN');
+      var displayRankTentative = minTentativeStr === maxTentativeStr ? minTentativeStr : minTentativeStr + ' - ' + maxTentativeStr;
+
+      document.getElementById('resRank').textContent = displayRank;
+      document.getElementById('resRankTentative').textContent = displayRankTentative;
+
+      var avgRank = Math.round((range.min + range.max) / 2);
 
       var tier = '';
-      if (rank <= 1000) tier = 'Top Tier — Dream colleges like COEP, VJTI and SPIT are highly likely.';
-      else if (rank <= 5000) tier = 'Excellent — High chances for premium branches in top-tier colleges.';
-      else if (rank <= 15000) tier = 'Very Good — Strong options across reputed government and private institutes.';
+      if (avgRank <= 1000) tier = 'Top Tier — Dream colleges like COEP, VJTI and SPIT are highly likely.';
+      else if (avgRank <= 5000) tier = 'Excellent — High chances for premium branches in top-tier colleges.';
+      else if (avgRank <= 15000) tier = 'Very Good — Strong options across reputed government and private institutes.';
       else tier = 'Good — Multiple quality options available across the state.';
 
       document.getElementById('resSub').textContent = tier;
       document.getElementById('resultCard').classList.add('show');
-      window.lastCalculatedRank = rank;
+      window.lastCalculatedRank = avgRank;
     }
 
     function goToPredictor() {
@@ -374,8 +428,20 @@
       window.lastCalculatedRank = null;
     }
 
-    function boot() {
+    async function boot() {
       if (!initAuth({ requireLogin: true, toolContainerId: 'toolArea' })) return;
+
+      try {
+        const res = await fetch('MHT CET percentile vs rank.json');
+        const json = await res.json();
+        rankRangeData = (json["MHT CET percentile vs rank"] || []).map(r => ({
+          percentile: parseFloat(r["Percentile"]),
+          minRank: parseInt(r["Minimum Rank"]),
+          maxRank: parseInt(r["Maximum Rank"])
+        })).sort((a, b) => b.percentile - a.percentile);
+      } catch (e) {
+        console.error("Failed to load rank range data:", e);
+      }
 
       // Handle URL params
       var params = new URLSearchParams(window.location.search);
