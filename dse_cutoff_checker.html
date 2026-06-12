@@ -996,7 +996,8 @@
         function getRegionByCode(code) {
             var s = String(code || '').trim();
             if (!s) return '';
-            var char = s.charAt(0);
+            if (s.startsWith('0')) s = s.substring(1);
+            var char = s.length === 5 ? s.charAt(1) : s.charAt(0);
             switch (char) {
                 case '1': return 'Amravati';
                 case '2': return 'Aurangabad';

@@ -72,12 +72,13 @@ const ALL_REGIONS = ['Amravati', 'Chhatrapati Sambhajinagar', 'Mumbai', 'Nagpur'
 function getCollegeRegion(code) {
   const codeStr = String(code || '').trim();
   const parsedCode = codeStr.replace(/^0+/, '');
-  if (parsedCode.startsWith('1')) return 'Amravati';
-  if (parsedCode.startsWith('2')) return 'Chhatrapati Sambhajinagar';
-  if (parsedCode.startsWith('3')) return 'Mumbai';
-  if (parsedCode.startsWith('4')) return 'Nagpur';
-  if (parsedCode.startsWith('5')) return 'Nashik';
-  if (parsedCode.startsWith('6')) return 'Pune';
+  const checkChar = parsedCode.length === 5 ? parsedCode.charAt(1) : parsedCode.charAt(0);
+  if (checkChar === '1') return 'Amravati';
+  if (checkChar === '2') return 'Chhatrapati Sambhajinagar';
+  if (checkChar === '3') return 'Mumbai';
+  if (checkChar === '4') return 'Nagpur';
+  if (checkChar === '5') return 'Nashik';
+  if (checkChar === '6') return 'Pune';
   return null;
 }
 
@@ -437,34 +438,37 @@ function triggerAutosave() {
 
 function validateStep1() {
   if (typeof isAdminTemplateEditingMode !== 'undefined' && isAdminTemplateEditingMode) {
-    const pMin = document.getElementById('inPctMin').value.trim();
-    const pMax = document.getElementById('inPctMax').value.trim();
-    const rMin = document.getElementById('inRankMin').value.trim();
-    const rMax = document.getElementById('inRankMax').value.trim();
+    let pMinVal = document.getElementById('inPctMin').value.trim();
+    let pMaxVal = document.getElementById('inPctMax').value.trim();
+    let rMinVal = document.getElementById('inRankMin').value.trim();
+    let rMaxVal = document.getElementById('inRankMax').value.trim();
 
-    const hasPct = pMin !== '' && pMax !== '' && !isNaN(parseFloat(pMin)) && !isNaN(parseFloat(pMax));
-    const hasRank = rMin !== '' && rMax !== '' && !isNaN(parseInt(rMin)) && !isNaN(parseInt(rMax));
+    // If only one of the percentile bounds is entered, autocomplete the other
+    if (pMinVal !== '' && pMaxVal === '') {
+      pMaxVal = '100';
+      document.getElementById('inPctMax').value = '100';
+    } else if (pMinVal === '' && pMaxVal !== '') {
+      pMinVal = '0';
+      document.getElementById('inPctMin').value = '0';
+    }
 
-    const hasAnyPct = pMin !== '' || pMax !== '';
-    const hasAnyRank = rMin !== '' || rMax !== '';
+    // If only one of the rank bounds is entered, autocomplete the other
+    if (rMinVal !== '' && rMaxVal === '') {
+      rMaxVal = '1000000';
+      document.getElementById('inRankMax').value = '1000000';
+    } else if (rMinVal === '' && rMaxVal !== '') {
+      rMinVal = '1';
+      document.getElementById('inRankMin').value = '1';
+    }
 
-    if (!hasPct && !hasRank) {
-      pbToast('Enter a valid percentile range OR rank range');
-      return false;
-    }
-    if (hasAnyPct && !hasPct) {
-      pbToast('Please enter both Min and Max Percentile to define a range');
-      return false;
-    }
-    if (hasAnyRank && !hasRank) {
-      pbToast('Please enter both Min and Max Rank to define a range');
-      return false;
-    }
-    if (hasPct && parseFloat(pMin) > parseFloat(pMax)) {
+    const hasPct = pMinVal !== '' && pMaxVal !== '' && !isNaN(parseFloat(pMinVal)) && !isNaN(parseFloat(pMaxVal));
+    const hasRank = rMinVal !== '' && rMaxVal !== '' && !isNaN(parseInt(rMinVal)) && !isNaN(parseInt(rMaxVal));
+
+    if (hasPct && parseFloat(pMinVal) > parseFloat(pMaxVal)) {
       pbToast('Min percentile cannot be greater than Max percentile');
       return false;
     }
-    if (hasRank && parseInt(rMin) > parseInt(rMax)) {
+    if (hasRank && parseInt(rMinVal) > parseInt(rMaxVal)) {
       pbToast('Min rank cannot be greater than Max rank');
       return false;
     }
@@ -511,13 +515,14 @@ async function loadData() {
 
     const raw3 = j3['Cleaned_MHT-CET_Cutoff_Data (1)'] || j3[Object.keys(j3)[0]] || [];
     jeeCutoffData = raw3.map(r => ({
-      code: String(r['College Code'] || ''),
+      code: String(r['College Code'] || '').trim().replace(/^0+/, ''),
       name: r['Institute Name'] || '',
       branch: (r['Branch Name'] || '').replace(/\n/g, ' ').trim(),
       seatType: r['Seat Type'] || 'AI',
       rank: parseInt(r['All India Merit'] || r['All India Merit Number']) || 0,
       percentile: parseFloat(r['JEE Percentile']) || 0
     }));
+    window.jeeCutoffData = jeeCutoffData;
 
     // Extract branches from both MHT-CET and JEE Main datasets
     const bSet = new Set();
@@ -652,13 +657,13 @@ function generateMatches() {
   }
 
   const isJee = (window.currentExamType === 'JEE');
-  const activeCutoffData = isJee ? (window.jeeCutoffData || []) : cutoffData;
+  const activeCutoffData = isJee ? (jeeCutoffData || []) : cutoffData;
 
   const regions = selectedRegions; // Multi-region array
-  const homeUniv = (document.getElementById('inHomeUniv') || {}).value || '';
+  const homeUniv = isJee ? '' : ((document.getElementById('inHomeUniv') || {}).value || '');
   const colType = document.getElementById('inColType').value;
-  const minority = document.getElementById('inMinority').value;
-  const category = document.getElementById('inCategory').value;
+  const minority = isJee ? '' : document.getElementById('inMinority').value;
+  const category = isJee ? 'OPEN' : document.getElementById('inCategory').value;
   const gender = document.getElementById('inGender').value;
 
   const isLadiesSeatSelected = (gender === 'Female-only');
@@ -816,30 +821,31 @@ function generateMatches() {
     }
 
     // Split: reachable vs aspirational
+    const minPercentile = Math.max(0, pct - 4);
+
     const reachableMinority = reachableList.filter(r => {
-      return minority && 
+      const isMatchingMinority = minority && 
         (r.status || '').toLowerCase().includes('minority') && 
         (r.status || '').toLowerCase().includes(minority.toLowerCase());
+      return isMatchingMinority && r.percentile >= minPercentile;
     });
 
     const reachableNormal = reachableList.filter(r => {
       const isMatchingMinorityCollege = minority && 
         (r.status || '').toLowerCase().includes('minority') && 
         (r.status || '').toLowerCase().includes(minority.toLowerCase());
-      return !isMatchingMinorityCollege && r.percentile <= pct;
+      return !isMatchingMinorityCollege && r.percentile <= pct && r.percentile >= minPercentile;
     });
 
-    const sortedNormal = reachableNormal.sort((a, b) => b.percentile - a.percentile).slice(0, Math.max(0, 34 - reachableMinority.length));
-    const reachable = [...reachableMinority, ...sortedNormal].sort((a, b) => b.percentile - a.percentile);
+    const reachable = [...reachableMinority, ...reachableNormal];
+    reachable.forEach(r => r.isAspirational = false);
 
     // For aspirational, we take from the list that IGNORES minority status
-    const aspirational = aspirationalList
-      .filter(r => r.percentile > pct)
-      .sort((a, b) => a.percentile - b.percentile)
-      .slice(0, 6); // Select exactly 6 aspirational colleges as requested
-
+    const aspirational = aspirationalList.filter(r => r.percentile > pct);
     aspirational.forEach(r => r.isAspirational = true);
+
     matchedColleges = [...aspirational, ...reachable];
+    matchedColleges.sort((a, b) => b.percentile - a.percentile);
   }
 
   // Suggestion pool: branch+cat+region+colType matching colleges that were filtered out by minority
@@ -988,14 +994,13 @@ function filterColleges(f, el) {
 
 /* ══════ PREFERENCE LIST (Step 4) ══════ */
 function buildPrefList() {
-  const userAspirational = matchedColleges.filter((c, i) => selectedColleges.includes(i) && c.isAspirational);
-  const userNormal = matchedColleges.filter((c, i) => selectedColleges.includes(i) && !c.isAspirational);
+  const userSelected = matchedColleges.filter((c, i) => selectedColleges.includes(i));
 
-  // Sort normal by percentile desc
-  userNormal.sort((a, b) => b.percentile - a.percentile);
+  // Sort all selected preferences by percentile desc
+  userSelected.sort((a, b) => b.percentile - a.percentile);
 
-  // Combine: Fixed -> User Aspirational -> User Normal
-  const combined = [...FIXED_ASPIRATIONAL, ...userAspirational, ...userNormal];
+  // Combine: Fixed -> User Selected
+  const combined = [...FIXED_ASPIRATIONAL, ...userSelected];
   
   // Deduplicate based on code + branch, keeping the first occurrence (which preserves fixed/aspirational flags)
   const seen = new Set();
@@ -1065,7 +1070,7 @@ function searchManualColleges() {
     const homeUniv = (document.getElementById('inHomeUniv') || {}).value || '';
 
     const isJee = (window.currentExamType === 'JEE');
-    const activeCutoffData = isJee ? (window.jeeCutoffData || []) : cutoffData;
+    const activeCutoffData = isJee ? (jeeCutoffData || []) : cutoffData;
 
     const catMap = { 'OPEN': 'OPEN', 'OBC': 'OBC', 'SC': 'SC', 'ST': 'ST', 'VJ/DT': 'VJ', 'NT1': 'NT1', 'NT2': 'NT2', 'NT3': 'NT3', 'EWS': 'EWS', 'TFWS': 'TFWS' };
     const searchCat = catMap[baseCategory] || 'OPEN';
@@ -1179,7 +1184,7 @@ function searchManualCollegesList() {
     const homeUniv = (document.getElementById('inHomeUniv') || {}).value || '';
 
     const isJee = (window.currentExamType === 'JEE');
-    const activeCutoffData = isJee ? (window.jeeCutoffData || []) : cutoffData;
+    const activeCutoffData = isJee ? (jeeCutoffData || []) : cutoffData;
 
     const catMap = { 'OPEN': 'OPEN', 'OBC': 'OBC', 'SC': 'SC', 'ST': 'ST', 'VJ/DT': 'VJ', 'NT1': 'NT1', 'NT2': 'NT2', 'NT3': 'NT3', 'EWS': 'EWS', 'TFWS': 'TFWS' };
     const searchCat = catMap[baseCategory] || 'OPEN';
@@ -1277,7 +1282,10 @@ function searchManualCollegesList() {
 }
 
 function sortPrefList() {
-  prefList.sort((a, b) => b.percentile - a.percentile);
+  const fixed = prefList.filter(c => c.isFixed);
+  const others = prefList.filter(c => !c.isFixed);
+  others.sort((a, b) => b.percentile - a.percentile);
+  prefList = [...fixed, ...others];
   renderPrefList();
   pbToast('List sorted by cutoff percentile');
 }
@@ -1318,12 +1326,18 @@ function toggleAspirational(code, branch) {
 }
 
 function renderPrefList() {
-  const list = document.getElementById('prefListUl');
+  const list = document.getElementById('prefListTbody');
   const count = document.getElementById('prefCount');
   if (!count) return;
   count.textContent = prefList.length + ' colleges';
   if (!prefList.length) {
-    list.innerHTML = '<div class="empty-state" style="padding:40px"><h3>No colleges added</h3><p>Go back and select colleges.</p></div>';
+    list.innerHTML = `
+      <tr class="empty-state-row">
+        <td colspan="8" style="text-align: center; padding: 40px; color: var(--muted)">
+          <h3>No colleges added</h3>
+          <p>Go back and select colleges.</p>
+        </td>
+      </tr>`;
     return;
   }
 
@@ -1331,10 +1345,10 @@ function renderPrefList() {
     const isFixed = c.isFixed;
     const badges = [];
     if (c.isAspirational) {
-      badges.push('<span class="pref-code asp-badge" style="background:#fff7ed; color:#ea580c; border:1px solid rgba(234, 88, 12, 0.15); margin-left:6px; font-weight:800; font-size:10px; text-transform:uppercase; letter-spacing:0.5px">Aspirational</span>');
+      badges.push('<span class="pref-code asp-badge" style="background:#fff7ed; color:#ea580c; border:1px solid rgba(234, 88, 12, 0.15); font-weight:800; font-size:10px; text-transform:uppercase; letter-spacing:0.5px; padding: 2px 8px; border-radius: 6px">Aspirational</span>');
     }
     if (isFixed) {
-      badges.push('<span class="pref-code fixed-badge" style="background:var(--brand-soft); color:var(--brand); border:1px solid var(--brand-ring); margin-left:6px; font-weight:800; font-size:10px; text-transform:uppercase; letter-spacing:0.5px">Mandatory</span>');
+      badges.push('<span class="pref-code fixed-badge" style="background:var(--brand-soft); color:var(--brand); border:1px solid var(--brand-ring); font-weight:800; font-size:10px; text-transform:uppercase; letter-spacing:0.5px; padding: 2px 8px; border-radius: 6px">Mandatory</span>');
     }
 
     // Look up status from metadata
@@ -1344,21 +1358,21 @@ function renderPrefList() {
     const statusLower = status.toLowerCase();
     
     if (statusLower.includes('government')) {
-      statusTags.push('<span class="col-tag gov" style="font-size: 9px; padding: 2px 8px; margin-left: 6px">Government</span>');
+      statusTags.push('<span class="col-tag gov" style="font-size: 9px; padding: 2px 8px">Government</span>');
     }
     if (statusLower.includes('autonomous')) {
-      statusTags.push('<span class="col-tag auto" style="font-size: 9px; padding: 2px 8px; margin-left: 6px">Autonomous</span>');
+      statusTags.push('<span class="col-tag auto" style="font-size: 9px; padding: 2px 8px">Autonomous</span>');
     }
     if (statusLower.includes('minority')) {
       const minType = c.minorityType || (meta.status ? extractMinority(meta.status) : '');
-      statusTags.push(`<span class="col-tag minority" style="font-size: 9px; padding: 2px 8px; margin-left: 6px">${escH(minType || 'Minority')}</span>`);
+      statusTags.push(`<span class="col-tag minority" style="font-size: 9px; padding: 2px 8px">${escH(minType || 'Minority')}</span>`);
     }
     if (statusLower.includes('aided') && !statusLower.includes('un-aided')) {
-      statusTags.push('<span class="col-tag" style="font-size: 9px; padding: 2px 8px; margin-left: 6px">Aided</span>');
+      statusTags.push('<span class="col-tag" style="font-size: 9px; padding: 2px 8px">Aided</span>');
     }
 
     return `
-      <li class="pref-item ${isFixed ? 'is-fixed' : ''} ${c.isAspirational ? 'asp-item' : ''}" 
+      <tr class="pref-item ${isFixed ? 'is-fixed' : ''} ${c.isAspirational ? 'asp-item' : ''}" 
           draggable="${!isFixed}" 
           data-idx="${i}"
           ondragstart="${isFixed ? '' : 'dragStart(event)'}" 
@@ -1366,28 +1380,35 @@ function renderPrefList() {
           ondrop="${isFixed ? '' : 'dropItem(event)'}" 
           ondragend="${isFixed ? '' : 'dragEnd(event)'}"
           style="${isFixed ? 'border-left: 4px solid var(--brand); cursor: default' : ''}">
-        <div class="pref-grip">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <td class="pref-grip" style="text-align: center; width: 40px; vertical-align: middle">
+          ${isFixed ? '' : `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="cursor: grab; color: var(--muted)">
             <circle cx="9" cy="5" r="1"/><circle cx="15" cy="5" r="1"/>
             <circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/>
             <circle cx="9" cy="19" r="1"/><circle cx="15" cy="19" r="1"/>
           </svg>
-        </div>
-        <div class="pref-num">${i + 1}</div>
-        <div class="pref-info">
-          <div class="pref-name">${escH(c.instituteName || c.name)}</div>
-          <div class="pref-branch">${escH(c.branch)} <span class="pref-code">${c.code}</span>${badges.join('')}${statusTags.join('')}</div>
-          <div class="pref-cutoff" style="font-size:11px; color:var(--muted); margin-top:4px">Cutoff: <strong>${c.percentile ? c.percentile.toFixed(2) + '%' : 'N/A'}</strong></div>
-        </div>
-        <div class="pref-actions">
+          `}
+        </td>
+        <td class="pref-num" style="text-align: center; font-weight: 800; width: 60px; vertical-align: middle">${i + 1}</td>
+        <td style="width: 80px; vertical-align: middle">${c.code}</td>
+        <td class="pref-name" style="font-weight: 600; color: var(--ink); vertical-align: middle" title="${escH(c.instituteName || c.name)}">${escH(c.instituteName || c.name)}</td>
+        <td style="vertical-align: middle" title="${escH(c.branch)}">${escH(c.branch)}</td>
+        <td style="vertical-align: middle">
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center">
+            ${badges.join('')}
+            ${statusTags.join('')}
+          </div>
+        </td>
+        <td class="excel-td-pct" style="vertical-align: middle"><strong>${c.percentile ? c.percentile.toFixed(2) + '%' : 'N/A'}</strong></td>
+        <td style="text-align: center; width: 70px; vertical-align: middle">
           ${isFixed ?
-        '<span style="font-size:10px; font-weight:800; color:var(--brand); opacity:0.6; text-transform:uppercase; padding-right:8px">Mandatory</span>' :
-        `<button class="pref-remove" onclick="removePref(${i})" title="Remove">
+            '<span style="font-size:9px; font-weight:800; color:var(--brand); opacity:0.6; text-transform:uppercase">Mandatory</span>' :
+            `<button class="pref-remove" onclick="removePref(${i})" title="Remove" style="background:none; border:none; color:var(--muted); cursor:pointer; padding:4px; border-radius:6px; transition:0.2s">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>`
-      }
-        </div>
-      </li>`;
+          }
+        </td>
+      </tr>`;
   }).join('');
 }
 
@@ -1479,7 +1500,7 @@ function handleAddSuggestion(code, branch, isAspirational = false) {
   // If not found (manual search), enrich from cutoffData and metadata
   if (!c) {
     const isJee = (window.currentExamType === 'JEE');
-    const activeCutoffData = isJee ? (window.jeeCutoffData || []) : cutoffData;
+    const activeCutoffData = isJee ? (jeeCutoffData || []) : cutoffData;
     const raw = activeCutoffData.find(r => r.code === code && r.branch === branch);
     if (raw) {
       const metaMap = {}; collegeMetadata.forEach(m => metaMap[m.code] = m);

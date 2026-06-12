@@ -394,7 +394,13 @@
       
       // Region Filter
       if (region !== 'all') {
-        filtered = filtered.filter(r => String(r.code || '').startsWith(region));
+        filtered = filtered.filter(r => {
+          const s = String(r.code || '').trim();
+          if (!s) return false;
+          const clean = s.replace(/^0+/, '');
+          const char = clean.length === 5 ? clean.charAt(1) : clean.charAt(0);
+          return char === region;
+        });
       }
 
       // Category matching
