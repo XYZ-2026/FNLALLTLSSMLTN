@@ -187,7 +187,7 @@
 
     .results-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 16px;
       margin-top: 8px;
     }
@@ -209,11 +209,6 @@
     .res-box.primary {
       border-color: var(--brand);
       background: var(--brand-soft);
-    }
-
-    .res-box.tentative {
-      border-color: #0f172a;
-      background: #f8fafc;
     }
 
     .res-label {
@@ -239,10 +234,6 @@
 
     .res-box.primary .res-val {
       color: var(--brand);
-    }
-
-    .res-box.tentative .res-val {
-      color: #0f172a;
     }
 
     .res-sub {
@@ -306,10 +297,6 @@
           <div class="res-box primary">
             <div class="res-label">Results based on data upto 2025</div>
             <div class="res-val" id="resRank">—</div>
-          </div>
-          <div class="res-box tentative">
-            <div class="res-label">Results expected in 2026</div>
-            <div class="res-val" id="resRankTentative">—</div>
           </div>
         </div>
 
@@ -394,14 +381,7 @@
       var maxStr = range.max.toLocaleString('en-IN');
       var displayRank = minStr === maxStr ? minStr : minStr + ' - ' + maxStr;
 
-      var minTentative = Math.max(1, Math.round(range.min * 0.9));
-      var maxTentative = Math.max(1, Math.round(range.max * 0.9));
-      var minTentativeStr = minTentative.toLocaleString('en-IN');
-      var maxTentativeStr = maxTentative.toLocaleString('en-IN');
-      var displayRankTentative = minTentativeStr === maxTentativeStr ? minTentativeStr : minTentativeStr + ' - ' + maxTentativeStr;
-
       document.getElementById('resRank').textContent = displayRank;
-      document.getElementById('resRankTentative').textContent = displayRankTentative;
 
       var avgRank = Math.round((range.min + range.max) / 2);
 
