@@ -194,17 +194,36 @@
 
         <!-- Locked Section: Percentile & Rank -->
         <div id="editStatusWrap" style="margin-bottom:20px"></div>
+
+        <!-- Exam Type Selection -->
+        <div class="fg" style="margin-bottom: 20px;">
+          <label class="fg-label">Admission Entry Exam *</label>
+          <div style="display: flex; gap: 12px; margin-top: 6px;">
+            <label class="exam-radio-label">
+              <input type="radio" name="inExamType" value="MHT-CET" checked onchange="toggleExamPath('MHT-CET')">
+              <span>MHT-CET (State Quota)</span>
+            </label>
+            <label class="exam-radio-label">
+              <input type="radio" name="inExamType" value="JEE" onchange="toggleExamPath('JEE')">
+              <span>JEE Mains (All India Quota)</span>
+            </label>
+          </div>
+        </div>
         
         <!-- Student Pct/Rank inputs -->
         <div id="studentPctRankRow" class="fg-row">
           <div class="fg">
-            <label class="fg-label">CET Percentile *</label>
+            <label class="fg-label">CET Percentile <span class="fg-optional">Optional</span></label>
             <input type="number" class="fg-input" id="inPct" placeholder="e.g. 92.45" step="0.0001" min="0" max="100">
           </div>
           <div class="fg">
-            <label class="fg-label">CET Rank *</label>
+            <label class="fg-label">CET Rank <span class="fg-optional">Optional</span></label>
             <input type="number" class="fg-input" id="inRank" placeholder="e.g. 25000" min="1">
           </div>
+        </div>
+        <div class="fg-hint" style="margin-top: -8px; margin-bottom: 8px; color: #d97706; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          Enter either percentile or rank — the other will be auto-calculated
         </div>
 
         <!-- Admin Template Range inputs -->
@@ -272,17 +291,26 @@
         </div>
 
         <div class="fg">
-          <label class="fg-label">Desired Region <span class="fg-optional">Optional</span></label>
-          <select class="fg-select" id="inRegion">
-            <option value="">All Regions</option>
-            <option value="Mumbai">Mumbai</option>
-            <option value="Pune">Pune</option>
-            <option value="Nashik">Nashik</option>
-            <option value="Aurangabad">Aurangabad</option>
-            <option value="Amravati">Amravati</option>
-            <option value="Nagpur">Nagpur</option>
+          <label class="fg-label">Home University <span class="fg-optional">Optional</span></label>
+          <select class="fg-select" id="inHomeUniv">
+            <option value="">No Preference (Show all seat types)</option>
+            <option value="Mumbai">University of Mumbai (MU)</option>
+            <option value="Pune">Savitribai Phule Pune University (SPPU)</option>
+            <option value="Nagpur">RTMNU, Nagpur</option>
+            <option value="Aurangabad">BAMU, Chhatrapati Sambhajinagar</option>
+            <option value="Kolhapur">Shivaji University, Kolhapur</option>
+            <option value="Jalgaon">KBCNMU, Jalgaon</option>
+            <option value="Amravati">SGBAU, Amravati</option>
+            <option value="Nanded">SRTMUN, Nanded</option>
+            <option value="Solapur">Solapur University</option>
           </select>
-          <div class="fg-hint">Select a specific region to filter colleges</div>
+          <div class="fg-hint">Colleges in your HU region will show Home (H) cutoffs, others will show Other (O) cutoffs</div>
+        </div>
+
+        <div class="fg">
+          <label class="fg-label">Desired Regions <span class="fg-optional">Optional — select multiple</span></label>
+          <div class="region-chips-wrap" id="regionChipsContainer"></div>
+          <div class="fg-hint">Select regions to filter colleges. Leave empty for all regions.</div>
         </div>
 
         <div class="fg-row">

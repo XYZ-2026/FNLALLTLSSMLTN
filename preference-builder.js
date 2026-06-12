@@ -1,7 +1,7 @@
 'use strict';
 
 /* ══════ STATE ══════ */
-let cutoffData = [], collegeMetadata = [], selectedBranches = new Set(), matchedColleges = [], selectedColleges = [], prefList = [], allBranchNames = [];
+let cutoffData = [], jeeCutoffData = [], collegeMetadata = [], selectedBranches = new Set(), matchedColleges = [], selectedColleges = [], prefList = [], allBranchNames = [];
 let prefEditCount = 0;
 let prefLocked = false;
 let prefDataLoaded = false;
@@ -11,6 +11,8 @@ let currentUserId = null;
 let expandedCategories = new Set();
 let currentStudentInfo = null;
 let cachedUsers = null;
+let selectedRegions = []; // Multi-region selection state
+window.currentExamType = 'MHT-CET'; // Toggle between MHT-CET and JEE
 
 // Admin Template Editing Mode State
 let isAdminTemplateEditingMode = false;
@@ -20,6 +22,184 @@ let editingTemplateDesc = '';
 let editingTemplateTags = [];
 let editingTemplateIsPublished = true;
 let editingTemplateFilters = {};
+
+/* ══════ HOME UNIVERSITY MAP ══════ */
+const HOME_UNIVERSITY_MAP = {
+  'Mumbai': {
+    name: 'University of Mumbai (MU)',
+    cities: ['mumbai', 'thane', 'raigad', 'palghar', 'ratnagiri', 'sindhudurg', 'navi mumbai', 'panvel', 'ulhasnagar', 'vasai', 'virar', 'badlapur', 'karjat', 'kharghar', 'andheri', 'boisar', 'new panvel', 'khalapur', 'bapsai', 'tal-ambernath']
+  },
+  'Pune': {
+    name: 'Savitribai Phule Pune University (SPPU)',
+    cities: ['pune', 'ahmednagar', 'nashik', 'baramati', 'lonavala', 'talegaon', 'kopargaon', 'sangamner', 'narhe', 'wagholi', 'pisoli', 'ravet', 'haveli', 'indapur', 'shegaon', 'malegaon-baramati', 'chincholi', 'swami - chincholi', 'avasari', 'kuran', 'ohar']
+  },
+  'Nagpur': {
+    name: 'RTMNU, Nagpur',
+    cities: ['nagpur', 'wardha', 'bhandara', 'gondia', 'gadchiroli', 'chandrapur', 'ramtek', 'sevagram', 'bhadrawati', 'sakoli', 'hingna', 'babulgaon', 'sindhi(meghe)']
+  },
+  'Aurangabad': {
+    name: 'BAMU, Chhatrapati Sambhajinagar',
+    cities: ['aurangabad', 'chhatrapati sambhajinagar', 'jalna', 'beed', 'osmanabad', 'ambejogai', 'dharashiv']
+  },
+  'Kolhapur': {
+    name: 'Shivaji University, Kolhapur',
+    cities: ['kolhapur', 'sangli', 'satara', 'karad', 'ichalkaranji', 'gadhinglaj', 'jaysingpur', 'warananagar', 'miraj', 'yadrav', 'kankavli']
+  },
+  'Jalgaon': {
+    name: 'KBCNMU, Jalgaon',
+    cities: ['jalgaon', 'dhule', 'nandurbar', 'bhusawal', 'chopda', 'shirpur', 'faizpur', 'dondaicha', 'malegaon']
+  },
+  'Amravati': {
+    name: 'SGBAU, Amravati',
+    cities: ['amravati', 'akola', 'yavatmal', 'buldhana', 'washim', 'badnera', 'shegaon', 'pusad', 'achalpur']
+  },
+  'Nanded': {
+    name: 'SRTMUN, Nanded',
+    cities: ['nanded', 'latur', 'parbhani', 'hingoli', 'tuljapur']
+  },
+  'Solapur': {
+    name: 'Solapur University',
+    cities: ['solapur', 'pandharpur', 'barshi', 'sangola', 'akluj']
+  }
+};
+
+// All available regions for multi-select based on region data (6 DTE regions)
+const ALL_REGIONS = ['Amravati', 'Chhatrapati Sambhajinagar', 'Mumbai', 'Nagpur', 'Nashik', 'Pune'];
+
+/**
+ * Determine the region of a college based on its institute code prefix.
+ */
+function getCollegeRegion(code) {
+  const codeStr = String(code || '').trim();
+  const parsedCode = codeStr.replace(/^0+/, '');
+  if (parsedCode.startsWith('1')) return 'Amravati';
+  if (parsedCode.startsWith('2')) return 'Chhatrapati Sambhajinagar';
+  if (parsedCode.startsWith('3')) return 'Mumbai';
+  if (parsedCode.startsWith('4')) return 'Nagpur';
+  if (parsedCode.startsWith('5')) return 'Nashik';
+  if (parsedCode.startsWith('6')) return 'Pune';
+  return null;
+}
+
+/**
+ * Determine the Home University key for a college based on its name.
+ * Returns the HU key (e.g. 'Mumbai', 'Pune') or null if not matched / autonomous.
+ */
+function getCollegeHU(collegeName) {
+  const nameLower = (collegeName || '').toLowerCase();
+  for (const [huKey, huData] of Object.entries(HOME_UNIVERSITY_MAP)) {
+    for (const city of huData.cities) {
+      if (nameLower.includes(city)) return huKey;
+    }
+  }
+  return null;
+}
+
+/**
+ * Get the required seat type suffix for a college given the student's home university.
+ * - If college is in student's HU region → 'H' (Home)
+ * - If college is in a different HU region → 'O' (Other)
+ * - If college HU cannot be determined (autonomous/state level) → 'S' (State)
+ * - If no HU selected → null (no filtering)
+ */
+function getSeatSuffix(collegeName, collegeStatus, studentHU) {
+  if (!studentHU) return null; // No HU selected, don't filter by suffix
+  const statusLower = (collegeStatus || '').toLowerCase();
+  // Autonomous and state-level institutes use S seats
+  if (statusLower.includes('autonomous') || statusLower.includes('university department')) return 'S';
+  const collegeHU = getCollegeHU(collegeName);
+  if (!collegeHU) return 'S'; // Can't determine region → treat as state level
+  return collegeHU === studentHU ? 'H' : 'O';
+}
+
+/**
+ * Check if a college matches any of the selected regions based on its institute code.
+ */
+function matchesSelectedRegions(collegeCode, regions) {
+  if (!regions || regions.length === 0) return true; // No region filter
+  const collegeRegion = getCollegeRegion(collegeCode);
+  if (!collegeRegion) return false;
+  return regions.some(r => r.toLowerCase() === collegeRegion.toLowerCase());
+}
+
+/**
+ * Toggle between MHT-CET and JEE Mains counselling entry paths, hiding/showing relevant fields.
+ */
+function toggleExamPath(type) {
+  const isJee = (type === 'JEE');
+  window.currentExamType = type;
+
+  // Find container rows
+  const catSelect = document.getElementById('inCategory');
+  const huSelect = document.getElementById('inHomeUniv');
+  const colTypeSelect = document.getElementById('inColType');
+  const minoritySelect = document.getElementById('inMinority');
+
+  if (catSelect) catSelect.closest('.fg').style.display = isJee ? 'none' : 'block';
+  if (huSelect) huSelect.closest('.fg').style.display = isJee ? 'none' : 'block';
+  if (colTypeSelect) colTypeSelect.closest('.fg').style.display = isJee ? 'none' : 'block';
+  if (minoritySelect) minoritySelect.closest('.fg').style.display = isJee ? 'none' : 'block';
+
+  // Update Labels for inputs
+  const pctLabel = document.querySelector('#studentPctRankRow .fg:nth-child(1) .fg-label');
+  const rankLabel = document.querySelector('#studentPctRankRow .fg:nth-child(2) .fg-label');
+
+  if (pctLabel) {
+    pctLabel.innerHTML = isJee ? 'JEE Mains Percentile <span class="fg-optional">Optional</span>' : 'CET Percentile <span class="fg-optional">Optional</span>';
+  }
+  if (rankLabel) {
+    rankLabel.innerHTML = isJee ? 'MHT-CET All India Rank <span class="fg-optional">Optional</span>' : 'CET Rank <span class="fg-optional">Optional</span>';
+  }
+  
+  // Re-run auto-filling logic if needed
+  autoFillPctRank();
+  triggerAutosave();
+}
+
+/**
+ * Toggle a region in the multi-select chips UI.
+ */
+function toggleRegion(region) {
+  const idx = selectedRegions.indexOf(region);
+  if (idx >= 0) selectedRegions.splice(idx, 1);
+  else selectedRegions.push(region);
+  renderRegionChips();
+  triggerAutosave();
+}
+
+function renderRegionChips() {
+  const container = document.getElementById('regionChipsContainer');
+  if (!container) return;
+  container.innerHTML = ALL_REGIONS.map(r => {
+    const sel = selectedRegions.includes(r) ? 'selected' : '';
+    return `<button type="button" class="region-chip ${sel}" onclick="toggleRegion('${r}')">${r}</button>`;
+  }).join('');
+}
+
+/**
+ * Auto-calculate missing percentile or rank.
+ */
+function autoFillPctRank() {
+  const pctEl = document.getElementById('inPct');
+  const rankEl = document.getElementById('inRank');
+  const pctVal = pctEl.value.trim();
+  const rankVal = rankEl.value.trim();
+  const TOTAL_STUDENTS = 520000;
+
+  if (pctVal && !rankVal) {
+    const pct = parseFloat(pctVal);
+    if (!isNaN(pct) && pct >= 0 && pct <= 100) {
+      const rank = Math.max(1, Math.round((100 - pct) / 100 * TOTAL_STUDENTS));
+      rankEl.value = rank;
+    }
+  } else if (rankVal && !pctVal) {
+    const rank = parseInt(rankVal);
+    if (!isNaN(rank) && rank >= 1) {
+      const pct = Math.max(0, 100 - (rank / TOTAL_STUDENTS) * 100);
+      pctEl.value = pct.toFixed(4);
+    }
+  }
+}
 const CATS = {
   'Computer & IT': ['COMPUTER', 'INFORMATION TECHNOLOGY', 'AI', 'ARTIFICIAL', 'DATA SCIENCE', 'MACHINE LEARNING', 'SOFTWARE', 'CYBER', 'ROBOTICS'],
   'Electronics & Telecom': ['ELECTRONICS', 'TELECOMMUNICATION', 'ENTC', 'COMMUNICATION', 'INSTRUMENTATION'],
@@ -109,6 +289,15 @@ function startNewForm() {
   selectedColleges = [];
   selectedBranches = new Set(); // Clear branch selections
 
+  const radios = document.getElementsByName('inExamType');
+  for (const r of radios) {
+    if (r.value === 'MHT-CET') {
+      r.checked = true;
+      break;
+    }
+  }
+  toggleExamPath('MHT-CET');
+
   if (prefLocked) lockProfileFields();
   else unlockProfileFields();
 
@@ -124,6 +313,16 @@ function loadForm(formId, step = 1) {
   document.getElementById('inPct').value = form.percentile || '';
   document.getElementById('inRank').value = form.rank || '';
 
+  const examTypeVal = form.examType || 'MHT-CET';
+  const radios = document.getElementsByName('inExamType');
+  for (const r of radios) {
+    if (r.value === examTypeVal) {
+      r.checked = true;
+      break;
+    }
+  }
+  toggleExamPath(examTypeVal);
+
   let genderVal = form.gender;
   let categoryVal = form.category || 'OPEN';
   if (!genderVal) {
@@ -136,7 +335,12 @@ function loadForm(formId, step = 1) {
   }
   document.getElementById('inCategory').value = categoryVal;
   document.getElementById('inGender').value = genderVal;
-  document.getElementById('inRegion').value = form.region || '';
+  // Restore region (backward compat: old forms had single region string)
+  selectedRegions = form.selectedRegions || (form.region ? [form.region] : []);
+  renderRegionChips();
+  // Restore home university
+  const huEl = document.getElementById('inHomeUniv');
+  if (huEl) huEl.value = form.homeUniv || '';
   prefList = form.prefList || [];
 
   // Ensure Fixed Aspirational are present even in old forms
@@ -199,7 +403,8 @@ async function saveNonLockedData() {
   const rank = document.getElementById('inRank').value;
   const cat = document.getElementById('inCategory').value;
   const gender = document.getElementById('inGender').value;
-  const region = document.getElementById('inRegion').value;
+  const homeUniv = (document.getElementById('inHomeUniv') || {}).value || '';
+  const examType = window.currentExamType || 'MHT-CET';
 
   const res = await authApi('savePrefData', {
     userId: currentUserId,
@@ -208,7 +413,10 @@ async function saveNonLockedData() {
     rank: rank,
     category: cat,
     gender: gender,
-    region: region,
+    region: selectedRegions.length === 1 ? selectedRegions[0] : '', // backward compat
+    selectedRegions: selectedRegions,
+    homeUniv: homeUniv,
+    examType: examType,
     prefList: prefList,
     selectedBranches: Array.from(selectedBranches),
     selectedCollegeKeys: selectedColleges.map(idx => matchedColleges[idx] ? matchedColleges[idx].code + '|' + matchedColleges[idx].branch : '').filter(Boolean),
@@ -263,9 +471,12 @@ function validateStep1() {
     return true;
   }
 
-  const p = document.getElementById('inPct').value, r = document.getElementById('inRank').value;
-  if (!p || isNaN(parseFloat(p))) { pbToast('Enter valid percentile'); return false }
-  if (!r || isNaN(parseInt(r))) { pbToast('Enter valid rank'); return false }
+  const p = document.getElementById('inPct').value.trim(), r = document.getElementById('inRank').value.trim();
+  const hasP = p !== '' && !isNaN(parseFloat(p));
+  const hasR = r !== '' && !isNaN(parseInt(r));
+  if (!hasP && !hasR) { pbToast('Enter either percentile or rank (at least one is required)'); return false }
+  // Auto-fill the missing one
+  autoFillPctRank();
   return true;
 }
 
@@ -273,8 +484,18 @@ function validateStep1() {
 async function loadData() {
   const loader = document.getElementById('dataLoader');
   try {
-    loader.innerHTML = '<div class="pb-spinner"></div><span>Loading cutoff data (12MB)...</span>';
-    const r1 = await fetch('data.json'); const j1 = await r1.json();
+    loader.innerHTML = '<div class="pb-spinner"></div><span>Loading cutoff data...</span>';
+    
+    // Fetch data.json, college-data.json, and jee_data.json concurrently
+    const [res1, res2, res3] = await Promise.all([
+      fetch('data.json'),
+      fetch('college-data.json'),
+      fetch('jee_data.json')
+    ]);
+    const j1 = await res1.json();
+    const j2 = await res2.json();
+    const j3 = await res3.json();
+
     const raw1 = j1['MHT-CET College Data'] || j1[Object.keys(j1)[0]] || [];
     cutoffData = raw1.map(r => ({
       code: String(r['Institute Code'] || ''), name: r['Institute'] || r['Institute Name'] || '',
@@ -283,17 +504,27 @@ async function loadData() {
       percentile: parseFloat(r['Percentile']) || 0
     }));
 
-    loader.querySelector('span').textContent = 'Loading college metadata...';
-    const r2 = await fetch('college-data.json'); const j2 = await r2.json();
     collegeMetadata = (j2['college-data'] || []).map(c => ({
       code: String(c['Institute Code'] || ''), name: c['Institute Name'] || '',
       status: c['Status'] || '', intake: c['Total Intake'] || 0
     }));
 
-    // Extract branches
+    const raw3 = j3['Cleaned_MHT-CET_Cutoff_Data (1)'] || j3[Object.keys(j3)[0]] || [];
+    jeeCutoffData = raw3.map(r => ({
+      code: String(r['College Code'] || ''),
+      name: r['Institute Name'] || '',
+      branch: (r['Branch Name'] || '').replace(/\n/g, ' ').trim(),
+      seatType: r['Seat Type'] || 'AI',
+      rank: parseInt(r['All India Merit'] || r['All India Merit Number']) || 0,
+      percentile: parseFloat(r['JEE Percentile']) || 0
+    }));
+
+    // Extract branches from both MHT-CET and JEE Main datasets
     const bSet = new Set();
     cutoffData.forEach(r => { if (r.branch) bSet.add(r.branch) });
+    jeeCutoffData.forEach(r => { if (r.branch) bSet.add(r.branch) });
     allBranchNames = Array.from(bSet).sort();
+
     renderBranches();
     loader.style.display = 'none';
     document.getElementById('predictBtn').disabled = false;
@@ -420,7 +651,11 @@ function generateMatches() {
     rank = parseInt(document.getElementById('inRank').value);
   }
 
-  const region = document.getElementById('inRegion').value;
+  const isJee = (window.currentExamType === 'JEE');
+  const activeCutoffData = isJee ? (window.jeeCutoffData || []) : cutoffData;
+
+  const regions = selectedRegions; // Multi-region array
+  const homeUniv = (document.getElementById('inHomeUniv') || {}).value || '';
   const colType = document.getElementById('inColType').value;
   const minority = document.getElementById('inMinority').value;
   const category = document.getElementById('inCategory').value;
@@ -437,7 +672,7 @@ function generateMatches() {
   collegeMetadata.forEach(c => metaMap[c.code] = c);
 
   // Filter cutoff data
-  let filtered = cutoffData.filter(r => {
+  let filtered = activeCutoffData.filter(r => {
     if (!selectedBranches.has(r.branch)) return false;
 
     if (isTemplate) {
@@ -446,27 +681,41 @@ function generateMatches() {
     }
 
     const meta = metaMap[r.code] || {};
-    const nameLower = (meta.name || r.name || '').toLowerCase();
+    const collegeName = meta.name || r.name || '';
+    const nameLower = collegeName.toLowerCase();
     const statusLower = (meta.status || '').toLowerCase();
 
-    // Check if this college matches the selected minority preference
-    const isMatchingMinorityCollege = minority && 
-      statusLower.includes('minority') && 
-      statusLower.includes(minority.toLowerCase());
+    if (!isJee) {
+      // Check if this college matches the selected minority preference
+      const isMatchingMinorityCollege = minority && 
+        statusLower.includes('minority') && 
+        statusLower.includes(minority.toLowerCase());
 
-    // For matching minority colleges, use OPEN seats. For others, use user's selected category seats.
-    const activeSearchCat = isMatchingMinorityCollege ? 'OPEN' : searchCat;
+      // For matching minority colleges, use OPEN seats. For others, use user's selected category seats.
+      const activeSearchCat = isMatchingMinorityCollege ? 'OPEN' : searchCat;
 
-    if (activeSearchCat !== 'OPEN' && !(r.seatType || '').includes(activeSearchCat)) return false;
-    if (activeSearchCat === 'OPEN' && !(r.seatType || '').includes('OPEN')) return false;
+      if (activeSearchCat !== 'OPEN' && !(r.seatType || '').includes(activeSearchCat)) return false;
+      if (activeSearchCat === 'OPEN' && !(r.seatType || '').includes('OPEN')) return false;
+
+      // Home University H/O/S suffix filtering
+      if (homeUniv) {
+        const suffix = getSeatSuffix(collegeName, meta.status || '', homeUniv);
+        const st = r.seatType || '';
+        if (suffix === 'H' && !st.endsWith('H')) return false;
+        if (suffix === 'O' && !st.endsWith('O')) return false;
+        if (suffix === 'S' && !st.endsWith('S')) return false;
+      }
+    }
 
     // Gender/Ladies filter:
     const isWomenOnly = nameLower.includes('women') || nameLower.includes('girls') || statusLower.includes('women') || statusLower.includes('girls') || r.code === '3035';
     
     if (isLadiesSeatSelected) {
-      if (!isWomenOnly && !(r.seatType || '').startsWith('L')) return false;
+      if (!isJee) {
+        if (!isWomenOnly && !(r.seatType || '').startsWith('L')) return false;
+      }
     } else {
-      if ((r.seatType || '').startsWith('L')) return false;
+      if (!isJee && (r.seatType || '').startsWith('L')) return false;
       if (isWomenOnly) return false;
     }
 
@@ -505,7 +754,7 @@ function generateMatches() {
     };
   });
 
-  // Helper to filter by minority & region combined
+  // Helper to filter by minority & region combined (now supports multi-region)
   function filterByMinorityAndRegion(list) {
     return list.filter(r => {
       const isMatchingMinorityCollege = minority && 
@@ -518,16 +767,16 @@ function generateMatches() {
         
         // Match if it's a general (non-minority) college AND matches region
         if (!r.isMinority) {
-          if (region) {
-            return (r.instituteName || '').toLowerCase().includes(region.toLowerCase());
+          if (regions.length > 0) {
+            return matchesSelectedRegions(r.code, regions);
           }
           return true;
         }
         return false;
       } else {
         // No minority preference, standard region filter
-        if (region) {
-          return (r.instituteName || '').toLowerCase().includes(region.toLowerCase());
+        if (regions.length > 0) {
+          return matchesSelectedRegions(r.code, regions);
         }
         return true;
       }
@@ -562,8 +811,8 @@ function generateMatches() {
       });
     }
     // User said: dont consider minority in aspirational ones
-    if (region) {
-      aspirationalList = aspirationalList.filter(r => (r.instituteName || '').toLowerCase().includes(region.toLowerCase()));
+    if (regions.length > 0) {
+      aspirationalList = aspirationalList.filter(r => matchesSelectedRegions(r.code, regions));
     }
 
     // Split: reachable vs aspirational
@@ -604,7 +853,7 @@ function generateMatches() {
       if (colType === 'Autonomous' && !status.includes('autonomous')) return false;
       if (colType === 'Un-Aided' && (status.includes('government') || status.includes('aided'))) return false;
     }
-    if (region && !(r.instituteName || '').toLowerCase().includes(region.toLowerCase())) return false;
+    if (regions.length > 0 && !matchesSelectedRegions(r.code, regions)) return false;
 
     // Don't include what's already in matchedColleges
     if (matchedColleges.some(m => m.code === r.code && m.branch === r.branch)) return false;
@@ -638,7 +887,7 @@ function renderColleges(filter = 'all') {
 
   if (!items.length) {
     const minority = document.getElementById('inMinority').value;
-    const region = document.getElementById('inRegion').value;
+    const region = selectedRegions.join(', ');
     let msg = 'Try adjusting your filters or branch preferences.';
     if (minority) msg = `no colleges found !! for ${minority} ${region ? 'in ' + region : ''}`;
 
@@ -646,33 +895,88 @@ function renderColleges(filter = 'all') {
     return;
   }
 
-  grid.innerHTML = items.map((c, idx) => {
+  const tbodyHtml = items.map((c) => {
     const realIdx = matchedColleges.indexOf(c);
     const sel = selectedColleges.includes(realIdx);
-    const asp = c.isAspirational ? 'aspirational' : '';
-    const tags = [];
-    if (c.isGov) tags.push('<span class="col-tag gov">Government</span>');
-    if (c.isAuto) tags.push('<span class="col-tag auto">Autonomous</span>');
-    if (c.isMinority) tags.push('<span class="col-tag minority">' + escH(c.minorityType || 'Minority') + '</span>');
-    if (c.isAided) tags.push('<span class="col-tag">Aided</span>');
+    const asp = c.isAspirational;
 
-    return `<div class="col-card ${sel ? 'selected' : ''} ${asp}" onclick="toggleCollege(${realIdx})">
-      <div class="col-chk">${sel ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><polyline points="20 6 9 17 4 12"/></svg>' : ''}</div>
-      <div class="col-name">${escH(c.instituteName)}</div>
-      <div class="col-meta">
-        ${tags.join('')}
-        <span class="col-tag branch-tag">${escH(c.branch)}</span>
-        ${c.intake ? `<span class="col-tag intake">Intake: ${c.intake}</span>` : ''}
-      </div>
-      <div class="col-pct"><strong>${c.percentile.toFixed(2)}%</strong> <small>Cutoff | Code: ${c.code}</small></div>
-    </div>`;
+    // Status/type tags
+    const statusTags = [];
+    if (c.isGov) statusTags.push('Gov');
+    if (c.isAuto) statusTags.push('Auto');
+    if (c.isMinority) statusTags.push(c.minorityType || 'Minority');
+    if (c.isAided) statusTags.push('Aided');
+    if (!c.isGov && !c.isAided) statusTags.push('Un-Aided');
+    const statusText = statusTags.join(', ');
+
+    return `<tr class="${sel ? 'selected' : ''} ${asp ? 'aspirational' : ''}" onclick="toggleCollegeRow(event, ${realIdx})">
+      <td class="excel-td-select"><input type="checkbox" ${sel ? 'checked' : ''} onclick="event.stopPropagation(); toggleCollege(${realIdx})"></td>
+      <td>${c.code}</td>
+      <td class="excel-td-name" title="${escH(c.instituteName)}">${escH(c.instituteName)}</td>
+      <td title="${escH(c.branch)}">${escH(c.branch)}</td>
+      <td>${escH(statusText)}</td>
+      <td class="excel-td-pct"><strong>${c.percentile.toFixed(2)}%</strong></td>
+      <td><span class="col-tag ${asp ? 'asp-tag' : 'reach-tag'}">${asp ? 'Aspirational' : 'Reachable'}</span></td>
+    </tr>`;
   }).join('');
+
+  // Header checkbox check state: checked if all items are selected
+  const allSelected = items.length > 0 && items.every(c => selectedColleges.includes(matchedColleges.indexOf(c)));
+
+  grid.innerHTML = `
+    <div class="excel-table-wrap">
+      <table class="excel-table">
+        <thead>
+          <tr>
+            <th class="excel-th-select"><input type="checkbox" id="selectAllColleges" ${allSelected ? 'checked' : ''} onchange="toggleSelectAllColleges(this)"></th>
+            <th style="width: 80px">Code</th>
+            <th>Institute Name</th>
+            <th>Branch</th>
+            <th>Type</th>
+            <th style="width: 100px">Cutoff %</th>
+            <th style="width: 130px">Category</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tbodyHtml}
+        </tbody>
+      </table>
+    </div>
+  `;
 }
 
 function toggleCollege(idx) {
   const i = selectedColleges.indexOf(idx);
   if (i >= 0) selectedColleges.splice(i, 1); else selectedColleges.push(idx);
   renderColleges(document.querySelector('.filter-chip.active')?.dataset.f || 'all');
+  triggerAutosave();
+}
+
+function toggleCollegeRow(event, idx) {
+  if (event.target.type === 'checkbox' || event.target.closest('.excel-td-select')) return;
+  toggleCollege(idx);
+}
+
+function toggleSelectAllColleges(checkboxEl) {
+  const isChecked = checkboxEl.checked;
+  const activeFilter = document.querySelector('.filter-chip.active')?.dataset.f || 'all';
+  let items = matchedColleges;
+  if (activeFilter === 'aspirational') items = matchedColleges.filter(r => r.isAspirational);
+  else if (activeFilter === 'reachable') items = matchedColleges.filter(r => !r.isAspirational);
+  else if (activeFilter === 'government') items = matchedColleges.filter(r => r.isGov);
+  else if (activeFilter === 'autonomous') items = matchedColleges.filter(r => r.isAuto);
+
+  items.forEach(c => {
+    const realIdx = matchedColleges.indexOf(c);
+    const selIdx = selectedColleges.indexOf(realIdx);
+    if (isChecked) {
+      if (selIdx === -1) selectedColleges.push(realIdx);
+    } else {
+      if (selIdx >= 0) selectedColleges.splice(selIdx, 1);
+    }
+  });
+
+  renderColleges(activeFilter);
   triggerAutosave();
 }
 
@@ -758,13 +1062,17 @@ function searchManualColleges() {
     const gender = document.getElementById('inGender').value || 'Gender-Neutral';
     const isLadiesSeatSelected = (gender === 'Female-only');
     const baseCategory = category;
+    const homeUniv = (document.getElementById('inHomeUniv') || {}).value || '';
+
+    const isJee = (window.currentExamType === 'JEE');
+    const activeCutoffData = isJee ? (window.jeeCutoffData || []) : cutoffData;
 
     const catMap = { 'OPEN': 'OPEN', 'OBC': 'OBC', 'SC': 'SC', 'ST': 'ST', 'VJ/DT': 'VJ', 'NT1': 'NT1', 'NT2': 'NT2', 'NT3': 'NT3', 'EWS': 'EWS', 'TFWS': 'TFWS' };
     const searchCat = catMap[baseCategory] || 'OPEN';
 
     const metaMap = {}; collegeMetadata.forEach(c => metaMap[c.code] = c);
 
-    let filtered = cutoffData.filter(r => {
+    let filtered = activeCutoffData.filter(r => {
       if (!r.code.includes(query) && !(r.name || '').toLowerCase().includes(query) && !(r.branch || '').toLowerCase().includes(query)) return false;
 
       const meta = metaMap[r.code] || {};
@@ -773,11 +1081,20 @@ function searchManualColleges() {
       const isWomenOnly = nameLower.includes('women') || nameLower.includes('girls') || statusLower.includes('women') || statusLower.includes('girls') || r.code === '3035';
 
       if (isLadiesSeatSelected) {
-        if (!isWomenOnly && !(r.seatType || '').startsWith('L')) return false;
+        if (!isJee && !isWomenOnly && !(r.seatType || '').startsWith('L')) return false;
       } else {
-        if ((r.seatType || '').startsWith('L')) return false;
+        if (!isJee && (r.seatType || '').startsWith('L')) return false;
         if (isWomenOnly) return false;
       }
+
+      if (!isJee && homeUniv) {
+        const suffix = getSeatSuffix(meta.name || r.name || '', meta.status || '', homeUniv);
+        const st = r.seatType || '';
+        if (suffix === 'H' && !st.endsWith('H')) return false;
+        if (suffix === 'O' && !st.endsWith('O')) return false;
+        if (suffix === 'S' && !st.endsWith('S')) return false;
+      }
+
       return true;
     });
     
@@ -791,6 +1108,11 @@ function searchManualColleges() {
     let results = Object.values(groups).map(rows => {
       const meta = metaMap[rows[0].code] || {};
       const statusLower = (meta.status || '').toLowerCase();
+
+      if (isJee) {
+        return rows[0]; // For JEE AI seats, there's only 1 row per college+branch
+      }
+
       const isMatchingMinorityCollege = minority && 
         statusLower.includes('minority') && 
         statusLower.includes(minority.toLowerCase());
@@ -854,13 +1176,17 @@ function searchManualCollegesList() {
     const gender = document.getElementById('inGender').value || 'Gender-Neutral';
     const isLadiesSeatSelected = (gender === 'Female-only');
     const baseCategory = category;
+    const homeUniv = (document.getElementById('inHomeUniv') || {}).value || '';
+
+    const isJee = (window.currentExamType === 'JEE');
+    const activeCutoffData = isJee ? (window.jeeCutoffData || []) : cutoffData;
 
     const catMap = { 'OPEN': 'OPEN', 'OBC': 'OBC', 'SC': 'SC', 'ST': 'ST', 'VJ/DT': 'VJ', 'NT1': 'NT1', 'NT2': 'NT2', 'NT3': 'NT3', 'EWS': 'EWS', 'TFWS': 'TFWS' };
     const searchCat = catMap[baseCategory] || 'OPEN';
 
     const metaMap = {}; collegeMetadata.forEach(c => metaMap[c.code] = c);
 
-    let filtered = cutoffData.filter(r => {
+    let filtered = activeCutoffData.filter(r => {
       if (!r.code.includes(query) && !(r.name || '').toLowerCase().includes(query) && !(r.branch || '').toLowerCase().includes(query)) return false;
 
       const meta = metaMap[r.code] || {};
@@ -869,11 +1195,20 @@ function searchManualCollegesList() {
       const isWomenOnly = nameLower.includes('women') || nameLower.includes('girls') || statusLower.includes('women') || statusLower.includes('girls') || r.code === '3035';
 
       if (isLadiesSeatSelected) {
-        if (!isWomenOnly && !(r.seatType || '').startsWith('L')) return false;
+        if (!isJee && !isWomenOnly && !(r.seatType || '').startsWith('L')) return false;
       } else {
-        if ((r.seatType || '').startsWith('L')) return false;
+        if (!isJee && (r.seatType || '').startsWith('L')) return false;
         if (isWomenOnly) return false;
       }
+
+      if (!isJee && homeUniv) {
+        const suffix = getSeatSuffix(meta.name || r.name || '', meta.status || '', homeUniv);
+        const st = r.seatType || '';
+        if (suffix === 'H' && !st.endsWith('H')) return false;
+        if (suffix === 'O' && !st.endsWith('O')) return false;
+        if (suffix === 'S' && !st.endsWith('S')) return false;
+      }
+
       return true;
     });
     
@@ -887,6 +1222,11 @@ function searchManualCollegesList() {
     let results = Object.values(groups).map(rows => {
       const meta = metaMap[rows[0].code] || {};
       const statusLower = (meta.status || '').toLowerCase();
+
+      if (isJee) {
+        return rows[0]; // For JEE, only one row per college+branch
+      }
+
       const isMatchingMinorityCollege = minority && 
         statusLower.includes('minority') && 
         statusLower.includes(minority.toLowerCase());
@@ -1138,7 +1478,9 @@ function handleAddSuggestion(code, branch, isAspirational = false) {
 
   // If not found (manual search), enrich from cutoffData and metadata
   if (!c) {
-    const raw = cutoffData.find(r => r.code === code && r.branch === branch);
+    const isJee = (window.currentExamType === 'JEE');
+    const activeCutoffData = isJee ? (window.jeeCutoffData || []) : cutoffData;
+    const raw = activeCutoffData.find(r => r.code === code && r.branch === branch);
     if (raw) {
       const metaMap = {}; collegeMetadata.forEach(m => metaMap[m.code] = m);
       const meta = metaMap[code] || {};
@@ -1186,7 +1528,7 @@ function exportPDF() {
   const rank = document.getElementById('inRank').value;
   const cat = document.getElementById('inCategory').value;
   const gender = document.getElementById('inGender').value;
-  const region = document.getElementById('inRegion').value || 'All Regions';
+  const region = selectedRegions.length > 0 ? selectedRegions.join(', ') : 'All Regions';
   const isLadies = gender === 'Female-only';
   const catDisplay = (isLadies ? 'Ladies ' : '') + cat;
 
@@ -1497,7 +1839,8 @@ async function loadSavedPrefData() {
       }
       document.getElementById('inCategory').value = categoryVal;
       document.getElementById('inGender').value = genderVal;
-      if (latest.region) document.getElementById('inRegion').value = latest.region;
+      selectedRegions = latest.selectedRegions || (latest.region ? [latest.region] : []);
+      renderRegionChips();
     }
 
     renderEditStatus();
@@ -1639,7 +1982,8 @@ async function saveProfileData() {
   const rank = document.getElementById('inRank').value;
   const cat = document.getElementById('inCategory').value;
   const gender = document.getElementById('inGender').value;
-  const region = document.getElementById('inRegion').value;
+  const homeUniv = (document.getElementById('inHomeUniv') || {}).value || '';
+  const examType = window.currentExamType || 'MHT-CET';
   const saveBtn = document.getElementById('saveProfileBtn');
   if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving...'; }
   const res = await authApi('savePrefData', {
@@ -1649,8 +1993,17 @@ async function saveProfileData() {
     rank: rank,
     category: cat,
     gender: gender,
-    region: region,
+    region: selectedRegions.length === 1 ? selectedRegions[0] : '', // backward compat
+    selectedRegions: selectedRegions,
+    homeUniv: homeUniv,
+    examType: examType,
     prefList: prefList,
+    selectedBranches: Array.from(selectedBranches),
+    selectedCollegeKeys: selectedColleges.map(idx => matchedColleges[idx] ? matchedColleges[idx].code + '|' + matchedColleges[idx].branch : '').filter(Boolean),
+    currentStep: currentStep,
+    colType: document.getElementById('inColType').value,
+    minority: document.getElementById('inMinority').value,
+    studentInfo: currentStudentInfo || null,
     incrementEdit: true
   });
   if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save & Lock'; }
@@ -2258,7 +2611,8 @@ async function createNewTemplateInBuilder() {
   document.getElementById('inRankMax').value = '';
   document.getElementById('inCategory').value = 'OPEN';
   document.getElementById('inGender').value = 'Gender-Neutral';
-  document.getElementById('inRegion').value = '';
+  selectedRegions = [];
+  renderRegionChips();
   document.getElementById('inColType').value = '';
   document.getElementById('inMinority').value = '';
 
@@ -2293,7 +2647,8 @@ function editTemplateInBuilder(id) {
 
   document.getElementById('inCategory').value = t.filters?.category || 'OPEN';
   document.getElementById('inGender').value = 'Gender-Neutral';
-  document.getElementById('inRegion').value = t.filters?.region || '';
+  selectedRegions = t.filters?.selectedRegions || (t.filters?.region ? [t.filters.region] : []);
+  renderRegionChips();
   document.getElementById('inColType').value = t.filters?.collegeType || '';
   document.getElementById('inMinority').value = t.filters?.minority || '';
 
@@ -2386,7 +2741,8 @@ async function saveTemplateFromBuilder() {
     rankMin: rankMinVal !== '' ? parseInt(rankMinVal) : null,
     rankMax: rankMaxVal !== '' ? parseInt(rankMaxVal) : null,
     branchGroup: editingTemplateFilters.branchGroup || 'all',
-    region: document.getElementById('inRegion').value,
+    region: selectedRegions.length === 1 ? selectedRegions[0] : '', // backward compat
+    selectedRegions: selectedRegions,
     category: document.getElementById('inCategory').value,
     collegeType: document.getElementById('inColType').value,
     minority: document.getElementById('inMinority').value
@@ -2828,6 +3184,9 @@ window.toggleCollege = toggleCollege; window.filterColleges = filterColleges;
 window.removePref = removePref; window.handleAddSuggestion = handleAddSuggestion;
 window.returnToDashboard = returnToDashboard;
 window.exportPDF = exportPDF; window.switchSideTab = switchSideTab;
+window.toggleExamPath = toggleExamPath;
+window.toggleCollegeRow = toggleCollegeRow;
+window.toggleSelectAllColleges = toggleSelectAllColleges;
 window.deleteForm = deleteForm;
 window.dragStart = dragStart; window.dragOver = dragOver; window.dropItem = dropItem; window.dragEnd = dragEnd;
 window.toggleAspirational = toggleAspirational;

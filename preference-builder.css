@@ -130,6 +130,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);paddin
 .filter-chip.active{background:var(--brand);color:#fff;border-color:var(--brand)}
 .results-count{font-size:13px;color:var(--muted);margin-bottom:12px;font-weight:600}
 
+/* ─── MULTI-REGION CHIP SELECTOR ─── */
+.region-chips-wrap{display:flex;flex-wrap:wrap;gap:8px;padding:8px 0}
+.region-chip{padding:8px 16px;border-radius:100px;font-size:12px;font-weight:700;border:1.5px solid var(--stroke);background:var(--card);color:var(--ink2);cursor:pointer;transition:all 0.25s;font-family:inherit;display:inline-flex;align-items:center;gap:6px}
+.region-chip:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-soft);transform:translateY(-1px)}
+.region-chip.selected{background:linear-gradient(135deg,var(--brand),var(--brand-d));color:#fff;border-color:var(--brand);box-shadow:0 4px 12px var(--brand-ring)}
+.region-chip.selected:hover{background:linear-gradient(135deg,var(--brand-d),#7f1d1d);box-shadow:0 6px 16px var(--brand-ring)}
+
 /* ─── PREFERENCE LIST (Step 4) ─── */
 .pref-container{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start}
 .pref-list-wrap{background:var(--card);border:1px solid var(--stroke);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
@@ -579,5 +586,127 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);paddin
   .tpl-card-banner {
     height: 135px;
   }
+}
+
+/* ─── EXCEL TABLE VIEW FOR STEP 3 ─── */
+#collegeGrid {
+  display: block !important;
+}
+.excel-table-wrap {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--stroke);
+  box-shadow: var(--shadow-sm);
+  margin-top: 20px;
+  background: var(--card);
+}
+.excel-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  text-align: left;
+}
+.excel-table th, .excel-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--stroke);
+  border-right: 1px solid var(--stroke);
+}
+.excel-table th:last-child, .excel-table td:last-child {
+  border-right: none;
+}
+.excel-table th {
+  background-color: var(--bg);
+  color: var(--ink);
+  font-weight: 700;
+  user-select: none;
+  font-family: 'Lexend', sans-serif;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+.excel-table tbody tr {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.excel-table tbody tr:hover td {
+  background-color: var(--brand-soft) !important;
+}
+.excel-table tbody tr.selected td {
+  background-color: rgba(220, 38, 38, 0.03);
+}
+.excel-table tbody tr.selected.aspirational td {
+  background-color: rgba(249, 115, 22, 0.03);
+}
+.excel-table tbody tr.aspirational td:first-child {
+  border-left: 4px solid var(--orange);
+}
+.excel-th-select, .excel-td-select {
+  width: 45px;
+  text-align: center;
+  padding: 8px !important;
+}
+.excel-th-select input, .excel-td-select input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--brand);
+  cursor: pointer;
+}
+.excel-td-name {
+  font-weight: 600;
+  color: var(--ink);
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.excel-td-pct {
+  color: var(--brand);
+  font-weight: 700;
+}
+.col-tag.asp-tag {
+  background: #fff7ed;
+  color: var(--orange);
+  border-color: rgba(234, 88, 12, 0.2);
+}
+.col-tag.reach-tag {
+  background: #f0fdf4;
+  color: var(--green);
+  border-color: rgba(22, 163, 74, 0.2);
+}
+
+/* ─── EXAM SELECTOR RADIO BUTTONS ─── */
+.exam-radio-label {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-radius: 14px;
+  border: 2px solid var(--stroke);
+  background: var(--card);
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--ink2);
+  user-select: none;
+}
+.exam-radio-label:hover {
+  border-color: var(--brand-ring);
+  background: var(--bg);
+}
+.exam-radio-label input {
+  margin: 0;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--brand);
+  cursor: pointer;
+}
+.exam-radio-label:has(input:checked) {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+  color: var(--brand);
+  box-shadow: 0 4px 12px var(--brand-ring);
 }
 
