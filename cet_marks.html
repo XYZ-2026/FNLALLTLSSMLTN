@@ -207,6 +207,29 @@
       margin-top: 12px;
       font-weight: 500;
     }
+
+    .info-note {
+      background: #fef2f2;
+      border: 1px solid #fee2e2;
+      color: #991b1b;
+      padding: 16px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-top: 24px;
+      line-height: 1.5;
+      text-align: left;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    }
+
+    .info-note svg {
+      color: #dc2626;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
   </style>
 </head>
 
@@ -224,9 +247,9 @@
 
         <label>Shift Difficulty</label>
         <select id="inDifficulty">
-          <option value="moderate">Moderate (Standard)</option>
-          <option value="easy">Easy (High Competition)</option>
-          <option value="difficult">Difficult (Low Cutoff)</option>
+          <option value="moderate">Moderate Shift</option>
+          <option value="easy">Easy Shift</option>
+          <option value="hard">Hard Shift</option>
         </select>
 
         <button class="btn" onclick="predict()">Calculate Percentile</button>
@@ -239,6 +262,15 @@
         <a id="rankLink" href="cet_rank.html" class="btn"
           style="margin-top:24px;text-decoration:none;display:block">Predict Rank Now →</a>
       </div>
+
+      <div class="info-note">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        <p>Your percentile depends on the number of students in that shift and the difficulty level of the shift varies.</p>
+      </div>
     </div>
   </div>
 
@@ -248,7 +280,61 @@
   <script src="shared_auth.js"></script>
   <script>
     'use strict';
-    var CET_DATA = [];
+
+    // High-precision MHT-CET 2026 Shift-wise Marks vs Percentile Data
+    const MHT_CET_2026_DATA = {
+      hard: [
+        { min: 170, max: 200, lowPct: 99.95, highPct: 100 },
+        { min: 160, max: 170, lowPct: 99.80, highPct: 99.95 },
+        { min: 150, max: 160, lowPct: 99.50, highPct: 99.80 },
+        { min: 140, max: 150, lowPct: 99.10, highPct: 99.50 },
+        { min: 130, max: 140, lowPct: 98.80, highPct: 99.10 },
+        { min: 120, max: 130, lowPct: 98.00, highPct: 98.80 },
+        { min: 110, max: 120, lowPct: 96.70, highPct: 98.00 },
+        { min: 100, max: 110, lowPct: 95.50, highPct: 96.70 },
+        { min: 90, max: 100, lowPct: 92.00, highPct: 95.50 },
+        { min: 85, max: 90, lowPct: 88.00, highPct: 92.00 },
+        { min: 80, max: 85, lowPct: 84.00, highPct: 88.00 },
+        { min: 75, max: 80, lowPct: 80.00, highPct: 84.00 },
+        { min: 70, max: 75, lowPct: 76.00, highPct: 80.00 },
+        { min: 60, max: 70, lowPct: 67.00, highPct: 76.00 },
+        { min: 0, max: 60, lowPct: null, highPct: null, unpredictable: true }
+      ],
+      moderate: [
+        { min: 170, max: 200, lowPct: 99.90, highPct: 100 },
+        { min: 160, max: 170, lowPct: 99.60, highPct: 99.90 },
+        { min: 150, max: 160, lowPct: 99.30, highPct: 99.60 },
+        { min: 140, max: 150, lowPct: 98.90, highPct: 99.30 },
+        { min: 130, max: 140, lowPct: 98.50, highPct: 98.90 },
+        { min: 120, max: 130, lowPct: 97.40, highPct: 98.50 },
+        { min: 110, max: 120, lowPct: 96.50, highPct: 97.40 },
+        { min: 100, max: 110, lowPct: 94.10, highPct: 96.50 },
+        { min: 90, max: 100, lowPct: 89.00, highPct: 94.10 },
+        { min: 85, max: 90, lowPct: 86.00, highPct: 89.00 },
+        { min: 80, max: 85, lowPct: 82.00, highPct: 86.00 },
+        { min: 75, max: 80, lowPct: 77.00, highPct: 82.00 },
+        { min: 70, max: 75, lowPct: 72.00, highPct: 77.00 },
+        { min: 60, max: 70, lowPct: 64.00, highPct: 72.00 },
+        { min: 0, max: 60, lowPct: null, highPct: null, unpredictable: true }
+      ],
+      easy: [
+        { min: 170, max: 200, lowPct: 99.90, highPct: 100 },
+        { min: 160, max: 170, lowPct: 99.50, highPct: 99.90 },
+        { min: 150, max: 160, lowPct: 99.10, highPct: 99.50 },
+        { min: 140, max: 150, lowPct: 98.50, highPct: 99.10 },
+        { min: 130, max: 140, lowPct: 97.80, highPct: 98.50 },
+        { min: 120, max: 130, lowPct: 96.50, highPct: 97.80 },
+        { min: 110, max: 120, lowPct: 94.80, highPct: 96.50 },
+        { min: 100, max: 110, lowPct: 91.50, highPct: 94.80 },
+        { min: 90, max: 100, lowPct: 87.00, highPct: 91.50 },
+        { min: 85, max: 90, lowPct: 83.00, highPct: 87.00 },
+        { min: 80, max: 85, lowPct: 79.00, highPct: 83.00 },
+        { min: 75, max: 80, lowPct: 74.00, highPct: 79.00 },
+        { min: 70, max: 75, lowPct: 69.00, highPct: 74.00 },
+        { min: 60, max: 70, lowPct: 60.00, highPct: 69.00 },
+        { min: 0, max: 60, lowPct: null, highPct: null, unpredictable: true }
+      ]
+    };
 
     function predict() {
       var btn = document.querySelector('.card .btn');
@@ -261,20 +347,47 @@
       btn.disabled = true;
 
       setTimeout(function() {
-        var row = CET_DATA.find(r => marks >= r.min && marks <= r.max);
-        var pct = row ? (row.low + row.high) / 2 : (marks / 200) * 90;
-        if (diff === 'easy') pct -= 0.6; if (diff === 'difficult') pct += 0.6;
-        pct = Math.min(99.99, Math.max(0.01, pct));
-
-        var resPct = pct.toFixed(2);
+        var shiftData = MHT_CET_2026_DATA[diff];
         var resCard = document.getElementById('resultCard');
         resCard.classList.remove('show');
 
         setTimeout(function() {
-          document.getElementById('resPercentile').textContent = resPct + '%';
-          document.getElementById('resRange').textContent = 'Expected Range: ' + (row ? row.low : (pct - 1)).toFixed(2) + '% — ' + (row ? row.high : (pct + 1)).toFixed(2) + '%';
+          var resPercentile = document.getElementById('resPercentile');
+          var resRange = document.getElementById('resRange');
+          var rankLink = document.getElementById('rankLink');
 
-          document.getElementById('rankLink').href = 'cet_rank.html?percentile=' + resPct;
+          if (marks < 60) {
+            resPercentile.textContent = 'Unpredictable';
+            resPercentile.style.fontSize = '36px';
+            resRange.innerHTML = '<span style="color: #dc2626; font-weight: 600;">Percentile is unpredictable for marks below 60 due to high score clustering.</span>';
+            rankLink.style.display = 'none';
+          } else if (marks < 86) {
+            var row = shiftData.find(r => marks >= r.min && marks < r.max);
+            if (row) {
+              resPercentile.style.fontSize = '36px';
+              resPercentile.textContent = row.lowPct.toFixed(2) + '% - ' + row.highPct.toFixed(2) + '%';
+              resRange.textContent = 'Expected Range for Marks ' + row.min + '-' + row.max + ' (' + (diff.charAt(0).toUpperCase() + diff.slice(1)) + ' Shift)';
+              
+              var avgPct = ((row.lowPct + row.highPct) / 2).toFixed(2);
+              rankLink.href = 'cet_rank.html?percentile=' + avgPct;
+              rankLink.style.display = 'block';
+            }
+          } else {
+            var row = shiftData.find(r => marks >= r.min && marks <= r.max);
+            if (row) {
+              resPercentile.style.fontSize = '48px';
+              var pct = row.lowPct + ((marks - row.min) / (row.max - row.min)) * (row.highPct - row.lowPct);
+              pct = Math.min(100.0, Math.max(0.0, pct));
+              var resPct = pct.toFixed(2);
+              
+              resPercentile.textContent = resPct + '%';
+              resRange.textContent = 'Expected Range: ' + row.lowPct.toFixed(2) + '% — ' + row.highPct.toFixed(2) + '% (' + (diff.charAt(0).toUpperCase() + diff.slice(1)) + ' Shift)';
+              
+              rankLink.href = 'cet_rank.html?percentile=' + resPct;
+              rankLink.style.display = 'block';
+            }
+          }
+
           resCard.classList.add('show');
           resCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           
@@ -286,17 +399,6 @@
 
     function boot() {
       if (!initAuth({ requireLogin: true, toolContainerId: 'toolArea' })) return;
-      fetch('MHT CET marks vs percentile.json')
-        .then(r => r.json())
-        .then(json => {
-          var rows = json["MHT CET marks vs percentile"] || [];
-          CET_DATA = rows.map(row => {
-            var parts = (row["Marks"] || "").split('-');
-            var pPercent = (row["Percentile (%)"] || "").replace(/\+/g, '');
-            var pParts = pPercent.split('-').map(s => parseFloat(s.trim()));
-            return { min: parseFloat(parts[0]), max: parseFloat(parts[1]), low: pParts[0], high: pParts.length > 1 ? pParts[1] : pParts[0] };
-          });
-        });
     }
 
     window.predict = predict;

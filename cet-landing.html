@@ -737,7 +737,7 @@
           </div>
         </div>
         <div class="test-banner-right">
-          <a href="branch-prediction-tool.html" class="btn-take-test-premium">
+          <a href="engineering-psychometric-test.html" class="btn-take-test-premium">
             take test
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </a>
@@ -952,7 +952,58 @@
   <script src="firebase_config.js"></script>
   <script src="shared_auth.js"></script>
   <script>
-    initAuth({ requireLogin: false });
+    document.addEventListener('DOMContentLoaded', async () => {
+      const session = initAuth({ requireLogin: false });
+      if (session && session.id) {
+        try {
+          const res = await authApi('getPsychometricReport', { userId: session.id });
+          if (res.ok && res.data) {
+            // User has a saved report! Modify the banner UI to show the options.
+            displaySavedReportBanner(res.data);
+          }
+        } catch (err) {
+          console.error('Failed to load saved report summary:', err);
+        }
+      }
+    });
+
+    function displaySavedReportBanner(report) {
+      const topBranch = report.allBranches?.[0];
+      const banner = document.querySelector('.test-banner-bar');
+      if (!banner || !topBranch) return;
+
+      // Update badge, title, and subtitle to show the results summary
+      const titleEl = banner.querySelector('.test-banner-title');
+      const subEl = banner.querySelector('.test-banner-sub');
+      const badgeEl = banner.querySelector('.test-banner-badge');
+      const rightEl = banner.querySelector('.test-banner-right');
+
+      if (badgeEl) {
+        badgeEl.textContent = 'Report Available';
+        badgeEl.style.background = '#22c55e'; // Green badge
+        badgeEl.style.borderColor = 'rgba(255,255,255,0.4)';
+      }
+      if (titleEl) {
+        titleEl.textContent = 'Psychometric Test Completed';
+      }
+      if (subEl) {
+        subEl.innerHTML = `Your top recommended branch is <strong>${topBranch.branch}</strong> with a match score of <strong>${topBranch.match}%</strong>.`;
+      }
+      if (rightEl) {
+        // Show View/Download Previous Report and Retake Test option
+        rightEl.innerHTML = `
+          <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+            <a href="engineering-psychometric-test.html?load=true" class="btn-take-test-premium" style="background: #ffffff; color: #be123c;">
+              Download / View Report
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </a>
+            <a href="engineering-psychometric-test.html" style="color: #ffffff; font-weight: 800; font-size: 13.5px; text-decoration: underline; text-transform: uppercase; letter-spacing: 0.8px;">
+              Retake Test
+            </a>
+          </div>
+        `;
+      }
+    }
   </script>
 </body>
 

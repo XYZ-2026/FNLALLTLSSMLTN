@@ -184,7 +184,7 @@ function injectGlobalUI() {
             <a href="cet_colleges.html" class="sidebar-sub-link">Top Colleges</a>
             <a href="compare_colleges.html" class="sidebar-sub-link">Compare Colleges</a>
             <a href="mht_cet_college_predictor.html" class="sidebar-sub-link">MHT CET College Predictor</a>
-            <a href="branch-prediction-tool.html" class="sidebar-sub-link">AI Branch Predictor</a>
+            <a href="engineering-psychometric-test.html" class="sidebar-sub-link">Engineering Psychometric Test</a>
             <a href="percentile_vs_college_predictor.html" class="sidebar-sub-link">JEE ALL INDIA Predictor</a>
             <a href="document_checklist.html" class="sidebar-sub-link">Document Checklist</a>
             <a href="preference-builder.html" class="sidebar-sub-link" style="color:#b8860b;font-weight:700">⭐ CET Preference Builder</a>

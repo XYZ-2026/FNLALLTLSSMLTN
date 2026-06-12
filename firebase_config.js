@@ -399,6 +399,24 @@ async function fireApi(action, payload) {
         return { ok: true, data: { editCount, forms } };
       }
 
+      case 'savePsychometricReport': {
+        const { userId, reportData } = payload;
+        if (!userId) return { ok: false, error: 'Missing user ID.' };
+        await db.collection('psychometricReports').doc(userId).set({
+          ...reportData,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        return { ok: true };
+      }
+
+      case 'getPsychometricReport': {
+        const { userId } = payload;
+        if (!userId) return { ok: false, error: 'Missing user ID.' };
+        const doc = await db.collection('psychometricReports').doc(userId).get();
+        if (!doc.exists) return { ok: true, data: null };
+        return { ok: true, data: doc.data() };
+      }
+
       case 'resetPrefEdits': {
         const { userId: resetUserId, tool } = payload;
         if (!resetUserId) return { ok: false, error: 'Missing user ID.' };

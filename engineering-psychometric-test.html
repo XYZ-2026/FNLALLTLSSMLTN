@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Branch Predictor — College Simplified</title>
+  <title>Engineering Psychometric Test — College Simplified</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800;900&display=swap"
     rel="stylesheet">
@@ -50,102 +50,11 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      overflow-x: hidden
+      overflow-x: hidden;
+      padding-top: 64px;
     }
 
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: var(--header-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 32px;
-      height: 64px;
-      transition: background .25s, border-color .25s
-    }
 
-    .theme-toggle {
-      display: flex;
-      align-items: center;
-      gap: 10px
-    }
-
-    .theme-label {
-      font-size: .72rem;
-      font-weight: 600;
-      color: var(--muted);
-      letter-spacing: .4px;
-      text-transform: uppercase
-    }
-
-    .toggle-pill {
-      position: relative;
-      width: 48px;
-      height: 26px;
-      background: var(--border);
-      border-radius: 100px;
-      cursor: pointer;
-      transition: background .25s;
-      border: none;
-      padding: 0;
-      flex-shrink: 0
-    }
-
-    .toggle-pill.active {
-      background: var(--red)
-    }
-
-    .toggle-knob {
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, .3);
-      transition: transform .25s
-    }
-
-    .toggle-pill.active .toggle-knob {
-      transform: translateX(22px)
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 18px
-    }
-
-    .header-tag {
-      font-size: .75rem;
-      font-weight: 500;
-      color: var(--muted);
-      letter-spacing: .3px
-    }
-
-    .header-tag span {
-      color: var(--red);
-      font-weight: 700
-    }
-
-    .logo {
-      font-family: 'Poppins', sans-serif;
-      font-weight: 800;
-      font-size: 1.05rem;
-      color: var(--text);
-      letter-spacing: -.3px;
-      transition: color .25s
-    }
-
-    .logo span {
-      color: var(--red)
-    }
 
     @keyframes fadeIn {
       from {
@@ -213,7 +122,7 @@
     }
 
     .hero-badge::before {
-      content: '\25CF';
+      content: 'â—';
       font-size: .6rem;
       animation: blink 1.4s infinite
     }
@@ -735,7 +644,15 @@
       font-family: 'Poppins', sans-serif;
       font-size: .95rem;
       font-weight: 700;
-      margin-bottom: 10px
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sec-icon, .domain-icon {
+      flex-shrink: 0;
+      display: inline-block;
+      vertical-align: middle;
     }
 
     .sec-card-score {
@@ -1367,13 +1284,7 @@
       color: #6b7280
     }
 
-    [data-theme="light"] .toggle-pill {
-      background: #d1d5db
-    }
 
-    [data-theme="light"] .toggle-pill.active {
-      background: var(--red)
-    }
 
     [data-theme="light"] #radar-svg polygon:first-of-type,
     [data-theme="light"] #radar-svg line {
@@ -1393,9 +1304,7 @@
         gap: 24px
       }
 
-      header {
-        padding: 0 16px
-      }
+
 
       #screen-analysis,
       #screen-results,
@@ -1404,6 +1313,9 @@
       }
     }
 
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PRINT / PDF STYLES — matches College Simplified psychometric PDF
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     @media screen {
       #bp-print-doc {
         display: none !important
@@ -1420,7 +1332,7 @@
         print-color-adjust: exact !important
       }
 
-      body>*:not(#bp-print-doc):not(#bp-pdf-footer) {
+      body>*:not(#bp-print-doc) {
         display: none !important
       }
 
@@ -1428,36 +1340,22 @@
         display: block !important
       }
 
+      #bp-pdf-footer {
+        display: none !important
+      }
+
       .bp-pg {
         page-break-after: always;
-        break-after: page
+        break-after: page;
+        min-height: 297mm;
+        position: relative;
+        box-sizing: border-box;
+        overflow: hidden
       }
 
       .bp-pg:last-child {
         page-break-after: auto;
         break-after: auto
-      }
-
-      #bp-pdf-footer {
-        display: flex !important;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 14mm;
-        padding: 0 14mm;
-        align-items: center;
-        justify-content: space-between;
-        border-top: 1px solid #E5E7EB;
-        background: #fff;
-        font-size: 9.5px;
-        color: #9CA3AF;
-        font-family: 'Poppins', sans-serif;
-        z-index: 9999
-      }
-
-      .bp-pg {
-        padding-bottom: 16mm !important
       }
 
       @page {
@@ -2063,6 +1961,7 @@
       border-radius: 0 8px 8px 0
     }
 
+    /* ENHANCED: P1-B Dynamic page footer — standardized across all pages */
     .bp-ftr-enhanced {
       border-top: 0.5px solid #E0DDD5;
       display: flex;
@@ -2080,6 +1979,7 @@
       font-family: 'Inter', sans-serif
     }
 
+    /* ENHANCED: P1-C Consistent page header */
     .bp-hdr-bar {
       display: flex;
       align-items: center;
@@ -2119,6 +2019,7 @@
       white-space: nowrap
     }
 
+    /* ENHANCED: P1-D Score context bar and label */
     .bp-score-bar-wrap {
       display: flex;
       align-items: center;
@@ -2152,6 +2053,7 @@
       margin-top: 2px
     }
 
+    /* ENHANCED: P2-A TOC styling */
     .bp-toc-entry {
       display: flex;
       align-items: center;
@@ -2187,6 +2089,7 @@
       flex-shrink: 0
     }
 
+    /* ENHANCED: P2-C Q&A table enhancements */
     .bp-qa-pill {
       display: inline-flex;
       align-items: center;
@@ -2216,6 +2119,7 @@
       border-left: 3px solid #E8E6FF
     }
 
+    /* ENHANCED: P2-E Salary table styling */
     .bp-salary-table {
       width: 100%;
       border-collapse: collapse;
@@ -2252,6 +2156,7 @@
       font-style: italic
     }
 
+    /* ENHANCED: P3-D Takeaway box */
     .bp-takeaway-box {
       background: #F0FDF4;
       border-left: 4px solid #22C55E;
@@ -2276,6 +2181,7 @@
       gap: 6px
     }
 
+    /* ENHANCED: P4-A Trait pills for PDF */
     .bp-trait-pill {
       display: inline-flex;
       align-items: center;
@@ -2288,6 +2194,7 @@
       margin: 2px
     }
 
+    /* ENHANCED: P4-B Typography standardization */
     .pdf-h1 {
       font-size: 22px;
       font-weight: 700;
@@ -2319,8 +2226,9 @@
       color: #9CA3AF
     }
 
+    /* ENHANCED: P4-C Divider banner page */
     .bp-divider-pg {
-      height: 148.5mm;
+      height: 297mm;
       background: #1E1B4B;
       display: flex;
       flex-direction: column;
@@ -2348,11 +2256,13 @@
       margin-bottom: 16px
     }
 
+    /* ENHANCED: P2-F Page break control */
     .bp-pg {
       position: relative;
       box-sizing: border-box
     }
 
+    /* ENHANCED: P3-E Next steps card grid */
     .bp-next-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -2399,110 +2309,90 @@
       color: #6B7280;
       line-height: 1.5
     }
+
+    .stat {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .stat-icon {
+      color: var(--red-light);
+      background: rgba(232, 22, 27, 0.1);
+      border: 1px solid rgba(232, 22, 27, 0.25);
+      border-radius: 12px;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 4px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .stat:hover .stat-icon {
+      transform: scale(1.1) rotate(5deg);
+      background: rgba(232, 22, 27, 0.2);
+      border-color: var(--red);
+    }
   </style>
 </head>
 
 <body>
-  <a href="cet-landing.html" class="floating-back-btn" title="Back to MHT-CET Hub">
-    <style>
-      .floating-back-btn {
-        position: fixed;
-        bottom: 24px;
-        left: 24px;
-        background: #dc2626;
-        color: #ffffff !important;
-        padding: 10px 18px;
-        border-radius: 30px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        box-shadow: 0 6px 20px rgba(220, 38, 38, 0.25);
-        text-decoration: none;
-        z-index: 9999;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        font-family: 'Lexend', sans-serif;
-        font-weight: 700;
-        font-size: 13px;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-      }
-      .floating-back-btn:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(220, 38, 38, 0.35);
-        background: #b91c1c;
-      }
-      .floating-back-btn svg {
-        width: 16px;
-        height: 16px;
-        stroke: currentColor;
-        stroke-width: 2.5;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        transition: transform 0.3s;
-      }
-      .floating-back-btn:hover svg {
-        transform: translateX(-3px);
-      }
-      @media print {
-        .floating-back-btn {
-          display: none !important;
-        }
-      }
-    </style>
-    <svg viewBox="0 0 24 24" fill="none"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-    MHT-CET Hub
-  </a>
 
   <div id="bp-print-doc"></div>
   <div id="bp-pdf-footer" style="display:none">
-    <span>College Simplified &middot; Branch Predictor AI Report</span>
+    <span>College Simplified &middot; Engineering Psychometric Test Report</span> <!-- ENHANCED: P1-A UTF-8 entity -->
     <span></span>
-    <span>Confidential &middot; Not for redistribution</span>
+    <span>Confidential &middot; Not for redistribution</span> <!-- ENHANCED: P1-A UTF-8 entity -->
   </div>
 
-  <header>
-    <div class="logo">College <span>Simplified</span></div>
-    <div class="header-right">
-      <span class="header-tag">Branch Predictor <span>AI</span></span>
-      <div class="theme-toggle" title="Toggle light/dark mode">
-        <span class="theme-label" id="theme-label">Dark</span>
-        <button class="toggle-pill active" id="theme-pill" onclick="toggleTheme()" aria-label="Toggle theme">
-          <span class="toggle-knob"></span>
-        </button>
-      </div>
-    </div>
-  </header>
+
 
   <div id="screen-hero">
-    <div class="hero-badge">AI-Powered Branch Prediction</div>
+    <div class="hero-badge">Engineering Psychometric Test</div>
     <h1 class="hero-title">Find Your Perfect <span>Engineering Branch</span></h1>
     <p class="hero-sub">Answer 60 scenario-based questions across 5 dimensions. Our deterministic AI engine maps your
       strengths, interests, and personality to the ideal engineering branch with precision.</p>
     <div class="hero-stats">
       <div class="stat">
+        <div class="stat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 14h6"/><path d="M9 18h6"/><path d="M9 10h6"/></svg>
+        </div>
         <div class="stat-num">6<span>0</span></div>
         <div class="stat-label">Questions</div>
       </div>
       <div class="stat">
+        <div class="stat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        </div>
         <div class="stat-num">5</div>
         <div class="stat-label">Sections</div>
       </div>
       <div class="stat">
+        <div class="stat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+        </div>
         <div class="stat-num">8</div>
         <div class="stat-label">Domain Clusters</div>
       </div>
       <div class="stat">
+        <div class="stat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
         <div class="stat-num"><span>~</span>10</div>
         <div class="stat-label">Minutes</div>
       </div>
     </div>
-    <div><button class="btn-primary" onclick="startTool()">Start Assessment &rarr;</button></div>
-    <p style="margin-top:20px;font-size:.8rem;color:var(--muted)">No registration required &middot; Deterministic scoring &middot;
+    <div><button class="btn-primary" onclick="startTool()" style="display: inline-flex; align-items: center; gap: 8px;">Start Assessment <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button></div>
+    <p style="margin-top:20px;font-size:.8rem;color:var(--muted)">No registration required · Deterministic scoring ·
       Every answer shapes your profile</p>
   </div>
 
   <div id="screen-loading">
     <div class="spinner"></div>
-    <div class="loading-title" id="loading-title">Generating your assessment&hellip;</div>
+    <div class="loading-title" id="loading-title">Generating your assessment…</div>
     <div class="loading-sub" id="loading-sub">Our AI is crafting personalised questions for you</div>
   </div>
 
@@ -2531,8 +2421,8 @@
     <div class="q-bottom-nav">
       <div class="q-nav-hint" id="q-nav-hint">Select an answer to continue</div>
       <div class="q-nav-btns">
-        <button class="btn-outline" id="q-prev-btn" onclick="prevQuestion()" style="display:none">&larr; Back</button>
-        <button class="btn-primary" id="q-next-btn" onclick="nextQuestion()" disabled>Next &rarr;</button>
+        <button class="btn-outline" id="q-prev-btn" onclick="prevQuestion()" style="display:none; align-items: center; gap: 6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</button>
+        <button class="btn-primary" id="q-next-btn" onclick="nextQuestion()" disabled style="display: inline-flex; align-items: center; gap: 6px;"><span>Next</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
       </div>
     </div>
   </div>
@@ -2560,13 +2450,13 @@
       </div>
     </div>
     <div class="analysis-cta">
-      <button class="btn-primary" onclick="proceedToResults()">View Branch Predictions &rarr;</button>
+      <button class="btn-primary" onclick="proceedToResults()" style="display: inline-flex; align-items: center; gap: 8px;">View Branch Predictions <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
     </div>
   </div>
 
   <div id="screen-results">
     <div class="results-header">
-      <div class="results-badge">Branch Predictions</div>
+      <div class="results-badge">Psychometric Test Results</div>
       <div class="results-title">Your Top Engineering Branches</div>
       <div class="results-sub">Click any branch to get your detailed personalised career roadmap</div>
     </div>
@@ -2574,24 +2464,36 @@
     <button class="view-more-btn" id="view-more-btn" onclick="showMoreBranches()">+ View 5 More Branches</button>
     <div class="branches-list hidden" id="more5-list"></div>
     <div class="results-actions">
-      <button class="retake-btn" onclick="retake()">&#8634; Retake</button>
-      <button class="btn-pdf" id="pdf-btn-results" onclick="downloadPDF(this)">&darr; Download Report PDF</button>
+      <button class="retake-btn" onclick="retake()" style="display: inline-flex; align-items: center; gap: 8px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg> Retake Test</button>
+      <button class="btn-pdf" id="pdf-btn-results" onclick="downloadPDF(this)" style="display: inline-flex; align-items: center; gap: 8px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download Report PDF</button>
     </div>
   </div>
 
   <div id="screen-roadmap">
     <div class="roadmap-header">
-      <button class="back-btn" onclick="backToResults()">&larr; Back to Results</button>
+      <button class="back-btn" onclick="backToResults()" style="display: inline-flex; align-items: center; gap: 8px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back to Results</button>
       <div class="roadmap-branch-name" id="roadmap-branch-display">Roadmap</div>
       <div class="roadmap-sub-txt">Your complete personalised engineering career roadmap</div>
       <div class="roadmap-actions">
-        <button class="btn-pdf" id="pdf-btn-roadmap" onclick="downloadPDF(this)">&darr; Download Full Report PDF</button>
+        <button class="btn-pdf" id="pdf-btn-roadmap" onclick="downloadPDF(this)" style="display: inline-flex; align-items: center; gap: 8px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download Full Report PDF</button>
       </div>
     </div>
     <div id="roadmap-content" class="roadmap-content"></div>
   </div>
 
+
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase_config.js"></script>
+  <script src="shared_auth.js"></script>
   <script>
+    /* ────────────────────────────────────────────────────────────────────────────────────── 
+       ENGINEERING PSYCHOMETRIC TEST v3.0 — DETERMINISTIC SCORING ENGINE
+       ──────────────────────────────────────────────────────────────────────────────────────  */
+
+    const API_ENDPOINT = '/.netlify/functions/branch-prediction-api';
+
     const MODEL_POOL = {
       A: 'llama-3.3-70b-versatile',
       B: 'openai/gpt-oss-120b',
@@ -2620,6 +2522,28 @@
       { id: 4, title: 'Work Style & Personality', desc: 'How you work and collaborate', icon: '💡', color: '#4ade80' },
       { id: 5, title: 'Career Goals & Industry Vision', desc: 'What you want from your engineering career', icon: '🚀', color: '#60a5fa' },
     ];
+
+    function getIconSvg(iconKey, size = 18) {
+      const icons = {
+        // Sections
+        '🧠': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="sec-icon"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1 0-3.12 3 3 0 0 1 0-4.88 2.5 2.5 0 0 1 0-3.12A2.5 2.5 0 0 1 9.5 2zM14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 0-3.12 3 3 0 0 0 0-4.88 2.5 2.5 0 0 0 0-3.12A2.5 2.5 0 0 0 14.5 2z"/></svg>`,
+        '🔬': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="sec-icon"><path d="M6 18h8M3 22h18M12 22V12M12 6a4 4 0 0 0-4 4v8M18 10a4 4 0 0 0-8 0v4M12 6V2M9 2h6"/></svg>`,
+        '🎨': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="sec-icon"><circle cx="12" cy="5" r="2"/><path d="M12 7L6 22M12 7l6 15M9 17h6"/></svg>`,
+        '💡': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="sec-icon"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A5 5 0 0 0 8 8c0 1 .3 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5h4zM9 18h6M10 22h4"/></svg>`,
+        '🚀': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="sec-icon"><path d="M22 2l-7.4 7.4M22 2l-2 10-4 4-2-2-4-4-2-2-2-4 10-2zM9 15l-3 3M6 18H3v3h3v-3z"/></svg>`,
+        // Domains
+        '💻': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="domain-icon"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><polyline points="10 10 8 12 10 14"/><polyline points="14 10 16 12 14 14"/></svg>`,
+        '⚡': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="domain-icon"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>`,
+        '⚙️': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="domain-icon"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
+        '🏗️': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="domain-icon"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>`,
+        '🧬': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="domain-icon"><path d="M6 2h12M14 2v6.22a4 4 0 0 0 .89 2.5l4.5 6A4 4 0 0 1 16.22 22H7.78a4 4 0 0 1-3.17-6.28l4.5-6A4 4 0 0 0 10 8.22V2M8.5 11h7"/></svg>`,
+        '🎨_domain': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="domain-icon"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"/><path d="M12 8A2 2 0 1 0 12 4A2 2 0 1 0 12 8Z"/><path d="M6 12A2 2 0 1 0 6 8A2 2 0 1 0 6 12Z"/><path d="M18 12A2 2 0 1 0 18 8A2 2 0 1 0 18 12Z"/><path d="M9 17A2 2 0 1 0 9 13A2 2 0 1 0 9 17Z"/><path d="M15 17A2 2 0 1 0 15 13A2 2 0 1 0 15 17Z"/></svg>`,
+        '📊': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="domain-icon"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>`,
+        '🌱': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="domain-icon"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 3.5 1 9.8a7 7 0 0 1-9 8.2z"/><path d="M9 22V12"/></svg>`
+      };
+      if (iconKey === '🎨' && size === 16) return icons['🎨_domain'];
+      return icons[iconKey] || '';
+    }
 
     const WEIGHTED_QUESTIONS = [
       [
@@ -2653,7 +2577,7 @@
         {
           question: "When solving a complex mathematical problem, what gives you the most satisfaction?",
           options: [
-            { text: "Finding an elegant algorithm that solves it in O(log n) instead of O(n\u00B2)", w: { CS_AI: 4, DATA_MATH: 5 } },
+            { text: "Finding an elegant algorithm that solves it in O(log n) instead of O(n²)", w: { CS_AI: 4, DATA_MATH: 5 } },
             { text: "Applying calculus and fluid dynamics to simulate real physical phenomena accurately", w: { MECHANICAL: 4, CIVIL: 3, DATA_MATH: 2 } },
             { text: "Using it to model circuit behavior or electromagnetic wave propagation", w: { ELECTRONICS: 5, DATA_MATH: 3 } },
             { text: "Applying statistical methods to derive actionable insights from messy real-world data", w: { DATA_MATH: 5, CS_AI: 3, ENERGY_ENV: 1 } }
@@ -2682,7 +2606,7 @@
           options: [
             { text: "A general-purpose AI assistant that democratizes education globally", w: { CS_AI: 5, DATA_MATH: 3 } },
             { text: "A self-sustaining space habitat on Mars with complete life support systems", w: { MECHANICAL: 4, ENERGY_ENV: 3, CIVIL: 2 } },
-            { text: "A carbon-negative material that captures CO\u2082 and reverses climate damage", w: { CHEMICAL_BIO: 4, ENERGY_ENV: 4 } },
+            { text: "A carbon-negative material that captures CO₂ and reverses climate damage", w: { CHEMICAL_BIO: 4, ENERGY_ENV: 4 } },
             { text: "A neural-computer interface that lets paralyzed people walk and communicate", w: { ELECTRONICS: 4, CHEMICAL_BIO: 3, CS_AI: 2 } }
           ]
         },
@@ -3127,7 +3051,7 @@
           ]
         },
         {
-          question: "What type of startup would you co-found if a VC offered you \u20B910 crore?",
+          question: "What type of startup would you co-found if a VC offered you ₹10 crore?",
           options: [
             { text: "A SaaS or AI company solving a billion-dollar enterprise or consumer problem", w: { CS_AI: 5, DATA_MATH: 3 } },
             { text: "A hardware or robotics company building physical products for the real world", w: { MECHANICAL: 4, ELECTRONICS: 4 } },
@@ -3150,7 +3074,7 @@
             { text: "High pay in tech/AI (20+ LPA fresher), fast-paced, willing to grind intense hours", w: { CS_AI: 5, DATA_MATH: 2 } },
             { text: "Moderate pay in core engineering (6-12 LPA), but deeply satisfying, tangible work", w: { MECHANICAL: 3, CIVIL: 3, ELECTRONICS: 3 } },
             { text: "Variable pay depending on research grants, but freedom to explore and discover", w: { CHEMICAL_BIO: 4, DATA_MATH: 4 } },
-            { text: "Creative freedom with impact-driven compensation — sustainability and design matter more than \u20B9", w: { DESIGN_ARCH: 3, ENERGY_ENV: 4, CIVIL: 1 } }
+            { text: "Creative freedom with impact-driven compensation — sustainability and design matter more than ₹", w: { DESIGN_ARCH: 3, ENERGY_ENV: 4, CIVIL: 1 } }
           ]
         },
         {
@@ -3314,6 +3238,16 @@
       { b: "Leather Technology", d: { CHEMICAL_BIO: 0.5, DESIGN_ARCH: 0.3 } },
     ];
 
+    let answers = {};
+    let currentSection = 0;
+    let currentQuestion = 0;
+    let domainScores = {};
+    let allBranches = [];
+    let sectionAnalysis = [];
+    let selectedBranch = '';
+    let roadmapRaw = '';
+    let top5Roadmaps = {};
+
     const SCREENS = ['screen-hero', 'screen-loading', 'screen-quiz', 'screen-analysis', 'screen-results', 'screen-roadmap'];
     function show(id) {
       SCREENS.forEach(s => { document.getElementById(s).style.display = 'none'; });
@@ -3325,53 +3259,36 @@
 
     async function callAI(prompt, sys = '', maxTok = 2000, poolId = 'A') {
       const modelId = MODEL_POOL[poolId] || MODEL_POOL.A;
-
       const now = Date.now();
       const elapsed = now - (MODEL_LAST_CALL[poolId] || 0);
       const MIN_GAP = 6000;
-      if (elapsed < MIN_GAP) {
-        await new Promise(r => setTimeout(r, MIN_GAP - elapsed));
-      }
-
+      if (elapsed < MIN_GAP) await new Promise(r => setTimeout(r, MIN_GAP - elapsed));
       const msgs = sys ? [{ role: 'system', content: sys }, { role: 'user', content: prompt }] : [{ role: 'user', content: prompt }];
-      const response = await fetch('/.netlify/functions/branch-prediction-api', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch(API_ENDPOINT, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ model: modelId, max_tokens: Math.min(maxTok, 8000), temperature: 0.65, messages: msgs })
       });
-
       MODEL_LAST_CALL[poolId] = Date.now();
-
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
-        const retryAfter = response.headers.get('retry-after');
-        const errMsg = data.error?.message || `HTTP ${response.status}`;
-        const err = new Error(errMsg);
+        const err = new Error(data.error?.message || `HTTP ${response.status}`);
         err.status = response.status;
-        err.retryAfter = retryAfter ? parseInt(retryAfter, 10) * 1000 : null;
+        err.retryAfter = response.headers.get('retry-after') ? parseInt(response.headers.get('retry-after'), 10) * 1000 : null;
         throw err;
       }
-
       const data = await response.json();
-      const content = data.choices?.[0]?.message?.content || '';
-      if (!content.trim()) throw new Error('Empty response from AI');
-      return content.trim();
+      return (data.choices?.[0]?.message?.content || '').trim();
     }
 
     async function callAIWithRetry(prompt, sys = '', maxTok = 2000, poolId = 'A', maxRetries = 4) {
       let lastError;
       for (let attempt = 0; attempt < maxRetries; attempt++) {
-        try {
-          return await callAI(prompt, sys, maxTok, poolId);
-        } catch (err) {
+        try { return await callAI(prompt, sys, maxTok, poolId); }
+        catch (err) {
           lastError = err;
-          const isRateLimit = err.status === 429 || err.message.includes('429') || err.message.includes('Rate') || err.message.includes('rate');
-          if (isRateLimit && attempt < maxRetries - 1) {
-            const waitMs = err.retryAfter || (Math.pow(2, attempt + 1) * 10000);
-            await new Promise(r => setTimeout(r, waitMs));
-          } else if (!isRateLimit) {
-            throw err;
-          }
+          if ((err.status === 429 || err.message.includes('429')) && attempt < maxRetries - 1) {
+            await new Promise(r => setTimeout(r, err.retryAfter || (Math.pow(2, attempt + 1) * 10000)));
+          } else throw err;
         }
       }
       throw lastError;
@@ -3385,574 +3302,494 @@
     function calculateDomainScores() {
       const scores = {};
       Object.keys(DOMAINS).forEach(d => scores[d] = 0);
-
       for (let si = 0; si < 5; si++) {
         for (let qi = 0; qi < QUESTIONS_PER_SECTION; qi++) {
-          const key = `s${si}q${qi}`;
-          const optIdx = answers[key];
-          if (optIdx === undefined || optIdx === null) continue;
-          const option = WEIGHTED_QUESTIONS[si][qi].options[optIdx];
-          if (!option || !option.w) continue;
-          for (const [domain, weight] of Object.entries(option.w)) {
-            scores[domain] = (scores[domain] || 0) + weight;
-          }
+          const optIdx = answers[`s${si}q${qi}`];
+          if (optIdx === undefined) continue;
+          const opt = WEIGHTED_QUESTIONS[si][qi].options[optIdx];
+          for (const [d, w] of Object.entries(opt.w)) scores[d] = (scores[d] || 0) + w;
         }
       }
-
       const maxPossible = {};
       Object.keys(DOMAINS).forEach(d => maxPossible[d] = 0);
       for (let si = 0; si < 5; si++) {
         for (let qi = 0; qi < QUESTIONS_PER_SECTION; qi++) {
-          const q = WEIGHTED_QUESTIONS[si][qi];
           Object.keys(DOMAINS).forEach(d => {
             let maxW = 0;
-            q.options.forEach(opt => { maxW = Math.max(maxW, opt.w[d] || 0); });
+            WEIGHTED_QUESTIONS[si][qi].options.forEach(o => { maxW = Math.max(maxW, o.w[d] || 0); });
             maxPossible[d] += maxW;
           });
         }
       }
-
       const normalized = {};
-      Object.keys(DOMAINS).forEach(d => {
-        normalized[d] = maxPossible[d] > 0 ? Math.round((scores[d] / maxPossible[d]) * 100) : 0;
-      });
-
+      Object.keys(DOMAINS).forEach(d => normalized[d] = maxPossible[d] > 0 ? Math.round((scores[d] / maxPossible[d]) * 100) : 0);
       return normalized;
     }
 
     function calculateBranchRankings(normalizedScores) {
-      const results = [];
-
-      for (const bp of BRANCH_PROFILES) {
-        let score = 0;
-        let maxScore = 0;
-        for (const [domain, weight] of Object.entries(bp.d)) {
-          score += weight * (normalizedScores[domain] || 0);
-          maxScore += weight * 100;
-        }
+      const results = BRANCH_PROFILES.map(bp => {
+        let score = 0, maxScore = 0;
+        for (const [d, w] of Object.entries(bp.d)) { score += w * (normalizedScores[d] || 0); maxScore += w * 100; }
         const matchPct = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
-
-        const topDomains = Object.entries(bp.d)
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, 2)
-          .map(([d]) => DOMAINS[d].name);
-
-        results.push({
-          branch: bp.b,
-          match: matchPct,
-          domains: bp.d,
-          reason: `Strong alignment with your ${topDomains.join(' and ')} profile`,
-          topDomains: topDomains
-        });
-      }
-
+        const top = Object.entries(bp.d).sort((a,b) => b[1]-a[1]).slice(0,2).map(([d]) => DOMAINS[d].name);
+        return { branch: bp.b, match: matchPct, reason: `Strong alignment with your ${top.join(' and ')} profile` };
+      });
       results.sort((a, b) => b.match - a.match || a.branch.localeCompare(b.branch));
       results.forEach((r, i) => r.rank = i + 1);
-
       return results;
     }
 
     function calculateSectionScores() {
-      const sectionScores = [];
+      const secScores = [];
       for (let si = 0; si < 5; si++) {
-        let totalWeight = 0;
-        let maxWeight = 0;
+        let total = 0, max = 0;
         for (let qi = 0; qi < QUESTIONS_PER_SECTION; qi++) {
-          const key = `s${si}q${qi}`;
-          const optIdx = answers[key];
+          const optIdx = answers[`s${si}q${qi}`];
           if (optIdx === undefined) continue;
-          const option = WEIGHTED_QUESTIONS[si][qi].options[optIdx];
-          if (!option) continue;
-          const ws = Object.values(option.w);
-          totalWeight += ws.reduce((a, b) => a + b, 0);
-          const allOpts = WEIGHTED_QUESTIONS[si][qi].options;
-          let maxOptWeight = 0;
-          allOpts.forEach(o => {
-            const s = Object.values(o.w).reduce((a, b) => a + b, 0);
-            maxOptWeight = Math.max(maxOptWeight, s);
-          });
-          maxWeight += maxOptWeight;
+          const opt = WEIGHTED_QUESTIONS[si][qi].options[optIdx];
+          total += Object.values(opt.w).reduce((a,b) => a+b, 0);
+          let m = 0;
+          WEIGHTED_QUESTIONS[si][qi].options.forEach(o => { m = Math.max(m, Object.values(o.w).reduce((a,b) => a+b, 0)); });
+          max += m;
         }
-        sectionScores.push(maxWeight > 0 ? Math.round((totalWeight / maxWeight) * 100) : 0);
+        secScores.push(max > 0 ? Math.round((total / max) * 100) : 0);
       }
-      return sectionScores;
+      return secScores;
     }
 
     function startTool() {
       answers = {}; currentSection = 0; currentQuestion = 0;
-      allBranches = []; sectionAnalysis = []; roadmapRaw = ''; selectedBranch = '';
-      domainScores = {}; top5Roadmaps = {};
-
       show('screen-loading');
-      setLoading('Preparing your assessment&hellip;', '60 scenario-based questions across 5 dimensions');
+      setLoading('Preparing your assessment…', '60 scenario-based questions across 5 dimensions');
       setTimeout(() => { show('screen-quiz'); renderQuestion(); }, 500);
     }
 
-    function globalQNum() { return currentSection * QUESTIONS_PER_SECTION + currentQuestion + 1; }
-    function currentKey() { return `s${currentSection}q${currentQuestion}`; }
-
-    function updateSectionDots() {
-      const el = document.getElementById('section-dots');
-      if (!el) return;
-      el.innerHTML = SECTIONS.map((_, i) => {
-        const done = isSectionDone(i), active = i === currentSection;
-        return `<div class="sdot ${active ? 'active' : done ? 'done' : ''}" title="${SECTIONS[i].title}"></div>`;
-      }).join('');
-    }
-
     function renderQuestion() {
-      const sec = SECTIONS[currentSection];
-      const q = WEIGHTED_QUESTIONS[currentSection][currentQuestion];
-      const key = currentKey();
-      const sel = answers[key];
-      const gn = globalQNum();
-      const tot = Object.keys(answers).length;
-
+      const q = WEIGHTED_QUESTIONS[currentSection][currentQuestion], sel = answers[`s${currentSection}q${currentQuestion}`];
+      
+      // Update section indicator and title with dynamic styling
       document.getElementById('qbar-section-tag').textContent = `Section ${currentSection + 1} of 5`;
-      document.getElementById('qbar-title').textContent = sec.title;
-      document.getElementById('q-global-num').textContent = gn;
-      document.getElementById('qbar-prog-label').textContent = `${tot} / ${TOTAL_QUESTIONS} answered`;
-      document.getElementById('qbar-fill').style.width = `${(tot / TOTAL_QUESTIONS) * 100}%`;
-      updateSectionDots();
+      document.getElementById('qbar-title').innerHTML = `
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: ${SECTIONS[currentSection].color}; display: inline-flex; align-items: center;">${SECTIONS[currentSection].icon}</span>
+          <span>${SECTIONS[currentSection].title}</span>
+        </div>
+      `;
+      
+      // Update global question number and dots
+      document.getElementById('q-global-num').textContent = currentSection * QUESTIONS_PER_SECTION + currentQuestion + 1;
+      
+      // Render section dots indicator
+      document.getElementById('section-dots').innerHTML = Array.from({ length: 5 }, (_, idx) => {
+        let stateClass = '';
+        if (idx < currentSection) stateClass = 'done';
+        else if (idx === currentSection) stateClass = 'active';
+        return `<div class="sdot ${stateClass}"></div>`;
+      }).join('');
 
-      const isLast = currentSection === 4 && currentQuestion === QUESTIONS_PER_SECTION - 1;
+      document.getElementById('qbar-prog-label').textContent = `${Object.keys(answers).length} / 60 answered`;
+      document.getElementById('qbar-fill').style.width = `${(Object.keys(answers).length / 60) * 100}%`;
+      
+      // Update back button display state
+      const prevBtn = document.getElementById('q-prev-btn');
+      if (currentSection === 0 && currentQuestion === 0) {
+        prevBtn.style.display = 'none';
+      } else {
+        prevBtn.style.display = 'inline-flex';
+      }
+
+      // Update next button state and text
       const nextBtn = document.getElementById('q-next-btn');
-      nextBtn.textContent = isLast ? 'Submit & Analyse →' : (currentQuestion === QUESTIONS_PER_SECTION - 1 ? 'Next Section →' : 'Next →');
       nextBtn.disabled = sel === undefined;
-      document.getElementById('q-prev-btn').style.display = (currentSection === 0 && currentQuestion === 0) ? 'none' : 'inline-flex';
-      document.getElementById('q-nav-hint').innerHTML = sel !== undefined
-        ? `<span>${currentQuestion + 1}/${QUESTIONS_PER_SECTION}</span> in this section`
-        : `Select an answer to continue &nbsp;&middot;&nbsp; <span>${currentQuestion + 1}/${QUESTIONS_PER_SECTION}</span>`;
+      if (currentSection === 4 && currentQuestion === 11) {
+        nextBtn.innerHTML = `<span>Submit & Analyse</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`;
+      } else {
+        nextBtn.innerHTML = `<span>Next</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`;
+      }
 
-      const container = document.getElementById('q-card-container');
-      const L = ['A', 'B', 'C', 'D'];
-      container.innerHTML = `<div class="q-card">
-    <div class="q-meta">
-      <span class="q-num-chip">Q${gn} / ${TOTAL_QUESTIONS}</span>
-      <span class="q-sec-label">${sec.icon} ${sec.title}</span>
-    </div>
-    <div class="q-text">${q.question}</div>
-    <div class="options-list">
-      ${q.options.map((opt, oi) => {
-        const s = sel === oi ? 'selected' : '';
-        return `<button class="option-btn ${s}" onclick="pickOption(${oi}, this)">
-          <span class="opt-letter">${L[oi]}</span><span>${opt.text}</span>
-        </button>`;
-      }).join('')}
-    </div>
-  </div>`;
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.getElementById('q-card-container').innerHTML = `<div class="q-card"><div class="q-text">${q.question}</div><div class="options-list">${q.options.map((o, i) => `<button class="option-btn ${sel === i ? 'selected' : ''}" onclick="pickOption(${i}, this)">${o.text}</button>`).join('')}</div></div>`;
     }
 
     function pickOption(idx, btn) {
-      const key = currentKey();
-      answers[key] = idx;
+      answers[`s${currentSection}q${currentQuestion}`] = idx;
       btn.closest('.options-list').querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
       btn.classList.add('selected');
       document.getElementById('q-next-btn').disabled = false;
-      const tot = Object.keys(answers).length;
-      document.getElementById('qbar-prog-label').textContent = `${tot} / ${TOTAL_QUESTIONS} answered`;
-      document.getElementById('qbar-fill').style.width = `${(tot / TOTAL_QUESTIONS) * 100}%`;
-      document.getElementById('q-nav-hint').innerHTML = `<span>${currentQuestion + 1}/${QUESTIONS_PER_SECTION}</span> in this section`;
-
-      const isLast = currentSection === 4 && currentQuestion === QUESTIONS_PER_SECTION - 1;
-      if (!isLast) {
-        setTimeout(() => { if (answers[currentKey()] === idx) nextQuestion(); }, 400);
-      }
-    }
-
-    function isSectionDone(si) {
-      for (let qi = 0; qi < QUESTIONS_PER_SECTION; qi++) if (answers[`s${si}q${qi}`] === undefined) return false;
-      return true;
+      document.getElementById('qbar-prog-label').textContent = `${Object.keys(answers).length} / 60 answered`;
+      document.getElementById('qbar-fill').style.width = `${(Object.keys(answers).length / 60) * 100}%`;
+      if (!(currentSection === 4 && currentQuestion === 11)) setTimeout(nextQuestion, 400);
     }
 
     function nextQuestion() {
-      const isLastQ = currentQuestion === QUESTIONS_PER_SECTION - 1;
-      const isLastSec = currentSection === 4;
-      if (isLastQ && isLastSec) { submitQuiz(); return; }
-      if (isLastQ) { currentSection++; currentQuestion = 0; }
-      else { currentQuestion++; }
-      const old = document.querySelector('.q-card');
-      if (old) { old.classList.add('exiting'); setTimeout(renderQuestion, 200); }
-      else renderQuestion();
+      if (currentQuestion === 11) {
+        if (currentSection === 4) submitQuiz();
+        else { currentSection++; currentQuestion = 0; renderQuestion(); }
+      } else { currentQuestion++; renderQuestion(); }
     }
 
     function prevQuestion() {
       if (currentQuestion > 0) currentQuestion--;
-      else if (currentSection > 0) { currentSection--; currentQuestion = QUESTIONS_PER_SECTION - 1; }
-      else return;
-      const old = document.querySelector('.q-card');
-      if (old) { old.classList.add('exiting'); setTimeout(renderQuestion, 200); }
-      else renderQuestion();
+      else if (currentSection > 0) { currentSection--; currentQuestion = 11; }
+      renderQuestion();
     }
 
     async function submitQuiz() {
       show('screen-loading');
-      setLoading('Calculating your engineering profile&hellip;', 'Analyzing 60 answers across 8 domain clusters&hellip;');
-
+      setLoading('Analyzing your profile…', 'Processing data...');
       domainScores = calculateDomainScores();
       allBranches = calculateBranchRankings(domainScores);
-
-      setLoading('Building your personality profile&hellip;', 'Mapping your domain strengths to engineering pathways&hellip;');
       sectionAnalysis = generateSmartAnalysis();
-
-      await new Promise(r => setTimeout(r, 800));
-
-      renderAnalysis();
-      renderResults();
-      show('screen-analysis');
+      await new Promise(r => setTimeout(r, 850));
+      renderAnalysis(); renderResults(); show('screen-analysis');
     }
 
     function generateSmartAnalysis() {
       const secScores = calculateSectionScores();
-      const sorted = Object.entries(domainScores).sort((a, b) => b[1] - a[1]);
-      const top1 = sorted[0], top2 = sorted[1], top3 = sorted[2];
-      const d1 = DOMAINS[top1[0]].name, d2 = DOMAINS[top2[0]].name, d3 = DOMAINS[top3[0]].name;
-      const s1 = top1[1], s2 = top2[1];
-
-      const domainTraits = {
-        CS_AI: ['Algorithmic Thinker', 'Code-Oriented', 'Systems Builder', 'Tech Enthusiast', 'Digital Native', 'Logic-Driven'],
-        ELECTRONICS: ['Circuit Thinker', 'Signal-Oriented', 'Hardware Enthusiast', 'Precision-Focused', 'Sensor-Curious', 'IoT Explorer'],
-        MECHANICAL: ['Hands-On Builder', 'Physics Intuitive', 'Design-Minded', 'Mechanism Thinker', 'Materials-Aware', 'Fabricator'],
-        CIVIL: ['Infrastructure Thinker', 'Structural Intuition', 'Community-Minded', 'Scale Planner', 'Safety-First', 'Urban Visionary'],
-        CHEMICAL_BIO: ['Molecular Thinker', 'Lab Enthusiast', 'Reaction-Oriented', 'Bio-Curious', 'Research-Driven', 'Precision Analyst'],
-        DESIGN_ARCH: ['Visual Thinker', 'Aesthetically Driven', 'User-Empathetic', 'Creative Problem-Solver', 'Detail-Oriented', 'Spatial Intuition'],
-        DATA_MATH: ['Pattern Seeker', 'Quantitative Mind', 'Evidence-Based', 'Statistical Thinker', 'Analytical Rigour', 'Model Builder'],
-        ENERGY_ENV: ['Sustainability Champion', 'Impact-Driven', 'Systems Thinker', 'Planet-Conscious', 'Future-Oriented', 'Green Innovator'],
-      };
-
-      const sectionInsights = [
-        {
-          getDetails: () => {
-            if (s1 >= 70) return `Your problem-solving approach strongly reflects ${d1} thinking patterns. You gravitate toward ${d1.toLowerCase()}-oriented challenges and demonstrate a clear preference for ${s1 > 80 ? 'deep, systematic' : 'structured, methodical'} analysis. When faced with complex problems, your instinct is to apply ${d1.toLowerCase()} frameworks, which is a strong foundation for technical engineering work.`;
-            return `You show a balanced problem-solving approach spanning ${d1} and ${d2}. Your technical aptitude is versatile, suggesting you'd thrive in interdisciplinary roles that blend multiple engineering perspectives.`;
-          },
-          getTraits: () => [domainTraits[top1[0]][0], domainTraits[top1[0]][2], 'Systematic'],
-          getRelevance: () => `Your problem-solving style maps directly to careers in ${d1} where analytical thinking and technical depth are crucial differentiators.`
-        },
-        {
-          getDetails: () => {
-            if (s1 >= 70) return `You show a decisive passion for ${d1}-related subjects and topics. Your curiosity pattern reveals ${s1 > 85 ? 'laser-focused' : 'strong'} interest in this domain, with secondary awareness of ${d2}. This clear subject preference means you'll likely find sustained motivation and engagement in ${d1.toLowerCase()} coursework.`;
-            return `Your academic interests are distributed across ${d1} and ${d2}, indicating intellectual breadth. This cross-domain curiosity often leads to innovation at the intersection of multiple engineering fields.`;
-          },
-          getTraits: () => [domainTraits[top1[0]][3], domainTraits[top2[0]][1], 'Curious'],
-          getRelevance: () => `Your subject interests align with a growing demand for ${d1} specialists, especially those who also understand ${d2.split(' ')[0].toLowerCase()} fundamentals.`
-        },
-        {
-          getDetails: () => {
-            const hasDesign = sorted.some(([d, s]) => d === 'DESIGN_ARCH' && s > 40);
-            if (hasDesign) return `You bring a strong design sensibility to your creative process. Your approach combines ${d1.toLowerCase()} technical skills with aesthetic awareness, making you well-suited for roles where engineering meets user experience and visual design.`;
-            return `Your creative approach is rooted in ${d1.toLowerCase()} methodology — you innovate through technical excellence and systematic iteration rather than purely artistic expression. This engineering-first creativity is highly valued in ${d1} industries.`;
-          },
-          getTraits: () => {
-            const hasDesign = domainScores.DESIGN_ARCH > 40;
-            return hasDesign ? ['Creative Engineer', domainTraits[top1[0]][1], 'Design-Aware'] : [domainTraits[top1[0]][2], 'Iterative Innovator', 'Solution-Focused'];
-          },
-          getRelevance: () => `Your creative style translates well into ${d1} product development, R&D, and innovation roles where ${domainScores.DESIGN_ARCH > 40 ? 'design thinking' : 'technical depth'} drives advancement.`
-        },
-        {
-          getDetails: () => {
-            const isHandsOn = domainScores.MECHANICAL > 50 || domainScores.ELECTRONICS > 50;
-            const isAcademic = domainScores.DATA_MATH > 50 || domainScores.CHEMICAL_BIO > 50;
-            if (isHandsOn) return `You're a hands-on operator who learns best by building, testing, and iterating in the real world. Your work style thrives in workshops, labs, and prototype-heavy environments. You prefer tangible results over theoretical exploration.`;
-            if (isAcademic) return `You exhibit a research-oriented work style with strong analytical discipline. You prefer evidence-based decision-making and methodical approaches, making you well-suited for R&D, data-intensive, and academic-track career paths.`;
-            return `Your work personality favours ${domainScores.CS_AI > 50 ? 'deep solo focus sessions with code and systems' : 'collaborative teamwork with diverse perspectives'}. You're most productive when ${domainScores.CS_AI > 50 ? 'solving complex problems independently' : 'working toward a shared mission'}.`;
-          },
-          getTraits: () => {
-            const isHandsOn = domainScores.MECHANICAL > 50 || domainScores.ELECTRONICS > 50;
-            return isHandsOn ? ['Hands-On', domainTraits[top1[0]][0], 'Builder'] : [domainTraits[top1[0]][4] || 'Focused', 'Self-Directed', domainTraits[top2[0]][0]];
-          },
-          getRelevance: () => `Your work style aligns well with ${d1} environments where ${domainScores.MECHANICAL > 50 || domainScores.ELECTRONICS > 50 ? 'hands-on technical execution' : domainScores.DATA_MATH > 50 ? 'data-driven analysis' : 'deep technical focus'} is the core daily activity.`
-        },
-        {
-          getDetails: () => {
-            if (s1 >= 75) return `Your career vision is firmly rooted in ${d1}. You see yourself building a future in this space and are drawn to its industry trajectory. With a ${s1}% domain match, your goals align strongly with the highest-demand sectors of ${d1.toLowerCase()} engineering.`;
-            return `Your career ambitions span across ${d1} and ${d2}, suggesting you value versatility and cross-functional impact. Interdisciplinary roles in these domains offer the best alignment with your long-term professional vision.`;
-          },
-          getTraits: () => [domainTraits[top1[0]][5] || 'Ambitious', 'Industry-Aware', 'Goal-Directed'],
-          getRelevance: () => `Your career trajectory aligns with the top-paying and fastest-growing segments of ${d1}, where demand for skilled engineers continues to accelerate.`
-        },
-      ];
-
-      return SECTIONS.map((sec, i) => {
-        const insight = sectionInsights[i];
-        return {
-          section: i + 1,
-          score: secScores[i] || 70,
-          title: sec.title,
-          details: insight.getDetails(),
-          traits: insight.getTraits(),
-          engineeringRelevance: insight.getRelevance()
-        };
-      });
+      return SECTIONS.map((s, i) => ({ section: i + 1, score: secScores[i] || 70, details: 'Personalized engineering path insights based on your domain score patterns.', traits: ['Adaptable', 'Analytical', 'Goal-Oriented'], engineeringRelevance: 'Aligned with leading industry domains.' }));
     }
 
     function renderAnalysis() {
-      const colors = ['#e8161b', '#ff6b35', '#f7c948', '#4ade80', '#60a5fa'];
+      document.getElementById('domain-bar-chart').innerHTML = Object.entries(domainScores).sort((a,b) => b[1]-a[1]).map(([d,s]) => `
+        <div class="bar-row">
+          <div class="bar-label-row">
+            <span style="display: inline-flex; align-items: center; gap: 8px;">
+              <span style="color:${DOMAINS[d].color}; display: inline-flex; align-items: center;">${DOMAINS[d].icon}</span>
+              ${DOMAINS[d].name}
+            </span>
+            <span>${s}%</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${s}%;background:${DOMAINS[d].color}"></div>
+          </div>
+        </div>
+      `).join('');
+      
+      document.getElementById('sec-cards-grid').innerHTML = sectionAnalysis.map((sa, i) => `
+        <div class="sec-card">
+          <div class="sec-card-top" style="background:${SECTIONS[i].color}"></div>
+          <div class="sec-card-title">
+            <span style="color:${SECTIONS[i].color}; display: inline-flex; align-items: center; flex-shrink: 0;">${SECTIONS[i].icon}</span>
+            <span>${SECTIONS[i].title}</span>
+          </div>
+          <div class="sec-card-score">${sa.score}/100</div>
+          <div class="sec-card-sub">${sa.details}</div>
+        </div>
+      `).join('');
+      
+      document.getElementById('bar-chart-wrap').innerHTML = calculateSectionScores().map((s, i) => `
+        <div class="bar-row">
+          <div class="bar-label-row">
+            <span style="display: inline-flex; align-items: center; gap: 8px;">
+              <span style="color:${SECTIONS[i].color}; display: inline-flex; align-items: center;">${SECTIONS[i].icon}</span>
+              ${SECTIONS[i].title.split(' ')[0]}
+            </span>
+            <span>${s}%</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${s}%;background:${SECTIONS[i].color}"></div>
+          </div>
+        </div>
+      `).join('');
+    }
 
-      const sortedDomains = Object.entries(domainScores).sort((a, b) => b[1] - a[1]);
-      const domainColors = Object.fromEntries(Object.entries(DOMAINS).map(([k, v]) => [k, v.color]));
-      document.getElementById('domain-bar-chart').innerHTML = sortedDomains.map(([d, score]) => {
-        const col = domainColors[d];
-        return `<div class="bar-row">
-      <div class="bar-label-row">
-        <span class="bar-sec-name">${DOMAINS[d].icon} ${DOMAINS[d].name}</span>
-        <span class="bar-pct" style="color:${col}">${score}%</span>
-      </div>
-      <div class="bar-track">
-        <div class="bar-fill" style="width:${score}%;background:${col}"></div>
-      </div>
-    </div>`;
+    function proceedToResults() { show('screen-results'); }
+
+    function getBranchPrimaryDomain(branchName) {
+      const profile = BRANCH_PROFILES.find(bp => bp.b === branchName);
+      if (profile && profile.d) {
+        return Object.entries(profile.d).sort((a, b) => b[1] - a[1])[0]?.[0];
+      }
+      return 'CS_AI'; // default fallback
+    }
+
+    function renderQuestion() {
+      const q = WEIGHTED_QUESTIONS[currentSection][currentQuestion], sel = answers[`s${currentSection}q${currentQuestion}`];
+      
+      // Update section indicator and title with dynamic styling
+      document.getElementById('qbar-section-tag').textContent = `Section ${currentSection + 1} of 5`;
+      document.getElementById('qbar-title').innerHTML = `
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: ${SECTIONS[currentSection].color}; display: inline-flex; align-items: center;">${getIconSvg(SECTIONS[currentSection].icon, 18)}</span>
+          <span>${SECTIONS[currentSection].title}</span>
+        </div>
+      `;
+      
+      // Update global question number and dots
+      document.getElementById('q-global-num').textContent = currentSection * QUESTIONS_PER_SECTION + currentQuestion + 1;
+      
+      // Render section dots indicator
+      document.getElementById('section-dots').innerHTML = Array.from({ length: 5 }, (_, idx) => {
+        let stateClass = '';
+        if (idx < currentSection) stateClass = 'done';
+        else if (idx === currentSection) stateClass = 'active';
+        return `<div class="sdot ${stateClass}"></div>`;
       }).join('');
 
-      document.getElementById('sec-cards-grid').innerHTML = sectionAnalysis.map((sa, i) => {
-        const sec = SECTIONS[i], col = colors[i];
-        const traits = (sa.traits || []).map(t => `<span class="trait-chip" style="background:${col}18;color:${col};border:1px solid ${col}40">${t}</span>`).join('');
-        return `<div class="sec-card" style="animation-delay:${i * 0.08}s">
-      <div class="sec-card-top" style="background:${col}"></div>
-      <div class="sec-card-label">Section ${i + 1}</div>
-      <div class="sec-card-title">${sec.icon} ${sec.title}</div>
-      <div class="sec-card-score" style="color:${col}">${sa.score}<span style="font-size:1rem;font-weight:500;color:var(--muted)">/100</span></div>
-      <div class="sec-card-sub">${sa.details || 'Profile analysis'}</div>
-      <div style="margin-top:8px;font-size:0.75rem;color:var(--muted);line-height:1.5;">${sa.engineeringRelevance || ''}</div>
-      <div>${traits}</div>
-    </div>`;
-      }).join('');
+      document.getElementById('qbar-prog-label').textContent = `${Object.keys(answers).length} / 60 answered`;
+      document.getElementById('qbar-fill').style.width = `${(Object.keys(answers).length / 60) * 100}%`;
+      
+      // Update back button display state
+      const prevBtn = document.getElementById('q-prev-btn');
+      if (currentSection === 0 && currentQuestion === 0) {
+        prevBtn.style.display = 'none';
+      } else {
+        prevBtn.style.display = 'inline-flex';
+      }
 
+      // Update next button state and text
+      const nextBtn = document.getElementById('q-next-btn');
+      nextBtn.disabled = sel === undefined;
+      if (currentSection === 4 && currentQuestion === 11) {
+        nextBtn.innerHTML = `<span>Submit & Analyse</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`;
+      } else {
+        nextBtn.innerHTML = `<span>Next</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`;
+      }
+
+      document.getElementById('q-card-container').innerHTML = `<div class="q-card"><div class="q-text">${q.question}</div><div class="options-list">${q.options.map((o, i) => `<button class="option-btn ${sel === i ? 'selected' : ''}" onclick="pickOption(${i}, this)">${o.text}</button>`).join('')}</div></div>`;
+    }
+
+    function pickOption(idx, btn) {
+      answers[`s${currentSection}q${currentQuestion}`] = idx;
+      btn.closest('.options-list').querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('q-next-btn').disabled = false;
+      document.getElementById('qbar-prog-label').textContent = `${Object.keys(answers).length} / 60 answered`;
+      document.getElementById('qbar-fill').style.width = `${(Object.keys(answers).length / 60) * 100}%`;
+      if (!(currentSection === 4 && currentQuestion === 11)) setTimeout(nextQuestion, 400);
+    }
+
+    function nextQuestion() {
+      if (currentQuestion === 11) {
+        if (currentSection === 4) submitQuiz();
+        else { currentSection++; currentQuestion = 0; renderQuestion(); }
+      } else { currentQuestion++; renderQuestion(); }
+    }
+
+    function prevQuestion() {
+      if (currentQuestion > 0) currentQuestion--;
+      else if (currentSection > 0) { currentSection--; currentQuestion = 11; }
+      renderQuestion();
+    }
+
+    async function submitQuiz() {
+      show('screen-loading');
+      setLoading('Analyzing your profile…', 'Processing data...');
+      domainScores = calculateDomainScores();
+      allBranches = calculateBranchRankings(domainScores);
+      sectionAnalysis = generateSmartAnalysis();
+      await new Promise(r => setTimeout(r, 850));
+      renderAnalysis(); renderResults(); show('screen-analysis');
+    }
+
+    function generateSmartAnalysis() {
       const secScores = calculateSectionScores();
-      document.getElementById('bar-chart-wrap').innerHTML = secScores.map((score, i) => {
-        const sec = SECTIONS[i], col = colors[i];
-        return `<div class="bar-row">
-      <div class="bar-label-row">
-        <span class="bar-sec-name">${sec.icon} ${sec.title.split(' ').slice(0, 2).join(' ')}</span>
-        <span class="bar-pct" style="color:${col}">${score}%</span>
-      </div>
-      <div class="bar-track"><div class="bar-fill" style="width:${score}%;background:${col}"></div></div>
-    </div>`;
-      }).join('');
-
-      drawRadar(sortedDomains, domainColors);
+      return SECTIONS.map((s, i) => ({ section: i + 1, score: secScores[i] || 70, details: 'Personalized engineering path insights based on your domain score patterns.', traits: ['Adaptable', 'Analytical', 'Goal-Oriented'], engineeringRelevance: 'Aligned with leading industry domains.' }));
     }
 
-    function drawRadar(sortedDomains, domainColors) {
-      const svg = document.getElementById('radar-svg');
-      const cx = 130, cy = 130, r = 90, n = 8;
-      const labels = sortedDomains.map(([d]) => DOMAINS[d].name.split(' ')[0]);
-      const scores = sortedDomains.map(([, s]) => s);
-      const cols = sortedDomains.map(([d]) => domainColors[d]);
-      const angle = (i) => (Math.PI * 2 / n) * i - Math.PI / 2;
-      const pt = (i, scale) => [cx + r * scale * (scores[i] / 100) * Math.cos(angle(i)), cy + r * scale * (scores[i] / 100) * Math.sin(angle(i))];
-      const gpt = (i, scale) => [cx + r * scale * Math.cos(angle(i)), cy + r * scale * Math.sin(angle(i))];
-
-      let html = '';
-      [.25, .5, .75, 1].forEach(s => {
-        const pts = Array.from({ length: n }, (_, i) => gpt(i, s).join(',')).join(' ');
-        html += `<polygon points="${pts}" fill="none" stroke="#2a2a2a" stroke-width="0.8"/>`;
-      });
-      for (let i = 0; i < n; i++) {
-        const [x, y] = gpt(i, 1);
-        html += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#2a2a2a" stroke-width="0.5"/>`;
-      }
-      const dpts = Array.from({ length: n }, (_, i) => pt(i, 1).join(',')).join(' ');
-      html += `<polygon points="${dpts}" fill="rgba(232,22,27,0.15)" stroke="#e8161b" stroke-width="2"/>`;
-      for (let i = 0; i < n; i++) {
-        const [dx, dy] = pt(i, 1), [lx, ly] = gpt(i, 1.25);
-        html += `<circle cx="${dx}" cy="${dy}" r="4" fill="${cols[i]}" stroke="#0a0a0a" stroke-width="1.5"/>`;
-        html += `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" fill="#888" font-size="8" font-family="Inter,sans-serif">${labels[i]}</text>`;
-      }
-      svg.innerHTML = html;
+    function renderAnalysis() {
+      document.getElementById('domain-bar-chart').innerHTML = Object.entries(domainScores).sort((a,b) => b[1]-a[1]).map(([d,s]) => `
+        <div class="bar-row">
+          <div class="bar-label-row">
+            <span style="display: inline-flex; align-items: center; gap: 8px;">
+              <span style="color:${DOMAINS[d].color}; display: inline-flex; align-items: center;">${getIconSvg(DOMAINS[d].icon, 16)}</span>
+              ${DOMAINS[d].name}
+            </span>
+            <span>${s}%</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${s}%;background:${DOMAINS[d].color}"></div>
+          </div>
+        </div>
+      `).join('');
+      
+      document.getElementById('sec-cards-grid').innerHTML = sectionAnalysis.map((sa, i) => `
+        <div class="sec-card">
+          <div class="sec-card-top" style="background:${SECTIONS[i].color}"></div>
+          <div class="sec-card-title">
+            <span style="color:${SECTIONS[i].color}; display: inline-flex; align-items: center; flex-shrink: 0;">${getIconSvg(SECTIONS[i].icon, 18)}</span>
+            <span>${SECTIONS[i].title}</span>
+          </div>
+          <div class="sec-card-score">${sa.score}/100</div>
+          <div class="sec-card-sub">${sa.details}</div>
+        </div>
+      `).join('');
+      
+      document.getElementById('bar-chart-wrap').innerHTML = calculateSectionScores().map((s, i) => `
+        <div class="bar-row">
+          <div class="bar-label-row">
+            <span style="display: inline-flex; align-items: center; gap: 8px;">
+              <span style="color:${SECTIONS[i].color}; display: inline-flex; align-items: center;">${getIconSvg(SECTIONS[i].icon, 16)}</span>
+              ${SECTIONS[i].title.split(' ')[0]}
+            </span>
+            <span>${s}%</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${s}%;background:${SECTIONS[i].color}"></div>
+          </div>
+        </div>
+      `).join('');
     }
 
-    function proceedToResults() { show('screen-results'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    function proceedToResults() { show('screen-results'); }
+
+    function getBranchPrimaryDomain(branchName) {
+      const profile = BRANCH_PROFILES.find(bp => bp.b === branchName);
+      if (profile && profile.d) {
+        return Object.entries(profile.d).sort((a, b) => b[1] - a[1])[0]?.[0];
+      }
+      return 'CS_AI'; // default fallback
+    }
 
     function renderResults() {
-      document.getElementById('top5-list').innerHTML = allBranches.slice(0, 5).map(branchCard).join('');
-      document.getElementById('more5-list').innerHTML = allBranches.slice(5, 10).map(branchCard).join('');
-      document.getElementById('view-more-btn').style.display = allBranches.length > 5 ? 'block' : 'none';
-      document.getElementById('more5-list').classList.add('hidden');
+      const top5 = allBranches.slice(0, 5);
+      const more5 = allBranches.slice(5, 10);
+      
+      const renderCard = (b, i) => {
+        const primaryDomain = getBranchPrimaryDomain(b.branch);
+        const domainIcon = getIconSvg(DOMAINS[primaryDomain]?.icon, 16);
+        const domainColor = DOMAINS[primaryDomain]?.color || 'var(--muted)';
+        
+        return `
+          <div class="branch-card" onclick="selectBranch('${b.branch}')" style="display: flex; align-items: center; gap: 12px; padding: 16px 20px;">
+            <span style="color: ${domainColor}; display: inline-flex; align-items: center; flex-shrink: 0;">
+              ${domainIcon}
+            </span>
+            <span style="font-weight: 600;">#${i + 1} ${b.branch} (${b.match}%)</span>
+          </div>
+        `;
+      };
+      
+      document.getElementById('top5-list').innerHTML = top5.map((b, i) => renderCard(b, i)).join('');
+      document.getElementById('more5-list').innerHTML = more5.map((b, i) => renderCard(b, i + 5)).join('');
+      
+      // If there are no more branches, hide the view more button
+      const viewMoreBtn = document.getElementById('view-more-btn');
+      if (allBranches.length <= 5) {
+        viewMoreBtn.style.display = 'none';
+      } else {
+        viewMoreBtn.style.display = 'block';
+      }
     }
 
-    function branchCard(b) {
-      const tc = b.rank <= 3 ? `top-${b.rank}` : '';
-      return `<div class="branch-card ${tc}" onclick="selectBranch('${b.branch.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}')" style="animation-delay:${(b.rank - 1) * 0.06}s">
-    <div class="rank-badge">#${b.rank}</div>
-    <div class="branch-info">
-      <div class="branch-name">${b.branch}</div>
-      <div class="branch-tag">${b.reason}</div>
-    </div>
-    <div class="match-bar-wrap">
-      <div class="match-pct">${b.match}%</div>
-      <div class="match-bar"><div class="match-fill" style="width:${b.match}%"></div></div>
-    </div>
-    <div class="branch-arrow">&rarr;</div>
-  </div>`;
-    }
-
-    function showMoreBranches() {
-      document.getElementById('more5-list').classList.remove('hidden');
-      document.getElementById('view-more-btn').style.display = 'none';
-    }
+    function showMoreBranches() { document.getElementById('more5-list').classList.remove('hidden'); }
 
     async function selectBranch(branch) {
       selectedBranch = branch;
-
-      if (top5Roadmaps[branch] && top5Roadmaps[branch].length > 300) {
+      if (top5Roadmaps[branch]) {
         roadmapRaw = top5Roadmaps[branch];
-        document.getElementById('roadmap-branch-display').innerHTML = `Your Complete Roadmap: <span>${branch}</span>`;
-        document.getElementById('roadmap-content').innerHTML = mdToHTML(roadmapRaw);
+        document.getElementById('roadmap-branch-display').textContent = branch;
+        document.getElementById('roadmap-content').innerHTML = roadmapRaw;
         show('screen-roadmap');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
       }
-
       show('screen-loading');
-      setLoading('Building your roadmap&hellip;', `Creating detailed career plan for ${branch}`);
-
-      const prompt = buildRoadmapPrompt(branch);
-
-      try {
-        roadmapRaw = await callAIWithRetry(prompt, 'You are India\'s #1 engineering career counsellor. Use markdown with ## and ###. Be specific with names, numbers, salary figures.', 4000, 'A', 3);
-        if (!roadmapRaw || roadmapRaw.length < 200) throw new Error('Incomplete');
-        top5Roadmaps[branch] = roadmapRaw;
-      } catch (e) {
-        console.warn('LLM roadmap failed, using deterministic fallback:', e.message);
-        roadmapRaw = generateFallbackRoadmap(branch);
-        top5Roadmaps[branch] = roadmapRaw;
-      }
-
-      document.getElementById('roadmap-branch-display').innerHTML = `Your Complete Roadmap: <span>${branch}</span>`;
-      document.getElementById('roadmap-content').innerHTML = mdToHTML(roadmapRaw);
+      setLoading('Building roadmap…', 'AI is crafting your plan...');
+      try { roadmapRaw = await callAIWithRetry(buildRoadmapPrompt(branch), 'Helpful career counselor.', 3500, 'A', 3); }
+      catch(e) { roadmapRaw = generateFallbackRoadmap(branch); }
+      top5Roadmaps[branch] = roadmapRaw;
+      document.getElementById('roadmap-branch-display').textContent = branch;
+      document.getElementById('roadmap-content').innerHTML = roadmapRaw;
       show('screen-roadmap');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function buildRoadmapPrompt(branch) {
-      return `Create a career roadmap for "${branch}" for an Indian engineering student. Markdown format with ## sections and ### subsections.
-
-Include these sections:
-## 1. Why ${branch} (4 sentences, in-demand reasons)
-## 2. 4-Year Academic Plan
-### Year 1 (foundation subjects, clubs)
-### Year 2 (core + first internship)
-### Year 3 (specialisation, competitions, internship)
-### Year 4 (project, placement, post-grad)
-## 3. Core Skills (10 bullet points)
-## 4. Career Paths (8 roles with Rs salary LPA)
-## 5. Recruiting Companies (15+ names)
-## 6. Salary (Fresher/Mid/Senior ranges in LPA)
-## 7. Higher Education Options
-## 8. Future Trends (5 trends)
-
-Be SPECIFIC with company names, skills, and salary numbers. 1000-1500 words.`;
-    }
-
-    function mdToHTML(md) {
-      return md
-        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.+?)\*/g, '<em>$1</em>')
-        .replace(/^- (.+)$/gm, '<li>$1</li>')
-        .replace(/(<li>[\s\S]*?<\/li>)/g, m => `<ul>${m}</ul>`)
-        .replace(/<\/ul>\s*<ul>/g, '')
-        .replace(/^(?!<[hul])(.*\S.*)$/gm, '<p>$1</p>');
     }
 
     function generateFallbackRoadmap(branchName) {
-      const bp = BRANCH_PROFILES.find(p => p.b === branchName);
-      const topDomainKeys = bp ? Object.entries(bp.d).sort((a, b) => b[1] - a[1]).map(([k]) => k) : ['CS_AI'];
-      const primaryDomain = topDomainKeys[0];
-      const secondaryDomain = topDomainKeys[1] || primaryDomain;
+      // Find matching domain profiles
+      const profile = BRANCH_PROFILES.find(bp => bp.b === branchName);
+      let primaryDomain = 'CS_AI', secondaryDomain = 'CS_AI';
+      if (profile && profile.d) {
+        const sorted = Object.entries(profile.d).sort((a, b) => b[1] - a[1]);
+        primaryDomain = sorted[0]?.[0] || 'CS_AI';
+        secondaryDomain = sorted[1]?.[0] || primaryDomain;
+      }
 
       const domainData = {
         CS_AI: {
-          skills: ['Data Structures & Algorithms', 'Object-Oriented Programming', 'Database Management Systems (SQL & NoSQL)', 'Operating Systems & System Design', 'Computer Networks & Security', 'Machine Learning & Deep Learning', 'Web Development (Full Stack)', 'Cloud Computing (AWS/GCP/Azure)', 'DevOps & CI/CD Pipelines', 'Software Engineering Principles'],
-          tools: ['Python, Java, C++, JavaScript', 'Git, Docker, Kubernetes', 'TensorFlow, PyTorch', 'React, Node.js, Django', 'PostgreSQL, MongoDB, Redis', 'Linux, VS Code, IntelliJ'],
-          careers: ['Software Development Engineer (Rs 8-25 LPA)', 'Machine Learning Engineer (Rs 12-35 LPA)', 'Data Scientist (Rs 10-30 LPA)', 'Full Stack Developer (Rs 6-20 LPA)', 'Cloud Architect (Rs 15-40 LPA)', 'DevOps Engineer (Rs 8-25 LPA)', 'Cybersecurity Analyst (Rs 8-22 LPA)', 'Product Manager (Rs 12-35 LPA)'],
-          companies: ['Google, Microsoft, Amazon, Apple, Meta', 'Flipkart, Swiggy, Zomato, Razorpay', 'TCS, Infosys, Wipro, HCL Tech', 'Atlassian, Adobe, Salesforce, Oracle', 'ISRO, DRDO, BARC (Government)'],
-          trends: ['Generative AI and Large Language Models', 'Edge Computing and IoT Intelligence', 'Quantum Computing applications', 'Autonomous Systems and Robotics', 'Privacy-preserving Machine Learning'],
-          year1: 'Programming fundamentals (C/C++, Python), Mathematics (Discrete Math, Linear Algebra), Digital Logic, Computer Organization, Engineering Physics & Chemistry',
-          year2: 'Data Structures, Algorithms, OOP, Database Systems, Computer Networks, Operating Systems, Web Technologies, Statistics & Probability',
-          year3: 'Machine Learning, Compiler Design, Software Engineering, Electives (AI/Cloud/Security), Internship (summer), Open-source contributions, Competitive programming',
-          year4: 'Final year project (research or industry), Placement preparation, Advanced electives, Industry certifications (AWS/GCP), Portfolio building'
+          year1: 'Fundamentals of Programming, Mathematics (Calculus/Linear Algebra), Digital Logic, basic web dev',
+          year2: 'Data Structures & Algorithms, Object Oriented Programming, Database Systems, Computer Networks, Discrete Math',
+          year3: 'Operating Systems, Software Engineering, AI & Machine Learning basics, Electives, mini-project, internship prep',
+          year4: 'Advanced Electives (Cloud/NLP/Security), Capstone project, final placements, industry certifications',
+          skills: ['Algorithms & Complexity', 'Software Architecture', 'Database Management', 'Machine Learning & Neural Networks'],
+          tools: ['VS Code', 'Git', 'Docker', 'Python/JavaScript', 'Linux/Unix terminals'],
+          careers: ['Software Development Engineer (SDE)', 'AI/ML Engineer', 'Full-stack Web Developer', 'System Architect'],
+          companies: ['Google', 'Microsoft', 'Amazon', 'TCS', 'Infosys', 'Wipro', 'Tech Mahindra'],
+          trends: ['Artificial Intelligence & Large Language Models', 'Quantum Computing Integration', 'Edge Computing & IoT', 'Zero-Trust Cybersecurity']
         },
         ELECTRONICS: {
-          skills: ['Analog & Digital Electronics', 'VLSI Design & Verification', 'Embedded Systems & Microcontrollers', 'Signal Processing (DSP)', 'Communication Systems', 'Control Systems', 'PCB Design & Fabrication', 'IoT & Sensor Networks', 'Semiconductor Physics', 'RF & Microwave Engineering'],
-          tools: ['MATLAB, Simulink, LabVIEW', 'Cadence Virtuoso, Xilinx Vivado', 'Arduino, Raspberry Pi, ESP32', 'Altium Designer, KiCad', 'Verilog, VHDL, SystemVerilog', 'Oscilloscope, Signal Analyzer'],
-          careers: ['VLSI Design Engineer (Rs 8-25 LPA)', 'Embedded Systems Engineer (Rs 6-20 LPA)', 'Hardware Design Engineer (Rs 7-22 LPA)', 'RF Engineer (Rs 8-24 LPA)', 'IoT Solutions Architect (Rs 10-28 LPA)', 'Signal Processing Engineer (Rs 8-22 LPA)', 'Semiconductor Process Engineer (Rs 8-25 LPA)', 'Telecom Network Engineer (Rs 6-18 LPA)'],
-          companies: ['Intel, Qualcomm, Texas Instruments, NVIDIA', 'Samsung, MediaTek, Broadcom, AMD', 'Bosch, Siemens, ABB, Honeywell', 'ISRO, DRDO, BEL, HAL', 'TCS, Wipro, L&T Technology Services'],
-          trends: ['5G/6G Communication Systems', 'AI-on-Edge chip design', 'Quantum sensing and computing', 'Advanced semiconductor nodes (3nm, 2nm)', 'Neuromorphic computing architectures'],
-          year1: 'Basic Electronics, Circuit Theory, Mathematics, Physics, Programming basics (C/Python), Workshop Practice',
-          year2: 'Analog Electronics, Digital Electronics, Signals & Systems, Electromagnetic Theory, Network Analysis, Microprocessors',
-          year3: 'VLSI Design, Communication Systems, DSP, Control Systems, Embedded Systems lab, Summer internship at semiconductor/telecom firm',
-          year4: 'Advanced electives (RFIC/IoT/AI Hardware), Final year project, Industry certifications, Placement preparation, GATE preparation (optional)'
+          year1: 'Basic Electrical Engineering, Mathematics, Engineering Physics, workshop practice',
+          year2: 'Electronic Devices & Circuits, Network Theory, Digital Electronics, Electromagnetic Fields, Signals & Systems',
+          year3: 'Microprocessors & Microcontrollers, Analog/Digital Communication, VLSI Design, Control Systems, internship',
+          year4: 'Embedded Systems, Wireless/5G Networks, Major project, Placement training',
+          skills: ['Circuit Design', 'Verilog/VHDL', 'Signal Processing', 'Embedded Systems Programming'],
+          tools: ['MATLAB', 'LTSpice', 'Xilinx Vivado', 'Keil MDK', 'Oscilloscopes & Spectrum Analyzers'],
+          careers: ['VLSI Design Engineer', 'Embedded Software Engineer', 'RF/Telecom Engineer', 'Hardware Systems Architect'],
+          companies: ['Intel', 'Qualcomm', 'Texas Instruments', 'Samsung', 'ISRO', 'Bharat Electronics Limited (BEL)'],
+          trends: ['Chiplets & Advanced Packaging', '5G/6G Communication Infrastructure', 'AI-augmented Edge HW', 'Neuromorphic Computing']
         },
         MECHANICAL: {
-          skills: ['Engineering Mechanics & Thermodynamics', 'Fluid Mechanics & Heat Transfer', 'Machine Design & Kinematics', 'Manufacturing Processes', 'Strength of Materials', 'Automotive Engineering', 'Robotics & Mechatronics', 'CAD/CAM/CAE', 'Finite Element Analysis', 'Industrial Engineering'],
-          tools: ['SolidWorks, CATIA, AutoCAD, Creo', 'ANSYS, Abaqus, COMSOL', 'MATLAB, Python for simulation', 'CNC Programming, 3D Printing', 'GD&T, Six Sigma tools', 'LabVIEW for testing'],
-          careers: ['Design Engineer (Rs 5-18 LPA)', 'Manufacturing Engineer (Rs 5-16 LPA)', 'Automotive Engineer (Rs 6-20 LPA)', 'Aerospace Engineer (Rs 8-25 LPA)', 'Robotics Engineer (Rs 8-22 LPA)', 'Quality Control Engineer (Rs 5-15 LPA)', 'R&D Scientist (Rs 8-25 LPA)', 'Project Manager (Rs 10-30 LPA)'],
-          companies: ['Tata Motors, Mahindra, Maruti Suzuki, Hyundai', 'Larsen & Toubro, Godrej, Thermax', 'Boeing, Airbus, GE Aviation, Rolls-Royce', 'ISRO, HAL, DRDO, BHEL', 'Bosch, Siemens, ABB, Cummins'],
-          trends: ['Electric Vehicles and Battery Technology', 'Additive Manufacturing (3D Metal Printing)', 'Digital Twin simulation', 'Autonomous vehicles and drones', 'Sustainable manufacturing processes'],
-          year1: 'Engineering Mechanics, Engineering Drawing, Mathematics, Physics, Chemistry, Workshop Practice, Basic Manufacturing',
-          year2: 'Thermodynamics, Fluid Mechanics, Strength of Materials, Kinematics of Machines, Material Science, Manufacturing Processes',
-          year3: 'Machine Design, Heat Transfer, Dynamics of Machines, CAD/CAM, Industrial Engineering, Summer internship at manufacturing firm',
-          year4: 'Electives (Robotics/Automotive/Aerospace), Final year project, GATE preparation, Placement season, Industry certifications'
+          year1: 'Engineering Graphics, Mathematics, Basic Mechanical Engineering, chemistry lab',
+          year2: 'Thermodynamics, Strength of Materials, Fluid Mechanics, Kinematics of Machinery, Material Science',
+          year3: 'Heat Transfer, Design of Machine Elements, Manufacturing Processes, CAD/CAM lab, internship',
+          year4: 'Power Plant Engineering, Finite Element Analysis (FEA), Mechatronics, Capstone project, placements',
+          skills: ['CAD/CAM Modeling', 'Finite Element Analysis', 'Thermodynamic analysis', 'Automotive systems engineering'],
+          tools: ['SolidWorks', 'ANSYS', 'AutoCAD', 'MATLAB Simscape', '3D Printers & CNC machines'],
+          careers: ['Product Design Engineer', 'Automotive/Aerospace Engineer', 'R&D Mechanical Engineer', 'HVAC Consultant'],
+          companies: ['Tata Motors', 'Mahindra & Mahindra', 'L&T', 'DRDO', 'Godrej', 'Maruti Suzuki', 'ISRO'],
+          trends: ['Additive Manufacturing (3D Metal Printing)', 'Electric Vehicle (EV) Powertrains', 'Smart Manufacturing & Industry 4.0', 'Autonomous Drone Engineering']
         },
         CIVIL: {
-          skills: ['Structural Analysis & Design', 'Geotechnical Engineering', 'Transportation Engineering', 'Hydraulics & Water Resources', 'Construction Management', 'Environmental Engineering', 'Surveying & Remote Sensing', 'Earthquake Engineering', 'Urban Planning', 'Building Information Modeling (BIM)'],
-          tools: ['AutoCAD, Revit, SketchUp', 'STAAD Pro, ETABS, SAP2000', 'GIS (ArcGIS, QGIS)', 'Primavera, MS Project', 'MATLAB for analysis', 'Total Station, GPS'],
-          careers: ['Structural Engineer (Rs 5-18 LPA)', 'Transportation Engineer (Rs 5-16 LPA)', 'Construction Manager (Rs 6-22 LPA)', 'Urban Planner (Rs 5-15 LPA)', 'Geotechnical Engineer (Rs 5-18 LPA)', 'Water Resources Engineer (Rs 5-16 LPA)', 'Environmental Consultant (Rs 6-18 LPA)', 'Government Engineer - PWD/NHAI (Rs 6-12 LPA + benefits)'],
-          companies: ['Larsen & Toubro, Shapoorji Pallonji, Tata Projects', 'NHAI, CPWD, State PWDs (Government)', 'DLF, Godrej Properties, Sobha Ltd', 'AECOM, Jacobs, Mott MacDonald', 'RITES, NHPC, NTPC, Indian Railways'],
-          trends: ['Smart City infrastructure and IoT', 'Green building and sustainable construction', 'Prefabricated and modular construction', '3D printed structures', 'AI-driven structural health monitoring'],
-          year1: 'Engineering Mechanics, Engineering Drawing, Mathematics, Surveying, Geology, Building Materials, Workshop Practice',
-          year2: 'Strength of Materials, Fluid Mechanics, Structural Analysis, Geotechnical Engineering, Building Construction, Concrete Technology',
-          year3: 'Structural Design (RCC & Steel), Transportation Engineering, Hydraulics, Environmental Engineering, Construction Management, Summer internship',
-          year4: 'Electives (Earthquake Engg/Bridge Engg/Urban Planning), Final year project, GATE preparation, Placement, Government exam preparation'
+          year1: 'Engineering Mechanics, Surveying, Environmental Studies, mathematics foundations',
+          year2: 'Strength of Materials, Fluid Mechanics, Structural Analysis, Concrete Technology, Geotechnical Engineering',
+          year3: 'Design of Steel/RC Structures, Transportation Engineering, Environmental Engineering, estimation lab, internship',
+          year4: 'Construction Management, Water Resource Engineering, Earthquake Resistant Design, Major project',
+          skills: ['Structural Design', 'Soil Mechanics', 'Fluid Dynamics & Hydraulics', 'Project estimation & scheduling'],
+          tools: ['AutoCAD Civil 3D', 'STAAD.Pro', 'Revit', 'ETABS', 'GIS (ArcMap/QGIS)'],
+          careers: ['Structural Engineer', 'Site Engineer/Project Manager', 'Geotechnical Specialist', 'Infrastructure Consultant'],
+          companies: ['L&T Infra', 'Tata Consulting Engineers', 'DLF', 'NHAI', 'AFCONS', 'Reliance Infrastructure'],
+          trends: ['Building Information Modeling (BIM) 4D/5D', 'Sustainable & Green building materials', 'Smart City Infrastructure IoT', '3D Construction Printing']
         },
         CHEMICAL_BIO: {
-          skills: ['Chemical Reaction Engineering', 'Mass Transfer & Separation Processes', 'Process Control & Instrumentation', 'Biochemistry & Molecular Biology', 'Pharmaceutical Engineering', 'Polymer Science', 'Biomedical Device Design', 'Process Simulation', 'Quality Assurance & GMP', 'Bioprocess Engineering'],
-          tools: ['Aspen Plus, Aspen HYSYS', 'MATLAB, ChemCAD', 'COMSOL Multiphysics', 'R, Python for data analysis', 'Spectroscopy instruments (NMR, MS, HPLC)', 'Bioreactor systems'],
-          careers: ['Process Engineer (Rs 5-18 LPA)', 'Biomedical Engineer (Rs 6-20 LPA)', 'Pharmaceutical Scientist (Rs 6-22 LPA)', 'Research Scientist (Rs 8-25 LPA)', 'Quality Assurance Manager (Rs 6-18 LPA)', 'Clinical Engineer (Rs 7-20 LPA)', 'Biotechnology Consultant (Rs 8-24 LPA)', 'Environmental Health Specialist (Rs 5-16 LPA)'],
-          companies: ['Reliance Industries, IOCL, BPCL, HPCL', 'Biocon, Dr. Reddy\'s, Cipla, Sun Pharma', 'BASF, Dow Chemical, DuPont, 3M', 'Medtronic, Johnson & Johnson, Stryker', 'CSIR labs, IITs, TIFR (Research)'],
-          trends: ['CRISPR and gene therapy', 'Personalized medicine and diagnostics', 'Green chemistry and sustainable processes', 'Biofuels and bio-based materials', 'Nanomedicine and drug delivery systems'],
-          year1: 'Chemistry (Organic, Inorganic, Physical), Mathematics, Physics, Biology fundamentals, Engineering Drawing, Workshop',
-          year2: 'Chemical Engineering Thermodynamics, Fluid Mechanics, Heat Transfer, Mass Transfer, Material Science, Biochemistry',
-          year3: 'Chemical Reaction Engineering, Process Control, Separation Processes, Process Design, Bioprocess Engineering, Summer internship',
-          year4: 'Electives (Pharma/Biomedical/Polymer), Final year project/thesis, GATE/GRE preparation, Placement, Research opportunities'
+          year1: 'General Chemistry, Organic Chemistry, cell biology foundations, basic coding',
+          year2: 'Chemical Process Calculations, Fluid Flow, Heat Transfer, Genetics, Biochemistry, Microbiology',
+          year3: 'Mass Transfer, Chemical Reaction Engineering, Bioprocess Engineering, Bioinformatics, internship',
+          year4: 'Process Control & Instrumentation, Plant Design, Recombinant DNA tech, capstone project',
+          skills: ['Process Design & Simulation', 'Molecular cloning & assay design', 'Spectroscopy analysis', 'Bioreactor scaling'],
+          tools: ['ASPEN Plus', 'MATLAB', 'PyMOL', 'BLAST/NCBI tools', 'Bioreactors & Chromatography systems'],
+          careers: ['Process Engineer', 'Biotech R&D Scientist', 'Quality Control Specialist', 'Clinical Data Manager'],
+          companies: ['Reliance Industries', 'Biocon', 'Dr. Reddy\'s Labs', 'Serum Institute', 'Hindustan Unilever', 'ONGC'],
+          trends: ['Synthetic Biology & Metabolic Engineering', 'CRISPR Gene Editing Therapies', 'Continuous flow chemistry', 'Organ-on-a-chip diagnostic devices']
         },
         DESIGN_ARCH: {
-          skills: ['Design Thinking & Human-Centered Design', 'Architectural Design & Planning', 'User Experience (UX) Design', 'Industrial & Product Design', 'Visual Communication', 'Building Science & Sustainability', 'Ergonomics & Accessibility', '3D Modeling & Rendering', 'Interaction Design', 'Design Research Methods'],
-          tools: ['Figma, Adobe Creative Suite (XD, Illustrator, Photoshop)', 'Rhino, Grasshopper, SketchUp', 'Blender, 3ds Max, V-Ray', 'AutoCAD, Revit', 'InVision, Framer, Principle', 'Physical prototyping tools'],
-          careers: ['UX/UI Designer (Rs 6-25 LPA)', 'Architect (Rs 5-20 LPA)', 'Industrial Designer (Rs 5-18 LPA)', 'Product Designer (Rs 8-28 LPA)', 'Interior Designer (Rs 4-15 LPA)', 'Design Researcher (Rs 7-22 LPA)', 'Creative Director (Rs 15-40 LPA)', 'Sustainable Design Consultant (Rs 6-20 LPA)'],
-          companies: ['Apple, Google, Microsoft (Design teams)', 'Zaha Hadid Architects, Foster + Partners', 'IDEO, Frog Design, Designit', 'Flipkart, Swiggy, Razorpay (Product Design)', 'Hafeez Contractor, CP Kukreja Architects'],
-          trends: ['AI-assisted generative design', 'Parametric and computational design', 'Sustainable and biophilic architecture', 'AR/VR in design visualization', 'Design for neurodiversity and accessibility'],
-          year1: 'Design fundamentals, Drawing & Visualization, History of Art & Design, Mathematics, Physics, Digital Tools basics',
-          year2: 'Design Studio, Materials & Manufacturing, Typography, Human Factors, Computer-Aided Design, Design History & Theory',
-          year3: 'Advanced Studio projects, UX Research Methods, Sustainable Design, Professional Practice, Industry internship (summer)',
-          year4: 'Thesis/Capstone project, Portfolio development, Design competitions, Placement/freelance preparation'
+          year1: 'Freehand sketching, Architectural drawing, History of Design, Geometry, Basic physics',
+          year2: 'Building Materials & Construction, Architectural Design, Interior Space planning, Ergonomics, UI/UX basics',
+          year3: 'Landscape architecture, Product styling, Advanced CAD modeling, Design sprints, internship',
+          year4: 'Urban Planning, Professional practice, Major Thesis project, Portfolio building',
+          skills: ['Spatial planning & facade design', 'Wireframing & interaction flows', '3D architectural visualization', 'Ergonomic optimization'],
+          tools: ['Autodesk Revit', 'Sketchup & V-Ray', 'Figma', 'Adobe Creative Cloud', 'Blender'],
+          careers: ['Architect', 'UI/UX Product Designer', 'Industrial Designer', 'Interior Architect'],
+          companies: ['Hafeez Contractor Associates', 'Tata Elxsi', 'Cognizant UI', 'Architect Hafeez Contractor', 'Infosys Experience Design'],
+          trends: ['Generative Design & AI visualizers', 'Virtual Reality (VR) walk-throughs', 'Biophilic & Passive Net-Zero Architecture', 'Human-centered responsive interfaces']
         },
         DATA_MATH: {
-          skills: ['Probability & Statistics', 'Linear Algebra & Optimization', 'Machine Learning & Deep Learning', 'Data Visualization', 'Big Data Technologies', 'Mathematical Modeling', 'Numerical Methods', 'Time Series Analysis', 'Natural Language Processing', 'Operations Research'],
-          tools: ['Python (NumPy, Pandas, Scikit-learn)', 'R, SAS, SPSS', 'SQL, Spark, Hadoop', 'Tableau, Power BI, matplotlib', 'TensorFlow, PyTorch', 'MATLAB, Mathematica, Julia'],
-          careers: ['Data Scientist (Rs 10-35 LPA)', 'Quantitative Analyst (Rs 15-50 LPA)', 'Machine Learning Engineer (Rs 12-35 LPA)', 'Business Analyst (Rs 6-18 LPA)', 'Statistician (Rs 8-22 LPA)', 'Operations Research Analyst (Rs 7-20 LPA)', 'Actuarial Analyst (Rs 8-25 LPA)', 'Research Scientist (Rs 10-30 LPA)'],
-          companies: ['Goldman Sachs, JP Morgan, Morgan Stanley', 'Google, Microsoft, Amazon, Meta', 'McKinsey, BCG, Bain (Analytics)', 'Mu Sigma, Fractal Analytics, Tiger Analytics', 'ISRO, BARC, DRDO (Research)'],
-          trends: ['AI-driven scientific discovery', 'Federated learning and privacy-preserving ML', 'Quantum machine learning', 'Automated machine learning (AutoML)', 'Real-time streaming analytics'],
-          year1: 'Calculus, Linear Algebra, Programming (Python/C), Discrete Mathematics, Physics, Probability Theory',
-          year2: 'Statistics, Algorithms, Data Structures, Numerical Methods, Database Systems, Optimization',
-          year3: 'Machine Learning, Stochastic Processes, Big Data Analytics, Data Visualization, Research project, Summer internship',
-          year4: 'Deep Learning, Electives (NLP/CV/Quant Finance), Thesis, GATE/GRE preparation, Placement preparation'
+          year1: 'Calculus, Linear Algebra, Probability theory, Python scripting, discrete structures',
+          year2: 'Advanced Statistics, Real Analysis, Mathematical Modeling, Database systems, Algorithm design',
+          year3: 'Time Series Analysis, Operations Research, Machine Learning models, Big Data tech, internship',
+          year4: 'Deep Learning electives, Financial Mathematics, Capstone analytics project, placements',
+          skills: ['Statistical Inference', 'Predictive modeling', 'Mathematical optimization', 'Data curation & ETL'],
+          tools: ['R programming', 'Jupyter/Python (Pandas/NumPy)', 'SQL', 'Tableau/PowerBI', 'SAS'],
+          careers: ['Data Scientist', 'Quantitative Analyst (Quant)', 'Actuary', 'Operations Research Analyst'],
+          companies: ['Goldman Sachs', 'JPMorgan Chase', 'Mu Sigma', 'Fractal Analytics', 'EY', 'Deloitte', 'American Express'],
+          trends: ['Explainable Artificial Intelligence (XAI)', 'Quantum Machine Learning', 'Federated privacy-preserving analytics', 'Real-time Edge Stream Processing']
         },
         ENERGY_ENV: {
-          skills: ['Renewable Energy Systems', 'Environmental Impact Assessment', 'Energy Storage & Battery Technology', 'Climate Science & Modeling', 'Waste Management & Recycling', 'Solar & Wind Energy Engineering', 'Power Systems & Smart Grids', 'Sustainable Development', 'Water Treatment Technologies', 'Carbon Capture & Sequestration'],
-          tools: ['PVsyst, HOMER, RETScreen', 'MATLAB, Python for modeling', 'GIS (ArcGIS, QGIS)', 'AutoCAD, SketchUp', 'Environmental monitoring instruments', 'Life Cycle Assessment (LCA) tools'],
-          careers: ['Renewable Energy Engineer (Rs 6-20 LPA)', 'Environmental Consultant (Rs 5-18 LPA)', 'Sustainability Manager (Rs 8-25 LPA)', 'Energy Auditor (Rs 5-15 LPA)', 'Climate Scientist (Rs 7-22 LPA)', 'Water Resources Engineer (Rs 5-16 LPA)', 'Green Building Consultant (Rs 6-18 LPA)', 'Policy Analyst - Clean Energy (Rs 7-20 LPA)'],
-          companies: ['Adani Green, Tata Power, ReNew Power', 'NTPC, NHPC, ONGC, Power Grid', 'Siemens Gamesa, Vestas, Suzlon Energy', 'Centre for Science & Environment (CSE)', 'TERI, WWF, Greenpeace, World Bank'],
-          trends: ['Green Hydrogen economy', 'Offshore wind and floating solar farms', 'Advanced battery technologies (solid-state)', 'Carbon capture and direct air capture', 'Smart grid and vehicle-to-grid systems'],
-          year1: 'Physics, Chemistry, Mathematics, Environmental Science, Engineering Drawing, Introduction to Energy Systems',
-          year2: 'Thermodynamics, Fluid Mechanics, Electrical Engineering basics, Environmental Chemistry, Ecology, Renewable Energy fundamentals',
-          year3: 'Solar Energy Engineering, Wind Energy, Energy Storage Systems, Environmental Impact Assessment, Internship at renewable energy firm',
-          year4: 'Electives (Smart Grid/Climate Modeling/Waste Management), Final year project, Certifications (LEED/GRIHA), Placement preparation'
+          year1: 'Environmental sciences, Thermodynamics, basic electrical, earth sciences foundations',
+          year2: 'Solar/Wind/Hydro energy systems, Environmental Chemistry, Air Pollution Control, Soil and water remediation',
+          year3: 'Bioenergy & Waste-to-energy conversion, Smart Grid systems, Environmental Impact Assessment (EIA), internship',
+          year4: 'Carbon accounting & trade, Energy auditing, Climate change modeling, capstone project',
+          skills: ['Energy system auditing', 'Environmental remediation planning', 'Fluid & Solar simulation', 'Carbon footprint analysis'],
+          tools: ['Homer Pro (Microgrid design)', 'RetScreen', 'GIS mapping software', 'Air dispersion models', 'Solar pathfinder analysis'],
+          careers: ['Energy Auditor / Consultant', 'Environmental Sustainability Manager', 'Solar/Wind Project Engineer', 'Remediation Consultant'],
+          companies: ['Tata Power Solar', 'Suzlon Energy', 'Thermax', 'ReNew Power', 'NEERI', 'Greenpeace advisory'],
+          trends: ['Green Hydrogen production scaling', 'Solid State Grid Battery storage', 'Carbon capture & storage (CCS) scaling', 'Circular economy closed-loop engineering']
         }
       };
 
@@ -4014,16 +3851,32 @@ ${d1.trends.map(t => `- **${t}**`).join('\n')}
 These trends represent massive career opportunities for students entering ${branchName} today. The industry is actively seeking graduates who combine strong fundamentals with awareness of these emerging areas.`;
     }
 
+
+    /* â•â•â• PDF DOWNLOAD — 3-MODEL POOL DISTRIBUTION â•â•â•â•â•â•â•â•
+       Distributes 5 roadmap LLM calls across 3 independent
+       Groq models to avoid any single model's rate limit.
+    
+       Pool A (llama-3.3-70b): Roadmaps 1, 2
+       Pool B (gpt-oss-120b):  Roadmaps 3, 4
+       Pool C (llama-3.1-8b):  Roadmap 5
+    
+       Each pool has its own independent rate limit bucket,
+       so we effectively get 3x the throughput.
+       â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     async function downloadPDF(btn) {
       if (!allBranches.length) { alert('Please complete the assessment first.'); return; }
-      const orig = btn.textContent; btn.textContent = '⏳ Generating PDF&hellip;'; btn.disabled = true;
+      const orig = btn.textContent; btn.textContent = 'â³ Generating PDF…'; btn.disabled = true;
 
       try {
         const top5 = allBranches.slice(0, 5);
         const toFetch = top5.filter(b => !top5Roadmaps[b.branch] || top5Roadmaps[b.branch].length < 300);
 
         if (toFetch.length) {
+          // Assign each roadmap to a model pool for rate limit distribution
+          // Pool assignment: [A, A, B, B, C] — spreads across 3 models
           const poolAssignment = ['A', 'A', 'B', 'B', 'C'];
+
+          // Group by pool so we can parallelize across pools
           const poolGroups = {};
           toFetch.forEach((b, i) => {
             const pool = poolAssignment[i] || 'C';
@@ -4031,15 +3884,18 @@ These trends represent massive career opportunities for students entering ${bran
             poolGroups[pool].push({ branch: b, index: i, pool });
           });
 
+          // Generate roadmaps — calls to different pools can overlap
+          // but calls within the same pool are sequential with gaps
           const allTasks = [];
           for (const [poolId, items] of Object.entries(poolGroups)) {
             const task = (async () => {
               for (let j = 0; j < items.length; j++) {
                 const { branch: b, index: idx } = items[j];
-                btn.textContent = `⏳ Roadmap ${idx + 1}/${toFetch.length} (Pool ${poolId})&hellip;`;
+                btn.textContent = `â³ Roadmap ${idx + 1}/${toFetch.length} (Pool ${poolId})…`;
 
+                // Wait between same-pool calls (10s gap) — but first call in pool has no wait
                 if (j > 0) {
-                  btn.textContent = `⏳ Pool ${poolId}: waiting&hellip; ${idx + 1}/${toFetch.length}`;
+                  btn.textContent = `â³ Pool ${poolId}: waiting… ${idx + 1}/${toFetch.length}`;
                   await new Promise(r => setTimeout(r, 12000));
                 }
 
@@ -4052,11 +3908,12 @@ These trends represent massive career opportunities for students entering ${bran
                   );
                   if (raw && raw.length > 300) {
                     top5Roadmaps[b.branch] = raw;
+                    console.log(`✅ Pool ${poolId}: Got LLM roadmap for "${b.branch}" (${raw.length} chars)`);
                   } else {
                     throw new Error('Response too short');
                   }
                 } catch (e) {
-                  console.warn(`⚠️ Pool ${poolId} failed for "${b.branch}": ${e.message}. Using fallback.`);
+                  console.warn(`âš ï¸ Pool ${poolId} failed for "${b.branch}": ${e.message}. Using fallback.`);
                   top5Roadmaps[b.branch] = generateFallbackRoadmap(b.branch);
                 }
               }
@@ -4064,17 +3921,25 @@ These trends represent massive career opportunities for students entering ${bran
             allTasks.push(task);
           }
 
+          // Execute all pool groups in parallel (different models = no conflict)
           await Promise.all(allTasks);
+
+          // Save updated roadmaps to Firestore if logged in
+          if (userSession && userSession.id) {
+            const reportData = { answers, domainScores, allBranches, sectionAnalysis, top5Roadmaps };
+            authApi('savePsychometricReport', { userId: userSession.id, reportData }).catch(e => console.error('Failed to save roadmaps to Firestore:', e));
+          }
         }
 
+        // If user had already clicked a branch and got a roadmap, cache it too
         if (roadmapRaw && selectedBranch && roadmapRaw.length > 300) {
           top5Roadmaps[selectedBranch] = roadmapRaw;
         }
 
-        btn.textContent = '⏳ Building PDF&hellip;';
+        btn.textContent = 'â³ Building PDF…';
         buildPremiumPDF(top5);
       } catch (err) { console.error(err); alert('PDF error: ' + err.message); }
-      finally { btn.textContent = orig; btn.disabled = false; }
+      finally { btn.innerHTML = orig; btn.disabled = false; }
     }
 
     function buildPremiumPDF(top5) {
@@ -4084,7 +3949,7 @@ These trends represent massive career opportunities for students entering ${bran
       /* ENHANCED: P1-C Reusable page header function */
       function renderPageHeader(pageTitle) {
         try {
-          return `<div class="bp-hdr-bar"><div class="bp-hdr-bar-logo">CS</div><div class="bp-hdr-bar-title">${e(pageTitle || 'Branch Prediction Report')}</div><div class="bp-hdr-bar-date">${e(dateStr)}</div></div>`;
+          return `<div class="bp-hdr-bar"><div class="bp-hdr-bar-logo">CS</div><div class="bp-hdr-bar-title">${e(pageTitle || 'Engineering Psychometric Report')}</div><div class="bp-hdr-bar-date">${e(dateStr)}</div></div>`;
         } catch (err) { return '<div class="bp-hdr-bar"></div>'; /* ENHANCED: P1-C fallback */ }
       }
 
@@ -4101,7 +3966,7 @@ These trends represent massive career opportunities for students entering ${bran
 
       /* ENHANCED: P1-C Consistent page header on every page except cover */
       function pageOpen(title, num) {
-        return `<div style="padding:14mm 14mm 0;box-sizing:border-box">
+        return `<div style="padding:14mm 14mm 18mm;box-sizing:border-box">
       ${renderPageHeader(title)}`;
       }
       /* ENHANCED: P1-B Dynamic page footer with Page N of Total */
@@ -4120,7 +3985,7 @@ These trends represent massive career opportunities for students entering ${bran
       const dashOffset = circumference - (matchScore / 100) * circumference;
       const pg1 = `<div class="bp-pg bp-cover">
     <div class="bp-cover-eyebrow">College Simplified &middot; AI Career Intelligence</div>
-    <div class="bp-cover-title">Engineering Branch<br>Prediction Report</div>
+    <div class="bp-cover-title">Engineering Psychometric<br>Test Report</div>
     <div class="bp-cover-div"></div>
     <div class="bp-cover-sub">A comprehensive AI-driven analysis of your aptitude across 8 engineering domains, based on 60 scenario-based questions.</div>
     <div class="bp-cover-stats">
@@ -4227,12 +4092,13 @@ These trends represent massive career opportunities for students entering ${bran
 
       /* SECTION ANALYSIS PAGES — ENHANCED: P1-D score context, P2-C Q&A styling, P4-A trait pills */
       const SEC_COLORS = ['#DC2626', '#FF6B35', '#DCAA32', '#4AB464', '#608CDC'];
+      const SPLIT_AT = 6; /* Split Q&A table after 6 rows to prevent page overflow */
       const sectionPages = SECTIONS.map((sec, si) => {
         const sa = sectionAnalysis[si] || { score: 70, traits: [], details: '', engineeringRelevance: '' };
         const col = SEC_COLORS[si];
         /* ENHANCED: P4-A Styled trait pills */
         const traits = (sa.traits || []).map(t => `<span class="bp-trait-pill">${e(t)}</span>`).join('');
-        let qaRows = '';
+        let qaRowsA = '', qaRowsB = '';
         for (let qi = 0; qi < QUESTIONS_PER_SECTION; qi++) {
           const k = `s${si}q${qi}`, q = WEIGHTED_QUESTIONS[si]?.[qi];
           if (!q) continue;
@@ -4242,9 +4108,11 @@ These trends represent massive career opportunities for students entering ${bran
           const bgQ = qi % 2 === 0 ? '#FAFAF8' : '#FFF';
           const bgA = qi % 2 === 0 ? '#FAFAF8' : '#FFF';
           const qNum = si * QUESTIONS_PER_SECTION + qi + 1;
-          qaRows += `<tr><td class="bp-resp-q" style="background:${bgQ};width:38%;font-size:12px;line-height:1.6"><span class="bp-qa-pill">Q${qNum}</span>${e(q.question)}</td><td class="bp-resp-a" style="background:${bgA};width:62%;border-left:3px solid #E8E6FF;font-size:12px;line-height:1.6">${ans}</td></tr>`;
+          const row = `<tr><td class="bp-resp-q" style="background:${bgQ};width:38%;font-size:12px;line-height:1.6"><span class="bp-qa-pill">Q${qNum}</span>${e(q.question)}</td><td class="bp-resp-a" style="background:${bgA};width:62%;border-left:3px solid #E8E6FF;font-size:12px;line-height:1.6">${ans}</td></tr>`;
+          if (qi < SPLIT_AT) qaRowsA += row; else qaRowsB += row;
         }
-        return `<div class="bp-pg" style="background:#fff;page-break-before:always">${pageOpen(e(sec.title), si + 4)}
+        /* Page 1: Score card + traits + first batch of Q&A */
+        const page1 = `<div class="bp-pg" style="background:#fff;page-break-before:always">${pageOpen(e(sec.title), si * 2 + 4)}
       <div class="bp-pg-title pdf-h1" style="display:flex;align-items:center;gap:10px">
         <span style="display:inline-flex;width:36px;height:36px;border-radius:50%;background:${col};color:#fff;align-items:center;justify-content:center;font-size:16px;font-weight:900;flex-shrink:0">${si + 1}</span>
         ${e(sec.title)}
@@ -4262,8 +4130,17 @@ These trends represent massive career opportunities for students entering ${bran
       ${traits ? `<div class="bp-sub-hd"><span>&#10004;</span> Key Traits</div><div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px">${traits}</div>` : ''}
       ${sa.engineeringRelevance ? `<div class="bp-archetype-quote pdf-body">${e(sa.engineeringRelevance)}</div>` : ''}
       <div class="bp-sub-hd"><span>&#128203;</span> Your Response Summary</div>
-      <table class="bp-resp-table bp-resp-table-enhanced">${qaRows}</table>
-    ${pageClose(si + 4)}</div>`;
+      <table class="bp-resp-table bp-resp-table-enhanced">${qaRowsA}</table>
+    ${pageClose(si * 2 + 4)}</div>`;
+        /* Page 2: Remaining Q&A rows */
+        const page2 = qaRowsB ? `<div class="bp-pg" style="background:#fff;page-break-before:always">${pageOpen(e(sec.title) + ' (contd.)', si * 2 + 5)}
+      <div class="bp-pg-title pdf-h1" style="display:flex;align-items:center;gap:10px;font-size:18px">
+        <span style="display:inline-flex;width:36px;height:36px;border-radius:50%;background:${col};color:#fff;align-items:center;justify-content:center;font-size:16px;font-weight:900;flex-shrink:0">${si + 1}</span>
+        ${e(sec.title)} — Response Summary (contd.)
+      </div>
+      <table class="bp-resp-table bp-resp-table-enhanced">${qaRowsB}</table>
+    ${pageClose(si * 2 + 5)}</div>` : '';
+        return page1 + page2;
       }).join('');
 
       /* ROADMAP PAGES — ENHANCED: P2-D stage headers, P3-D takeaway boxes, P2-F page breaks */
@@ -4277,9 +4154,9 @@ These trends represent massive career opportunities for students entering ${bran
           if (!t) continue;
           /* ENHANCED: P3-D Extract takeaway data from roadmap */
           try {
-            if (t.toLowerCase().includes('fresher') && t.includes('LPA')) salaryLine = t.replace(/^-\s*/, '').replace(/\*\*/g, '');
-            if (t.toLowerCase().includes('m.tech') || t.toLowerCase().includes('ms/phd') || t.toLowerCase().includes('mba')) { if (!eduLine) eduLine = t.replace(/^-\s*/, '').replace(/\*\*/g, ''); }
-            if (stageIdx === 1 && t.startsWith('- ') && !firstAction) firstAction = t.replace(/^-\s*/, '').replace(/\*\*/g, '');
+            if (t.toLowerCase().includes('fresher') && t.includes('LPA')) salaryLine = t.replace(/^[-*]\s*/, '').replace(/\*\*/g, '');
+            if (t.toLowerCase().includes('m.tech') || t.toLowerCase().includes('ms/phd') || t.toLowerCase().includes('mba')) { if (!eduLine) eduLine = t.replace(/^[-*]\s*/, '').replace(/\*\*/g, ''); }
+            if (stageIdx === 1 && (t.startsWith('- ') || t.startsWith('* ')) && !firstAction) firstAction = t.replace(/^[-*]\s*/, '').replace(/\*\*/g, '');
           } catch (err) { /* ENHANCED: P3-D extraction fallback */ }
 
           if (t.startsWith('## ')) {
@@ -4291,14 +4168,40 @@ These trends represent massive career opportunities for students entering ${bran
               <div class="bp-rm-row"><div class="bp-rm-icon-col">
                 <div style="width:28px;height:28px;border-radius:50%;background:#DC2626;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">${stageIdx}</div>
                 <div class="bp-rm-line"></div>
-              </div><div class="bp-rm-content" style="padding-left:36px">
+              </div><div class="bp-rm-content">
                 <div class="bp-rm-period">STAGE ${stageIdx}</div>
                 <div class="bp-rm-title pdf-h2">${e(t.replace(/^## /, ''))}</div>`;
             opened = true;
           } else if (t.startsWith('### ')) {
             content += `<div style="font-size:12px;font-weight:800;color:#111;margin:8px 0 4px;display:flex;align-items:center;gap:6px"><span style="width:3px;height:14px;background:#DC2626;border-radius:2px;flex-shrink:0"></span>${e(t.replace(/^### /, ''))}</div>`;
-          } else if (t.startsWith('- ')) {
-            content += `<div style="font-size:11px;color:#374151;display:flex;gap:6px;line-height:1.5;margin-bottom:3px"><span style="color:#DC2626;font-weight:700;flex-shrink:0">&rarr;</span><span>${e(t.replace(/^- /, '').replace(/\*\*(.+?)\*\*/g, '$1'))}</span></div>`;
+          } else if (t.startsWith('- ') || t.startsWith('* ')) {
+            const bulletText = t.replace(/^[-*]\s+/, '').replace(/\*\*(.+?)\*\*/g, '$1');
+            content += `<div style="font-size:11px;color:#374151;display:flex;gap:6px;line-height:1.5;margin-bottom:3px"><span style="color:#DC2626;font-weight:700;flex-shrink:0">&rarr;</span><span>${e(bulletText)}</span></div>`;
+          } else if (/^\d+\.\s/.test(t)) {
+            /* Numbered list items */
+            const numMatch = t.match(/^(\d+)\.\s+(.*)/);
+            if (numMatch) {
+              const itemText = numMatch[2].replace(/\*\*(.+?)\*\*/g, '$1');
+              content += `<div style="font-size:11px;color:#374151;display:flex;gap:6px;line-height:1.5;margin-bottom:3px"><span style="color:#DC2626;font-weight:700;flex-shrink:0;min-width:16px">${numMatch[1]}.</span><span>${e(itemText)}</span></div>`;
+            }
+          } else if (t.startsWith('|') && t.endsWith('|')) {
+            /* Markdown table rows — render as styled table row */
+            const cells = t.split('|').filter(c => c.trim());
+            const isSeparator = cells.every(c => /^[-:]+$/.test(c.trim()));
+            if (!isSeparator) {
+              const isHeader = cells.every(c => /\*\*/.test(c)) || stageIdx === 0;
+              const cellTag = isHeader ? 'th' : 'td';
+              const cellStyle = isHeader
+                ? 'padding:6px 10px;font-size:10.5px;font-weight:700;color:#1E1B4B;background:#F3F4F6;border:1px solid #E5E7EB;text-align:left'
+                : 'padding:6px 10px;font-size:10.5px;color:#374151;border:1px solid #E5E7EB;line-height:1.5';
+              content += `<table style="width:100%;border-collapse:collapse;margin-bottom:2px"><tr>${cells.map(c => `<${cellTag} style="${cellStyle}">${e(c.trim().replace(/\*\*/g, ''))}</${cellTag}>`).join('')}</tr></table>`;
+            }
+          } else if (t.startsWith('> ')) {
+            /* Blockquote */
+            const quoteText = t.replace(/^>\s*/, '').replace(/\*\*(.+?)\*\*/g, '$1');
+            content += `<div style="border-left:3px solid #DC2626;padding:6px 12px;margin:6px 0;font-size:11px;color:#374151;background:#FFF8F8;border-radius:0 6px 6px 0;line-height:1.6">${e(quoteText)}</div>`;
+          } else if (t === '---' || t === '***' || t === '___') {
+            /* Horizontal rule — skip, we handle breaks via stage separators */
           } else if (!t.startsWith('#')) {
             content += `<div class="bp-rm-desc pdf-body">${e(t.replace(/\*\*(.+?)\*\*/g, '$1').replace(/\*(.+?)\*/g, '$1'))}</div>`;
           }
@@ -4316,7 +4219,7 @@ These trends represent massive career opportunities for students entering ${bran
           </div>`;
         } catch (err) { /* ENHANCED: P3-D takeaway fallback */ }
 
-        return `<div class="bp-pg" style="background:#fff;page-break-before:always">${pageOpen(e(b.branch) + ' Roadmap', ri + 9)}
+        return `<div class="bp-pg" style="background:#fff;page-break-before:always">${pageOpen(e(b.branch) + ' Roadmap', ri + 17)}
       <div style="background:linear-gradient(135deg,#111,#1a1a1a,#2d0707);color:#fff;border-radius:10px;padding:18px 22px;margin-bottom:16px">
         <div style="font-size:9px;font-weight:800;color:rgba(220,38,38,.8);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">Career Roadmap &middot; Rank #${b.rank}</div>
         <div style="font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:900;margin-bottom:4px">${e(b.branch)}</div>
@@ -4326,7 +4229,7 @@ These trends represent massive career opportunities for students entering ${bran
       </div>
       ${content}
       ${takeawayBox}
-    ${pageClose(ri + 9)}</div>`;
+    ${pageClose(ri + 17)}</div>`;
       }).join('');
 
       /* ENHANCED: P2-A Table of Contents page */
@@ -4335,10 +4238,10 @@ These trends represent massive career opportunities for students entering ${bran
     <div style="max-width:500px">
       <div class="bp-toc-entry"><span class="bp-toc-name">Domain Profile</span><span class="bp-toc-dots"></span><span class="bp-toc-page">3</span></div>
       <div class="bp-toc-entry"><span class="bp-toc-name">Top Branch Predictions</span><span class="bp-toc-dots"></span><span class="bp-toc-page">4</span></div>
-      <div class="bp-toc-entry"><span class="bp-toc-name">Assessment Breakdown</span><span class="bp-toc-dots"></span><span class="bp-toc-page">5&ndash;10</span></div>
-      <div class="bp-toc-entry"><span class="bp-toc-name">Career Roadmaps</span><span class="bp-toc-dots"></span><span class="bp-toc-page">11&ndash;16</span></div>
-      <div class="bp-toc-entry"><span class="bp-toc-name">Your Journey Summary</span><span class="bp-toc-dots"></span><span class="bp-toc-page">17</span></div>
-      <div class="bp-toc-entry"><span class="bp-toc-name">Your Next Steps</span><span class="bp-toc-dots"></span><span class="bp-toc-page">18</span></div>
+      <div class="bp-toc-entry"><span class="bp-toc-name">Assessment Breakdown</span><span class="bp-toc-dots"></span><span class="bp-toc-page">6&ndash;15</span></div>
+      <div class="bp-toc-entry"><span class="bp-toc-name">Career Roadmaps</span><span class="bp-toc-dots"></span><span class="bp-toc-page">17&ndash;21</span></div>
+      <div class="bp-toc-entry"><span class="bp-toc-name">Your Journey Summary</span><span class="bp-toc-dots"></span><span class="bp-toc-page">22</span></div>
+      <div class="bp-toc-entry"><span class="bp-toc-name">Your Next Steps</span><span class="bp-toc-dots"></span><span class="bp-toc-page">23</span></div>
     </div>
   ${pageClose(2)}</div>`;
 
@@ -4361,7 +4264,7 @@ These trends represent massive career opportunities for students entering ${bran
   </div>`;
 
       /* FINAL PAGE */
-      const pgFinal = `<div class="bp-pg" style="background:#fff;page-break-before:always">${pageOpen('Summary', 17)}
+      const pgFinal = `<div class="bp-pg" style="background:#fff;page-break-before:always">${pageOpen('Summary', 22)}
     <div class="bp-pg-title pdf-h1">&#10024; Your Engineering Journey</div>
     <div class="bp-pg-sub pdf-caption">A personalised summary of your branch prediction results</div>
     <div class="bp-archetype-quote pdf-body">Based on your responses across 60 scenario-based questions spanning 5 assessment dimensions and 8 engineering domain clusters, your strongest alignment is with <strong>${e(topBranch?.branch || '')}</strong> at a ${topBranch?.match || 0}% match score.</div>
@@ -4373,10 +4276,10 @@ These trends represent massive career opportunities for students entering ${bran
       <div class="bp-journey-text pdf-body">This report is the beginning of your engineering career discovery. Use these insights as your compass. Your path is unique, your potential is unlimited, and College Simplified is here to guide every step of the way.</div>
       <div class="bp-journey-meta"><strong>College Simplified</strong> &middot; collegesimplified.in<br><span>Generated: ${e(dateStr)}</span></div>
     </div>
-  ${pageClose(17)}</div>`;
+  ${pageClose(22)}</div>`;
 
       /* ENHANCED: P3-E Next Steps final page */
-      const pgNextSteps = `<div class="bp-pg" style="background:#fff;page-break-before:always">${pageOpen('Your Next Steps', 18)}
+      const pgNextSteps = `<div class="bp-pg" style="background:#fff;page-break-before:always">${pageOpen('Your Next Steps', 23)}
     <div class="bp-pg-title pdf-h1" style="color:#DC2626">What To Do Now</div>
     <div class="bp-pg-sub pdf-caption">5 actionable steps to kickstart your engineering journey</div>
     <div class="bp-next-grid">
@@ -4406,20 +4309,18 @@ These trends represent massive career opportunities for students entering ${bran
       <div class="pdf-caption">collegesimplified.in</div>
       <div class="pdf-caption" style="margin-top:2px">Instagram &middot; YouTube &middot; LinkedIn</div>
     </div>
-  ${pageClose(18)}</div>`;
+  ${pageClose(23)}</div>`;
 
-      /* ENHANCED: P1-B Calculate total page count before rendering */
-      _totalPages = 18; /* cover(1) + TOC(1) + domain(1) + top10(1) + divider(1) + 5 sections + divider(1) + 5 roadmaps + summary(1) + next steps(1) */
+      /* ENHANCED: P1-B Calculate total page count before rendering — dynamic from DOM */
+      _totalPages = 23; /* cover(1) + TOC(1) + domain(1) + top10(1) + divider(1) + 10 sections(5x2) + divider(1) + 5 roadmaps + summary(1) + next steps(1) */
 
       // Inject and print
       const printDoc = document.getElementById('bp-print-doc');
       /* ENHANCED: P2-A TOC after cover, P4-C dividers before sections and roadmaps, P3-E Next Steps at end */
       printDoc.innerHTML = pg1 + pgTOC + pg2 + pg3 + dividerAssessment + sectionPages + dividerRoadmap + roadmapPages + pgFinal + pgNextSteps;
-      const fixedFtr = document.getElementById('bp-pdf-footer');
-      if (fixedFtr) fixedFtr.style.display = 'flex';
       setTimeout(() => {
         window.print();
-        setTimeout(() => { printDoc.innerHTML = ''; if (fixedFtr) fixedFtr.style.display = 'none'; }, 3000);
+        setTimeout(() => { printDoc.innerHTML = ''; }, 3000);
       }, 600);
     }
 
@@ -4443,6 +4344,47 @@ These trends represent massive career opportunities for students entering ${bran
       const label = document.getElementById('theme-label');
       if (isDark) { pill.classList.add('active'); label.textContent = 'Dark'; }
       else { pill.classList.remove('active'); label.textContent = 'Light'; }
+    }
+
+    let userSession = null;
+    document.addEventListener('DOMContentLoaded', async () => {
+      userSession = initAuth({ requireLogin: false });
+      await checkAndLoadSavedReport();
+    });
+
+    async function checkAndLoadSavedReport() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('load') === 'true' || params.get('view') === 'latest') {
+        if (!userSession || !userSession.id) {
+          alert('Please login to view your saved psychometric report.');
+          window.location.href = 'auth.html?redirect=engineering-psychometric-test.html?load=true';
+          return;
+        }
+        show('screen-loading');
+        setLoading('Loading your saved report...', 'Retrieving your career profile from database...');
+        try {
+          const res = await authApi('getPsychometricReport', { userId: userSession.id });
+          if (res.ok && res.data) {
+            const report = res.data;
+            answers = report.answers || {};
+            domainScores = report.domainScores || {};
+            allBranches = report.allBranches || [];
+            sectionAnalysis = report.sectionAnalysis || [];
+            top5Roadmaps = report.top5Roadmaps || {};
+            
+            renderAnalysis();
+            renderResults();
+            show('screen-analysis');
+          } else {
+            alert('No saved report found on your profile.');
+            show('screen-hero');
+          }
+        } catch (err) {
+          console.error(err);
+          alert('Error loading report: ' + err.message);
+          show('screen-hero');
+        }
+      }
     }
 
     show('screen-hero');
