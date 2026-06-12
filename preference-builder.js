@@ -821,7 +821,7 @@ function generateMatches() {
     }
 
     // Split: reachable vs aspirational
-    const minPercentile = Math.max(0, pct - 4);
+    const minPercentile = Math.max(0, pct - 10);
 
     const reachableMinority = reachableList.filter(r => {
       const isMatchingMinority = minority && 
