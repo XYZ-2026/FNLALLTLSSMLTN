@@ -1,4 +1,13 @@
 const admin = require('firebase-admin');
+const crypto = require('crypto');
+
+function hashPassword(password) {
+  return crypto
+    .createHash('sha256')
+    .update(password + '_cs_salt_2026')
+    .digest('hex');
+}
+
 
 exports.handler = async function (event, context) {
   // CORS Headers for client safety
@@ -128,24 +137,51 @@ exports.handler = async function (event, context) {
     console.warn(`[Invalid Phone] Warning: Normalized phone number is less than 10 digits: "${normalizedPhone}" for email: "${cleanEmail}"`);
   }
 
-  // 6. Firebase Auth Logic
-  let userRecord;
+  // 6. User Verification & Creation Logic (Firebase Auth & Firestore aligned)
+  let userRecord = null;
   let isNewUser = false;
+  let targetUid = null;
+  let existingPassword = null;
 
+  // Step 6a: Check Firestore first to prevent duplicating existing registered users
+  let existingFirestoreDoc = null;
+  try {
+    const usersSnap = await db.collection('users').where('email', '==', cleanEmail).limit(1).get();
+    if (!usersSnap.empty) {
+      existingFirestoreDoc = usersSnap.docs[0];
+      targetUid = existingFirestoreDoc.id;
+      existingPassword = existingFirestoreDoc.data().password;
+      console.log(`[Firestore Found] Existing user found in Firestore by email: ${targetUid}`);
+    }
+  } catch (err) {
+    console.error(`[Firestore Search Error] failed for email ${cleanEmail}:`, err);
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ error: { message: `Firestore Search Error: ${err.message}` } })
+    };
+  }
+
+  // Step 6b: Check and align Firebase Auth
   try {
     userRecord = await auth.getUserByEmail(cleanEmail);
-    console.log(`[User Found] Existing user found in Firebase Auth: ${userRecord.uid} (${cleanEmail})`);
+    console.log(`[Auth Found] Existing user found in Firebase Auth: ${userRecord.uid} (${cleanEmail})`);
+
+    // If targetUid was not set from Firestore (i.e. Firestore doc missing), align to the Auth UID
+    if (!targetUid) {
+      targetUid = userRecord.uid;
+    }
 
     // Update display name if it differs or is empty
     if (name && userRecord.displayName !== name) {
       userRecord = await auth.updateUser(userRecord.uid, {
         displayName: name
       });
-      console.log(`[User Updated] Updated display name in Firebase Auth for UID: ${userRecord.uid}`);
+      console.log(`[Auth Updated] Updated display name in Firebase Auth for UID: ${userRecord.uid}`);
     }
   } catch (err) {
     if (err.code === 'auth/user-not-found') {
-      // User does not exist, create a new Firebase Auth user
+      // User does not exist in Firebase Auth, create them
       const password = normalizedPhone;
       if (password.length < 6) {
         console.error(`[Processing Failure] Cannot create user: Password (normalized phone: '${password}') is less than 6 characters.`);
@@ -157,13 +193,24 @@ exports.handler = async function (event, context) {
       }
 
       try {
-        userRecord = await auth.createUser({
+        const createOptions = {
           email: cleanEmail,
           password: password,
           displayName: name || undefined
-        });
-        isNewUser = true;
-        console.log(`[User Created] Created new Firebase Auth user: ${userRecord.uid} (${cleanEmail})`);
+        };
+        // Align Firebase Auth UID to pre-existing Firestore Doc ID if possible
+        if (targetUid) {
+          createOptions.uid = targetUid;
+        }
+
+        userRecord = await auth.createUser(createOptions);
+        
+        // If they were not in Firestore, targetUid becomes the generated Auth UID
+        if (!targetUid) {
+          targetUid = userRecord.uid;
+          isNewUser = true;
+        }
+        console.log(`[Auth Created] Created new Firebase Auth user: ${userRecord.uid} (${cleanEmail})`);
       } catch (createErr) {
         console.error(`[Processing Failure] Firebase Auth creation failed for email ${cleanEmail}:`, createErr);
         return {
@@ -184,22 +231,28 @@ exports.handler = async function (event, context) {
 
   // 7. Firestore Sync Logic
   try {
-    const userRef = db.collection('users').doc(userRecord.uid);
-    const userDoc = await userRef.get();
+    const userRef = db.collection('users').doc(targetUid);
+    const userDoc = existingFirestoreDoc || await userRef.get();
     let isUpgraded = false;
 
     // Build the sync payload
     const firestoreData = {
-      uid: userRecord.uid,
-      name: name || '',
+      uid: targetUid,
+      name: name || (userDoc.exists ? userDoc.data().name : ''),
       email: cleanEmail,
       phone: normalizedPhone,
-      courseName: courseName || '',
+      courseName: courseName || (userDoc.exists ? userDoc.data().courseName : ''),
       role: 'premium',
       premium: true,
       createdFromSheet: true,
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     };
+
+    // If there is no existing password in the Firestore doc, add the hashed password matching the frontend
+    if (!existingPassword && (!userDoc.exists || !userDoc.data().password)) {
+      firestoreData.password = hashPassword(normalizedPhone);
+      console.log(`[Password Generated] Generated password hash for target user: ${targetUid}`);
+    }
 
     // Check if the user document already exists and needs a premium upgrade
     if (userDoc.exists) {
@@ -207,17 +260,20 @@ exports.handler = async function (event, context) {
       if (currentData.role !== 'premium' || currentData.premium !== true) {
         isUpgraded = true;
       }
+    } else {
+      isNewUser = true;
+      firestoreData.createdAt = admin.firestore.FieldValue.serverTimestamp();
     }
 
     // Merge document in Firestore (preserves existing fields not listed in firestoreData)
     await userRef.set(firestoreData, { merge: true });
 
     if (isNewUser) {
-      console.log(`[User Created] Firestore document initialized for UID: ${userRecord.uid}`);
+      console.log(`[User Created] Firestore document initialized for UID: ${targetUid}`);
     } else {
-      console.log(`[User Updated] Firestore document merged for UID: ${userRecord.uid}`);
+      console.log(`[User Updated] Firestore document merged for UID: ${targetUid}`);
       if (isUpgraded) {
-        console.log(`[Premium Upgraded] User UID ${userRecord.uid} successfully upgraded to premium status.`);
+        console.log(`[Premium Upgraded] User UID ${targetUid} successfully upgraded to premium status.`);
       }
     }
 
@@ -229,7 +285,7 @@ exports.handler = async function (event, context) {
       },
       body: JSON.stringify({
         success: true,
-        uid: userRecord.uid,
+        uid: targetUid,
         isNewUser: isNewUser,
         isUpgraded: !isNewUser && isUpgraded,
         message: isNewUser 
@@ -239,7 +295,7 @@ exports.handler = async function (event, context) {
     };
 
   } catch (err) {
-    console.error(`[Processing Failure] Firestore database sync failed for UID ${userRecord.uid}:`, err);
+    console.error(`[Processing Failure] Firestore database sync failed for UID ${targetUid}:`, err);
     return {
       statusCode: 500,
       headers,
