@@ -794,5 +794,77 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);paddin
   box-shadow: 0 4px 12px var(--brand-ring);
 }
 
+/* ─── LOCKED RESULTS PAYWALL STYLES ─── */
+.locked-row {
+  filter: blur(4px);
+  opacity: 0.5;
+  pointer-events: none;
+  user-select: none;
+}
+
+.lock-paywall-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 40px 24px;
+  background: linear-gradient(135deg, #ffffff 0%, #fffcfc 100%);
+  border: 1px dashed var(--brand-ring);
+  border-radius: 20px;
+  margin-top: 24px;
+  box-shadow: 0 10px 25px rgba(220, 38, 38, 0.05);
+}
+
+.lock-icon-container {
+  width: 64px;
+  height: 64px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 16px rgba(220, 38, 38, 0.1);
+}
+
+.lock-paywall-card h3 {
+  font-family: 'Lexend', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.lock-paywall-card p {
+  font-size: 14px;
+  color: var(--muted);
+  max-width: 500px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.lock-paywall-card .unlock-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 32px;
+  background: var(--brand);
+  color: #fff !important;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 800;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px var(--brand-ring);
+  font-family: 'Lexend', sans-serif;
+}
+
+.lock-paywall-card .unlock-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--brand-ring);
+  background: #b91c1c;
+}
+
+
 
 

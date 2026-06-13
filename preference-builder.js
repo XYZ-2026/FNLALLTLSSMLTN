@@ -804,6 +804,56 @@ function generateMatches() {
   if (isTemplate) {
     matchedColleges = reachableList.sort((a, b) => b.percentile - a.percentile);
   } else {
+    function getPercentileRange(p) {
+      let V = 20;
+      let bucketMax = 100;
+      if (p >= 99 && p <= 100) {
+        V = (p === 100) ? 2 : 2.5;
+        bucketMax = 100;
+      } else if (p >= 95 && p < 99) {
+        V = 3;
+        bucketMax = 99;
+      } else if (p >= 90 && p < 95) {
+        V = 4;
+        bucketMax = 95;
+      } else if (p >= 80 && p < 90) {
+        V = 6;
+        bucketMax = 90;
+      } else if (p >= 70 && p < 80) {
+        V = 8;
+        bucketMax = 80;
+      } else if (p >= 60 && p < 70) {
+        V = 10;
+        bucketMax = 70;
+      } else if (p >= 50 && p < 60) {
+        V = 10;
+        bucketMax = 60;
+      } else if (p >= 40 && p < 50) {
+        V = 10;
+        bucketMax = 50;
+      } else if (p >= 30 && p < 40) {
+        V = 15;
+        bucketMax = 40;
+      } else if (p >= 20 && p < 30) {
+        V = 20;
+        bucketMax = 30;
+      } else if (p >= 10 && p < 20) {
+        V = 20;
+        bucketMax = 20;
+      } else {
+        V = 20;
+        bucketMax = 10;
+      }
+      return {
+        min: Math.max(0, p - V),
+        max: bucketMax
+      };
+    }
+
+    const range = getPercentileRange(pct);
+    const minPercentile = range.min;
+    const maxPercentile = range.max;
+
     // Apply aspirational filters (IGNORE minority filter)
     let aspirationalList = results;
     if (colType) {
@@ -819,9 +869,6 @@ function generateMatches() {
     if (regions.length > 0) {
       aspirationalList = aspirationalList.filter(r => matchesSelectedRegions(r.code, regions));
     }
-
-    // Split: reachable vs aspirational
-    const minPercentile = Math.max(0, pct - 10);
 
     const reachableMinority = reachableList.filter(r => {
       const isMatchingMinority = minority && 
@@ -841,7 +888,7 @@ function generateMatches() {
     reachable.forEach(r => r.isAspirational = false);
 
     // For aspirational, we take from the list that IGNORES minority status
-    const aspirational = aspirationalList.filter(r => r.percentile > pct);
+    const aspirational = aspirationalList.filter(r => r.percentile > pct && r.percentile <= maxPercentile);
     aspirational.forEach(r => r.isAspirational = true);
 
     matchedColleges = [...aspirational, ...reachable];
@@ -901,7 +948,26 @@ function renderColleges(filter = 'all') {
     return;
   }
 
-  const tbodyHtml = items.map((c) => {
+  const userSession = getSession();
+  const isPremium = userSession && (userSession.role === 'premium' || userSession.role === 'admin');
+
+  const displayItems = isPremium ? items : items.slice(0, 13);
+
+  const tbodyHtml = displayItems.map((c, idx) => {
+    const isLocked = !isPremium && idx >= 10;
+    
+    if (isLocked) {
+      return `<tr class="locked-row" style="cursor: default;">
+        <td class="excel-td-select" style="text-align: center;">🔒</td>
+        <td><span style="filter: blur(2.5px); opacity: 0.5;">0000</span></td>
+        <td class="excel-td-name"><span style="filter: blur(4px); opacity: 0.5; font-weight: 600;">••••••••••••••••••••••••••••••••••••</span></td>
+        <td><span style="filter: blur(4px); opacity: 0.5; color: var(--muted)">••••••••••••••••••••</span></td>
+        <td><span style="filter: blur(4px); opacity: 0.5;">••••</span></td>
+        <td class="excel-td-pct"><strong style="filter: blur(2.5px); opacity: 0.5;">••.•%</strong></td>
+        <td><span class="col-tag reach-tag" style="filter: blur(2px); opacity: 0.5;">Locked 🔒</span></td>
+      </tr>`;
+    }
+
     const realIdx = matchedColleges.indexOf(c);
     const sel = selectedColleges.includes(realIdx);
     const asp = c.isAspirational;
@@ -927,7 +993,8 @@ function renderColleges(filter = 'all') {
   }).join('');
 
   // Header checkbox check state: checked if all items are selected
-  const allSelected = items.length > 0 && items.every(c => selectedColleges.includes(matchedColleges.indexOf(c)));
+  const checkItems = isPremium ? items : items.slice(0, 10);
+  const allSelected = checkItems.length > 0 && checkItems.every(c => selectedColleges.includes(matchedColleges.indexOf(c)));
 
   grid.innerHTML = `
     <div class="excel-table-wrap">
@@ -949,6 +1016,22 @@ function renderColleges(filter = 'all') {
       </table>
     </div>
   `;
+
+  if (!isPremium && items.length > 10) {
+    grid.innerHTML += `
+      <div class="lock-paywall-card">
+        <div class="lock-icon-container">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+        <h3>Unlock All Matching Colleges</h3>
+        <p>Purchase any one course to unlock the full list of matches and export your preference form.</p>
+        <a href="https://www.conceptsimplified.in/courses" target="_blank" class="unlock-btn">Unlock Premium Counselling</a>
+      </div>
+    `;
+  }
 }
 
 function toggleCollege(idx) {
@@ -972,7 +1055,11 @@ function toggleSelectAllColleges(checkboxEl) {
   else if (activeFilter === 'government') items = matchedColleges.filter(r => r.isGov);
   else if (activeFilter === 'autonomous') items = matchedColleges.filter(r => r.isAuto);
 
-  items.forEach(c => {
+  const userSession = getSession();
+  const isPremium = userSession && (userSession.role === 'premium' || userSession.role === 'admin');
+  const targetItems = isPremium ? items : items.slice(0, 10);
+
+  targetItems.forEach(c => {
     const realIdx = matchedColleges.indexOf(c);
     const selIdx = selectedColleges.indexOf(realIdx);
     if (isChecked) {
@@ -1330,6 +1417,13 @@ function renderPrefList() {
   const count = document.getElementById('prefCount');
   if (!count) return;
   count.textContent = prefList.length + ' colleges';
+
+  const tableWrap = document.querySelector('.final-list-table-wrap');
+  if (tableWrap) {
+    const existing = tableWrap.querySelector('.lock-paywall-card');
+    if (existing) existing.remove();
+  }
+
   if (!prefList.length) {
     list.innerHTML = `
       <tr class="empty-state-row">
@@ -1341,7 +1435,28 @@ function renderPrefList() {
     return;
   }
 
-  list.innerHTML = prefList.map((c, i) => {
+  const userSession = getSession();
+  const isPremium = userSession && (userSession.role === 'premium' || userSession.role === 'admin');
+
+  const displayPref = isPremium ? prefList : prefList.slice(0, 13);
+
+  list.innerHTML = displayPref.map((c, i) => {
+    const isLocked = !isPremium && i >= 10;
+    if (isLocked) {
+      return `
+        <tr class="pref-item locked-row" draggable="false" data-idx="${i}" style="cursor: default;">
+          <td class="pref-grip" style="text-align: center; width: 40px; vertical-align: middle">🔒</td>
+          <td class="pref-num" style="text-align: center; font-weight: 800; width: 60px; vertical-align: middle">${i + 1}</td>
+          <td style="width: 80px; vertical-align: middle"><span style="filter: blur(2px); opacity: 0.5;">0000</span></td>
+          <td class="pref-name" style="font-weight: 600; color: var(--ink); vertical-align: middle"><span style="filter: blur(4px); opacity: 0.5;">••••••••••••••••••••••••••••••••••••</span></td>
+          <td style="vertical-align: middle"><span style="filter: blur(4px); opacity: 0.5;">••••••••••••••••••••</span></td>
+          <td style="vertical-align: middle"><span style="filter: blur(4.5px); opacity: 0.5;">••••</span></td>
+          <td class="excel-td-pct" style="vertical-align: middle"><strong style="filter: blur(2.5px); opacity: 0.5;">••.••%</strong></td>
+          <td style="text-align: center; width: 70px; vertical-align: middle">🔒</td>
+        </tr>
+      `;
+    }
+
     const isFixed = c.isFixed;
     const badges = [];
     if (c.isAspirational) {
@@ -1410,6 +1525,25 @@ function renderPrefList() {
         </td>
       </tr>`;
   }).join('');
+
+  if (!isPremium && prefList.length > 10) {
+    if (tableWrap) {
+      const paywallHtml = `
+        <div class="lock-paywall-card" style="margin: 16px; border: 1px dashed var(--brand);">
+          <div class="lock-icon-container">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </div>
+          <h3>Unlock Full Preference List</h3>
+          <p>Purchase any one course to organize, sort, and export a complete preference list.</p>
+          <a href="https://www.conceptsimplified.in/courses" target="_blank" class="unlock-btn">Unlock All Choices</a>
+        </div>
+      `;
+      tableWrap.insertAdjacentHTML('beforeend', paywallHtml);
+    }
+  }
 }
 
 function removePref(i) {
@@ -1616,13 +1750,27 @@ function exportPDF() {
   doc.setTextColor(17, 24, 39);
   doc.text('Your Preference Order', 14, doc.lastAutoTable.finalY + 15);
 
-  const tableData = prefList.map((c, i) => [
+  const user = getSession();
+  const isPremium = user && (user.role === 'premium' || user.role === 'admin');
+  const itemsToExport = isPremium ? prefList : prefList.slice(0, 10);
+
+  const tableData = itemsToExport.map((c, i) => [
     i + 1,
     c.instituteName || c.name,
     c.branch,
     c.code,
-    c.percentile.toFixed(2) + '%'
+    c.percentile ? c.percentile.toFixed(2) + '%' : 'N/A'
   ]);
+
+  if (!isPremium && prefList.length > 10) {
+    tableData.push([
+      '•',
+      '🔒 Upgrade to Premium Counselling to unlock remaining options',
+      'www.conceptsimplified.in/courses',
+      'LOCKED',
+      '—'
+    ]);
+  }
 
   doc.autoTable({
     startY: doc.lastAutoTable.finalY + 20,

@@ -938,10 +938,10 @@
                 }
 
                 // 2. Placements
-                const placementRes = await fetch('ALL_CLG_PLACEMENT_TIER.json');
+                const placementRes = await fetch('mhtcet_colleges_with_codes.csv');
                 if (placementRes.ok) {
-                    const json = await placementRes.json();
-                    PLACEMENT_DATA = json.ALL_CLG_PLACEMENT_TIER || [];
+                    const csvText = await placementRes.text();
+                    PLACEMENT_DATA = parsePlacementCSV(csvText);
                 }
 
                 // 3. Intakes
@@ -1008,6 +1008,40 @@
                 console.error(err);
                 document.getElementById('loadingState').innerHTML = '<p style="color:var(--red);font-weight:700">Failed to load comparison data matrix. Please refresh.</p>';
             }
+        }
+
+        function parsePlacementCSV(text) {
+            const lines = text.split('\n');
+            const list = [];
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+                const cols = [];
+                let inQuotes = false;
+                let current = '';
+                for (let j = 0; j < line.length; j++) {
+                    const c = line[j];
+                    if (c === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (c === ',' && !inQuotes) {
+                        cols.push(current.trim());
+                        current = '';
+                    } else {
+                        current += c;
+                    }
+                }
+                cols.push(current.trim());
+                if (cols.length >= 5) {
+                    list.push({
+                        "Sr No": cols[0],
+                        "College Name": cols[1],
+                        "Avg Package (LPA)": cols[2],
+                        "Tier": cols[3],
+                        "College Code": cols[4]
+                    });
+                }
+            }
+            return list;
         }
 
         function parseIntakesCSV(text) {
@@ -1107,6 +1141,17 @@
 
         // ── PLACEMENT DETECT ──
         function getPlacementDetails(code, name) {
+            const cleanTargetCode = code ? String(code).trim().replace(/^0+/, '') : "";
+            
+            // 0. Match by Code
+            if (cleanTargetCode) {
+                const match = PLACEMENT_DATA.find(p => {
+                    const csvCode = p["College Code"] ? String(p["College Code"]).trim().replace(/^0+/, '') : "";
+                    return csvCode === cleanTargetCode;
+                });
+                if (match) return match;
+            }
+
             if (!code && !name) return null;
             const targetName = name ? name.toLowerCase().trim() : "";
             if (!targetName) return null;

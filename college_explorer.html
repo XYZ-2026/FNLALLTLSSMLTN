@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <!-- SEO Optimization Meta Tags -->
+    <title>College Explorer — College Simplified</title>
+    <meta name="keywords" content="College Explorer, seat matrix, MHT CET seats, placement packages, engineering college details, branch intake, category allocation, autonomous, minority quota">
+    <meta name="description" content="Explore detailed college information, seat matrix distributions, and package placements for engineering colleges in Maharashtra.">
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:title" content="College Explorer — College Simplified">
+    <meta property="og:description" content="Explore detailed college information, seat matrix distributions, and package placements for engineering colleges in Maharashtra.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://counselling.collegesimplified.in/college_explorer.html">
+    <meta property="og:site_name" content="College Simplified">
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Fonts and Libraries -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=Lexend:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js & PapaParse CDNs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+    <style>
+        :root {
+            --brand: #dc2626; 
+            --brand-soft: #fef2f2; 
+            --brand-ring: rgba(220, 38, 38, 0.15);
+            --ink: #111827; 
+            --muted: #6b7280; 
+            --bg: #f4f6fb; 
+            --card: #ffffff; 
+            --stroke: #e5e7eb;
+            --blue: #2563eb;
+            --blue-soft: #eff6ff;
+            --green: #16a34a;
+            --green-soft: #f0fdf4;
+            --orange: #d97706;
+            --orange-soft: #fffbeb;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            padding-top: 64px;
+        }
+
+        .wrap {
+            max-width: 1250px;
+            margin: 0 auto;
+            padding: 40px 20px 80px;
+        }
+
+        /* Page Header */
+        .page-hdr {
+            margin-bottom: 32px;
+            border-bottom: 2px solid var(--stroke);
+            padding-bottom: 16px;
+        }
+
+        .page-hdr h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--ink);
+        }
+
+        .page-hdr p {
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: 4px;
+            line-height: 1.6;
+        }
+
+        /* Search & Filters Section */
+        .search-card {
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            margin-bottom: 32px;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--muted);
+        }
+
+        .input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrap select, .input-wrap input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid var(--stroke);
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ink);
+            background: var(--card);
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .input-wrap select:focus, .input-wrap input:focus {
+            border-color: var(--brand);
+            box-shadow: 0 0 0 4px var(--brand-ring);
+        }
+
+        /* Autocomplete Suggestions */
+        .autocomplete-suggestions {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            width: 100%;
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-height: 250px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .autocomplete-suggestion {
+            padding: 12px 16px;
+            cursor: pointer;
+            font-size: 13.5px;
+            font-weight: 500;
+            transition: 0.15s;
+            border-bottom: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .autocomplete-suggestion:last-child {
+            border-bottom: none;
+        }
+
+        .autocomplete-suggestion:hover {
+            background: var(--brand-soft);
+            color: var(--brand);
+        }
+
+        .autocomplete-suggestion strong {
+            color: var(--brand);
+            font-family: monospace;
+            background: var(--brand-soft);
+            padding: 1px 4px;
+            border-radius: 4px;
+            margin-right: 6px;
+        }
+
+        /* College Dashboard Styles */
+        .college-dashboard {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .college-info-header {
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+        }
+
+        .college-info-header h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--ink);
+            line-height: 1.3;
+        }
+
+        .college-meta-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .meta-tag {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-tag.code { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--brand-ring); }
+        .meta-tag.type { background: var(--blue-soft); color: var(--blue); border: 1px solid rgba(37, 99, 235, 0.1); }
+        .meta-tag.region { background: var(--green-soft); color: var(--green); border: 1px solid rgba(22, 163, 74, 0.1); }
+
+        /* KPI Layout Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        @media (min-width: 992px) {
+            .dashboard-grid {
+                grid-template-columns: 280px 1fr 1fr;
+            }
+        }
+
+        /* Stat Cards Column */
+        .stats-col {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .stat-card .val {
+            font-family: 'Lexend', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--blue);
+            margin-bottom: 4px;
+        }
+
+        .stat-card.brand-stat .val { color: var(--brand); }
+        .stat-card.orange-stat .val { color: var(--orange); }
+
+        .stat-card .label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+
+        /* Chart Cards */
+        .chart-card {
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            min-width: 0; /* Prevents overflow in grid items */
+            overflow: hidden;
+        }
+
+        .chart-card h3 {
+            font-family: 'Lexend', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 20px;
+            align-self: flex-start;
+            border-left: 3px solid var(--brand);
+            padding-left: 8px;
+            line-height: 1.1;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 220px; /* Reliable height definition for responsive canvas */
+            position: relative;
+            min-width: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .gauge-center-text {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+
+        .gauge-center-text .num {
+            font-family: 'Lexend', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--ink);
+        }
+
+        .gauge-center-text .lbl {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        .matrix-helper-text {
+            font-size: 13.5px;
+            color: var(--muted);
+            margin: 0 24px 16px 34px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        /* Placement Packages Card */
+        .placement-card {
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+        }
+
+        .placement-card h3 {
+            font-family: 'Lexend', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--ink);
+            margin-bottom: 16px;
+            border-left: 3.5px solid var(--brand);
+            padding-left: 10px;
+            line-height: 1.2;
+        }
+
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+        }
+
+        .pkg-item {
+            padding: 16px;
+            background: var(--bg);
+            border-radius: 14px;
+            border: 1px solid var(--stroke);
+            text-align: center;
+        }
+
+        .pkg-item .val {
+            font-family: 'Lexend', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--ink);
+            margin-bottom: 2px;
+        }
+
+        .pkg-item .val span {
+            font-size: 13px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .pkg-item .lbl {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+        }
+
+        .pkg-item.tier-item {
+            background: var(--brand-soft);
+            border-color: var(--brand-ring);
+        }
+
+        .pkg-item.tier-item .val {
+            color: var(--brand);
+        }
+
+        /* Seat Matrix Table Cards */
+        .seat-matrix-card {
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            overflow: hidden;
+        }
+
+        .seat-matrix-card h3 {
+            font-family: 'Lexend', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--ink);
+            padding: 24px 24px 12px;
+            border-left: 3.5px solid var(--brand);
+            margin-left: 24px;
+            padding-left: 10px;
+            line-height: 1.2;
+            margin-top: 12px;
+        }
+
+        .table-scroll {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1.5px solid var(--stroke);
+        }
+
+        td {
+            padding: 14px 16px;
+            font-size: 13.5px;
+            color: var(--ink);
+            border-bottom: 1px solid var(--stroke);
+            vertical-align: middle;
+        }
+
+        tbody tr {
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .chevron-icon {
+            transition: transform 0.2s;
+        }
+
+        .expanded-row-tr {
+            background: #fcfdfe;
+        }
+
+        .expanded-row-tr:hover {
+            background: #fcfdfe;
+        }
+
+        /* Expanded Category seats matrix layout */
+        .category-matrix-container {
+            padding: 16px 24px;
+            border-left: 3px solid var(--brand);
+            background: #ffffff;
+            margin: 8px 16px;
+            border-radius: 12px;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.02), 0 2px 10px rgba(0,0,0,0.03);
+            border: 1px solid var(--stroke);
+        }
+
+        .category-matrix-title {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .category-matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .cat-box {
+            padding: 10px 12px;
+            background: var(--bg);
+            border: 1px solid var(--stroke);
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .cat-box .cat-label {
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .cat-box .cat-vals {
+            display: flex;
+            gap: 6px;
+        }
+
+        .cat-box .cat-vals span {
+            background: #ffffff;
+            border: 1.5px solid var(--stroke);
+            border-radius: 6px;
+            font-weight: 800;
+            min-width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: var(--ink);
+        }
+
+        .cat-box .cat-vals span.g-seat {
+            border-color: rgba(37, 99, 235, 0.2);
+            color: var(--blue);
+            background: var(--blue-soft);
+        }
+
+        .cat-box .cat-vals span.l-seat {
+            border-color: rgba(220, 38, 38, 0.2);
+            color: var(--brand);
+            background: var(--brand-soft);
+        }
+
+        /* Loader */
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+        }
+
+        .loader-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--stroke);
+            border-top-color: var(--brand);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loader-container p {
+            font-size: 14px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        /* Master List View Styles */
+        .list-view-panel {
+            margin-top: 24px;
+            animation: fadeUp 0.5s ease both;
+        }
+
+        .list-view-header {
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .count-badge {
+            font-size: 13px;
+            font-weight: 700;
+            background: var(--brand-soft);
+            color: var(--brand);
+            padding: 6px 14px;
+            border-radius: 100px;
+            border: 1px solid var(--brand-ring);
+        }
+
+        .colleges-list-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .college-item-card {
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: 20px;
+            padding: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .college-item-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--brand);
+        }
+
+        .clg-card-top {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .clg-card-code {
+            align-self: flex-start;
+            font-size: 10px;
+            font-weight: 800;
+            background: var(--brand-soft);
+            color: var(--brand);
+            padding: 3px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--brand-ring);
+        }
+
+        .clg-card-name {
+            font-family: 'Lexend', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--ink);
+            line-height: 1.4;
+        }
+
+        .clg-card-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .clg-card-action {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--brand);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        /* Back Button Style */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--card);
+            border: 1.5px solid var(--stroke);
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--ink2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .back-btn:hover {
+            border-color: var(--brand);
+            color: var(--brand);
+            background: var(--brand-soft);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px var(--brand-ring);
+        }
+
+        /* Responsive Mobile Styling for Seat Matrix Card-Based View */
+        @media (max-width: 767px) {
+            /* Hide the default table headers */
+            #seatsMatrixTable thead {
+                display: none;
+            }
+
+            #seatsMatrixTable, 
+            #seatsMatrixTable tbody, 
+            #seatsMatrixTable tr, 
+            #seatsMatrixTable td {
+                display: block;
+                width: 100% !important;
+                min-width: 0 !important;
+            }
+
+            /* Style the main branch row as a card */
+            #seatsMatrixTable tbody > tr:nth-child(2n+1) {
+                background: var(--card);
+                border: 1px solid var(--stroke);
+                border-radius: 16px;
+                padding: 16px;
+                margin-bottom: 12px;
+                position: relative;
+                cursor: pointer;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.01);
+            }
+
+            /* The first cell (chevron) can be positioned at the top right */
+            #seatsMatrixTable tbody > tr:nth-child(2n+1) td:first-child {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                width: auto !important;
+                padding: 0;
+                border: none;
+            }
+
+            /* Choice code cell */
+            #seatsMatrixTable tbody > tr:nth-child(2n+1) td:nth-child(2) {
+                padding: 0;
+                border: none;
+            }
+
+            /* Course Name cell */
+            #seatsMatrixTable tbody > tr:nth-child(2n+1) td:nth-child(3) {
+                font-size: 15px;
+                padding: 0;
+                border: none;
+                margin-top: 4px;
+                margin-bottom: 8px;
+                padding-right: 24px; /* avoid chevron overlap */
+            }
+
+            /* The remaining seat count cells (SI, CAP, MS, AI, ILS) can be arranged in a grid or row */
+            #seatsMatrixTable tbody > tr:nth-child(2n+1) td:nth-child(n+4) {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 6px 0;
+                border: none;
+                border-bottom: 1px dashed var(--stroke);
+                font-size: 12.5px;
+            }
+
+            #seatsMatrixTable tbody > tr:nth-child(2n+1) td:nth-child(n+4)::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: var(--muted);
+                text-transform: uppercase;
+                font-size: 10px;
+                letter-spacing: 0.5px;
+            }
+
+            /* Hide dashed border on the last seat count cell */
+            #seatsMatrixTable tbody > tr:nth-child(2n+1) td:nth-child(8) {
+                border-bottom: none;
+            }
+
+            /* Style the expanded breakdown row card */
+            #seatsMatrixTable tbody > tr.expanded-row-tr {
+                margin-top: -12px;
+                margin-bottom: 16px;
+                border: 1px solid var(--stroke);
+                border-top: none;
+                border-radius: 0 0 16px 16px;
+                background: #fafbfc;
+                padding: 0;
+            }
+
+            #seatsMatrixTable tbody > tr.expanded-row-tr td {
+                padding: 0;
+                border: none;
+            }
+
+            .category-matrix-container {
+                margin: 12px !important;
+                padding: 12px !important;
+            }
+
+            .category-matrix-grid {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 8px !important;
+            }
+
+            /* Responsive Chart Adjustments */
+            .chart-card {
+                padding: 16px;
+            }
+            .gauge-container {
+                height: 180px;
+            }
+            .pie-container {
+                height: 280px; /* Extra height to accommodate pie circle + bottom wrapped legends */
+            }
+            .gauge-center-text {
+                bottom: 10px;
+            }
+            .matrix-helper-text {
+                margin: 0 16px 12px 16px;
+                font-size: 12px;
+            }
+            .college-item-card {
+                padding: 16px;
+            }
+            .college-info-header {
+                padding: 16px;
+            }
+            .search-card {
+                padding: 16px;
+            }
+            .wrap {
+                padding: 20px 12px 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+  <div class="wrap" id="toolArea">
+    <div class="page-hdr">
+      <h1>College Explorer</h1>
+      <p>Analyze intake distributions, regional minority codes, seat allocations, and average package tiers for engineering colleges in Maharashtra.</p>
+    </div>
+
+    <!-- Data loading state spinner -->
+    <div id="dataLoader" class="loader-container">
+      <div class="loader-spinner"></div>
+      <p>Loading database & seat matrix...</p>
+    </div>
+
+    <div id="explorerContent" style="display: none;">
+      <!-- Search Panel -->
+      <div class="search-card">
+        <div class="filters-grid">
+          <div class="form-group">
+            <label class="form-label" for="searchColleges">Search College</label>
+            <div class="input-wrap">
+              <input type="text" id="searchColleges" placeholder="Enter college name or code..." autocomplete="off" oninput="renderListView()">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="filterRegion">Filter Region</label>
+            <div class="input-wrap">
+              <select id="filterRegion" onchange="renderListView()">
+                <option value="all">All Regions</option>
+                <option value="1">Amravati</option>
+                <option value="2">Aurangabad</option>
+                <option value="3">Mumbai</option>
+                <option value="4">Nagpur</option>
+                <option value="5">Nashik</option>
+                <option value="6">Pune</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="filterMinority">Filter Minority</label>
+            <div class="input-wrap">
+              <select id="filterMinority" onchange="renderListView()">
+                <option value="all">All Colleges</option>
+                <option value="non-minority">Non-Minority Only</option>
+                <option value="any-minority">Any Minority Only</option>
+                <!-- Specific minorities will be populated dynamically -->
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- List View Panel -->
+      <div id="listViewPanel" class="list-view-panel">
+        <div class="list-view-header">
+          <span id="collegesCountBadge" class="count-badge">0 Colleges Found</span>
+        </div>
+        <div id="collegesListGrid" class="colleges-list-grid">
+          <!-- Filled dynamically -->
+        </div>
+      </div>
+
+      <!-- Dashboard Panel -->
+      <div id="collegeDashboard" class="college-dashboard" style="display: none;">
+        <button onclick="showListView()" class="back-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Back to College List
+        </button>
+        <!-- Overview Banner -->
+        <div class="college-info-header">
+          <h2 id="dbCollegeName">Government College of Engineering, Amravati</h2>
+          <div class="college-meta-tags">
+            <span class="meta-tag code" id="dbCollegeCode">Code: 1002</span>
+            <span class="meta-tag type" id="dbCollegeType">Government, Autonomous</span>
+            <span class="meta-tag region" id="dbCollegeRegion">Region: Amravati</span>
+          </div>
+        </div>
+
+        <!-- Cards & Charts Grid -->
+        <div class="dashboard-grid">
+          <div class="stats-col">
+            <div class="stat-card">
+              <div class="val" id="statBranches">0</div>
+              <div class="label">Total Branches</div>
+            </div>
+            <div class="stat-card brand-stat">
+              <div class="val" id="statMinority" style="font-size: 16px; font-weight: 800; max-width: 240px; word-break: break-word;">None</div>
+              <div class="label">Minority Status</div>
+            </div>
+            <div class="stat-card orange-stat">
+              <div class="val" id="statTotalSeats">0</div>
+              <div class="label">Total Intake Seats</div>
+            </div>
+          </div>
+
+          <!-- Total Intake Gauge -->
+          <div class="chart-card">
+            <h3>Total Intake Capacity</h3>
+            <div class="chart-container gauge-container">
+              <canvas id="gaugeCanvas"></canvas>
+              <div class="gauge-center-text">
+                <div class="num" id="gaugeVal">0</div>
+                <div class="lbl">Seats Intake</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pie Chart -->
+          <div class="chart-card">
+            <h3>Seats by Branch</h3>
+            <div class="chart-container pie-container">
+              <canvas id="pieCanvas"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Placement Packages -->
+        <div class="placement-card">
+          <h3>Average Placement Package Tier</h3>
+          <div class="packages-grid">
+            <div class="pkg-item">
+              <div class="val" id="pkgAverage">— <span>LPA</span></div>
+              <div class="lbl">Average Package</div>
+            </div>
+            <div class="pkg-item tier-item">
+              <div class="val" id="pkgTier">—</div>
+              <div class="lbl">Placement Tier</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seats matrix table -->
+        <div class="seat-matrix-card" style="margin-bottom: 40px;">
+          <h3>Branch-Wise Seats Matrix Details</h3>
+          <p class="matrix-helper-text">
+            (Click on any branch card/row to view category-wise seat distribution in detail)
+          </p>
+          <div class="table-scroll">
+            <table id="seatsMatrixTable">
+              <thead>
+                <tr>
+                  <th style="width: 10px;"></th>
+                  <th>Choice Code</th>
+                  <th>Branch / Course Name</th>
+                  <th style="text-align: center; width: 120px;">Total Seats</th>
+                  <th style="text-align: center; width: 120px;">CAP Seats</th>
+                  <th style="text-align: center; width: 120px;">MH Seats</th>
+                  <th style="text-align: center; width: 120px;">AI Seats</th>
+                  <th style="text-align: center; width: 120px;">ILS Seats</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase_config.js"></script>
+  <script src="shared_auth.js"></script>
+  <script>
+    'use strict';
+
+    if (initAuth({ requireLogin: true, toolContainerId: 'toolArea' })) {
+      let collegeList = [];
+      let seatsData = [];
+      let allPlacementTiers = [];
+
+      let gaugeChartInstance = null;
+      let pieChartInstance = null;
+
+      // Close autocomplete list when clicking outside
+      document.addEventListener('click', function(e) {
+        const box = document.getElementById('suggestionsBox');
+        const searchInput = document.getElementById('searchColleges');
+        if (box && e.target !== searchInput && !box.contains(e.target)) {
+          box.style.display = 'none';
+        }
+      });
+
+      // Normalization for placement fuzzy name matching using mhtcet_colleges_with_codes.csv
+      function findPlacementData(collegeName, collegeCode) {
+        const cleanTargetCode = collegeCode ? String(collegeCode).trim().replace(/^0+/, '') : "";
+        
+        let match = null;
+        
+        // 1. Match by Code
+        if (cleanTargetCode) {
+          match = allPlacementTiers.find(p => {
+            const csvCode = p["College Code"] ? String(p["College Code"]).trim().replace(/^0+/, '') : "";
+            return csvCode === cleanTargetCode;
+          });
+        }
+        
+        // 2. Fallback to name matching
+        if (!match && collegeName) {
+          const cleanName = (name) => {
+            return String(name || '')
+              .toLowerCase()
+              .replace(/government college of engineering/gi, 'gcoe')
+              .replace(/college of engineering/gi, 'coe')
+              .replace(/institute of technology/gi, 'it')
+              .replace(/[^a-z0-9]/g, '');
+          };
+          const targetClean = cleanName(collegeName);
+          match = allPlacementTiers.find(p => {
+            const pName = p["College Name"] ? p["College Name"].toLowerCase().trim() : "";
+            return cleanName(pName) === targetClean;
+          });
+          
+          if (!match) {
+            match = allPlacementTiers.find(p => {
+              const pName = p["College Name"] ? p["College Name"].toLowerCase().trim() : "";
+              const cleanP = cleanName(pName);
+              return cleanP.includes(targetClean) || targetClean.includes(cleanP);
+            });
+          }
+        }
+        
+        return {
+          average: match ? match["Avg Package (LPA)"] : '—',
+          tier: match ? match["Tier"] : '—'
+        };
+      }
+
+      // Region code helper
+      function getRegionByCode(codeStr) {
+        const clean = String(codeStr).trim().replace(/^0+/, '');
+        if (!clean) return 'Other';
+        const char = clean.length === 5 ? clean.charAt(1) : clean.charAt(0);
+        const regions = {
+          '1': 'Amravati',
+          '2': 'Aurangabad',
+          '3': 'Mumbai',
+          '4': 'Nagpur',
+          '5': 'Nashik',
+          '6': 'Pune'
+        };
+        return regions[char] || 'Other';
+      }
+
+      // Bootstrapping
+      async function init() {
+        try {
+          const [metaRes, seatsText, placementText] = await Promise.all([
+            fetch('college-data.json').then(r => r.json()),
+            fetch('MHT_CET_Seats.csv').then(r => r.text()),
+            fetch('mhtcet_colleges_with_codes.csv').then(r => r.text())
+          ]);
+
+          // Parse seats matrix
+          const parsed = Papa.parse(seatsText, { header: true, skipEmptyLines: true });
+          seatsData = parsed.data || [];
+
+          // Save placement tables
+          const parsedPlacements = Papa.parse(placementText, { header: true, skipEmptyLines: true });
+          allPlacementTiers = parsedPlacements.data || [];
+
+          // Map list of unique colleges
+          const uniqueMap = {};
+          (metaRes["college-data"] || []).forEach(c => {
+            const code = parseInt(c["Institute Code"]);
+            if (code) {
+              uniqueMap[code] = {
+                code: code,
+                name: c["Institute Name"] || "Unknown College",
+                status: c["Status"] || "",
+                region: getRegionByCode(code)
+              };
+            }
+          });
+
+          // Fallback backfill from CSV
+          seatsData.forEach(row => {
+            const code = parseInt(row.College_Code);
+            if (code && !uniqueMap[code]) {
+              uniqueMap[code] = {
+                code: code,
+                name: row.College_Name || "Unknown College",
+                status: row.Institute_Type || "",
+                region: getRegionByCode(code)
+              };
+            }
+          });
+
+          collegeList = Object.values(uniqueMap).sort((a, b) => a.code - b.code);
+
+          // Populate minority filter select dropdown dynamically
+          const minoritySet = new Set();
+          collegeList.forEach(c => {
+            if (c.status) {
+              const parts = c.status.split(',');
+              for (let part of parts) {
+                const trimmed = part.trim();
+                if (trimmed.toLowerCase().includes('minority')) {
+                  minoritySet.add(trimmed);
+                }
+              }
+            }
+          });
+          const sortedMinorities = Array.from(minoritySet).sort((a, b) => a.localeCompare(b));
+          const filterMinoritySelect = document.getElementById('filterMinority');
+          sortedMinorities.forEach(min => {
+            const opt = document.createElement('option');
+            opt.value = min;
+            opt.textContent = min;
+            filterMinoritySelect.appendChild(opt);
+          });
+
+          // Hide Loader
+          document.getElementById('dataLoader').style.display = 'none';
+          document.getElementById('explorerContent').style.display = 'block';
+
+          // Show list of all colleges first
+          renderListView();
+
+        } catch(e) {
+          console.error("Bootstrapping failed: ", e);
+          document.getElementById('dataLoader').innerHTML = `<p style="color:var(--brand)">Failed to load explorer database. Please refresh.</p>`;
+        }
+      }
+
+      window.renderListView = function() {
+        const region = document.getElementById('filterRegion').value;
+        const minority = document.getElementById('filterMinority').value;
+        const searchInput = document.getElementById('searchColleges').value.toLowerCase().trim();
+
+        const filtered = collegeList.filter(c => {
+          // Region Filter
+          if (region !== 'all') {
+            const cleanCode = String(c.code).trim().replace(/^0+/, '');
+            const char = cleanCode.length === 5 ? cleanCode.charAt(1) : cleanCode.charAt(0);
+            if (char !== region) return false;
+          }
+
+          // Minority Filter
+          if (minority !== 'all') {
+            const isMin = c.status.toLowerCase().includes('minority');
+            if (minority === 'non-minority') {
+              if (isMin) return false;
+            } else if (minority === 'any-minority') {
+              if (!isMin) return false;
+            } else {
+              if (!c.status.includes(minority)) return false;
+            }
+          }
+
+          // Search Query
+          if (searchInput) {
+            const nameMatch = c.name.toLowerCase().includes(searchInput);
+            const codeMatch = String(c.code).includes(searchInput);
+            if (!nameMatch && !codeMatch) return false;
+          }
+
+          return true;
+        });
+
+        document.getElementById('collegesCountBadge').innerText = `${filtered.length} Colleges Found`;
+
+        const grid = document.getElementById('collegesListGrid');
+        if (filtered.length === 0) {
+          grid.innerHTML = `<div style="grid-column: 1/-1; padding: 40px; text-align: center; color: var(--muted); font-weight: 600;">No colleges match your search filters.</div>`;
+          return;
+        }
+
+        grid.innerHTML = filtered.map(c => {
+          const placement = findPlacementData(c.name, c.code);
+          const avgPkg = placement.average && placement.average !== '—' ? `${placement.average} LPA` : '—';
+          
+          return `
+            <div class="college-item-card" onclick="selectCollege(${c.code})">
+              <div class="clg-card-top">
+                <span class="clg-card-code">Code: ${String(c.code).padStart(4, '0')}</span>
+                <h3 class="clg-card-name">${escAuth(c.name)}</h3>
+                <div class="clg-card-meta">
+                  <span style="display:inline-flex; align-items:center; gap:4px;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    ${c.region}
+                  </span>
+                  <span>•</span>
+                  <span style="display:inline-flex; align-items:center; gap:4px;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted)"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="9" y1="22" x2="9" y2="16"></line><line x1="15" y1="22" x2="15" y2="16"></line><line x1="9" y1="16" x2="15" y2="16"></line><path d="M9 6h6"></path><path d="M9 10h6"></path></svg>
+                    ${c.status || 'Private'}
+                  </span>
+                </div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--stroke); padding-top:12px; margin-top:4px;">
+                <div style="font-size:11px; font-weight:600; color:var(--muted)">
+                  Avg Package: <strong style="color:var(--ink)">${avgPkg}</strong>
+                </div>
+                <div class="clg-card-action">View Details &rarr;</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      };
+
+      window.selectCollege = function(code) {
+        const college = collegeList.find(c => c.code === code);
+        if (!college) return;
+
+        // Populate search input
+        document.getElementById('searchColleges').value = college.name;
+
+        // Render overview headers
+        document.getElementById('dbCollegeName').innerText = college.name;
+        document.getElementById('dbCollegeCode').innerText = `Code: ${String(college.code).padStart(4, '0')}`;
+        document.getElementById('dbCollegeType').innerText = college.status || 'Standard Private Institute';
+        document.getElementById('dbCollegeRegion').innerText = `Region: ${college.region}`;
+
+        // Get placement statistics
+        const placement = findPlacementData(college.name, college.code);
+        document.getElementById('pkgAverage').innerHTML = placement.average && placement.average !== '—' ? `${placement.average} <span>LPA</span>` : '—';
+        document.getElementById('pkgTier').innerText = placement.tier || '—';
+
+        // Render seats matrix
+        const collegeSeats = seatsData.filter(row => parseInt(row.College_Code) === code);
+        renderSeatsDashboard(college, collegeSeats);
+
+        // Hide Search Panel and List Panel
+        document.querySelector('.search-card').style.display = 'none';
+        document.getElementById('listViewPanel').style.display = 'none';
+
+        // Display dashboard container
+        document.getElementById('collegeDashboard').style.display = 'block';
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      window.showListView = function() {
+        // Show Search Panel and List Panel
+        document.querySelector('.search-card').style.display = 'block';
+        document.getElementById('listViewPanel').style.display = 'block';
+
+        // Hide dashboard container
+        document.getElementById('collegeDashboard').style.display = 'none';
+      };
+
+      function renderSeatsDashboard(college, seats) {
+        // Group rows by Course Code (Choice_Code)
+        const groups = {};
+        seats.forEach(row => {
+          const key = row.Choice_Code;
+          if (!key) return;
+          if (!groups[key]) groups[key] = [];
+          groups[key].push(row);
+        });
+
+        const branches = Object.values(groups).map(rows => {
+          // Get the primary metadata row (State Level, or any row with core values)
+          const primary = rows.find(r => r.Row_Type === 'State Level') || rows[0];
+          
+          return {
+            choiceCode: primary.Choice_Code,
+            courseName: primary.Course_Name,
+            si: parseInt(primary.SI) || 0,
+            cap: parseInt(primary.CAP_Seats) || 0,
+            ms: parseInt(primary.MS_Seats) || 0,
+            allIndia: parseInt(primary.All_India) || 0,
+            institute: parseInt(primary.Institute_Seats) || 0,
+            rows: rows
+          };
+        }).sort((a, b) => b.si - a.si); // Sort by largest branch intake
+
+        // Populate basic stats badges
+        const totalIntake = branches.reduce((sum, b) => sum + b.si, 0);
+        document.getElementById('statBranches').innerText = branches.length;
+        document.getElementById('statTotalSeats').innerText = totalIntake;
+
+        // Parse minority status details
+        let minorityText = 'None (General Open)';
+        const statusLower = college.status.toLowerCase();
+        if (statusLower.includes('minority')) {
+          const match = college.status.match(/(Linguistic|Religious)\s+Minority\s*-\s*([a-zA-Z\s]+)/i);
+          if (match) {
+            minorityText = `${match[2]} (${match[1]})`;
+          } else {
+            minorityText = 'Minority Quota Active';
+          }
+        }
+        document.getElementById('statMinority').innerText = minorityText;
+
+        // Render Seats Table
+        const tbody = document.querySelector('#seatsMatrixTable tbody');
+        tbody.innerHTML = branches.map((b, i) => `
+          <tr onclick="toggleRowBreakdown(${i})">
+            <td style="text-align: center;">
+              <svg class="chevron-icon" id="chev-${i}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </td>
+            <td><span class="college-code">${b.choiceCode}</span></td>
+            <td style="font-weight: 600;">${b.courseName}</td>
+            <td data-label="Total Seats (SI)" style="text-align: center; font-weight: 700; color: var(--blue)">${b.si}</td>
+            <td data-label="CAP Seats" style="text-align: center;">${b.cap}</td>
+            <td data-label="Maharashtra Seats (MS)" style="text-align: center;">${b.ms}</td>
+            <td data-label="All India Seats (AI)" style="text-align: center;">${b.allIndia}</td>
+            <td data-label="Institute Seats (ILS)" style="text-align: center;">${b.institute}</td>
+          </tr>
+          <tr id="breakdown-${i}" class="expanded-row-tr" style="display: none;">
+            <td colspan="8">
+              <div class="category-matrix-container">
+                <div class="category-matrix-title">
+                  <span>Category-Wise Seat Distribution Breakdown</span>
+                  <span style="font-size: 11px; color: var(--muted); font-weight: 500;">
+                    <span style="color: var(--blue); font-weight: 800;">■</span> General (G) &nbsp;•&nbsp; 
+                    <span style="color: var(--brand); font-weight: 800;">■</span> Ladies (L)
+                  </span>
+                </div>
+                <div class="category-matrix-grid">
+                  ${getCategoryGridHtml(b.rows)}
+                </div>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+
+        // Render Chart Gauges
+        renderCharts(totalIntake, branches);
+      }
+
+      function getCategoryGridHtml(rows) {
+        // Find state level row
+        const stateRow = rows.find(r => r.Row_Type === 'State Level');
+        const ewsRow = rows.find(r => r.Row_Type === 'EWS');
+
+        const catData = [
+          { label: 'OPEN', g: 'OPEN_G', l: 'OPEN_L' },
+          { label: 'SC', g: 'SC_G', l: 'SC_L' },
+          { label: 'ST', g: 'ST_G', l: 'ST_L' },
+          { label: 'VJ / DT', g: 'VJ/DT_G', l: 'VJ/DT_L' },
+          { label: 'NT-B', g: 'NTB_G', l: 'NTB_L' },
+          { label: 'NT-C', g: 'NTC_G', l: 'NTC_L' },
+          { label: 'NT-D', g: 'NTD_G', l: 'NTD_L' },
+          { label: 'OBC', g: 'OBC_G', l: 'OBC_L' },
+          { label: 'SEBC', g: 'SEBC_G', l: 'SEBC_L' }
+        ];
+
+        let boxesHtml = '';
+        if (stateRow) {
+          catData.forEach(c => {
+            const gCount = parseInt(stateRow[c.g]) || 0;
+            const lCount = parseInt(stateRow[c.l]) || 0;
+            if (gCount > 0 || lCount > 0) {
+              boxesHtml += `
+                <div class="cat-box">
+                  <span class="cat-label">${c.label}</span>
+                  <div class="cat-vals">
+                    <span class="g-seat" title="General Seats">${gCount}</span>
+                    <span class="l-seat" title="Ladies Seats">${lCount}</span>
+                  </div>
+                </div>
+              `;
+            }
+          });
+        }
+
+        // Add EWS if present
+        if (ewsRow) {
+          const ewsCount = parseInt(ewsRow['Total_G+L']) || 0;
+          if (ewsCount > 0) {
+            boxesHtml += `
+              <div class="cat-box" style="border-color: rgba(217, 119, 6, 0.2); background: var(--orange-soft);">
+                <span class="cat-label" style="color: var(--orange)">EWS</span>
+                <div class="cat-vals">
+                  <span style="color: var(--orange); border-color: rgba(217, 119, 6, 0.2); background: #ffffff; min-width: 50px; font-weight:800; font-size:11px;">${ewsCount} Seats</span>
+                </div>
+              </div>
+            `;
+          }
+        }
+
+        // Add PWD seats if present
+        let pwdTotal = 0;
+        const pwdRow = rows.find(r => r.Row_Type === 'PWD');
+        if (pwdRow) {
+          Object.keys(pwdRow).forEach(k => {
+            if (k.endsWith('_G') || k.endsWith('_L')) {
+              pwdTotal += parseInt(pwdRow[k]) || 0;
+            }
+          });
+        }
+        if (pwdTotal > 0) {
+          boxesHtml += `
+            <div class="cat-box" style="border-color: rgba(37, 99, 235, 0.2); background: var(--blue-soft);">
+              <span class="cat-label" style="color: var(--blue)">PWD Quota</span>
+              <div class="cat-vals">
+                <span style="color: var(--blue); border-color: rgba(37, 99, 235, 0.2); background: #ffffff; min-width: 50px; font-weight:800; font-size:11px;">${pwdTotal} Seats</span>
+              </div>
+            </div>
+          `;
+        }
+
+        // Add DEF seats if present
+        let defTotal = 0;
+        const defRow = rows.find(r => r.Row_Type === 'DEF');
+        if (defRow) {
+          Object.keys(defRow).forEach(k => {
+            if (k.endsWith('_G') || k.endsWith('_L')) {
+              defTotal += parseInt(defRow[k]) || 0;
+            }
+          });
+        }
+        if (defTotal > 0) {
+          boxesHtml += `
+            <div class="cat-box" style="border-color: rgba(22, 163, 74, 0.2); background: var(--green-soft);">
+              <span class="cat-label" style="color: var(--green)">DEF Quota</span>
+              <div class="cat-vals">
+                <span style="color: var(--green); border-color: rgba(22, 163, 74, 0.2); background: #ffffff; min-width: 50px; font-weight:800; font-size:11px;">${defTotal} Seats</span>
+              </div>
+            </div>
+          `;
+        }
+
+        // Add Orphan seats if present
+        let orphanTotal = 0;
+        if (stateRow && stateRow.Orphan) {
+          orphanTotal = parseInt(stateRow.Orphan) || 0;
+        }
+        if (orphanTotal > 0) {
+          boxesHtml += `
+            <div class="cat-box" style="border-color: rgba(124, 58, 237, 0.2); background: #f5f3ff;">
+              <span class="cat-label" style="color: #7c3aed">Orphan Quota</span>
+              <div class="cat-vals">
+                <span style="color: #7c3aed; border-color: rgba(124, 58, 237, 0.2); background: #ffffff; min-width: 50px; font-weight:800; font-size:11px;">${orphanTotal} Seat</span>
+              </div>
+            </div>
+          `;
+        }
+
+        return boxesHtml || '<div style="color:var(--muted); font-size:13px; grid-column: 1/-1;">No standard State Level seat distribution rows found for this choice code.</div>';
+      }
+
+      window.toggleRowBreakdown = function(index) {
+        const tr = document.getElementById(`breakdown-${index}`);
+        const chev = document.getElementById(`chev-${index}`);
+        
+        if (tr.style.display === 'none') {
+          tr.style.display = 'table-row';
+          chev.style.transform = 'rotate(180deg)';
+        } else {
+          tr.style.display = 'none';
+          chev.style.transform = 'rotate(0deg)';
+        }
+      };
+
+      function renderCharts(totalIntake, branches) {
+        // Destroy old Chart instances
+        if (gaugeChartInstance) gaugeChartInstance.destroy();
+        if (pieChartInstance) pieChartInstance.destroy();
+
+        // 1. Intake Gauge Chart
+        const gaugeCtx = document.getElementById('gaugeCanvas').getContext('2d');
+        document.getElementById('gaugeVal').innerText = totalIntake;
+        
+        gaugeChartInstance = new Chart(gaugeCtx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Sanctioned Intake', 'Available Target'],
+            datasets: [{
+              data: [totalIntake, Math.max(0, 1200 - totalIntake)],
+              backgroundColor: ['#dc2626', '#e5e7eb'],
+              borderWidth: 0,
+              hoverBackgroundColor: ['#b91c1c', '#e5e7eb']
+            }]
+          },
+          options: {
+            circumference: 180,
+            rotation: 270,
+            cutout: '75%',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: { enabled: false }
+            }
+          }
+        });
+
+        // 2. Branch Seats Distribution Pie Chart
+        const pieCtx = document.getElementById('pieCanvas').getContext('2d');
+        const labels = branches.map(b => b.courseName);
+        const data = branches.map(b => b.si);
+
+        pieChartInstance = new Chart(pieCtx, {
+          type: 'pie',
+          data: {
+            labels: labels,
+            datasets: [{
+              data: data,
+              backgroundColor: [
+                '#dc2626', '#2563eb', '#16a34a', '#d97706', '#7c3aed', '#0891b2', '#db2777', '#4b5563'
+              ],
+              borderWidth: 1.5
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: window.innerWidth < 768 ? 'bottom' : 'right',
+                labels: {
+                  boxWidth: 12,
+                  font: { family: 'Inter', size: 10, weight: 600 }
+                }
+              }
+            }
+          }
+        });
+      }
+
+      // Run
+      init();
+    }
+  </script>
+</body>
+</html>

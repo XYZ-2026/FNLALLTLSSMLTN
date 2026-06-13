@@ -1003,10 +1003,10 @@
         }
 
         // 2. Fetch placement information
-        const placementRes = await fetch('ALL_CLG_PLACEMENT_TIER.json');
+        const placementRes = await fetch('mhtcet_colleges_with_codes.csv');
         if (placementRes.ok) {
-          const json = await placementRes.json();
-          PLACEMENT_DATA = json.ALL_CLG_PLACEMENT_TIER || [];
+          const csvText = await placementRes.text();
+          PLACEMENT_DATA = parsePlacementCSV(csvText);
         }
 
         // 3. Fetch Intakes CSV
@@ -1208,28 +1208,35 @@
     function getCollegeList() {
       const map = new Map();
 
-      // Build unique lists from both cutoffs and intakes
+      // Build unique lists from cutoffs, JEE data and intakes using cleanCode (no leading zeros) as key
       MHT_DATA.forEach(r => {
         const name = (r.Institute || '').trim();
         const code = String(r['Institute Code'] || '').trim();
-        if (name && code) {
-          map.set(name.toLowerCase(), { name, code });
+        const cleanCode = code.replace(/^0+/, '');
+        if (name && cleanCode) {
+          map.set(cleanCode, { name, code: cleanCode });
         }
       });
 
       JEE_DATA.forEach(r => {
         const name = (r._instituteName || '').trim();
         const code = String(r['College Code'] || '').trim();
-        if (name && code) {
-          map.set(name.toLowerCase(), { name, code });
+        const cleanCode = code.replace(/^0+/, '');
+        if (name && cleanCode) {
+          if (!map.has(cleanCode)) {
+            map.set(cleanCode, { name, code: cleanCode });
+          }
         }
       });
 
       INTAKES_DATA.forEach(r => {
         const name = (r.name || '').trim();
         const code = String(r.code || '').trim();
-        if (name && code) {
-          map.set(name.toLowerCase(), { name, code });
+        const cleanCode = code.replace(/^0+/, '');
+        if (name && cleanCode) {
+          if (!map.has(cleanCode)) {
+            map.set(cleanCode, { name, code: cleanCode });
+          }
         }
       });
 
@@ -1340,6 +1347,17 @@
 
     // ── PLACEMENT MATCHING BY CODE OR FUZZY NAME ──
     function getPlacementDetails(code, collegeName) {
+      const cleanTargetCode = code ? String(code).trim().replace(/^0+/, '') : "";
+      
+      // 0. Match by Code
+      if (cleanTargetCode) {
+        const match = PLACEMENT_DATA.find(p => {
+          const csvCode = p["College Code"] ? String(p["College Code"]).trim().replace(/^0+/, '') : "";
+          return csvCode === cleanTargetCode;
+        });
+        if (match) return match;
+      }
+
       if (!code && !collegeName) return null;
 
       const targetName = collegeName ? collegeName.toLowerCase().trim() : "";
@@ -1502,22 +1520,23 @@
       const tierNumA = parseTierValue(tierA);
       const tierNumB = parseTierValue(tierB);
 
-      const branchesA = countCollegeBranches(SEL_COLLEGE_A.name);
-      const branchesB = countCollegeBranches(SEL_COLLEGE_B.name);
+      const branchesA = countCollegeBranches(SEL_COLLEGE_A.name, SEL_COLLEGE_A.code);
+      const branchesB = countCollegeBranches(SEL_COLLEGE_B.name, SEL_COLLEGE_B.code);
 
       let html = '';
 
       // Row 1: Cutoffs (Comp. Eng.) — AT THE TOP!
-      const compA = MHT_DATA.find(r => 
-        (r.Institute || '').toLowerCase() === SEL_COLLEGE_A.name.toLowerCase() && 
-        (r.Branch || '').toLowerCase().includes('computer') &&
-        (r['Seat Type'] || '').startsWith('GOPEN')
-      );
-      const compB = MHT_DATA.find(r => 
-        (r.Institute || '').toLowerCase() === SEL_COLLEGE_B.name.toLowerCase() && 
-        (r.Branch || '').toLowerCase().includes('computer') &&
-        (r['Seat Type'] || '').startsWith('GOPEN')
-      );
+      const codeA = String(SEL_COLLEGE_A.code).replace(/^0+/, '');
+      const codeB = String(SEL_COLLEGE_B.code).replace(/^0+/, '');
+      
+      const compA = MHT_DATA.find(r => {
+        const rCode = String(r['Institute Code'] || '').trim().replace(/^0+/, '');
+        return rCode === codeA && (r.Branch || '').toLowerCase().includes('computer') && (r['Seat Type'] || '').startsWith('GOPEN');
+      });
+      const compB = MHT_DATA.find(r => {
+        const rCode = String(r['Institute Code'] || '').trim().replace(/^0+/, '');
+        return rCode === codeB && (r.Branch || '').toLowerCase().includes('computer') && (r['Seat Type'] || '').startsWith('GOPEN');
+      });
 
       const cutoffValA = compA ? compA._pct : null;
       const cutoffValB = compB ? compB._pct : null;
@@ -1644,15 +1663,27 @@
       return { isAutonomous };
     }
 
-    function countCollegeBranches(name) {
-      const lower = name.toLowerCase();
+    function countCollegeBranches(name, code) {
+      const cleanCode = code ? String(code).trim().replace(/^0+/, '') : "";
+      const lowerName = name ? name.toLowerCase() : "";
       const branches = new Set();
-      MHT_DATA.filter(r => (r.Institute || '').toLowerCase() === lower).forEach(r => {
+
+      MHT_DATA.filter(r => {
+        const rCode = String(r['Institute Code'] || '').trim().replace(/^0+/, '');
+        if (cleanCode && rCode) return rCode === cleanCode;
+        return (r.Institute || '').toLowerCase() === lowerName;
+      }).forEach(r => {
         if (r.Branch) branches.add(r.Branch.trim());
       });
-      JEE_DATA.filter(r => (r._instituteName || '').toLowerCase() === lower).forEach(r => {
+
+      JEE_DATA.filter(r => {
+        const rCode = String(r['College Code'] || '').trim().replace(/^0+/, '');
+        if (cleanCode && rCode) return rCode === cleanCode;
+        return (r._branchName || '').toLowerCase() === lowerName;
+      }).forEach(r => {
         if (r._branchName) branches.add(r._branchName.trim());
       });
+
       return branches.size || 0;
     }
 
@@ -1679,8 +1710,8 @@
 
     // ── BRANCHES LIST COMPARE ──
     function renderBranchesList() {
-      const listA = getCollegeBranches(SEL_COLLEGE_A.name);
-      const listB = getCollegeBranches(SEL_COLLEGE_B.name);
+      const listA = getCollegeBranches(SEL_COLLEGE_A.name, SEL_COLLEGE_A.code);
+      const listB = getCollegeBranches(SEL_COLLEGE_B.name, SEL_COLLEGE_B.code);
 
       document.getElementById('branchListA').innerHTML = listA.map(b => `
         <div class="branch-compare-item">
@@ -1695,16 +1726,25 @@
       `).join('') || '<div style="color:var(--muted)">No branch details found.</div>';
     }
 
-    function getCollegeBranches(name) {
-      const lower = name.toLowerCase();
+    function getCollegeBranches(name, code) {
+      const cleanCode = code ? String(code).trim().replace(/^0+/, '') : "";
+      const lowerName = name ? name.toLowerCase() : "";
       const branches = new Set();
 
-      MHT_DATA.filter(r => (r.Institute || '').toLowerCase() === lower).forEach(r => {
+      MHT_DATA.filter(r => {
+        const rCode = String(r['Institute Code'] || '').trim().replace(/^0+/, '');
+        if (cleanCode && rCode) return rCode === cleanCode;
+        return (r.Institute || '').toLowerCase() === lowerName;
+      }).forEach(r => {
         const bName = (r.Branch || '').trim();
         if (bName) branches.add(bName);
       });
 
-      JEE_DATA.filter(r => (r._instituteName || '').toLowerCase() === lower).forEach(r => {
+      JEE_DATA.filter(r => {
+        const rCode = String(r['College Code'] || '').trim().replace(/^0+/, '');
+        if (cleanCode && rCode) return rCode === cleanCode;
+        return (r._branchName || '').toLowerCase() === lowerName;
+      }).forEach(r => {
         const bName = (r._branchName || '').trim();
         if (bName) branches.add(bName);
       });
@@ -1717,8 +1757,10 @@
       // 1. Populate category dropdown dynamically based on available categories
       const categories = new Set();
 
-      const filterA = MHT_DATA.filter(r => (r.Institute || '').toLowerCase() === SEL_COLLEGE_A.name.toLowerCase());
-      const filterB = MHT_DATA.filter(r => (r.Institute || '').toLowerCase() === SEL_COLLEGE_B.name.toLowerCase());
+      const codeA = String(SEL_COLLEGE_A.code).replace(/^0+/, '');
+      const codeB = String(SEL_COLLEGE_B.code).replace(/^0+/, '');
+      const filterA = MHT_DATA.filter(r => String(r['Institute Code'] || '').trim().replace(/^0+/, '') === codeA);
+      const filterB = MHT_DATA.filter(r => String(r['Institute Code'] || '').trim().replace(/^0+/, '') === codeB);
 
       filterA.concat(filterB).forEach(r => {
         if (r['Seat Type']) {
@@ -1766,8 +1808,8 @@
       const tbody = document.getElementById('cutoffTableBody');
       tbody.innerHTML = '';
 
-      const branchesA = getCollegeBranches(SEL_COLLEGE_A.name);
-      const branchesB = getCollegeBranches(SEL_COLLEGE_B.name);
+      const branchesA = getCollegeBranches(SEL_COLLEGE_A.name, SEL_COLLEGE_A.code);
+      const branchesB = getCollegeBranches(SEL_COLLEGE_B.name, SEL_COLLEGE_B.code);
 
       // Collect all unique branches between both colleges
       const allBranches = Array.from(new Set([
@@ -1785,29 +1827,31 @@
 
         if (EXAM_TAB === 'mhtcet') {
           // MHT-CET Cutoffs
-          const cutA = MHT_DATA.find(r =>
-            (r.Institute || '').toLowerCase() === SEL_COLLEGE_A.name.toLowerCase() &&
-            (r.Branch || '').trim() === branchName &&
-            (r['Seat Type'] || '').startsWith(SELECTED_CATEGORY)
-          );
-          const cutB = MHT_DATA.find(r =>
-            (r.Institute || '').toLowerCase() === SEL_COLLEGE_B.name.toLowerCase() &&
-            (r.Branch || '').trim() === branchName &&
-            (r['Seat Type'] || '').startsWith(SELECTED_CATEGORY)
-          );
+          const codeA = String(SEL_COLLEGE_A.code).replace(/^0+/, '');
+          const codeB = String(SEL_COLLEGE_B.code).replace(/^0+/, '');
+          const cutA = MHT_DATA.find(r => {
+            const rCode = String(r['Institute Code'] || '').trim().replace(/^0+/, '');
+            return rCode === codeA && (r.Branch || '').trim() === branchName && (r['Seat Type'] || '').startsWith(SELECTED_CATEGORY);
+          });
+          const cutB = MHT_DATA.find(r => {
+            const rCode = String(r['Institute Code'] || '').trim().replace(/^0+/, '');
+            return rCode === codeB && (r.Branch || '').trim() === branchName && (r['Seat Type'] || '').startsWith(SELECTED_CATEGORY);
+          });
 
           if (cutA) { pctA = cutA._pct; rankA = cutA._rank; }
           if (cutB) { pctB = cutB._pct; rankB = cutB._rank; }
         } else {
           // JEE Mains Cutoffs
-          const cutA = JEE_DATA.find(r =>
-            (r._instituteName || '').toLowerCase() === SEL_COLLEGE_A.name.toLowerCase() &&
-            (r._branchName || '').trim() === branchName
-          );
-          const cutB = JEE_DATA.find(r =>
-            (r._instituteName || '').toLowerCase() === SEL_COLLEGE_B.name.toLowerCase() &&
-            (r._branchName || '').trim() === branchName
-          );
+          const codeA = String(SEL_COLLEGE_A.code).replace(/^0+/, '');
+          const codeB = String(SEL_COLLEGE_B.code).replace(/^0+/, '');
+          const cutA = JEE_DATA.find(r => {
+            const rCode = String(r['College Code'] || '').trim().replace(/^0+/, '');
+            return rCode === codeA && (r._branchName || '').trim() === branchName;
+          });
+          const cutB = JEE_DATA.find(r => {
+            const rCode = String(r['College Code'] || '').trim().replace(/^0+/, '');
+            return rCode === codeB && (r._branchName || '').trim() === branchName;
+          });
 
           if (cutA) { pctA = cutA._pct; }
           if (cutB) { pctB = cutB._pct; }

@@ -183,11 +183,12 @@ function injectGlobalUI() {
             <a href="cutoff_checker.html" class="sidebar-sub-link">CET Cutoff Checker</a>
             <a href="cet_colleges.html" class="sidebar-sub-link">Top Colleges</a>
             <a href="compare_colleges.html" class="sidebar-sub-link">Compare Colleges</a>
+            <a href="college_explorer.html" class="sidebar-sub-link">College Explorer</a>
             <a href="mht_cet_college_predictor.html" class="sidebar-sub-link">MHT CET College Predictor</a>
-            <a href="engineering-psychometric-test.html" class="sidebar-sub-link">Engineering Psychometric Test</a>
+            <!-- <a href="engineering-psychometric-test.html" class="sidebar-sub-link">Engineering Psychometric Test</a> -->
             <a href="percentile_vs_college_predictor.html" class="sidebar-sub-link">JEE ALL INDIA Predictor</a>
             <a href="document_checklist.html" class="sidebar-sub-link">Document Checklist</a>
-            <a href="preference-builder.html" class="sidebar-sub-link" style="color:#b8860b;font-weight:700">⭐ CET Preference Builder</a>
+            <a href="preference-builder.html" class="sidebar-sub-link">CET Preference Builder</a>
           </div>
         </div>
 
@@ -217,7 +218,7 @@ function injectGlobalUI() {
             <a href="josaa_rank.html" class="sidebar-sub-link">JEE Percentile vs Rank</a>
             <a href="josaa.html" class="sidebar-sub-link">JOSAA Predictor</a>
             <a href="josaa_cutoff.html" class="sidebar-sub-link">JOSAA Cutoff Checker</a>
-            <a href="josaa-preference-builder.html" class="sidebar-sub-link" style="color:#b8860b;font-weight:700">⭐ JOSAA Pref Builder</a>
+            <a href="josaa-preference-builder.html" class="sidebar-sub-link">JOSAA Pref Builder</a>
           </div>
         </div>
 
@@ -254,15 +255,7 @@ function injectGlobalUI() {
         <a href="non-cap-admissions.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> NON-CAP Admissions</a>
         <a href="index.html#latest-notices" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Latest Notices</a>
 
-        <div class="sidebar-label">Premium Tools</div>
-        <a href="preference-builder.html" class="sidebar-link" style="background:linear-gradient(135deg,#fef9e7,#fdf2e9);border:1px solid rgba(184,134,11,0.2);margin-bottom:4px">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b8860b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          <span style="color:#b8860b;font-weight:800">MHT-CET Pref Builder</span>
-        </a>
-        <a href="josaa-preference-builder.html" class="sidebar-link" style="background:linear-gradient(135deg,#fef9e7,#fdf2e9);border:1px solid rgba(184,134,11,0.2)">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b8860b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          <span style="color:#b8860b;font-weight:800">JOSAA Pref Builder</span>
-        </a>
+
       </nav>
 
       <div id="sidebarLogout" style="margin-top:auto"></div>
@@ -312,11 +305,22 @@ function populateSidebar() {
 
   if (user) {
     var ini = (user.name || 'U').charAt(0).toUpperCase();
+    var badgeHtml = '';
+    var avatarStyle = '';
+    if (user.role === 'admin') {
+      badgeHtml = `<span style="font-size:9px; font-weight:800; color:var(--brand); background:var(--brand-soft); border:1px solid var(--brand-ring); padding:1px 6px; border-radius:100px; text-transform:uppercase; letter-spacing:0.5px; flex-shrink:0;">Admin</span>`;
+    } else if (user.role === 'premium') {
+      badgeHtml = `<span style="font-size:9px; font-weight:800; color:#b8860b; background:#fef9e7; border:1px solid rgba(184,134,11,0.25); padding:1px 6px; border-radius:100px; text-transform:uppercase; letter-spacing:0.5px; flex-shrink:0;">Premium</span>`;
+      avatarStyle = `style="background:linear-gradient(135deg,#fbbf24,#d97706); box-shadow:0 0 8px rgba(217,119,6,0.3);"`;
+    }
+
     prof.innerHTML = `
       <div class="sidebar-profile">
-        <div class="sidebar-avatar">${ini}</div>
+        <div class="sidebar-avatar" ${avatarStyle}>${ini}</div>
         <div class="sidebar-user-info">
-          <div class="sidebar-user-name">${escAuth(user.name)}</div>
+          <div class="sidebar-user-name" style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
+            ${escAuth(user.name)} ${badgeHtml}
+          </div>
           <div class="sidebar-user-email">${escAuth(user.email || '')}</div>
         </div>
       </div>`;
