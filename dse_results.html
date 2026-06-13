@@ -246,6 +246,66 @@
                 padding: 10px 12px;
             }
         }
+
+        .locked-row {
+            pointer-events: none;
+            user-select: none;
+        }
+        .lock-paywall-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 40px 24px;
+            background: linear-gradient(135deg, #ffffff 0%, #fffcfc 100%);
+            border-top: 1px dashed var(--brand-ring);
+            border-radius: 0 0 20px 20px;
+        }
+        .lock-icon-container {
+            width: 60px;
+            height: 60px;
+            background: var(--brand-soft);
+            color: var(--brand);
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 16px rgba(220, 38, 38, 0.1);
+        }
+        .lock-paywall-card h3 {
+            font-family: 'Lexend', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--ink);
+            margin-bottom: 8px;
+        }
+        .lock-paywall-card p {
+            font-size: 14px;
+            color: var(--muted);
+            max-width: 500px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        .lock-paywall-card .unlock-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 32px;
+            background: var(--brand);
+            color: #fff !important;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 800;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px var(--brand-ring);
+            font-family: 'Inter', sans-serif;
+        }
+        .lock-paywall-card .unlock-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--brand-ring);
+            background: #b91c1c;
+        }
     </style>
 </head>
 
@@ -298,26 +358,70 @@
             let results = [];
             try { if (raw) results = JSON.parse(raw); } catch (e) { results = []; }
 
-            const tbody = document.querySelector("#resultsTable tbody");
-            document.getElementById('resultCount').textContent = `${results.length} course choices matching your profile`;
-
-            tbody.innerHTML = results.map((r, i) => `
-                <tr>
-                    <td style="color:var(--muted)">${i + 1}</td>
-                    <td><span class="college-code">${r.code || '—'}</span></td>
-                    <td style="font-weight:600; max-width:300px;">${r.name || '—'}</td>
-                    <td style="color:var(--muted)">${r.branch || '—'}</td>
-                    <td><span style="font-weight:600; text-transform:uppercase;">${r.seatType || '—'}</span></td>
-                    <td style="font-weight:800; color:var(--brand)">${r.percentile ? r.percentile.toFixed(2) + '%' : '—'}</td>
-                    <td style="font-variant-numeric:tabular-nums">${r.rank ? Number(r.rank).toLocaleString('en-IN') : '—'}</td>
-                    <td>
-                        <a href="https://fe2025.mahacet.org/StaticPages/frmInstituteSummary?InstituteCode=${String(r.code || '').padStart(5, '0')}" target="_blank" style="color:var(--brand); text-decoration:none; font-weight:700; font-size:12px;">Visit DTE Portal &rarr;</a>
-                    </td>
-                </tr>
-            `).join('');
-
-            // Add admin export buttons matching shared_auth roles
             const session = getSession();
+            const isPremium = session && (session.role === 'premium' || session.role === 'admin');
+
+            const displayResults = isPremium ? results : results.slice(0, 13);
+
+            tbody.innerHTML = displayResults.map((r, i) => {
+                const isLocked = !isPremium && i >= 10;
+                if (isLocked) {
+                    return `
+                        <tr class="locked-row">
+                            <td style="color:var(--muted)">${i + 1}</td>
+                            <td><span class="college-code" style="filter: blur(2px); opacity: 0.5;">0000</span></td>
+                            <td><span style="filter: blur(4px); opacity: 0.5; font-weight:600;">••••••••••••••••••••••••••••••••••••</span></td>
+                            <td><span style="filter: blur(4px); opacity: 0.5; color:var(--muted)">••••••••••••••••••••</span></td>
+                            <td><span style="filter: blur(4px); opacity: 0.5;">••••</span></td>
+                            <td style="font-weight:800; color:var(--brand); filter: blur(3px); opacity: 0.5;">••.••%</td>
+                            <td style="font-variant-numeric:tabular-nums; filter: blur(3px); opacity: 0.5;">••••</td>
+                            <td>
+                                <span style="color:var(--muted); font-size:12px; font-weight:600; display:inline-flex; align-items:center; gap:4px;">Locked 🔒</span>
+                            </td>
+                        </tr>
+                    `;
+                }
+                return `
+                    <tr>
+                        <td style="color:var(--muted)">${i + 1}</td>
+                        <td><span class="college-code">${r.code || '—'}</span></td>
+                        <td style="font-weight:600; max-width:300px;">${r.name || '—'}</td>
+                        <td style="color:var(--muted)">${r.branch || '—'}</td>
+                        <td><span style="font-weight:600; text-transform:uppercase;">${r.seatType || '—'}</span></td>
+                        <td style="font-weight:800; color:var(--brand)">${r.percentile ? r.percentile.toFixed(2) + '%' : '—'}</td>
+                        <td style="font-variant-numeric:tabular-nums">${r.rank ? Number(r.rank).toLocaleString('en-IN') : '—'}</td>
+                        <td>
+                            <a href="https://fe2025.mahacet.org/StaticPages/frmInstituteSummary?InstituteCode=${String(r.code || '').padStart(5, '0')}" target="_blank" style="color:var(--brand); text-decoration:none; font-weight:700; font-size:12px;">Visit DTE Portal &rarr;</a>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            // Inject paywall lock card if not premium and matching colleges count exceeds 10
+            if (!isPremium && results.length > 10) {
+                const tableCard = document.querySelector('.table-card');
+                if (tableCard) {
+                    const paywallDiv = document.createElement('div');
+                    paywallDiv.className = 'lock-paywall-card';
+                    paywallDiv.innerHTML = `
+                        <div class="lock-icon-container">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </div>
+                        <h3>Unlock ${results.length - 10}+ More College Predictions</h3>
+                        <p>Purchase any one course to unlock all matching colleges, advanced branch details, and custom choices.</p>
+                        <a href="https://www.conceptsimplified.in/courses" target="_blank" class="unlock-btn">
+                            Unlock All Predictions
+                        </a>
+                    `;
+                    tableCard.appendChild(paywallDiv);
+                }
+            }
+
+
+            // Add admin export buttons matching shared_auth roles (session already declared above)
             if (session && session.role === 'admin' && results.length > 0) {
                 const adminControls = document.getElementById('adminControls');
                 if (adminControls) {

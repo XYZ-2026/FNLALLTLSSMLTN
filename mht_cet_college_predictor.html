@@ -206,13 +206,13 @@
 
         <!-- STEP 2: PROFILE -->
         <div class="panel" id="panel2">
-          <div class="form-group" style="display:none">
+          <div class="form-group">
             <label class="form-label">Seat Type (Gender)</label>
             <div class="input-wrap">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
               <select id="inGender">
-                <option value="G">General (All Candidates)</option>
-                <option value="L">Ladies (Female Candidates)</option>
+                <option value="G">General (G)</option>
+                <option value="L">Ladies (L)</option>
               </select>
             </div>
           </div>
@@ -237,6 +237,17 @@
             <div class="input-wrap">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
               <select id="inCategory">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group" id="minorityGroup" style="display:none">
+            <label class="form-label">Minority Category</label>
+            <div class="input-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              <select id="inMinority">
+                <option value="all">Any Minority / Show All</option>
                 <!-- Dynamically populated -->
               </select>
             </div>
@@ -404,6 +415,38 @@
       return cat;
     }
 
+    function getGenderFreeCategory(cat) {
+      if (!cat) return '';
+      let base = cat;
+      if (cat.endsWith('H') || cat.endsWith('O') || cat.endsWith('S')) {
+        base = cat.slice(0, -1);
+      }
+      if (['EWS', 'TFWS', 'MI', 'ORPHAN'].includes(base)) return base;
+      if (base.startsWith('G') || base.startsWith('L')) {
+        return base.slice(1);
+      }
+      return base;
+    }
+
+    function getCleanCategoryLabel(cat) {
+      const labels = {
+        'OPEN': 'OPEN (Open Category)',
+        'OBC': 'OBC (Other Backward Class)',
+        'SC': 'SC (Scheduled Caste)',
+        'ST': 'ST (Scheduled Tribe)',
+        'VJ': 'VJ / DT (Vimukta Jati)',
+        'NT1': 'NT-B (Nomadic Tribe 1)',
+        'NT2': 'NT-C (Nomadic Tribe 2)',
+        'NT3': 'NT-D (Nomadic Tribe 3)',
+        'EWS': 'EWS (Economically Weaker Section)',
+        'TFWS': 'TFWS (Tuition Fee Waiver Scheme)',
+        'MI': 'MI (Minority Quota Seat)',
+        'ORPHAN': 'ORPHAN (Orphan Quota)',
+        'SEBC': 'SEBC (Socially and Educationally Backward Class)'
+      };
+      return labels[cat] || cat;
+    }
+
     function getBaseCategoryLabel(baseCat) {
       const labels = {
         'GOPEN': 'GOPEN (General Open)',
@@ -526,6 +569,8 @@
       const pct = parseFloat(pctVal);
       const rank = parseInt(rankVal);
       const cat = document.getElementById('inCategory').value;
+      const gender = document.getElementById('inGender').value;
+      const minorityType = document.getElementById('inMinority').value;
       const studentHU = document.getElementById('inHomeUniv').value;
       const region = document.getElementById('inRegion').value;
 
@@ -554,10 +599,20 @@
         });
       }
 
+      const expectedBaseCat = ['EWS', 'TFWS', 'MI', 'ORPHAN'].includes(cat) ? cat : gender + cat;
+
       // Filter by Category and Home University (H / O / S suffix mapping)
       filtered = filtered.filter(r => {
         const baseCat = getBaseCategory(r.category);
-        if (baseCat !== cat) return false;
+        if (baseCat !== expectedBaseCat) return false;
+
+        // If category is MI and a specific minority type is selected, filter by college status
+        if (cat === 'MI' && minorityType && minorityType !== 'all') {
+          const meta = collegeMetadata.find(m => m.code === parseInt(r.code));
+          if (!meta || !meta.status || !meta.status.includes(minorityType)) {
+            return false;
+          }
+        }
 
         // If category is suffix-based and studentHU is selected, filter by suffix
         if (studentHU && (r.category.endsWith('H') || r.category.endsWith('O') || r.category.endsWith('S'))) {
@@ -589,9 +644,11 @@
         percentile: scoreType === 'pct' ? pct : 'N/A',
         rank: scoreType === 'rank' ? rank : 'N/A',
         category: cat,
+        gender: gender,
         homeUniv: studentHU || 'None',
         region: region === 'all' ? 'All Regions' : (region === '1' ? 'Amravati' : (region === '2' ? 'Aurangabad' : (region === '3' ? 'Mumbai' : (region === '4' ? 'Nagpur' : (region === '5' ? 'Nashik' : 'Pune'))))),
-        scoreType: scoreType
+        scoreType: scoreType,
+        minorityType: cat === 'MI' ? minorityType : 'None'
       }));
       window.location.href = "results.html";
     }
@@ -750,24 +807,24 @@
         })).filter(r => r.category !== 'AI' && r.category !== 'All India');
 
         const bSet = new Set();
-        const baseCatSet = new Set();
+        const cleanCatSet = new Set();
         allData.forEach(r => {
           if (r.branch) bSet.add(r.branch.trim());
-          if (r.category) baseCatSet.add(getBaseCategory(r.category));
+          if (r.category) cleanCatSet.add(getGenderFreeCategory(r.category));
         });
         allBranchNames = Array.from(bSet).sort();
         renderBranchPanel();
 
-        // Populate Category Selection dynamically from JSON data (base categories)
-        const sortedBaseCats = Array.from(baseCatSet).sort();
+        // Populate Category Selection dynamically from JSON data (clean categories)
+        const sortedCleanCats = Array.from(cleanCatSet).sort();
         const catSel = document.getElementById('inCategory');
-        catSel.innerHTML = sortedBaseCats.map(c => `<option value="${c}">${getBaseCategoryLabel(c)}</option>`).join('');
+        catSel.innerHTML = sortedCleanCats.map(c => `<option value="${c}">${getCleanCategoryLabel(c)}</option>`).join('');
         
         // Smart default for category
-        if (sortedBaseCats.includes('GOPEN')) {
-          catSel.value = 'GOPEN';
-        } else if (sortedBaseCats.length > 0) {
-          catSel.value = sortedBaseCats[0];
+        if (sortedCleanCats.includes('OPEN')) {
+          catSel.value = 'OPEN';
+        } else if (sortedCleanCats.length > 0) {
+          catSel.value = sortedCleanCats[0];
         }
 
         const rm = await fetch('college-data.json');
@@ -776,6 +833,31 @@
           code: parseInt(m["Institute Code"]),
           status: m["Status"] || ""
         }));
+
+        // Parse minority options from collegeMetadata
+        const minoritySet = new Set();
+        collegeMetadata.forEach(c => {
+          if (c.status) {
+            const parts = c.status.split(',');
+            for (let part of parts) {
+              const trimmed = part.trim();
+              if (trimmed.toLowerCase().includes('minority')) {
+                minoritySet.add(trimmed);
+              }
+            }
+          }
+        });
+        const sortedMinorities = Array.from(minoritySet).sort((a, b) => a.localeCompare(b));
+        const minSel = document.getElementById('inMinority');
+        minSel.innerHTML = '<option value="all">Any Minority / Show All</option>' + 
+          sortedMinorities.map(m => `<option value="${m}">${m}</option>`).join('');
+
+        // Handle change event for Candidate Category
+        catSel.addEventListener('change', function() {
+          const isMI = this.value === 'MI';
+          document.getElementById('minorityGroup').style.display = isMI ? 'block' : 'none';
+        });
+        catSel.dispatchEvent(new Event('change'));
 
         // Handle URL Params for Rank
         const params = new URLSearchParams(window.location.search);

@@ -251,10 +251,7 @@
                 <th>Institute Name</th>
                 <th>Branch</th>
                 <th>Category</th>
-                <th>Round 1</th>
-                <th>Round 2</th>
-                <th>Round 3</th>
-                <th>Round 4</th>
+                <th>Round 1 Cutoff</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -284,10 +281,12 @@
         try {
           const meta = JSON.parse(metaRaw);
           const scoreStr = meta.scoreType === 'pct' ? `Percentile: <b>${meta.percentile}</b>` : `Rank: <b>${meta.rank}</b>`;
+          const genderStr = ['EWS', 'TFWS', 'MI', 'ORPHAN'].includes(meta.category) ? '' : ` (${meta.gender || 'G'})`;
+          const minorityStr = (meta.category === 'MI' && meta.minorityType && meta.minorityType !== 'None' && meta.minorityType !== 'all') ? ` • Minority: <b>${meta.minorityType}</b>` : '';
           document.getElementById('resultCount').innerHTML = `
             ${results.length} colleges matching your profile • 
             ${scoreStr} • 
-            Category: <b>${meta.category}</b> • 
+            Category: <b>${meta.category}${genderStr}</b>${minorityStr} • 
             Home Univ: <b>${meta.homeUniv || 'None'}</b> • 
             Region: <b>${meta.region}</b>
           `;
@@ -320,21 +319,14 @@
         const isLocked = !isPremium && i >= 10;
         
         let r1 = r.rounds && r.rounds.R1 ? formatRound(r.rounds.R1) : '<span style="color:var(--muted)">—</span>';
-        let r2 = r.rounds && r.rounds.R2 ? formatRound(r.rounds.R2) : '<span style="color:var(--muted)">—</span>';
-        let r3 = r.rounds && r.rounds.R3 ? formatRound(r.rounds.R3) : '<span style="color:var(--muted)">—</span>';
-        let r4 = r.rounds && r.rounds.R4 ? formatRound(r.rounds.R4) : '<span style="color:var(--muted)">—</span>';
 
         if (isLocked) {
-          const lockedRound = `
+          r1 = `
             <div class="cutoff-cell locked-cell" style="display:flex; flex-direction:column; gap:2px; filter: blur(3px); opacity: 0.5;">
               <span style="font-weight:700; color:var(--ink)">••.••%</span>
               <span style="font-size:11px; color:var(--muted); font-weight:500;">Rank: ••••</span>
             </div>
           `;
-          r1 = lockedRound;
-          r2 = lockedRound;
-          r3 = lockedRound;
-          r4 = lockedRound;
           
           return `
             <tr class="locked-row">
@@ -344,9 +336,6 @@
               <td><span style="filter: blur(4px); opacity: 0.5; color:var(--muted)">••••••••••••••••••••</span></td>
               <td><span style="filter: blur(4px); opacity: 0.5;">••••</span></td>
               <td>${r1}</td>
-              <td>${r2}</td>
-              <td>${r3}</td>
-              <td>${r4}</td>
               <td>
                 <span style="color:var(--muted); font-size:12px; font-weight:600; display:inline-flex; align-items:center; gap:4px;">Locked 🔒</span>
               </td>
@@ -362,9 +351,6 @@
             <td style="color:var(--muted)">${r.branch || '—'}</td>
             <td>${r.category || '—'}</td>
             <td>${r1}</td>
-            <td>${r2}</td>
-            <td>${r3}</td>
-            <td>${r4}</td>
             <td>
               <a href="https://fe2025.mahacet.org/StaticPages/frmInstituteSummary?InstituteCode=${String(r.code || '').padStart(5, '0')}" target="_blank" style="color:var(--brand); text-decoration:none; font-weight:700; font-size:12px;">Visit Portal →</a>
             </td>
