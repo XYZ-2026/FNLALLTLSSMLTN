@@ -211,8 +211,8 @@ function triggerAutosave() {
 
 function validateStep1(isLocking = false) {
   const p = document.getElementById('inPct').value, r = document.getElementById('inRank').value;
-  if (!p || isNaN(parseFloat(p))) { pbToast('Enter valid percentile'); return false }
-  if (!r || isNaN(parseInt(r))) { pbToast('Enter valid category rank'); return false }
+  if (!p || isNaN(parseFloat(p))) { pbToast('Please enter a valid JEE percentile'); return false }
+  if (!r || isNaN(parseInt(r)) || parseInt(r) <= 0) { pbToast('Please enter your JEE Category / CRL Rank'); return false }
   if (!isLocking) {
     const state = document.getElementById('inState').value;
     if (!state) { pbToast('Please select your home state'); return false }
@@ -671,49 +671,81 @@ function toggleAspirational(institute, branch) {
 }
 
 function renderPrefList() {
-  const list = document.getElementById('prefListUl');
+  const list = document.getElementById('prefListTbody');
   const count = document.getElementById('prefCount');
   if (!count) return;
   count.textContent = prefList.length + ' colleges';
   if (!prefList.length) {
-    list.innerHTML = '<div class="empty-state" style="padding:40px"><h3>No colleges added</h3><p>Go back and select colleges.</p></div>';
+    list.innerHTML = `
+      <tr class="empty-state-row">
+        <td colspan="7" style="text-align: center; padding: 40px; color: var(--muted)">
+          <h3>No colleges added</h3>
+          <p>Go back and select colleges.</p>
+        </td>
+      </tr>`;
     return;
   }
 
   list.innerHTML = prefList.map((c, i) => {
     const isFixed = c.isFixed;
     const instType = c.instType || getInstituteType(c.institute);
+    const badges = [];
+    if (c.isAspirational) {
+      badges.push('<span class="pref-code asp-badge" style="background:#fff7ed; color:#ea580c; border:1px solid rgba(234, 88, 12, 0.15); font-weight:800; font-size:10px; text-transform:uppercase; letter-spacing:0.5px; padding: 2px 8px; border-radius: 6px">Aspirational</span>');
+    }
+    if (isFixed) {
+      badges.push('<span class="pref-code fixed-badge" style="background:var(--brand-soft); color:var(--brand); border:1px solid var(--brand-ring); font-weight:800; font-size:10px; text-transform:uppercase; letter-spacing:0.5px; padding: 2px 8px; border-radius: 6px">Mandatory</span>');
+    }
+
+    const statusTags = [];
+    if (c.state) {
+      statusTags.push(`<span class="col-tag" style="font-size: 9px; padding: 2px 8px">${escH(c.state)}</span>`);
+    }
+    if (c.quota) {
+      statusTags.push(`<span class="col-tag intake" style="font-size: 9px; padding: 2px 8px">${escH(c.quota)}</span>`);
+    }
+
     return `
-      <li class="pref-item ${isFixed ? 'is-fixed' : ''} ${c.isAspirational ? 'asp-item' : ''}" 
+      <tr class="pref-item ${isFixed ? 'is-fixed' : ''} ${c.isAspirational ? 'asp-item' : ''}" 
           draggable="${!isFixed}" 
           data-idx="${i}"
           ondragstart="${isFixed ? '' : 'dragStart(event)'}" 
           ondragover="${isFixed ? '' : 'dragOver(event)'}" 
           ondrop="${isFixed ? '' : 'dropItem(event)'}" 
           ondragend="${isFixed ? '' : 'dragEnd(event)'}"
+          ontouchstart="${isFixed ? '' : 'handleTouchStart(event)'}" 
+          ontouchmove="${isFixed ? '' : 'handleTouchMove(event)'}" 
+          ontouchend="${isFixed ? '' : 'handleTouchEnd(event)'}"
           style="${isFixed ? 'border-left: 4px solid var(--brand); cursor: default' : ''}">
-        <div class="pref-grip">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <td class="pref-grip" style="text-align: center; width: 40px; vertical-align: middle">
+          ${isFixed ? '' : `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="cursor: grab; color: var(--muted)">
             <circle cx="9" cy="5" r="1"/><circle cx="15" cy="5" r="1"/>
             <circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/>
             <circle cx="9" cy="19" r="1"/><circle cx="15" cy="19" r="1"/>
           </svg>
-        </div>
-        <div class="pref-num">${i + 1}</div>
-        <div class="pref-info">
-          <div class="pref-name">${escH(c.institute)}</div>
-          <div class="pref-branch">${escH(c.branch)} <span class="pref-code">${instType}</span> ${c.isAspirational ? '<span class="pref-code asp-badge" style="background:#fff7ed; color:#ea580c; border:1px solid rgba(234, 88, 12, 0.15); margin-left:6px; font-weight:800; font-size:10px; text-transform:uppercase; letter-spacing:0.5px">Aspirational</span>' : ''}</div>
-          <div class="pref-cutoff" style="font-size:11px; color:var(--muted); margin-top:4px">R6 Closing Rank: <strong>${c.closingRank ? c.closingRank.toLocaleString() : 'N/A'}</strong> ${c.state ? '| ' + c.state : ''}</div>
-        </div>
-        <div class="pref-actions">
-          ${isFixed ? 
-            '<span style="font-size:10px; font-weight:800; color:var(--brand); opacity:0.6; text-transform:uppercase; padding-right:8px">Mandatory</span>' : 
-            `<button class="pref-remove" onclick="removePref(${i})" title="Remove">
+          `}
+        </td>
+        <td class="pref-num" style="text-align: center; font-weight: 800; width: 60px; vertical-align: middle">${i + 1}</td>
+        <td class="pref-name" style="font-weight: 600; color: var(--ink); vertical-align: middle" title="${escH(c.institute)}">${escH(c.institute)}</td>
+        <td style="vertical-align: middle" title="${escH(c.branch)}">${escH(c.branch)}</td>
+        <td style="vertical-align: middle">
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center">
+            <span class="col-tag auto" style="font-size: 9px; padding: 2px 8px">${escH(instType)}</span>
+            ${badges.join('')}
+            ${statusTags.join('')}
+          </div>
+        </td>
+        <td class="excel-td-pct" style="vertical-align: middle"><strong>${c.closingRank ? c.closingRank.toLocaleString() : 'N/A'}</strong></td>
+        <td style="text-align: center; width: 70px; vertical-align: middle">
+          ${isFixed ?
+            '<span style="font-size:9px; font-weight:800; color:var(--brand); opacity:0.6; text-transform:uppercase">Mandatory</span>' :
+            `<button class="pref-remove" onclick="removePref(${i})" title="Remove" style="background:none; border:none; color:var(--muted); cursor:pointer; padding:4px; border-radius:6px; transition:0.2s">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>`
           }
-        </div>
-      </li>`;
+        </td>
+      </tr>`;
   }).join('');
 }
 

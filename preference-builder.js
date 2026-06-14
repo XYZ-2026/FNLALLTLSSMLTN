@@ -1494,6 +1494,9 @@ function renderPrefList() {
           ondragover="${isFixed ? '' : 'dragOver(event)'}" 
           ondrop="${isFixed ? '' : 'dropItem(event)'}" 
           ondragend="${isFixed ? '' : 'dragEnd(event)'}"
+          ontouchstart="${isFixed ? '' : 'handleTouchStart(event)'}" 
+          ontouchmove="${isFixed ? '' : 'handleTouchMove(event)'}" 
+          ontouchend="${isFixed ? '' : 'handleTouchEnd(event)'}"
           style="${isFixed ? 'border-left: 4px solid var(--brand); cursor: default' : ''}">
         <td class="pref-grip" style="text-align: center; width: 40px; vertical-align: middle">
           ${isFixed ? '' : `

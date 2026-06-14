@@ -180,10 +180,9 @@ function injectGlobalUI() {
             <a href="cet-landing.html" class="sidebar-sub-link">Hub Overview</a>
             <a href="cet_marks.html" class="sidebar-sub-link">Marks vs Percentile</a>
             <a href="cet_rank.html" class="sidebar-sub-link">Percentile vs Rank</a>
-            <a href="cutoff_checker.html" class="sidebar-sub-link">CET Cutoff Checker</a>
+            <a href="college_explorer.html" class="sidebar-sub-link">College Explorer & Cutoffs</a>
             <a href="cet_colleges.html" class="sidebar-sub-link">Top Colleges</a>
             <a href="compare_colleges.html" class="sidebar-sub-link">Compare Colleges</a>
-            <a href="college_explorer.html" class="sidebar-sub-link">College Explorer</a>
             <a href="mht_cet_college_predictor.html" class="sidebar-sub-link">MHT CET College Predictor</a>
             <!-- <a href="engineering-psychometric-test.html" class="sidebar-sub-link">Engineering Psychometric Test</a> -->
             <a href="percentile_vs_college_predictor.html" class="sidebar-sub-link">JEE ALL INDIA Predictor</a>
@@ -203,6 +202,7 @@ function injectGlobalUI() {
             <a href="dse_cutoff_checker.html" class="sidebar-sub-link">Cutoff Checker</a>
             <a href="dse_college_predictor.html" class="sidebar-sub-link">College Predictor</a>
             <a href="dse_compare_colleges.html" class="sidebar-sub-link">Compare Colleges</a>
+            <a href="dse-preference-builder.html" class="sidebar-sub-link">DSE Preference Builder</a>
           </div>
         </div>
 
@@ -244,6 +244,7 @@ function injectGlobalUI() {
             <a href="comedk-landing.html" class="sidebar-sub-link">Hub Overview</a>
             <a href="comedk_predictor.html" class="sidebar-sub-link">COMEDK Predictor</a>
             <a href="comedk_cutoff.html" class="sidebar-sub-link">COMEDK Cutoff Checker</a>
+            <a href="comedk-preference-builder.html" class="sidebar-sub-link">COMEDK Preference Builder</a>
           </div>
         </div>
 

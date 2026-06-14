@@ -2,14 +2,14 @@
 <html lang="en" data-theme="light">
 <head>
     <!-- SEO Optimization Meta Tags -->
-    <title>College Explorer — College Simplified</title>
-    <meta name="keywords" content="College Explorer, seat matrix, MHT CET seats, placement packages, engineering college details, branch intake, category allocation, autonomous, minority quota">
-    <meta name="description" content="Explore detailed college information, seat matrix distributions, and package placements for engineering colleges in Maharashtra.">
+    <title>College Explorer & Cutoffs — College Simplified</title>
+    <meta name="keywords" content="College Explorer, seat matrix, MHT CET seats, placement packages, engineering college details, branch intake, category allocation, autonomous, minority quota, cutoff checker, mhtcet rounds, jee mains AI cutoff">
+    <meta name="description" content="Explore detailed college statistics, seat matrices, placement packages, and historical MHT-CET / JEE Mains cutoff ranks for engineering colleges in Maharashtra.">
     <link rel="icon" type="image/png" href="favicon.png">
     
     <!-- Open Graph / Facebook Meta Tags -->
-    <meta property="og:title" content="College Explorer — College Simplified">
-    <meta property="og:description" content="Explore detailed college information, seat matrix distributions, and package placements for engineering colleges in Maharashtra.">
+    <meta property="og:title" content="College Explorer & Cutoffs — College Simplified">
+    <meta property="og:description" content="Explore detailed college statistics, seat matrices, placement packages, and historical MHT-CET / JEE Mains cutoff ranks for engineering colleges in Maharashtra.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://counselling.collegesimplified.in/college_explorer.html">
     <meta property="og:site_name" content="College Simplified">
@@ -31,6 +31,7 @@
             --brand-soft: #fef2f2; 
             --brand-ring: rgba(220, 38, 38, 0.15);
             --ink: #111827; 
+            --ink2: #374151;
             --muted: #6b7280; 
             --bg: #f4f6fb; 
             --card: #ffffff; 
@@ -41,6 +42,28 @@
             --green-soft: #f0fdf4;
             --orange: #d97706;
             --orange-soft: #fffbeb;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] {
+            --brand: #ff6b74;
+            --brand-soft: #2a1215;
+            --brand-ring: rgba(255, 107, 116, 0.15);
+            --ink: #f0f1f6;
+            --ink2: #c8cad8;
+            --muted: #8b90a8;
+            --bg: #0b0d14;
+            --card: #131620;
+            --stroke: #222636;
+            --blue: #60a5fa;
+            --blue-soft: #0e1a38;
+            --green: #4ade80;
+            --green-soft: #0a1f10;
+            --orange: #fb923c;
+            --orange-soft: #1f1208;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.4);
         }
 
         *, *::before, *::after {
@@ -797,7 +820,7 @@
             }
 
             /* Hide dashed border on the last seat count cell */
-            #seatsMatrixTable tbody > tr:nth-child(2n+1) td:nth-child(8) {
+            #seatsMatrixTable tbody > tr:nth-child(2n+1) td:nth-child(9) {
                 border-bottom: none;
             }
 
@@ -857,19 +880,274 @@
                 padding: 20px 12px 60px;
             }
         }
+
+        /* ── DETAILED COLLEGE VIEW & ANALYTICS ── */
+        .college-tabs-header {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1.5px solid var(--stroke);
+            padding-bottom: 12px;
+            margin-bottom: 24px;
+            margin-top: 24px;
+        }
+
+        .college-tab-btn {
+            background: transparent;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--muted);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .college-tab-btn:hover {
+            color: var(--ink);
+            background: var(--stroke);
+        }
+
+        .college-tab-btn.active {
+            color: var(--brand);
+            background: var(--brand-soft);
+            box-shadow: 0 2px 8px var(--brand-ring);
+        }
+
+        /* Trend grid */
+        .trend-analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .trend-analysis-grid > * {
+            min-width: 0;
+        }
+
+        @media (min-width: 1024px) {
+            .trend-analysis-grid {
+                grid-template-columns: 320px 1fr;
+            }
+        }
+
+        .filters-card {
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            height: fit-content;
+        }
+
+        .filters-card h3 {
+            font-family: 'Lexend', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            border-bottom: 1.5px solid var(--stroke);
+            padding-bottom: 10px;
+            margin-bottom: 4px;
+            color: var(--ink);
+        }
+
+        .visualization-card {
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-height: 400px;
+        }
+
+        /* Master Explorer Table */
+        .master-list-card {
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 32px;
+        }
+
+        .master-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1.5px solid var(--stroke);
+            padding-bottom: 14px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .master-list-header h3 {
+            font-family: 'Lexend', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .master-filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .master-filters {
+                width: auto;
+            }
+        }
+
+        .filter-select, .filter-search-input {
+            padding: 8px 12px;
+            border: 1.5px solid var(--stroke);
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+            background: var(--card);
+            color: var(--ink);
+            transition: all 0.2s;
+            max-width: 100%;
+        }
+
+        .filter-select:focus, .filter-search-input:focus {
+            border-color: var(--brand);
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .cutoff-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13.5px;
+            text-align: left;
+        }
+
+        .cutoff-table th {
+            background: var(--bg);
+            color: var(--ink2);
+            font-weight: 700;
+            padding: 12px 16px;
+            border-bottom: 1.5px solid var(--stroke);
+        }
+
+        .cutoff-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--stroke);
+            color: var(--ink);
+        }
+
+        .cutoff-table tr:hover {
+            background: var(--bg);
+        }
+
+        /* Trend badges */
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .trend-up { color: #16a34a; }
+        .trend-down { color: #dc2626; }
+        .trend-neutral { color: var(--muted); }
+
+        .load-more-container {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .btn-load-more {
+            background: var(--card);
+            border: 1.5px solid var(--stroke);
+            color: var(--ink2);
+            padding: 12px 28px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-load-more:hover {
+            border-color: var(--brand);
+            color: var(--brand);
+            background: var(--brand-soft);
+        }
+
+        /* Toggle button group for chart metric */
+        .toggle-group {
+            display: flex;
+            background: var(--bg);
+            padding: 3px;
+            border-radius: 8px;
+            border: 1px solid var(--stroke);
+        }
+
+        .toggle-btn {
+            border: none;
+            background: transparent;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .toggle-btn.active {
+            background: var(--card);
+            color: var(--brand);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        @media (max-width: 768px) {
+            .master-filters {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+                width: 100%;
+            }
+            .master-filters .filter-search-input {
+                grid-column: span 2;
+            }
+            .trend-indicator {
+                font-size: 11px;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
   <div class="wrap" id="toolArea">
     <div class="page-hdr">
-      <h1>College Explorer</h1>
-      <p>Analyze intake distributions, regional minority codes, seat allocations, and average package tiers for engineering colleges in Maharashtra.</p>
+      <h1>College Explorer & Cutoffs</h1>
+      <p>Analyze intake distributions, package placements, and historical admission cutoffs for engineering colleges in Maharashtra.</p>
     </div>
 
     <!-- Data loading state spinner -->
     <div id="dataLoader" class="loader-container">
       <div class="loader-spinner"></div>
-      <p>Loading database & seat matrix...</p>
+      <p>Loading database, seat matrix & cutoffs...</p>
     </div>
 
     <div id="explorerContent" style="display: none;">
@@ -906,6 +1184,17 @@
                 <option value="non-minority">Non-Minority Only</option>
                 <option value="any-minority">Any Minority Only</option>
                 <!-- Specific minorities will be populated dynamically -->
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="filterAutonomy">Filter Autonomy</label>
+            <div class="input-wrap">
+              <select id="filterAutonomy" onchange="renderListView()">
+                <option value="all">All Statuses</option>
+                <option value="autonomous">Autonomous Only</option>
+                <option value="non-autonomous">Non-Autonomous Only</option>
               </select>
             </div>
           </div>
@@ -1008,11 +1297,154 @@
                   <th style="text-align: center; width: 120px;">CAP Seats</th>
                   <th style="text-align: center; width: 120px;">MH Seats</th>
                   <th style="text-align: center; width: 120px;">AI Seats</th>
+                  <th style="text-align: center; width: 120px;">Minority Seats</th>
                   <th style="text-align: center; width: 120px;">ILS Seats</th>
                 </tr>
               </thead>
               <tbody></tbody>
             </table>
+          </div>
+        </div>
+
+        <!-- Section Header for Cutoffs -->
+        <div class="section-hdr" style="margin-top: 48px; margin-bottom: 24px; border-bottom: 2px solid var(--stroke); padding-bottom: 12px;">
+          <h2 style="font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 800; color: var(--ink);">Admission Cutoffs Dashboard</h2>
+          <p style="color: var(--muted); font-size: 13.5px; margin-top: 4px;">Explore historical CAP rounds closing ranks, percentile trends, and JEE Mains All India cutoffs for this college.</p>
+        </div>
+
+        <!-- Cutoff Checker Section Wrapper -->
+        <div id="cutoffSectionWrapper" style="display: none; margin-bottom: 40px;">
+          <!-- Tabs for MHT-CET vs JEE Mains -->
+          <div class="college-tabs-header">
+            <button class="college-tab-btn active" id="tabMhtcetBtn" onclick="setCollegeTab('mhtcet')">MHT-CET (CAP Rounds 1-4)</button>
+            <button class="college-tab-btn" id="tabJeeBtn" onclick="setCollegeTab('jee')">JEE Mains (All India Quota)</button>
+          </div>
+
+          <!-- Detailed Analytics Content -->
+          <div id="collegeDetailsContent">
+            
+            <!-- MHT-CET Tab Content -->
+            <div id="mhtcetTabContent">
+              <!-- All Branch Cutoffs Explorer (Master Table) -->
+              <div class="master-list-card">
+                <div class="master-list-header">
+                  <h3>All Branch Cutoffs Explorer</h3>
+                  <div class="master-filters">
+                    <select id="tblRound" onchange="applyTableFilters()" class="filter-select">
+                      <option value="R1">Round 1</option>
+                      <option value="R2">Round 2</option>
+                      <option value="R3">Round 3</option>
+                      <option value="R4">Round 4</option>
+                    </select>
+                    <select id="tblCategory" onchange="applyTableFilters()" class="filter-select">
+                      <!-- Populated dynamically -->
+                    </select>
+                    <input type="text" id="tblSearch" placeholder="Search branch or choice code..." oninput="applyTableFilters()" class="filter-search-input">
+                  </div>
+                </div>
+
+                <div class="table-container">
+                  <table class="cutoff-table">
+                    <thead>
+                      <tr>
+                        <th>Branch Program</th>
+                        <th>Choice Code</th>
+                        <th>Category</th>
+                        <th>Cutoff Rank</th>
+                        <th>Cutoff Percentile</th>
+                      </tr>
+                    </thead>
+                    <tbody id="masterCutoffTableBody"></tbody>
+                  </table>
+                </div>
+
+                <div id="masterLoadMore" class="load-more-container hidden">
+                  <button class="btn-load-more" onclick="loadMoreTableRows()">Load More Rows</button>
+                </div>
+              </div>
+
+              <!-- Filter & Line Chart Grid -->
+              <div class="trend-analysis-grid">
+                <!-- Filters sidebar -->
+                <div class="filters-card">
+                  <h3>Chart Filters</h3>
+                  <div class="form-group">
+                    <label for="cBranch" class="form-label" style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Academic Program</label>
+                    <div class="input-wrap">
+                      <select id="cBranch" onchange="renderChartAndSummary()" style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid var(--stroke); background: var(--card); color: var(--ink); outline: none;"></select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="cCategory" class="form-label" style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Category</label>
+                    <div class="input-wrap">
+                      <select id="cCategory" onchange="renderChartAndSummary()" style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid var(--stroke); background: var(--card); color: var(--ink); outline: none;"></select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Visualization Chart Card -->
+                <div class="visualization-card">
+                  <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1.5px solid var(--stroke); padding-bottom:10px;">
+                    <h3 style="font-family:'Lexend',sans-serif; font-size:16px; font-weight:700; color: var(--ink);">Cutoff Movement Trends</h3>
+                    <div class="toggle-group" id="chartMetricToggle">
+                      <button class="toggle-btn active" id="btnMetricPct" onclick="setChartMetric('percentile')">Percentile</button>
+                      <button class="toggle-btn" id="btnMetricRank" onclick="setChartMetric('rank')">Rank</button>
+                    </div>
+                  </div>
+                  <div class="chart-container" style="height: 320px;">
+                    <canvas id="trendChart"></canvas>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Round Summary Table Card -->
+              <div class="master-list-card" style="margin-bottom: 24px;">
+                <div style="border-bottom: 1.5px solid var(--stroke); padding-bottom: 10px; margin-bottom: 14px;">
+                  <h3 style="font-family:'Lexend',sans-serif; font-size:16px; font-weight:700; color: var(--ink);">Round-by-Round Trend Details</h3>
+                </div>
+                <div class="table-container">
+                  <table class="cutoff-table" id="summaryTable">
+                    <thead>
+                      <tr>
+                        <th>Round</th>
+                        <th>Cutoff Rank</th>
+                        <th>Cutoff Percentile</th>
+                        <th>Round Change (Closing Rank)</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="summaryTableBody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- JEE Mains Tab Content -->
+            <div id="jeeTabContent" class="hidden">
+              <div class="master-list-card">
+                <div class="master-list-header">
+                  <h3>JEE Mains All India Cutoffs</h3>
+                  <span style="font-size: 12px; color: var(--muted); font-weight: 500;">Direct admission cutoff via JEE Mains score</span>
+                </div>
+                <div class="table-container">
+                  <table class="cutoff-table">
+                    <thead>
+                      <tr>
+                        <th>Choice Code</th>
+                        <th>Branch Program</th>
+                        <th>Seat Type</th>
+                        <th>Seat Allocation Type</th>
+                        <th>All India Merit Rank</th>
+                        <th>JEE Percentile</th>
+                        <th>MahaCET Links</th>
+                      </tr>
+                    </thead>
+                    <tbody id="jeeCutoffTableBody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -1026,13 +1458,39 @@
   <script>
     'use strict';
 
-    if (initAuth({ requireLogin: true, toolContainerId: 'toolArea' })) {
-      let collegeList = [];
+    const session = initAuth({ requireLogin: true, toolContainerId: 'toolArea' });
+    if (session) {
+      const isPremium = session.role === 'premium' || session.role === 'admin';
+      if (!isPremium) {
+        document.getElementById('toolArea').innerHTML = `
+          <div style="text-align:center;padding:100px 20px">
+            <div style="color:#fbbf24;margin-bottom:24px;filter:drop-shadow(0 0 8px rgba(251,191,36,0.3))">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </div>
+            <h2 style="font-family:Lexend,sans-serif;font-weight:800;font-size:28px;margin-bottom:12px;color:var(--ink)">Premium Access Required</h2>
+            <p style="color:var(--muted);max-width:480px;margin:0 auto 32px;line-height:1.6">This tool is reserved for premium and admin accounts. Upgrade your account today to access detailed college explorer analytics, seat matrix distributions, and historical cutoffs checker.</p>
+            <a href="https://www.conceptsimplified.in/courses" target="_blank" style="display:inline-flex;align-items:center;gap:10px;padding:16px 32px;background:linear-gradient(135deg,#fbbf24,#d97706);color:#fff;text-decoration:none;border-radius:14px;font-weight:800;box-shadow:0 8px 20px rgba(217,119,6,0.3)">Upgrade to Premium →</a>
+          </div>
+        `;
+      } else {
+        let collegeList = [];
       let seatsData = [];
       let allPlacementTiers = [];
+      let mhtData = [];
+      let jeeData = [];
 
       let gaugeChartInstance = null;
       let pieChartInstance = null;
+
+      let curMht = [];
+      let curJee = [];
+      let mhtTableLimit = 30;
+      let mhtTableFilteredRows = [];
+      let trendChartInstance = null;
+      let trendMetric = 'percentile';
 
       // Close autocomplete list when clicking outside
       document.addEventListener('click', function(e) {
@@ -1107,10 +1565,12 @@
       // Bootstrapping
       async function init() {
         try {
-          const [metaRes, seatsText, placementText] = await Promise.all([
+          const [metaRes, seatsText, placementText, cetJson, jeeJson] = await Promise.all([
             fetch('college-data.json').then(r => r.json()),
             fetch('MHT_CET_Seats.csv').then(r => r.text()),
-            fetch('mhtcet_colleges_with_codes.csv').then(r => r.text())
+            fetch('mhtcet_colleges_with_codes.csv').then(r => r.text()),
+            fetch('cleaned_cet_data.json').then(r => r.json()),
+            fetch('jee_data.json').then(r => r.json())
           ]);
 
           // Parse seats matrix
@@ -1120,6 +1580,24 @@
           // Save placement tables
           const parsedPlacements = Papa.parse(placementText, { header: true, skipEmptyLines: true });
           allPlacementTiers = parsedPlacements.data || [];
+
+          // Normalize MHT CET rounds data
+          cetJson.forEach(row => {
+            row.branch = (row.branch || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+            row.category = (row.category || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+            row.choiceCode = String(row.choiceCode || '');
+            row.instituteCode = String(row.instituteCode || '');
+          });
+          mhtData = cetJson;
+
+          // Normalize JEE Mains data
+          const jeeArr = Array.isArray(jeeJson) ? jeeJson : (jeeJson[Object.keys(jeeJson)[0]] || []);
+          jeeArr.forEach(row => {
+            row._branchName = (row['Branch Name'] || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+            row._pct = parseFloat(row['JEE Percentile']) || 0;
+            row._air = row['All India Merit'] || '';
+          });
+          jeeData = jeeArr;
 
           // Map list of unique colleges
           const uniqueMap = {};
@@ -1156,8 +1634,12 @@
             if (c.status) {
               const parts = c.status.split(',');
               for (let part of parts) {
-                const trimmed = part.trim();
+                let trimmed = part.trim();
                 if (trimmed.toLowerCase().includes('minority')) {
+                  // Combine Gujarathi and Gujarathi(Jain)
+                  if (trimmed.includes('Linguistic Minority - Gujarathi')) {
+                    trimmed = 'Linguistic Minority - Gujarathi';
+                  }
                   minoritySet.add(trimmed);
                 }
               }
@@ -1168,7 +1650,7 @@
           sortedMinorities.forEach(min => {
             const opt = document.createElement('option');
             opt.value = min;
-            opt.textContent = min;
+            opt.textContent = min === 'Linguistic Minority - Gujarathi' ? 'Linguistic Minority - Gujarathi (including Jain)' : min;
             filterMinoritySelect.appendChild(opt);
           });
 
@@ -1179,6 +1661,19 @@
           // Show list of all colleges first
           renderListView();
 
+          // Auto-select college if search query param is present
+          const params = new URLSearchParams(window.location.search);
+          const q = params.get('search');
+          if (q) {
+            const lower = q.toLowerCase().trim();
+            const found = collegeList.find(c => {
+              return c.name.toLowerCase().includes(lower) || String(c.code).includes(lower);
+            });
+            if (found) {
+              selectCollege(found.code);
+            }
+          }
+
         } catch(e) {
           console.error("Bootstrapping failed: ", e);
           document.getElementById('dataLoader').innerHTML = `<p style="color:var(--brand)">Failed to load explorer database. Please refresh.</p>`;
@@ -1188,6 +1683,7 @@
       window.renderListView = function() {
         const region = document.getElementById('filterRegion').value;
         const minority = document.getElementById('filterMinority').value;
+        const autonomy = document.getElementById('filterAutonomy').value;
         const searchInput = document.getElementById('searchColleges').value.toLowerCase().trim();
 
         const filtered = collegeList.filter(c => {
@@ -1206,8 +1702,22 @@
             } else if (minority === 'any-minority') {
               if (!isMin) return false;
             } else {
-              if (!c.status.includes(minority)) return false;
+              // Combine Gujarathi and Gujarathi(Jain)
+              if (minority === 'Linguistic Minority - Gujarathi') {
+                if (!c.status.includes('Linguistic Minority - Gujarathi') && !c.status.includes('Linguistic Minority - Gujarathi(Jain)')) {
+                  return false;
+                }
+              } else {
+                if (!c.status.includes(minority)) return false;
+              }
             }
+          }
+
+          // Autonomy Filter
+          if (autonomy !== 'all') {
+            const isAuto = c.status.toLowerCase().includes('autonomous');
+            if (autonomy === 'autonomous' && !isAuto) return false;
+            if (autonomy === 'non-autonomous' && isAuto) return false;
           }
 
           // Search Query
@@ -1273,6 +1783,11 @@
         document.getElementById('dbCollegeType').innerText = college.status || 'Standard Private Institute';
         document.getElementById('dbCollegeRegion').innerText = `Region: ${college.region}`;
 
+        // Update URL and SEO titles
+        document.title = college.name + " (" + String(college.code).padStart(4, '0') + ") Explorer & Cutoffs — College Simplified";
+        const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?search=' + encodeURIComponent(college.name);
+        window.history.replaceState({ path: newUrl }, '', newUrl);
+
         // Get placement statistics
         const placement = findPlacementData(college.name, college.code);
         document.getElementById('pkgAverage').innerHTML = placement.average && placement.average !== '—' ? `${placement.average} <span>LPA</span>` : '—';
@@ -1281,6 +1796,20 @@
         // Render seats matrix
         const collegeSeats = seatsData.filter(row => parseInt(row.College_Code) === code);
         renderSeatsDashboard(college, collegeSeats);
+
+        // Filter records for cutoff checker section
+        const cleanTargetCode = String(code).trim().replace(/^0+/, '');
+        const collegeMht = mhtData.filter(row => {
+          const mhtCode = row.instituteCode ? String(row.instituteCode).trim().replace(/^0+/, '') : '';
+          return mhtCode === cleanTargetCode;
+        });
+        const collegeJee = jeeData.filter(row => {
+          const jeeCode = row['College Code'] ? String(row['College Code']).trim().replace(/^0+/, '') : '';
+          return jeeCode === cleanTargetCode;
+        });
+
+        // Initialize college analytics for cutoff checker section
+        initCutoffCheckerSection(college, collegeMht, collegeJee);
 
         // Hide Search Panel and List Panel
         document.querySelector('.search-card').style.display = 'none';
@@ -1294,12 +1823,23 @@
       };
 
       window.showListView = function() {
+        // Reset Search Input
+        document.getElementById('searchColleges').value = '';
+
+        // Reset page titles and URL search param
+        document.title = "College Explorer & Cutoffs — College Simplified";
+        const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+        window.history.replaceState({ path: newUrl }, '', newUrl);
+
         // Show Search Panel and List Panel
         document.querySelector('.search-card').style.display = 'block';
         document.getElementById('listViewPanel').style.display = 'block';
 
         // Hide dashboard container
         document.getElementById('collegeDashboard').style.display = 'none';
+
+        // Redraw list view
+        renderListView();
       };
 
       function renderSeatsDashboard(college, seats) {
@@ -1313,16 +1853,25 @@
         });
 
         const branches = Object.values(groups).map(rows => {
-          // Get the primary metadata row (State Level, or any row with core values)
-          const primary = rows.find(r => r.Row_Type === 'State Level') || rows[0];
+          // Get the primary metadata row (State Level, HU, OHU or any row with core values)
+          const primary = rows.find(r => r.Row_Type === 'State Level') || 
+                          rows.find(r => r.Row_Type === 'HU') || 
+                          rows.find(r => r.Row_Type === 'OHU') || 
+                          rows[0];
+          
+          const ms = parseInt(primary.MS_Seats) || 0;
+          const allIndia = parseInt(primary.All_India) || 0;
+          const minority = parseInt(primary.Minority_Seats) || 0;
+          const cap = ms + allIndia;
           
           return {
             choiceCode: primary.Choice_Code,
             courseName: primary.Course_Name,
             si: parseInt(primary.SI) || 0,
-            cap: parseInt(primary.CAP_Seats) || 0,
-            ms: parseInt(primary.MS_Seats) || 0,
-            allIndia: parseInt(primary.All_India) || 0,
+            cap: cap,
+            ms: ms,
+            allIndia: allIndia,
+            minority: minority,
             institute: parseInt(primary.Institute_Seats) || 0,
             rows: rows
           };
@@ -1337,7 +1886,7 @@
         let minorityText = 'None (General Open)';
         const statusLower = college.status.toLowerCase();
         if (statusLower.includes('minority')) {
-          const match = college.status.match(/(Linguistic|Religious)\s+Minority\s*-\s*([a-zA-Z\s]+)/i);
+          const match = college.status.match(/(Linguistic|Religious)\s+Minority\s*-\s*([a-zA-Z\s\(\)]+)/i);
           if (match) {
             minorityText = `${match[2]} (${match[1]})`;
           } else {
@@ -1359,10 +1908,11 @@
             <td data-label="CAP Seats" style="text-align: center;">${b.cap}</td>
             <td data-label="Maharashtra Seats (MS)" style="text-align: center;">${b.ms}</td>
             <td data-label="All India Seats (AI)" style="text-align: center;">${b.allIndia}</td>
+            <td data-label="Minority Seats" style="text-align: center;">${b.minority}</td>
             <td data-label="Institute Seats (ILS)" style="text-align: center;">${b.institute}</td>
           </tr>
           <tr id="breakdown-${i}" class="expanded-row-tr" style="display: none;">
-            <td colspan="8">
+            <td colspan="9">
               <div class="category-matrix-container">
                 <div class="category-matrix-title">
                   <span>Category-Wise Seat Distribution Breakdown</span>
@@ -1384,9 +1934,36 @@
       }
 
       function getCategoryGridHtml(rows) {
-        // Find state level row
+        // Find rows
         const stateRow = rows.find(r => r.Row_Type === 'State Level');
+        const huRow = rows.find(r => r.Row_Type === 'HU');
+        const ohuRow = rows.find(r => r.Row_Type === 'OHU');
         const ewsRow = rows.find(r => r.Row_Type === 'EWS');
+        const primary = stateRow || huRow || ohuRow || rows[0];
+
+        const msSeats = parseInt(primary.MS_Seats) || 0;
+        const minoritySeats = parseInt(primary.Minority_Seats) || 0;
+        const allIndia = parseInt(primary.All_India) || 0;
+        const instSeats = parseInt(primary.Institute_Seats) || 0;
+
+        let quotaHtml = `
+          <div class="quota-summary-row" style="grid-column: 1/-1; display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1.5px dashed var(--stroke);">
+            <div style="background: var(--blue-soft); border: 1px solid rgba(37, 99, 235, 0.15); color: var(--blue); padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 12.5px;">
+              MH State Seats: ${msSeats}
+            </div>
+            ${minoritySeats > 0 ? `
+            <div style="background: var(--brand-soft); border: 1px solid var(--brand-ring); color: var(--brand); padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 12.5px;">
+              Minority Quota Seats: ${minoritySeats}
+            </div>
+            ` : ''}
+            <div style="background: var(--orange-soft); border: 1px solid rgba(217, 119, 6, 0.15); color: var(--orange); padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 12.5px;">
+              All India Seats: ${allIndia}
+            </div>
+            <div style="background: var(--bg); border: 1px solid var(--stroke); color: var(--muted); padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 12.5px;">
+              ILS / Management Seats: ${instSeats}
+            </div>
+          </div>
+        `;
 
         const catData = [
           { label: 'OPEN', g: 'OPEN_G', l: 'OPEN_L' },
@@ -1400,13 +1977,15 @@
           { label: 'SEBC', g: 'SEBC_G', l: 'SEBC_L' }
         ];
 
-        let boxesHtml = '';
+        let sectionsHtml = '';
+
         if (stateRow) {
+          let stateBoxes = '';
           catData.forEach(c => {
             const gCount = parseInt(stateRow[c.g]) || 0;
             const lCount = parseInt(stateRow[c.l]) || 0;
             if (gCount > 0 || lCount > 0) {
-              boxesHtml += `
+              stateBoxes += `
                 <div class="cat-box">
                   <span class="cat-label">${c.label}</span>
                   <div class="cat-vals">
@@ -1417,13 +1996,92 @@
               `;
             }
           });
+          if (stateBoxes) {
+            sectionsHtml += `
+              <div style="grid-column: 1/-1; margin-bottom: 16px;">
+                <h4 style="margin: 0 0 10px 0; font-size: 13px; font-weight: 700; color: var(--blue); display: flex; align-items: center; gap: 6px;">
+                  <span style="display:inline-block; width:6px; height:6px; background:var(--blue); border-radius:50%;"></span>
+                  State Level Seat Distribution
+                </h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px;">
+                  ${stateBoxes}
+                </div>
+              </div>
+            `;
+          }
         }
 
-        // Add EWS if present
+        if (huRow) {
+          let huBoxes = '';
+          catData.forEach(c => {
+            const gCount = parseInt(huRow[c.g]) || 0;
+            const lCount = parseInt(huRow[c.l]) || 0;
+            if (gCount > 0 || lCount > 0) {
+              huBoxes += `
+                <div class="cat-box">
+                  <span class="cat-label">${c.label}</span>
+                  <div class="cat-vals">
+                    <span class="g-seat" title="General Seats">${gCount}</span>
+                    <span class="l-seat" title="Ladies Seats">${lCount}</span>
+                  </div>
+                </div>
+              `;
+            }
+          });
+          if (huBoxes) {
+            sectionsHtml += `
+              <div style="grid-column: 1/-1; margin-bottom: 16px;">
+                <h4 style="margin: 0 0 10px 0; font-size: 13px; font-weight: 700; color: var(--blue); display: flex; align-items: center; gap: 6px;">
+                  <span style="display:inline-block; width:6px; height:6px; background:var(--blue); border-radius:50%;"></span>
+                  Home University (HU) Seat Distribution
+                </h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px;">
+                  ${huBoxes}
+                </div>
+              </div>
+            `;
+          }
+        }
+
+        if (ohuRow) {
+          let ohuBoxes = '';
+          catData.forEach(c => {
+            const gCount = parseInt(ohuRow[c.g]) || 0;
+            const lCount = parseInt(ohuRow[c.l]) || 0;
+            if (gCount > 0 || lCount > 0) {
+              ohuBoxes += `
+                <div class="cat-box">
+                  <span class="cat-label">${c.label}</span>
+                  <div class="cat-vals">
+                    <span class="g-seat" title="General Seats">${gCount}</span>
+                    <span class="l-seat" title="Ladies Seats">${lCount}</span>
+                  </div>
+                </div>
+              `;
+            }
+          });
+          if (ohuBoxes) {
+            sectionsHtml += `
+              <div style="grid-column: 1/-1; margin-bottom: 16px;">
+                <h4 style="margin: 0 0 10px 0; font-size: 13px; font-weight: 700; color: var(--brand); display: flex; align-items: center; gap: 6px;">
+                  <span style="display:inline-block; width:6px; height:6px; background:var(--brand); border-radius:50%;"></span>
+                  Other Than Home University (OHU) Seat Distribution
+                </h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px;">
+                  ${ohuBoxes}
+                </div>
+              </div>
+            `;
+          }
+        }
+
+        // Gather Special Quotas (EWS, PWD, DEF, Orphan)
+        let specialBoxes = '';
+
         if (ewsRow) {
           const ewsCount = parseInt(ewsRow['Total_G+L']) || 0;
           if (ewsCount > 0) {
-            boxesHtml += `
+            specialBoxes += `
               <div class="cat-box" style="border-color: rgba(217, 119, 6, 0.2); background: var(--orange-soft);">
                 <span class="cat-label" style="color: var(--orange)">EWS</span>
                 <div class="cat-vals">
@@ -1434,7 +2092,6 @@
           }
         }
 
-        // Add PWD seats if present
         let pwdTotal = 0;
         const pwdRow = rows.find(r => r.Row_Type === 'PWD');
         if (pwdRow) {
@@ -1445,7 +2102,7 @@
           });
         }
         if (pwdTotal > 0) {
-          boxesHtml += `
+          specialBoxes += `
             <div class="cat-box" style="border-color: rgba(37, 99, 235, 0.2); background: var(--blue-soft);">
               <span class="cat-label" style="color: var(--blue)">PWD Quota</span>
               <div class="cat-vals">
@@ -1455,7 +2112,6 @@
           `;
         }
 
-        // Add DEF seats if present
         let defTotal = 0;
         const defRow = rows.find(r => r.Row_Type === 'DEF');
         if (defRow) {
@@ -1466,7 +2122,7 @@
           });
         }
         if (defTotal > 0) {
-          boxesHtml += `
+          specialBoxes += `
             <div class="cat-box" style="border-color: rgba(22, 163, 74, 0.2); background: var(--green-soft);">
               <span class="cat-label" style="color: var(--green)">DEF Quota</span>
               <div class="cat-vals">
@@ -1476,13 +2132,13 @@
           `;
         }
 
-        // Add Orphan seats if present
         let orphanTotal = 0;
-        if (stateRow && stateRow.Orphan) {
-          orphanTotal = parseInt(stateRow.Orphan) || 0;
+        const stateRowOrphan = stateRow || huRow || ohuRow;
+        if (stateRowOrphan && stateRowOrphan.Orphan) {
+          orphanTotal = parseInt(stateRowOrphan.Orphan) || 0;
         }
         if (orphanTotal > 0) {
-          boxesHtml += `
+          specialBoxes += `
             <div class="cat-box" style="border-color: rgba(124, 58, 237, 0.2); background: #f5f3ff;">
               <span class="cat-label" style="color: #7c3aed">Orphan Quota</span>
               <div class="cat-vals">
@@ -1492,7 +2148,25 @@
           `;
         }
 
-        return boxesHtml || '<div style="color:var(--muted); font-size:13px; grid-column: 1/-1;">No standard State Level seat distribution rows found for this choice code.</div>';
+        if (specialBoxes) {
+          sectionsHtml += `
+            <div style="grid-column: 1/-1; margin-top: 6px;">
+              <h4 style="margin: 0 0 10px 0; font-size: 13px; font-weight: 700; color: var(--green); display: flex; align-items: center; gap: 6px;">
+                <span style="display:inline-block; width:6px; height:6px; background:var(--green); border-radius:50%;"></span>
+                Special Quotas & Reservations
+              </h4>
+              <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px;">
+                ${specialBoxes}
+              </div>
+            </div>
+          `;
+        }
+
+        return quotaHtml + (sectionsHtml || `
+          <div style="grid-column: 1/-1; padding: 12px; background: var(--brand-soft); border: 1.5px dashed var(--brand-ring); border-radius: 10px; color: var(--brand); font-size: 13px; font-weight: 600; text-align: center;">
+            No category-wise reservations (SC/ST/OBC) apply to this minority quota branch.
+          </div>
+        `);
       }
 
       window.toggleRowBreakdown = function(index) {
@@ -1574,8 +2248,432 @@
         });
       }
 
+      function initCutoffCheckerSection(college, collegeMht, collegeJee) {
+        curMht = collegeMht;
+        curJee = collegeJee;
+
+        const mhtTabBtn = document.getElementById('tabMhtcetBtn');
+        const jeeTabBtn = document.getElementById('tabJeeBtn');
+        const cutoffSection = document.getElementById('cutoffSectionWrapper');
+        
+        if (collegeMht.length === 0 && collegeJee.length === 0) {
+          cutoffSection.style.display = 'none';
+          return;
+        }
+        cutoffSection.style.display = 'block';
+
+        if (collegeMht.length > 0) mhtTabBtn.classList.remove('hidden');
+        else mhtTabBtn.classList.add('hidden');
+
+        if (collegeJee.length > 0) jeeTabBtn.classList.remove('hidden');
+        else jeeTabBtn.classList.add('hidden');
+
+        if (collegeMht.length > 0) {
+          setCollegeTab('mhtcet');
+        } else {
+          setCollegeTab('jee');
+        }
+
+        const branches = new Set();
+        const categories = new Set();
+
+        collegeMht.forEach(row => {
+          if (row.branch) branches.add(row.branch.trim());
+          if (row.category) categories.add(row.category.trim());
+        });
+
+        const branchArray = Array.from(branches).sort();
+        const categoryArray = Array.from(categories).sort();
+
+        const cBranchSel = document.getElementById('cBranch');
+        const cCategorySel = document.getElementById('cCategory');
+
+        cBranchSel.innerHTML = branchArray.map(b => `<option value="${escAuth(b)}">${escAuth(b)}</option>`).join('');
+        cCategorySel.innerHTML = categoryArray.map(c => `<option value="${escAuth(c)}">${escAuth(c)}</option>`).join('');
+
+        setSmartDropdownDefault(cBranchSel, ['Computer Science', 'Computer Engineering', 'Information Technology', 'Electronics']);
+        setSmartDropdownDefault(cCategorySel, ['GOPENS', 'GOPEN', 'GSCS', 'GOBCS']);
+
+        const tblCategorySel = document.getElementById('tblCategory');
+        tblCategorySel.innerHTML = categoryArray.map(c => `<option value="${escAuth(c)}">${escAuth(c)}</option>`).join('');
+        setSmartDropdownDefault(tblCategorySel, ['GOPENS', 'GOPEN']);
+
+        renderChartAndSummary();
+        applyTableFilters();
+        renderJeeMainsTable();
+      }
+
+      window.setCollegeTab = function(tab) {
+        document.getElementById('tabMhtcetBtn').classList.toggle('active', tab === 'mhtcet');
+        document.getElementById('tabJeeBtn').classList.toggle('active', tab === 'jee');
+
+        if (tab === 'mhtcet') {
+          document.getElementById('mhtcetTabContent').classList.remove('hidden');
+          document.getElementById('jeeTabContent').classList.add('hidden');
+        } else {
+          document.getElementById('mhtcetTabContent').classList.add('hidden');
+          document.getElementById('jeeTabContent').classList.remove('hidden');
+        }
+      };
+
+      function setSmartDropdownDefault(selectEl, preferences) {
+        const options = Array.from(selectEl.options).map(o => o.value);
+        for (let pref of preferences) {
+          const found = options.find(opt => opt.toLowerCase().includes(pref.toLowerCase()));
+          if (found) {
+            selectEl.value = found;
+            return;
+          }
+        }
+        if (selectEl.options.length > 0) {
+          selectEl.selectedIndex = 0;
+        }
+      }
+
+      window.setChartMetric = function(metric) {
+        trendMetric = metric;
+        document.getElementById('btnMetricPct').classList.toggle('active', metric === 'percentile');
+        document.getElementById('btnMetricRank').classList.toggle('active', metric === 'rank');
+        renderChartAndSummary();
+      };
+
+      window.renderChartAndSummary = function() {
+        const branch = document.getElementById('cBranch').value;
+        const category = document.getElementById('cCategory').value;
+
+        if (!branch || !category) return;
+
+        const labels = ['Round 1', 'Round 2', 'Round 3', 'Round 4'];
+        const percentiles = [];
+        const ranks = [];
+        const tableRows = [];
+
+        const match = curMht.find(row => {
+          return row.branch && row.branch.trim() === branch.trim() && row.category && row.category.trim() === category.trim();
+        });
+
+        for (let r = 1; r <= 4; r++) {
+          const roundKey = 'R' + r;
+          if (match && match.rounds && match.rounds[roundKey]) {
+            const roundData = match.rounds[roundKey];
+            const pVal = parseFloat(roundData.percentile);
+            const rVal = parseInt(roundData.rank);
+            percentiles.push(isNaN(pVal) ? null : pVal);
+            ranks.push(isNaN(rVal) ? null : rVal);
+            tableRows.push({ round: r, rank: rVal, percentile: pVal });
+          } else {
+            percentiles.push(null);
+            ranks.push(null);
+            tableRows.push({ round: r, rank: null, percentile: null });
+          }
+        }
+
+        drawTrendChart(labels, percentiles, ranks);
+        renderSummaryTable(tableRows);
+      };
+
+      function drawTrendChart(labels, percentiles, ranks) {
+        const canvas = document.getElementById('trendChart');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        
+        if (trendChartInstance) {
+          trendChartInstance.destroy();
+        }
+
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const gridColor = isDark ? '#222636' : '#e4e6ef';
+        const textColor = isDark ? '#c8cad8' : '#2d3240';
+        const isMobile = window.innerWidth < 768;
+
+        let chartData = [];
+        let labelString = '';
+        let yAxisReverse = false;
+
+        if (trendMetric === 'percentile') {
+          chartData = percentiles;
+          labelString = 'Cutoff Percentile';
+          yAxisReverse = false;
+        } else {
+          chartData = ranks;
+          labelString = 'Cutoff Rank';
+          yAxisReverse = true;
+        }
+
+        trendChartInstance = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: labelString,
+                data: chartData,
+                borderColor: trendMetric === 'percentile' ? '#dc2626' : '#2563eb',
+                backgroundColor: trendMetric === 'percentile' ? 'rgba(220, 38, 38, 0.05)' : 'rgba(37, 99, 235, 0.05)',
+                borderWidth: isMobile ? 2.5 : 3,
+                pointBackgroundColor: trendMetric === 'percentile' ? '#dc2626' : '#2563eb',
+                pointBorderColor: isDark ? '#131620' : '#ffffff',
+                pointBorderWidth: 1.5,
+                pointRadius: isMobile ? 4 : 5,
+                pointHoverRadius: isMobile ? 6 : 7,
+                tension: 0.2,
+                spanGaps: true
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                padding: 12,
+                bodyFont: { family: 'Inter', size: 13 },
+                titleFont: { family: 'Lexend', size: 13, weight: '700' },
+                backgroundColor: isDark ? '#131620' : '#0f1117',
+                titleColor: '#ffffff',
+                bodyColor: '#ffffff',
+                borderColor: isDark ? '#222636' : '#e4e6ef',
+                borderWidth: 1,
+                callbacks: {
+                  label: function(context) {
+                    const val = context.raw;
+                    if (val === null) return 'N/A';
+                    return labelString + ': ' + (trendMetric === 'percentile' ? val.toFixed(4) + '%' : val.toLocaleString('en-IN'));
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { color: gridColor },
+                ticks: {
+                  font: { family: 'Inter', size: isMobile ? 10 : 12, weight: '600' },
+                  color: textColor
+                }
+              },
+              y: {
+                reverse: yAxisReverse,
+                grid: { color: gridColor },
+                ticks: {
+                  font: { family: 'Inter', size: isMobile ? 10 : 12 },
+                  color: textColor,
+                  callback: function(value) {
+                    if (trendMetric === 'percentile') {
+                      return value.toFixed(2) + '%';
+                    } else {
+                      return value.toLocaleString('en-IN');
+                    }
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+
+      function renderSummaryTable(rows) {
+        const tbody = document.getElementById('summaryTableBody');
+        tbody.innerHTML = '';
+
+        let lastRank = null;
+        let lastPct = null;
+
+        rows.forEach(row => {
+          let rankDiffText = '-';
+          let pctDiffText = '-';
+          let trendClass = 'trend-neutral';
+
+          let rankText = 'N/A';
+          let pctText = 'N/A';
+
+          if (row.rank !== null) {
+            rankText = row.rank.toLocaleString('en-IN');
+            if (lastRank !== null) {
+              const rDiff = row.rank - lastRank;
+              if (rDiff > 0) {
+                rankDiffText = '+' + rDiff.toLocaleString('en-IN') + ' (Closed later)';
+                trendClass = 'trend-up';
+              } else if (rDiff < 0) {
+                rankDiffText = rDiff.toLocaleString('en-IN') + ' (Closed sooner)';
+                trendClass = 'trend-down';
+              } else {
+                rankDiffText = 'No Change';
+                trendClass = 'trend-neutral';
+              }
+            }
+            lastRank = row.rank;
+          }
+
+          if (row.percentile !== null) {
+            pctText = row.percentile.toFixed(4) + '%';
+            if (lastPct !== null) {
+              const pDiff = row.percentile - lastPct;
+              if (pDiff > 0) {
+                pctDiffText = '+' + pDiff.toFixed(4) + '%';
+              } else if (pDiff < 0) {
+                pctDiffText = pDiff.toFixed(4) + '%';
+              } else {
+                pctDiffText = 'No Change';
+              }
+            }
+            lastPct = row.percentile;
+          }
+
+          const isFilled = row.rank === null;
+          const statusHtml = isFilled
+            ? '<span style="color:var(--muted); font-weight:700">Filled / Inactive</span>'
+            : '<span style="color:var(--green); font-weight:700">Open</span>';
+
+          let changeText = '-';
+          if (row.rank !== null && rankDiffText !== '-') {
+            changeText = '<span style="font-weight:600">' + rankDiffText + '</span>';
+            if (pctDiffText !== '-') {
+              changeText += '<br><span style="font-size:11px; color:var(--muted)">Percentile change: ' + pctDiffText + '</span>';
+            }
+          }
+
+          tbody.innerHTML += `
+            <tr>
+              <td style="font-weight:700">Round ${row.round}</td>
+              <td style="font-weight:600">${rankText}</td>
+              <td style="font-weight:800; color:var(--brand)">${pctText}</td>
+              <td><span class="${trendClass} trend-indicator">${changeText}</span></td>
+              <td>${statusHtml}</td>
+            </tr>
+          `;
+        });
+      }
+
+      window.applyTableFilters = function() {
+        mhtTableLimit = 30;
+        const roundKey = document.getElementById('tblRound').value;
+        const category = document.getElementById('tblCategory').value;
+        const search = document.getElementById('tblSearch').value.toLowerCase().trim();
+
+        mhtTableFilteredRows = curMht.filter(row => {
+          const matchesCategory = row.category === category;
+          const matchesSearch = !search || (row.branch && row.branch.toLowerCase().includes(search)) || (row.choiceCode && row.choiceCode.includes(search));
+          const hasRoundData = row.rounds && row.rounds[roundKey] && row.rounds[roundKey].rank !== null;
+          
+          return matchesCategory && matchesSearch && hasRoundData;
+        });
+
+        renderMasterTable(roundKey);
+      };
+
+      function renderMasterTable(roundKey) {
+        const tbody = document.getElementById('masterCutoffTableBody');
+        const paginated = mhtTableFilteredRows.slice(0, mhtTableLimit);
+
+        if (!paginated.length) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="5" class="empty-state" style="text-align:center; padding:40px; color:var(--muted)">
+                <div style="font-size:32px; margin-bottom:10px;">🔍</div>
+                <h4>No Branch Cutoffs Matching Filters</h4>
+                <p>Try modifying your category, CAP round, or search filter.</p>
+              </td>
+            </tr>
+          `;
+          document.getElementById('masterLoadMore').classList.add('hidden');
+          return;
+        }
+
+        tbody.innerHTML = paginated.map(row => {
+          const roundData = row.rounds[roundKey] || {};
+          const rankText = roundData.rank ? roundData.rank.toLocaleString('en-IN') : 'N/A';
+          const pctText = roundData.percentile ? parseFloat(roundData.percentile).toFixed(4) + '%' : 'N/A';
+          
+          return `
+            <tr>
+              <td style="font-weight:700">${escAuth(row.branch)}</td>
+              <td style="font-weight:600; color:var(--muted)">${escAuth(row.choiceCode || 'N/A')}</td>
+              <td><span class="chip" style="font-size:11px">${escAuth(row.category)}</span></td>
+              <td style="font-weight:600">${rankText}</td>
+              <td style="font-weight:800; color:var(--brand)">${pctText}</td>
+            </tr>
+          `;
+        }).join('');
+
+        const hasMore = mhtTableFilteredRows.length > mhtTableLimit;
+        document.getElementById('masterLoadMore').classList.toggle('hidden', !hasMore);
+      }
+
+      window.loadMoreTableRows = function() {
+        mhtTableLimit += 30;
+        const roundKey = document.getElementById('tblRound').value;
+        renderMasterTable(roundKey);
+      };
+
+      function renderJeeMainsTable() {
+        const tbody = document.getElementById('jeeCutoffTableBody');
+        if (!tbody) return;
+
+        if (!curJee.length) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="7" class="empty-state" style="text-align:center; padding:40px; color:var(--muted)">
+                <h4>No JEE Mains All India Seats Data</h4>
+                <p>This college might not have All India Quota seats through JEE Mains.</p>
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tbody.innerHTML = curJee.map(row => {
+          const airText = row._air || 'N/A';
+          const pctText = row._pct ? row._pct.toFixed(4) + '%' : 'N/A';
+          
+          let linkHtml = '-';
+          if (row['College Url']) {
+            linkHtml = `
+              <a class="card-link" href="${escAuth(row['College Url'])}" target="_blank" rel="noopener" style="color:var(--blue); text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-top:2px">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                  <polyline points="15 3 21 3 21 9"/>
+                  <line x1="10" y1="14" x2="21" y2="3"/>
+                </svg> Portal
+              </a>
+            `;
+          }
+
+          return `
+            <tr>
+              <td style="font-weight:600; color:var(--muted)">${escAuth(row['Choice Code'] || 'N/A')}</td>
+              <td style="font-weight:700">${escAuth(row._branchName)}</td>
+              <td><span class="chip chip-blue" style="font-size:11px">${escAuth(row['Seat Type'] || 'AI')}</span></td>
+              <td style="font-size:12px">${escAuth(row['Type'] || 'AI to AI')}</td>
+              <td style="font-weight:600">${airText}</td>
+              <td style="font-weight:800; color:var(--blue)">${pctText}</td>
+              <td>${linkHtml}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Redraw trend charts if theme changes
+      const themeObserver = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+          if (mutation.attributeName === 'data-theme' && trendChartInstance) {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const gridColor = isDark ? '#222636' : '#e4e6ef';
+            const textColor = isDark ? '#c8cad8' : '#2d3240';
+            trendChartInstance.options.scales.x.grid.color = gridColor;
+            trendChartInstance.options.scales.x.ticks.color = textColor;
+            trendChartInstance.options.scales.y.grid.color = gridColor;
+            trendChartInstance.options.scales.y.ticks.color = textColor;
+            trendChartInstance.data.datasets[0].pointBorderColor = isDark ? '#131620' : '#ffffff';
+            trendChartInstance.update();
+          }
+        });
+      });
+      themeObserver.observe(document.documentElement, { attributes: true });
+
       // Run
       init();
+      }
     }
   </script>
 </body>

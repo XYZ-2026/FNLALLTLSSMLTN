@@ -353,6 +353,104 @@ async function fireApi(action, payload) {
         return { ok: true, data: { formId: formRef.id, editCount } };
       }
 
+      case 'saveDsePrefData': {
+        const { userId, percentile, rank, category, gender, region, minority, formId, prefList } = payload;
+        if (!userId) return { ok: false, error: 'Missing user ID.' };
+
+        // Check global edit limit - Disabled
+        const globalRef = db.collection('dsePreferenceData').doc(userId);
+        const globalSnap = await globalRef.get();
+        let editCount = 0;
+        if (globalSnap.exists) {
+          await globalRef.update({ editCount: 0, lastEditedAt: firebase.firestore.FieldValue.serverTimestamp() });
+        } else {
+          await globalRef.set({ editCount: 0, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+        }
+
+        // Save form data
+        const formsColl = globalRef.collection('forms');
+        let formRef;
+        if (formId) {
+          formRef = formsColl.doc(formId);
+          await formRef.update({
+            percentile: parseFloat(percentile) || 0,
+            rank: parseInt(rank) || 0,
+            category: category || 'OPEN',
+            gender: gender || 'G',
+            region: region || 'all',
+            minority: minority || '',
+            prefList: prefList || [],
+            selectedBranches: payload.selectedBranches || [],
+            selectedCollegeKeys: payload.selectedCollegeKeys || [],
+            currentStep: payload.currentStep || 1,
+            studentInfo: payload.studentInfo || null,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        } else {
+          formRef = await formsColl.add({
+            percentile: parseFloat(percentile) || 0,
+            rank: parseInt(rank) || 0,
+            category: category || 'OPEN',
+            gender: gender || 'G',
+            region: region || 'all',
+            minority: minority || '',
+            prefList: prefList || [],
+            selectedBranches: payload.selectedBranches || [],
+            selectedCollegeKeys: payload.selectedCollegeKeys || [],
+            currentStep: payload.currentStep || 1,
+            studentInfo: payload.studentInfo || null,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
+        return { ok: true, data: { formId: formRef.id, editCount } };
+      }
+
+      case 'saveComedkPrefData': {
+        const { userId, rank, category, formId, prefList } = payload;
+        if (!userId) return { ok: false, error: 'Missing user ID.' };
+
+        // Check global edit limit - Disabled
+        const globalRef = db.collection('comedkPreferenceData').doc(userId);
+        const globalSnap = await globalRef.get();
+        let editCount = 0;
+        if (globalSnap.exists) {
+          await globalRef.update({ editCount: 0, lastEditedAt: firebase.firestore.FieldValue.serverTimestamp() });
+        } else {
+          await globalRef.set({ editCount: 0, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+        }
+
+        // Save form data
+        const formsColl = globalRef.collection('forms');
+        let formRef;
+        if (formId) {
+          formRef = formsColl.doc(formId);
+          await formRef.update({
+            rank: parseInt(rank) || 0,
+            category: category || 'GM',
+            prefList: prefList || [],
+            selectedBranches: payload.selectedBranches || [],
+            selectedCollegeKeys: payload.selectedCollegeKeys || [],
+            currentStep: payload.currentStep || 1,
+            studentInfo: payload.studentInfo || null,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        } else {
+          formRef = await formsColl.add({
+            rank: parseInt(rank) || 0,
+            category: category || 'GM',
+            prefList: prefList || [],
+            selectedBranches: payload.selectedBranches || [],
+            selectedCollegeKeys: payload.selectedCollegeKeys || [],
+            currentStep: payload.currentStep || 1,
+            studentInfo: payload.studentInfo || null,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
+        return { ok: true, data: { formId: formRef.id, editCount } };
+      }
+
       case 'deleteForm': {
         const { userId, formId } = payload;
         if (!userId || !formId) return { ok: false, error: 'Missing details.' };
@@ -364,6 +462,20 @@ async function fireApi(action, payload) {
         const { userId, formId } = payload;
         if (!userId || !formId) return { ok: false, error: 'Missing details.' };
         await db.collection('josaaPreferenceData').doc(userId).collection('forms').doc(formId).delete();
+        return { ok: true };
+      }
+
+      case 'deleteDsePrefForm': {
+        const { userId, formId } = payload;
+        if (!userId || !formId) return { ok: false, error: 'Missing details.' };
+        await db.collection('dsePreferenceData').doc(userId).collection('forms').doc(formId).delete();
+        return { ok: true };
+      }
+
+      case 'deleteComedkPrefForm': {
+        const { userId, formId } = payload;
+        if (!userId || !formId) return { ok: false, error: 'Missing details.' };
+        await db.collection('comedkPreferenceData').doc(userId).collection('forms').doc(formId).delete();
         return { ok: true };
       }
 
@@ -399,6 +511,38 @@ async function fireApi(action, payload) {
         return { ok: true, data: { editCount, forms } };
       }
 
+      case 'getDsePrefData': {
+        const { userId: pUserId } = payload;
+        if (!pUserId) return { ok: false, error: 'Missing user ID.' };
+        
+        // Get global edit count
+        const gSnap = await db.collection('dsePreferenceData').doc(pUserId).get();
+        const editCount = gSnap.exists ? (gSnap.data().editCount || 0) : 0;
+
+        // Get all forms
+        const formsSnap = await db.collection('dsePreferenceData').doc(pUserId).collection('forms')
+          .orderBy('updatedAt', 'desc').get();
+        const forms = formsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        return { ok: true, data: { editCount, forms } };
+      }
+
+      case 'getComedkPrefData': {
+        const { userId: pUserId } = payload;
+        if (!pUserId) return { ok: false, error: 'Missing user ID.' };
+        
+        // Get global edit count
+        const gSnap = await db.collection('comedkPreferenceData').doc(pUserId).get();
+        const editCount = gSnap.exists ? (gSnap.data().editCount || 0) : 0;
+
+        // Get all forms
+        const formsSnap = await db.collection('comedkPreferenceData').doc(pUserId).collection('forms')
+          .orderBy('updatedAt', 'desc').get();
+        const forms = formsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        return { ok: true, data: { editCount, forms } };
+      }
+
       case 'savePsychometricReport': {
         const { userId, reportData } = payload;
         if (!userId) return { ok: false, error: 'Missing user ID.' };
@@ -420,7 +564,9 @@ async function fireApi(action, payload) {
       case 'resetPrefEdits': {
         const { userId: resetUserId, tool } = payload;
         if (!resetUserId) return { ok: false, error: 'Missing user ID.' };
-        const collectionName = (tool === 'josaa-pref-builder') ? 'josaaPreferenceData' : 'preferenceData';
+        const collectionName = (tool === 'josaa-pref-builder') ? 'josaaPreferenceData' : 
+                               (tool === 'dse-pref-builder') ? 'dsePreferenceData' : 
+                               (tool === 'comedk-pref-builder') ? 'comedkPreferenceData' : 'preferenceData';
         const resetRef = db.collection(collectionName).doc(resetUserId);
         const resetSnap = await resetRef.get();
         if (resetSnap.exists) {

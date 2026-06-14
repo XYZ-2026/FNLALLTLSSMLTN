@@ -849,7 +849,7 @@
         <!-- STEP 1: PROFILE -->
         <div class="panel active" id="panel1">
           <div class="form-group">
-            <label class="form-label"><strong>Your Category Rank (JEE Mains)</strong></label>
+            <label class="form-label"><strong>Your Category / CRL Rank (JEE Mains)</strong></label>
             <div class="input-wrap">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
@@ -857,7 +857,7 @@
               <input type="number" id="inRank" placeholder="e.g. 15400" required>
             </div>
             <div class="rank-hint">Enter your category-specific rank (e.g., OBC rank for OBC-NCL, SC rank for SC,
-              General rank for OPEN)</div>
+              General/CRL rank for OPEN)</div>
           </div>
 
           <div class="form-grid">
@@ -1178,7 +1178,7 @@
     function goStep(n) {
       if (n === 2) {
         const rank = document.getElementById('inRank').value;
-        if (!rank || isNaN(parseInt(rank))) return alert('Please enter your category rank first');
+        if (!rank || isNaN(parseInt(rank)) || parseInt(rank) <= 0) return alert('Please enter your JEE Category / CRL Rank first');
         // Validate home state selection if Home State Quota is chosen
         const quota = document.getElementById('inQuota').value;
         if (quota === 'HOME_STATE') {

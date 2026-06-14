@@ -361,9 +361,14 @@
             const session = getSession();
             const isPremium = session && (session.role === 'premium' || session.role === 'admin');
 
+            const countEl = document.getElementById('resultCount');
+            if (countEl) countEl.textContent = results.length + ' colleges matching your profile';
+
+            const tbody = document.querySelector('#resultsTable tbody');
             const displayResults = isPremium ? results : results.slice(0, 13);
 
-            tbody.innerHTML = displayResults.map((r, i) => {
+            if (tbody) {
+                tbody.innerHTML = displayResults.map((r, i) => {
                 const isLocked = !isPremium && i >= 10;
                 if (isLocked) {
                     return `
@@ -395,7 +400,8 @@
                         </td>
                     </tr>
                 `;
-            }).join('');
+                }).join('');
+            }
 
             // Inject paywall lock card if not premium and matching colleges count exceeds 10
             if (!isPremium && results.length > 10) {

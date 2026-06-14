@@ -251,7 +251,10 @@
                 <th>Institute Name</th>
                 <th>Branch</th>
                 <th>Category</th>
-                <th>Round 1 Cutoff</th>
+                <th>Round 1</th>
+                <th>Round 2</th>
+                <th>Round 3</th>
+                <th>Round 4</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -267,12 +270,45 @@
   <script src="firebase_config.js"></script>
   <script src="shared_auth.js"></script>
   <script>
-    if (initAuth({ requireLogin: true, toolContainerId: 'toolArea' })) {
+    async function renderResults() {
+      if (!initAuth({ requireLogin: true, toolContainerId: 'toolArea' })) return;
+
+      const tbody = document.querySelector("#resultsTable tbody");
+      tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:30px; color:var(--muted)">
+        <div style="display:flex; justify-content:center; align-items:center; gap:10px;">
+          <div class="spinner" style="width:20px; height:20px; border:3px solid var(--stroke); border-top-color:var(--brand); border-radius:50%; animation: spin 1s linear infinite;"></div>
+          <span>Loading multi-round cutoff details...</span>
+        </div>
+      </td></tr>`;
+
+      // Inject spinner animation if not present
+      if (!document.getElementById('spinStyle')) {
+        const style = document.createElement('style');
+        style.id = 'spinStyle';
+        style.textContent = `@keyframes spin { to { transform: rotate(360deg); } }`;
+        document.head.appendChild(style);
+      }
+
       const raw = localStorage.getItem("results");
       let results = [];
       try { if (raw) results = JSON.parse(raw); } catch(e) { results = []; }
 
-      const tbody = document.querySelector("#resultsTable tbody");
+      // Fetch cleaned_cet_data.json and index it
+      const cetMap = new Map();
+      try {
+        const res = await fetch('cleaned_cet_data.json');
+        if (!res.ok) throw new Error('Network response not ok');
+        const cetData = await res.json();
+        (cetData || []).forEach(item => {
+          const code = String(item.instituteCode || '').trim();
+          const branch = String(item.branch || '').trim().toLowerCase().replace(/\s+/g, ' ');
+          const category = String(item.category || '').trim();
+          const key = `${code}|${branch}|${category}`;
+          cetMap.set(key, item.rounds || {});
+        });
+      } catch (e) {
+        console.error("Error loading cleaned CET data:", e);
+      }
 
       // Render search metadata banner
       const metaRaw = localStorage.getItem("searchMeta");
@@ -282,7 +318,11 @@
           const meta = JSON.parse(metaRaw);
           const scoreStr = meta.scoreType === 'pct' ? `Percentile: <b>${meta.percentile}</b>` : `Rank: <b>${meta.rank}</b>`;
           const genderStr = ['EWS', 'TFWS', 'MI', 'ORPHAN'].includes(meta.category) ? '' : ` (${meta.gender || 'G'})`;
-          const minorityStr = (meta.category === 'MI' && meta.minorityType && meta.minorityType !== 'None' && meta.minorityType !== 'all') ? ` • Minority: <b>${meta.minorityType}</b>` : '';
+          let minTypeStr = meta.minorityType || '';
+          if (minTypeStr === 'Linguistic Minority - Gujarathi') {
+            minTypeStr = 'Linguistic Minority - Gujarathi (including Jain)';
+          }
+          const minorityStr = (meta.category === 'MI' && minTypeStr && minTypeStr !== 'None' && minTypeStr !== 'all') ? ` • Minority: <b>${minTypeStr}</b>` : '';
           document.getElementById('resultCount').innerHTML = `
             ${results.length} colleges matching your profile • 
             ${scoreStr} • 
@@ -318,10 +358,17 @@
       tbody.innerHTML = displayResults.map((r, i) => {
         const isLocked = !isPremium && i >= 10;
         
-        let r1 = r.rounds && r.rounds.R1 ? formatRound(r.rounds.R1) : '<span style="color:var(--muted)">—</span>';
+        // Lookup rounds in cetMap
+        const lookupKey = `${String(r.code).trim()}|${String(r.branch).trim().toLowerCase().replace(/\s+/g, ' ')}|${String(r.category).trim()}`;
+        const rounds = cetMap.get(lookupKey) || {};
+
+        let r1 = rounds.R1 ? formatRound(rounds.R1) : (r.percentile ? formatRound({ rank: r.rank, percentile: r.percentile }) : '<span style="color:var(--muted)">—</span>');
+        let r2 = rounds.R2 ? formatRound(rounds.R2) : '<span style="color:var(--muted)">—</span>';
+        let r3 = rounds.R3 ? formatRound(rounds.R3) : '<span style="color:var(--muted)">—</span>';
+        let r4 = rounds.R4 ? formatRound(rounds.R4) : '<span style="color:var(--muted)">—</span>';
 
         if (isLocked) {
-          r1 = `
+          const lockedCell = `
             <div class="cutoff-cell locked-cell" style="display:flex; flex-direction:column; gap:2px; filter: blur(3px); opacity: 0.5;">
               <span style="font-weight:700; color:var(--ink)">••.••%</span>
               <span style="font-size:11px; color:var(--muted); font-weight:500;">Rank: ••••</span>
@@ -335,7 +382,10 @@
               <td style="max-width:300px;"><span style="filter: blur(4px); opacity: 0.5; font-weight:600;">••••••••••••••••••••••••••••••••••••</span></td>
               <td><span style="filter: blur(4px); opacity: 0.5; color:var(--muted)">••••••••••••••••••••</span></td>
               <td><span style="filter: blur(4px); opacity: 0.5;">••••</span></td>
-              <td>${r1}</td>
+              <td>${lockedCell}</td>
+              <td>${lockedCell}</td>
+              <td>${lockedCell}</td>
+              <td>${lockedCell}</td>
               <td>
                 <span style="color:var(--muted); font-size:12px; font-weight:600; display:inline-flex; align-items:center; gap:4px;">Locked 🔒</span>
               </td>
@@ -351,6 +401,9 @@
             <td style="color:var(--muted)">${r.branch || '—'}</td>
             <td>${r.category || '—'}</td>
             <td>${r1}</td>
+            <td>${r2}</td>
+            <td>${r3}</td>
+            <td>${r4}</td>
             <td>
               <a href="https://fe2025.mahacet.org/StaticPages/frmInstituteSummary?InstituteCode=${String(r.code || '').padStart(5, '0')}" target="_blank" style="color:var(--brand); text-decoration:none; font-weight:700; font-size:12px;">Visit Portal →</a>
             </td>
@@ -362,8 +415,12 @@
       if (!isPremium && results.length > 10) {
         const tableCard = document.querySelector('.table-card');
         if (tableCard) {
-          const paywallDiv = document.createElement('div');
-          paywallDiv.className = 'lock-paywall-card';
+          let paywallDiv = tableCard.querySelector('.lock-paywall-card');
+          if (!paywallDiv) {
+            paywallDiv = document.createElement('div');
+            paywallDiv.className = 'lock-paywall-card';
+            tableCard.appendChild(paywallDiv);
+          }
           paywallDiv.innerHTML = `
             <div class="lock-icon-container">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -377,7 +434,6 @@
               Unlock All Predictions
             </a>
           `;
-          tableCard.appendChild(paywallDiv);
         }
       }
 
@@ -385,8 +441,12 @@
       if (session && session.role === 'admin' && results.length > 0) {
         const pageHdr = document.querySelector('.page-hdr');
         if (pageHdr) {
-          const btnGroup = document.createElement('div');
-          btnGroup.className = 'export-btn-group';
+          let btnGroup = pageHdr.querySelector('.export-btn-group');
+          if (!btnGroup) {
+            btnGroup = document.createElement('div');
+            btnGroup.className = 'export-btn-group';
+            pageHdr.appendChild(btnGroup);
+          }
           btnGroup.innerHTML = `
             <button class="export-csv-btn" onclick="exportTableToCSV('resultsTable', '${filePrefix}.csv')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -397,10 +457,11 @@
               Export PDF
             </button>
           `;
-          pageHdr.appendChild(btnGroup);
         }
       }
     }
+
+    renderResults();
   </script>
 </body>
 </html>

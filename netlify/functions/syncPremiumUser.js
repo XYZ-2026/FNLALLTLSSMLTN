@@ -8,6 +8,38 @@ function hashPassword(password) {
     .digest('hex');
 }
 
+/**
+ * Recursively searches for a key in a flat or nested object (case-insensitive).
+ * Searches common nested parent structures (e.g. data, user, student, payload).
+ */
+function extractField(obj, keys) {
+  if (!obj || typeof obj !== 'object') return undefined;
+  
+  for (const key of keys) {
+    // 1. Direct match (case-sensitive)
+    if (obj[key] !== undefined && obj[key] !== null) {
+      return obj[key];
+    }
+    // 2. Direct match (case-insensitive)
+    const foundKey = Object.keys(obj).find(k => k.toLowerCase() === key.toLowerCase());
+    if (foundKey && obj[foundKey] !== undefined && obj[foundKey] !== null) {
+      return obj[foundKey];
+    }
+  }
+
+  // 3. Recursive check in common parents
+  const nestedParents = ['data', 'user', 'student', 'payload', 'body', 'details', 'object'];
+  for (const parent of nestedParents) {
+    if (obj[parent] && typeof obj[parent] === 'object') {
+      const val = extractField(obj[parent], keys);
+      if (val !== undefined && val !== null) {
+        return val;
+      }
+    }
+  }
+  return undefined;
+}
+
 
 exports.handler = async function (event, context) {
   // CORS Headers for client safety
@@ -35,9 +67,12 @@ exports.handler = async function (event, context) {
     };
   }
 
-  // 1. API Key Protection
+  // 1. API Key Protection (Check HTTP headers and URL query parameters)
   const apiKey = process.env.SYNC_API_KEY;
-  const requestApiKey = event.headers['x-api-key'] || event.headers['X-API-Key'] || event.headers['x-api-key'.toLowerCase()];
+  const requestApiKey = event.headers['x-api-key'] || 
+                        event.headers['X-API-Key'] || 
+                        event.headers['x-api-key'.toLowerCase()] || 
+                        (event.queryStringParameters && (event.queryStringParameters.apiKey || event.queryStringParameters.token || event.queryStringParameters.key));
 
   if (!apiKey) {
     console.error('[Processing Failure] SYNC_API_KEY environment variable is not configured.');
@@ -114,13 +149,19 @@ exports.handler = async function (event, context) {
     };
   }
 
-  const { name, phone, email, courseName } = payload;
+  // Robustly extract user information from possible flat or nested formats
+  const emailVal = extractField(payload, ['email', 'userEmail', 'studentEmail', 'mail', 'emailId', 'email_id']);
+  const phoneVal = extractField(payload, ['phone', 'mobile', 'phoneNumber', 'userMobile', 'studentMobile', 'mobileNumber', 'phone_number', 'mobile_number']);
+  const nameVal = extractField(payload, ['name', 'userName', 'studentName', 'fullName', 'displayName', 'first_name', 'lastName', 'full_name']);
+  const courseVal = extractField(payload, ['courseName', 'course', 'productName', 'courseTitle', 'title', 'course_name']);
+
+  console.log(`[Webhook Payload Parsed] Name: "${nameVal}", Email: "${emailVal}", Phone: "${phoneVal}", Course: "${courseVal}"`);
 
   // 4. Validate Email ID
-  const cleanEmail = String(email || '').trim().toLowerCase();
+  const cleanEmail = String(emailVal || '').trim().toLowerCase();
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!cleanEmail || !emailRegex.test(cleanEmail)) {
-    console.warn(`[Invalid Email] Skipped processing. Email is invalid/empty: "${email}" for name: "${name}"`);
+    console.warn(`[Invalid Email] Skipped processing. Email is invalid/empty: "${emailVal}" for name: "${nameVal}"`);
     return {
       statusCode: 400,
       headers,
@@ -129,7 +170,7 @@ exports.handler = async function (event, context) {
   }
 
   // 5. Normalize Phone Number (digits only, last 10 digits)
-  const rawPhone = String(phone || '').trim();
+  const rawPhone = String(phoneVal || '').trim();
   const numericPhone = rawPhone.replace(/\D/g, ''); // Keep only numeric digits
   const normalizedPhone = numericPhone.slice(-10); // Extract last 10 digits
 
@@ -173,9 +214,9 @@ exports.handler = async function (event, context) {
     }
 
     // Update display name if it differs or is empty
-    if (name && userRecord.displayName !== name) {
+    if (nameVal && userRecord.displayName !== nameVal) {
       userRecord = await auth.updateUser(userRecord.uid, {
-        displayName: name
+        displayName: nameVal
       });
       console.log(`[Auth Updated] Updated display name in Firebase Auth for UID: ${userRecord.uid}`);
     }
@@ -196,7 +237,7 @@ exports.handler = async function (event, context) {
         const createOptions = {
           email: cleanEmail,
           password: password,
-          displayName: name || undefined
+          displayName: nameVal || undefined
         };
         // Align Firebase Auth UID to pre-existing Firestore Doc ID if possible
         if (targetUid) {
@@ -238,10 +279,10 @@ exports.handler = async function (event, context) {
     // Build the sync payload
     const firestoreData = {
       uid: targetUid,
-      name: name || (userDoc.exists ? userDoc.data().name : ''),
+      name: nameVal || (userDoc.exists ? userDoc.data().name : ''),
       email: cleanEmail,
       phone: normalizedPhone,
-      courseName: courseName || (userDoc.exists ? userDoc.data().courseName : ''),
+      courseName: courseVal || (userDoc.exists ? userDoc.data().courseName : ''),
       role: 'premium',
       premium: true,
       createdFromSheet: true,

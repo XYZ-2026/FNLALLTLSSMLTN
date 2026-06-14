@@ -110,6 +110,48 @@
     .chip-remove { cursor: pointer; font-size: 16px; opacity: 0.6; }
     .chip-remove:hover { opacity: 1; }
 
+    .region-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .region-chip {
+      background: var(--bg);
+      border: 1.5px solid var(--stroke);
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .region-chip:hover {
+      border-color: var(--muted);
+      background: #f8fafc;
+    }
+    .region-chip.selected {
+      background: var(--brand-soft);
+      border-color: var(--brand);
+      color: var(--brand);
+    }
+    .region-chip-chk {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 2px solid var(--stroke);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 800;
+      transition: 0.15s;
+    }
+    .region-chip.selected .region-chip-chk {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #fff;
+    }
+
     .loader-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 40px; color: var(--muted); }
     .spinner { width: 40px; height: 40px; border: 4px solid var(--stroke); border-top-color: var(--brand); border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -218,18 +260,36 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">College Region</label>
-            <div class="input-wrap">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              <select id="inRegion">
-                <option value="all">All Regions</option>
-                <option value="1">Amravati Region</option>
-                <option value="2">Aurangabad Region</option>
-                <option value="3">Mumbai Region</option>
-                <option value="4">Nagpur Region</option>
-                <option value="5">Nashik Region</option>
-                <option value="6">Pune Region</option>
-              </select>
+            <label class="form-label">College Region (Select Multiple)</label>
+            <div class="region-chips" id="regionChips">
+              <div class="region-chip selected" data-val="all" onclick="toggleRegion('all')">
+                <div class="region-chip-chk">✓</div>
+                All Regions
+              </div>
+              <div class="region-chip" data-val="1" onclick="toggleRegion('1')">
+                <div class="region-chip-chk"></div>
+                Amravati
+              </div>
+              <div class="region-chip" data-val="2" onclick="toggleRegion('2')">
+                <div class="region-chip-chk"></div>
+                Aurangabad
+              </div>
+              <div class="region-chip" data-val="3" onclick="toggleRegion('3')">
+                <div class="region-chip-chk"></div>
+                Mumbai
+              </div>
+              <div class="region-chip" data-val="4" onclick="toggleRegion('4')">
+                <div class="region-chip-chk"></div>
+                Nagpur
+              </div>
+              <div class="region-chip" data-val="5" onclick="toggleRegion('5')">
+                <div class="region-chip-chk"></div>
+                Nashik
+              </div>
+              <div class="region-chip" data-val="6" onclick="toggleRegion('6')">
+                <div class="region-chip-chk"></div>
+                Pune
+              </div>
             </div>
           </div>
           <div class="form-group">
@@ -518,49 +578,11 @@
     }
 
     function satisfiesScoreRange(row, scoreType, scoreVal) {
-      if (!row.rounds) return false;
-      
-      let minP = 0, maxP = 100;
       if (scoreType === 'pct') {
-        const range = getPercentileRange(scoreVal);
-        minP = range.min;
-        maxP = range.max;
+        return row.percentile !== undefined && row.percentile !== null && row.percentile <= scoreVal;
+      } else {
+        return row.rank !== undefined && row.rank !== null && scoreVal <= row.rank;
       }
-
-      for (const roundKey of ['R1', 'R2', 'R3', 'R4']) {
-        const roundData = row.rounds[roundKey];
-        if (!roundData) continue;
-        if (scoreType === 'pct') {
-          if (roundData.percentile !== undefined && roundData.percentile !== null) {
-            if (roundData.percentile >= minP && roundData.percentile <= maxP) return true;
-          }
-        } else {
-          if (roundData.rank !== undefined && roundData.rank !== null) {
-            if (scoreVal <= roundData.rank) return true;
-          }
-        }
-      }
-      return false;
-    }
-
-    function getMaxPercentile(r) {
-      let maxP = -1;
-      for (const key of ['R1', 'R2', 'R3', 'R4']) {
-        if (r.rounds && r.rounds[key] && r.rounds[key].percentile !== undefined && r.rounds[key].percentile !== null) {
-          maxP = Math.max(maxP, r.rounds[key].percentile);
-        }
-      }
-      return maxP;
-    }
-
-    function getMinRank(r) {
-      let minR = 9999999;
-      for (const key of ['R1', 'R2', 'R3', 'R4']) {
-        if (r.rounds && r.rounds[key] && r.rounds[key].rank !== undefined && r.rounds[key].rank !== null) {
-          minR = Math.min(minR, r.rounds[key].rank);
-        }
-      }
-      return minR;
     }
 
     function predict() {
@@ -572,7 +594,6 @@
       const gender = document.getElementById('inGender').value;
       const minorityType = document.getElementById('inMinority').value;
       const studentHU = document.getElementById('inHomeUniv').value;
-      const region = document.getElementById('inRegion').value;
 
       if (scoreType === 'pct' && (!pctVal || isNaN(pct))) return alert('Please enter a valid percentile');
       if (scoreType === 'rank' && (!rankVal || isNaN(rank))) return alert('Please enter a valid rank');
@@ -589,13 +610,13 @@
       }
       
       // Region Filter
-      if (region !== 'all') {
+      if (!selectedRegions.has('all')) {
         filtered = filtered.filter(r => {
           const s = String(r.code || '').trim();
           if (!s) return false;
           const clean = s.replace(/^0+/, '');
           const char = clean.length === 5 ? clean.charAt(1) : clean.charAt(0);
-          return char === region;
+          return selectedRegions.has(char);
         });
       }
 
@@ -632,11 +653,11 @@
         });
       }
 
-      // Sort competitively (descending max percentile or ascending min rank)
+      // Sort competitively (descending percentile or ascending rank)
       if (scoreType === 'pct') {
-        filtered.sort((a, b) => getMaxPercentile(b) - getMaxPercentile(a));
+        filtered.sort((a, b) => b.percentile - a.percentile);
       } else {
-        filtered.sort((a, b) => getMinRank(a) - getMinRank(b));
+        filtered.sort((a, b) => a.rank - b.rank);
       }
 
       localStorage.setItem("results", JSON.stringify(filtered.slice(0, 150)));
@@ -646,7 +667,10 @@
         category: cat,
         gender: gender,
         homeUniv: studentHU || 'None',
-        region: region === 'all' ? 'All Regions' : (region === '1' ? 'Amravati' : (region === '2' ? 'Aurangabad' : (region === '3' ? 'Mumbai' : (region === '4' ? 'Nagpur' : (region === '5' ? 'Nashik' : 'Pune'))))),
+        region: selectedRegions.has('all') ? 'All Regions' : Array.from(selectedRegions).map(r => {
+          const names = { '1': 'Amravati', '2': 'Aurangabad', '3': 'Mumbai', '4': 'Nagpur', '5': 'Nashik', '6': 'Pune' };
+          return names[r] || r;
+        }).join(', '),
         scoreType: scoreType,
         minorityType: cat === 'MI' ? minorityType : 'None'
       }));
@@ -796,15 +820,23 @@
       }
 
       try {
-        const res = await fetch('cleaned_cet_data.json');
-        const json = await res.json();
-        allData = (json || []).map(r => ({
-          code: String(r.instituteCode || ''),
-          name: (r.instituteName || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
-          branch: (r.branch || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
-          category: (r.category || '').trim(),
-          rounds: r.rounds || {}
-        })).filter(r => r.category !== 'AI' && r.category !== 'All India');
+        const res = await fetch('data.json');
+        const rJson = await res.json();
+        const json = rJson['MHT-CET College Data'] || rJson;
+        allData = (json || []).map(r => {
+          const rawRank = String(r['Rank'] || '999999').replace(/,/g, '').trim();
+          const rankVal = parseInt(rawRank);
+          const rawPct = String(r['Percentile'] || '0').trim();
+          const pctVal = parseFloat(rawPct);
+          return {
+            code: String(r['Institute Code'] || ''),
+            name: (r['Institute'] || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
+            branch: (r['Branch'] || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
+            category: (r['Seat Type'] || '').trim(),
+            rank: isNaN(rankVal) ? 999999 : rankVal,
+            percentile: isNaN(pctVal) ? 0.0 : pctVal
+          };
+        }).filter(r => r.category !== 'AI' && r.category !== 'All India');
 
         const bSet = new Set();
         const cleanCatSet = new Set();
@@ -840,8 +872,12 @@
           if (c.status) {
             const parts = c.status.split(',');
             for (let part of parts) {
-              const trimmed = part.trim();
+              let trimmed = part.trim();
               if (trimmed.toLowerCase().includes('minority')) {
+                // Combine Gujarathi and Gujarathi(Jain)
+                if (trimmed.includes('Linguistic Minority - Gujarathi')) {
+                  trimmed = 'Linguistic Minority - Gujarathi';
+                }
                 minoritySet.add(trimmed);
               }
             }
@@ -850,7 +886,10 @@
         const sortedMinorities = Array.from(minoritySet).sort((a, b) => a.localeCompare(b));
         const minSel = document.getElementById('inMinority');
         minSel.innerHTML = '<option value="all">Any Minority / Show All</option>' + 
-          sortedMinorities.map(m => `<option value="${m}">${m}</option>`).join('');
+          sortedMinorities.map(m => {
+            const label = m === 'Linguistic Minority - Gujarathi' ? 'Linguistic Minority - Gujarathi (including Jain)' : m;
+            return `<option value="${m}">${label}</option>`;
+          }).join('');
 
         // Handle change event for Candidate Category
         catSel.addEventListener('change', function() {
@@ -875,6 +914,43 @@
       }
     }
 
+    let selectedRegions = new Set(['all']);
+
+    function toggleRegion(val) {
+      if (val === 'all') {
+        selectedRegions.clear();
+        selectedRegions.add('all');
+      } else {
+        selectedRegions.delete('all');
+        if (selectedRegions.has(val)) {
+          selectedRegions.delete(val);
+        } else {
+          selectedRegions.add(val);
+        }
+        if (selectedRegions.size === 0) {
+          selectedRegions.add('all');
+        }
+      }
+      renderRegionChips();
+    }
+
+    function renderRegionChips() {
+      const chips = document.querySelectorAll('.region-chip');
+      chips.forEach(chip => {
+        const val = chip.getAttribute('data-val');
+        if (selectedRegions.has(val)) {
+          chip.classList.add('selected');
+          const chk = chip.querySelector('.region-chip-chk');
+          if (chk) chk.innerHTML = '✓';
+        } else {
+          chip.classList.remove('selected');
+          const chk = chip.querySelector('.region-chip-chk');
+          if (chk) chk.innerHTML = '';
+        }
+      });
+    }
+
+    window.toggleRegion = toggleRegion;
     window.predict = predict;
     window.goStep = goStep;
     window.switchScoreType = switchScoreType;
