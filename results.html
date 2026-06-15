@@ -437,8 +437,8 @@
         }
       }
 
-      // Add admin export buttons
-      if (session && session.role === 'admin' && results.length > 0) {
+      // Add admin or premium export buttons
+      if (session && (session.role === 'admin' || session.role === 'premium') && results.length > 0) {
         const pageHdr = document.querySelector('.page-hdr');
         if (pageHdr) {
           let btnGroup = pageHdr.querySelector('.export-btn-group');

@@ -174,6 +174,37 @@ function injectGlobalUI() {
       }
     }
 
+    /* Lock Button Group Layout */
+    .lock-btn-group {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+      width: 100%;
+    }
+    .lock-btn-group .claim-premium-btn {
+      margin-left: 0 !important;
+      margin-top: 0 !important;
+    }
+    @media (max-width: 480px) {
+      .lock-btn-group {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+      .lock-btn-group .unlock-btn,
+      .lock-btn-group .cap-unlock-btn,
+      .lock-btn-group .claim-premium-btn {
+        width: 100% !important;
+        justify-content: center;
+        text-align: center;
+        margin: 0 !important;
+      }
+    }
+
     /* Verification Claim Modal Styles */
     .cs-claim-modal {
       display: none;
@@ -676,6 +707,20 @@ function initAuth(opts) {
   renderAuthUI();
 
   var session = getSession();
+  var isPremium = session && (session.role === 'premium' || session.premium === true);
+  if (isPremium) {
+    var hidePremiumElements = function() {
+      var banners = document.querySelectorAll('.premium-banners-section');
+      banners.forEach(function(el) {
+        el.style.display = 'none';
+      });
+    };
+    hidePremiumElements();
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', hidePremiumElements);
+    }
+  }
+
   if (opts.requireLogin && !session) {
     var container = opts.toolContainerId ? document.getElementById(opts.toolContainerId) : null;
     if (container) {
@@ -919,6 +964,11 @@ window.exportTableToPDF = async function (tableOrId, filename) {
    ══════════════════════════════════════════ */
 
 function initAdPopup() {
+  var session = getSession();
+  if (session && (session.role === 'premium' || session.premium === true)) {
+    return;
+  }
+
   var landingPages = [
     'index.html',
     'cet-landing.html',
@@ -1263,10 +1313,24 @@ function injectClaimPremiumButton() {
   var upgradeLinks = Array.from(document.querySelectorAll('a')).filter(function(a) {
     var href = a.getAttribute('href') || '';
     var text = a.innerText || '';
+    
+    // Exclude banners and ads
+    if (a.classList.contains('premium-banner-card') || 
+        a.closest('.banners-grid') || 
+        a.closest('.premium-banners-section') ||
+        a.closest('.cs-ad-card') || 
+        a.closest('.cs-ad-modal-content')) {
+      return false;
+    }
+                     
     return href.includes('conceptsimplified.in/courses') || text.includes('Upgrade to Premium');
   });
 
   upgradeLinks.forEach(function(link) {
+    // Check if we already wrapped this link in lock-btn-group
+    if (link.parentNode && link.parentNode.classList.contains('lock-btn-group')) {
+      return;
+    }
     // Check if we already injected a claim button next to this link
     if (link.nextElementSibling && link.nextElementSibling.classList.contains('claim-premium-btn')) {
       return;
@@ -1286,8 +1350,16 @@ function injectClaimPremiumButton() {
       window.openClaimPremiumModal();
     };
 
-    // Insert next to the upgrade link
-    link.parentNode.insertBefore(claimBtn, link.nextSibling);
+    // Create wrapper div
+    var wrapper = document.createElement('div');
+    wrapper.className = 'lock-btn-group';
+    
+    // Insert wrapper in the DOM right before the link
+    link.parentNode.insertBefore(wrapper, link);
+    
+    // Move the link and newly created button inside the wrapper
+    wrapper.appendChild(link);
+    wrapper.appendChild(claimBtn);
   });
 }
 

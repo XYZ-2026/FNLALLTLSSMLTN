@@ -1380,8 +1380,8 @@
           ? `Showing ${displayLimit} of ${filtered.length} results`
           : `${filtered.length} results`;
 
-      // Add admin export buttons (session already declared above)
-      if (session && session.role === 'admin' && filtered.length > 0) {
+      // Add admin or premium export buttons (session already declared above)
+      if (session && (session.role === 'admin' || session.role === 'premium') && filtered.length > 0) {
         let btnGroup = document.getElementById('exportBtnGroup');
         if (!btnGroup) {
           btnGroup = document.createElement('div');

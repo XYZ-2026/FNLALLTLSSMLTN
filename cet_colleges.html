@@ -1180,9 +1180,9 @@
       const session = initAuth({ requireLogin: true, toolContainerId: 'toolArea' });
       if (!session) return;
 
-      // Restrict exports to admin role only
+      // Restrict exports to admin or premium role only
       document.querySelectorAll('.export-btn-group').forEach(group => {
-        if (session.role !== 'admin') {
+        if (session.role !== 'admin' && session.role !== 'premium') {
           group.style.display = 'none';
         }
       });

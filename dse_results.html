@@ -427,8 +427,8 @@
             }
 
 
-            // Add admin export buttons matching shared_auth roles (session already declared above)
-            if (session && session.role === 'admin' && results.length > 0) {
+            // Add admin or premium export buttons matching shared_auth roles (session already declared above)
+            if (session && (session.role === 'admin' || session.role === 'premium') && results.length > 0) {
                 const adminControls = document.getElementById('adminControls');
                 if (adminControls) {
                     let filePrefix = 'dse_predictions';

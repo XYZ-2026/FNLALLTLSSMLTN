@@ -1282,10 +1282,15 @@
 
         <!-- Seats matrix table -->
         <div class="seat-matrix-card" style="margin-bottom: 40px;">
-          <h3>Branch-Wise Seats Matrix Details</h3>
-          <p class="matrix-helper-text">
-            (Click on any branch card/row to view category-wise seat distribution in detail)
-          </p>
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
+            <div style="display:flex; flex-direction:column; gap:4px">
+              <h3 style="margin:0;">Branch-Wise Seats Matrix Details</h3>
+              <p class="matrix-helper-text" style="margin:0;">
+                (Click on any branch card/row to view category-wise seat distribution in detail)
+              </p>
+            </div>
+            <div class="export-btn-group" id="seatsExportGroup"></div>
+          </div>
           <div class="table-scroll">
             <table id="seatsMatrixTable">
               <thead>
@@ -1327,24 +1332,27 @@
             <div id="mhtcetTabContent">
               <!-- All Branch Cutoffs Explorer (Master Table) -->
               <div class="master-list-card">
-                <div class="master-list-header">
-                  <h3>All Branch Cutoffs Explorer</h3>
-                  <div class="master-filters">
-                    <select id="tblRound" onchange="applyTableFilters()" class="filter-select">
-                      <option value="R1">Round 1</option>
-                      <option value="R2">Round 2</option>
-                      <option value="R3">Round 3</option>
-                      <option value="R4">Round 4</option>
-                    </select>
-                    <select id="tblCategory" onchange="applyTableFilters()" class="filter-select">
-                      <!-- Populated dynamically -->
-                    </select>
-                    <input type="text" id="tblSearch" placeholder="Search branch or choice code..." oninput="applyTableFilters()" class="filter-search-input">
+                <div class="master-list-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+                  <h3 style="margin:0;">All Branch Cutoffs Explorer</h3>
+                  <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                    <div class="master-filters">
+                      <select id="tblRound" onchange="applyTableFilters()" class="filter-select">
+                        <option value="R1">Round 1</option>
+                        <option value="R2">Round 2</option>
+                        <option value="R3">Round 3</option>
+                        <option value="R4">Round 4</option>
+                      </select>
+                      <select id="tblCategory" onchange="applyTableFilters()" class="filter-select">
+                        <!-- Populated dynamically -->
+                      </select>
+                      <input type="text" id="tblSearch" placeholder="Search branch or choice code..." oninput="applyTableFilters()" class="filter-search-input">
+                    </div>
+                    <div class="export-btn-group" id="mhtcetExportGroup"></div>
                   </div>
                 </div>
 
                 <div class="table-container">
-                  <table class="cutoff-table">
+                  <table class="cutoff-table" id="mhtcetCutoffTable">
                     <thead>
                       <tr>
                         <th>Branch Program</th>
@@ -1422,12 +1430,15 @@
             <!-- JEE Mains Tab Content -->
             <div id="jeeTabContent" class="hidden">
               <div class="master-list-card">
-                <div class="master-list-header">
-                  <h3>JEE Mains All India Cutoffs</h3>
-                  <span style="font-size: 12px; color: var(--muted); font-weight: 500;">Direct admission cutoff via JEE Mains score</span>
+                <div class="master-list-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+                  <div>
+                    <h3 style="margin:0;">JEE Mains All India Cutoffs</h3>
+                    <span style="font-size: 12px; color: var(--muted); font-weight: 500;">Direct admission cutoff via JEE Mains score</span>
+                  </div>
+                  <div class="export-btn-group" id="jeeExportGroup"></div>
                 </div>
                 <div class="table-container">
-                  <table class="cutoff-table">
+                  <table class="cutoff-table" id="jeeCutoffTable">
                     <thead>
                       <tr>
                         <th>Choice Code</th>
@@ -1810,6 +1821,30 @@
 
         // Initialize college analytics for cutoff checker section
         initCutoffCheckerSection(college, collegeMht, collegeJee);
+
+        // Render export buttons for premium/admin users
+        const isPremiumUser = session && (session.role === 'premium' || session.role === 'admin');
+        if (isPremiumUser) {
+          const exportHtml = (tableId, fileName) => `
+            <button class="export-csv-btn" onclick="exportTableToCSV('${tableId}', '${fileName}.csv')" style="padding:8px 16px; font-size:12px; border-radius:10px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:12px; height:12px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export CSV
+            </button>
+            <button class="export-pdf-btn" onclick="exportTableToPDF('${tableId}', '${fileName}.pdf')" style="padding:8px 16px; font-size:12px; border-radius:10px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:12px; height:12px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export PDF
+            </button>
+          `;
+          
+          const cleanName = college.name.toLowerCase().replace(/[^a-z0-9]/g, '_').substring(0, 30);
+          const seatsGrp = document.getElementById('seatsExportGroup');
+          const mhtcetGrp = document.getElementById('mhtcetExportGroup');
+          const jeeGrp = document.getElementById('jeeExportGroup');
+          
+          if (seatsGrp) seatsGrp.innerHTML = exportHtml('seatsMatrixTable', `seats_matrix_${cleanName}_${code}`);
+          if (mhtcetGrp) mhtcetGrp.innerHTML = exportHtml('mhtcetCutoffTable', `mhtcet_cutoffs_${cleanName}_${code}`);
+          if (jeeGrp) jeeGrp.innerHTML = exportHtml('jeeCutoffTable', `jee_cutoffs_${cleanName}_${code}`);
+        }
 
         // Hide Search Panel and List Panel
         document.querySelector('.search-card').style.display = 'none';

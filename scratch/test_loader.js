@@ -10,6 +10,7 @@ function getBaseCategory(cat) {
 
 function getGenderFreeCategory(cat) {
   if (!cat) return '';
+  if (['EWS', 'TFWS', 'MI', 'ORPHAN'].includes(cat)) return cat;
   let base = cat;
   if (cat.endsWith('H') || cat.endsWith('O') || cat.endsWith('S')) {
     base = cat.slice(0, -1);
