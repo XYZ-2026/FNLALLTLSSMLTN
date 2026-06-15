@@ -610,36 +610,30 @@
           <label>Email Address</label>
           <input type="email" id="resetEmail" placeholder="you@example.com" onkeydown="if(event.key==='Enter')doRequestReset()">
           <div id="resetErr" class="err"></div>
-          <button class="btn btn-primary" id="resetRequestBtn" onclick="doRequestReset()">Send Reset Code →</button>
+          <button class="btn btn-primary" id="resetRequestBtn" onclick="doRequestReset()">Send Reset Link →</button>
           <p style="text-align:center;margin-top:14px;font-size:13px;color:var(--muted)">
             Remember password? <span class="link" onclick="switchTab('login')">Sign in →</span>
           </p>
         </div>
 
-        <!-- Step 2: Confirm Reset -->
+        <!-- Step 2: Confirm Reset (Success Message) -->
         <div id="resetStep2" style="display:none">
-          <p style="margin-bottom:14px;font-size:13px;color:var(--ink)">
-            A password reset code and direct link have been sent to your email. Enter the reset code and your new password below.
-          </p>
-          <label>Reset Code</label>
-          <input type="text" id="resetToken" placeholder="Paste reset code from email" maxlength="32">
-          <label>New Password</label>
-          <input type="password" id="resetNewPwd" placeholder="min 6 chars">
-          <label>Confirm Password</label>
-          <input type="password" id="resetConfirmPwd" placeholder="repeat" onkeydown="if(event.key==='Enter')doConfirmReset()">
-          <div id="resetErr2" class="err"></div>
-          <button class="btn btn-primary" id="resetConfirmBtn" onclick="doConfirmReset()">Update Password →</button>
-          <p style="text-align:center;margin-top:14px;font-size:13px;color:var(--muted)">
-            <span class="link" onclick="resetPasswordForm()">Try different email →</span>
-          </p>
+          <div style="text-align:center;padding:20px 0">
+            <div style="color:var(--green);font-size:48px;margin-bottom:16px">✓</div>
+            <h2 style="font-family:'Poppins',sans-serif;font-size:20px;font-weight:800;margin-bottom:8px">Reset Link Sent</h2>
+            <p style="color:var(--muted);font-size:13.5px;line-height:1.6;margin-bottom:24px">
+              A password reset link has been sent to your email address. Please click the link to choose a new password, then return here to sign in.
+            </p>
+            <button class="btn btn-primary" onclick="switchTab('login')">Return to Sign In →</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script src="firebase_config.js?v=2"></script>
   <script src="shared_auth.js?v=2"></script>
   <script>
@@ -780,172 +774,34 @@
       }, 600);
     }
 
-    // ══════════════════════════════════════════
-    // EMAILJS CONFIGURATION
-    // ══════════════════════════════════════════
-    
-    var EMAILJS_CONFIG = null;
-    var initRetries = 0;
-    
-    // Wait for EmailJS to load and initialize
-    function initEmailJSWhenReady() {
-      initRetries++;
-      
-      // The CDN script exposes window.emailjs
-      var emailjsLib = window.emailjs;
-      
-      if (emailjsLib && typeof emailjsLib.init === 'function') {
-        try {
-          emailjsLib.init({ publicKey: 'HZqDWJHXSHVanAr8W' });
-          EMAILJS_CONFIG = {
-            serviceId: 'service_at727rj',
-            templateId: 'template_710jf0b',
-            publicKey: 'HZqDWJHXSHVanAr8W'
-          };
-          console.log('✓ EmailJS initialized successfully!');
-          return true;
-        } catch (err) {
-          console.error('EmailJS init error:', err);
-          if (initRetries < 10) {
-            setTimeout(initEmailJSWhenReady, 500);
-          } else {
-            console.error('EmailJS failed to initialize after 10 attempts');
-          }
-          return false;
-        }
-      } else {
-        if (initRetries < 15) {
-          setTimeout(initEmailJSWhenReady, 500);
-        } else {
-          console.error('EmailJS library did not load after 15 attempts. Check your network connection.');
-        }
-        return false;
-      }
-    }
-    
-    // Start initialization — script should already be loaded since it's a sync <script> tag
-    initEmailJSWhenReady();
-
-    // Reset Password - Step 1: Request Reset
+    // Reset Password - Request Reset
     async function doRequestReset() {
       var email = (document.getElementById('resetEmail').value || '').trim().toLowerCase();
       hideErr('resetErr');
       if (!email || !email.includes('@')) return showErr('resetErr', 'Valid email required.');
 
-      // Wait for EmailJS to initialize if needed
-      var waitCount = 0;
-      while (!EMAILJS_CONFIG && waitCount < 5) {
-        console.log('Waiting for EmailJS initialization...');
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        waitCount++;
-      }
-
-      if (!EMAILJS_CONFIG) {
-        return showErr('resetErr', 'Email service failed to initialize. Check browser console for errors.');
-      }
-
       var btn = document.getElementById('resetRequestBtn');
       btn.disabled = true; btn.textContent = 'Sending…';
 
-      // Step 1: Generate reset token in backend
       var res = await authApi('requestPasswordReset', { email: email });
-      
+      btn.disabled = false; btn.textContent = 'Send Reset Link →';
+
       if (!res.ok) {
-        btn.disabled = false; btn.textContent = 'Send Reset Code →';
         return showErr('resetErr', res.error || 'Failed to process request.');
       }
 
-      var resetToken = res.data.resetToken;
-      var userName = res.data.userName || 'User';
-
-      // Step 2: Send email via EmailJS
-      try {
-        console.log('Sending email via EmailJS...');
-        var response = await window.emailjs.send(
-          EMAILJS_CONFIG.serviceId,
-          EMAILJS_CONFIG.templateId,
-          {
-            to_email: email,
-            user_name: userName,
-            reset_code: resetToken,
-            reset_link: window.location.href.split('?')[0] + '?reset=' + resetToken + '&email=' + encodeURIComponent(email)
-          }
-        );
-
-        console.log('Email sent successfully:', response);
-        btn.disabled = false; btn.textContent = 'Send Reset Code →';
-        toast('✓ Reset code sent to your email!', 'ok');
-        document.getElementById('resetStep1').style.display = 'none';
-        document.getElementById('resetStep2').style.display = 'block';
-      } catch (emailErr) {
-        btn.disabled = false; btn.textContent = 'Send Reset Code →';
-        console.error('Email send error:', emailErr);
-        showErr('resetErr', 'Failed to send email: ' + (emailErr.text || emailErr.message || 'Unknown error'));
-      }
-    }
-
-    // Reset Password - Step 2: Confirm Reset
-    async function doConfirmReset() {
-      var email = (document.getElementById('resetEmail').value || '').trim().toLowerCase();
-      var token = (document.getElementById('resetToken').value || '').trim();
-      var newPwd = document.getElementById('resetNewPwd').value;
-      var confirmPwd = document.getElementById('resetConfirmPwd').value;
-      hideErr('resetErr2');
-
-      if (!token) return showErr('resetErr2', 'Reset code required.');
-      if (!newPwd || newPwd.length < 6) return showErr('resetErr2', 'Password min 6 characters.');
-      if (newPwd !== confirmPwd) return showErr('resetErr2', 'Passwords do not match.');
-
-      var btn = document.getElementById('resetConfirmBtn');
-      btn.disabled = true; btn.textContent = 'Updating password…';
-
-      var res = await authApi('confirmPasswordReset', { 
-        email: email, 
-        resetToken: token, 
-        newPassword: newPwd 
-      });
-      btn.disabled = false; btn.textContent = 'Update Password →';
-
-      if (!res.ok) return showErr('resetErr2', res.error || 'Failed to reset password.');
-
-      toast('Password updated successfully! Please sign in.', 'ok');
-      setTimeout(function () {
-        resetPasswordForm();
-        switchTab('login');
-      }, 1500);
+      toast('✓ Reset email sent!', 'ok');
+      document.getElementById('resetStep1').style.display = 'none';
+      document.getElementById('resetStep2').style.display = 'block';
     }
 
     // Reset Password - Reset Form
     function resetPasswordForm() {
       document.getElementById('resetEmail').value = '';
-      document.getElementById('resetToken').value = '';
-      document.getElementById('resetNewPwd').value = '';
-      document.getElementById('resetConfirmPwd').value = '';
       document.getElementById('resetStep1').style.display = 'block';
       document.getElementById('resetStep2').style.display = 'none';
       hideErr('resetErr');
-      hideErr('resetErr2');
     }
-
-    // Auto-fill and transition to Step 2 if reset params exist in URL
-    (function () {
-      var params = new URLSearchParams(window.location.search);
-      var resetToken = params.get('reset');
-      var email = params.get('email');
-      if (resetToken && email) {
-        switchTab('reset');
-        
-        var emailInput = document.getElementById('resetEmail');
-        var tokenInput = document.getElementById('resetToken');
-        if (emailInput) emailInput.value = email;
-        if (tokenInput) tokenInput.value = resetToken;
-        
-        var step1 = document.getElementById('resetStep1');
-        var step2 = document.getElementById('resetStep2');
-        if (step1) step1.style.display = 'none';
-        if (step2) step2.style.display = 'block';
-      }
-    })();
   </script>
 </body>
 

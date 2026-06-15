@@ -51,87 +51,141 @@ async function fireApi(action, payload) {
       // ── AUTH ──────────────────────────
       case 'register': {
         const { name, email, phone, state, city, password } = payload;
-        // Check if email already exists
+        // Check if email already exists in Firestore
         const existing = await db.collection('users').where('email', '==', email).limit(1).get();
-        if (!existing.empty) return { ok: false, error: 'Email already registered.' };
+        if (!existing.empty) return { ok: false, error: 'Email already registered in database.' };
 
-        const hashed = await hashPassword(password);
-        const userData = {
-          name, email, phone: phone || '',
-          state: state || '', city: city || '',
-          password: hashed,
-          role: 'user',
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        };
-        const docRef = await db.collection('users').add(userData);
-        const session = { id: docRef.id, name, email, phone, state, city, role: 'user' };
-        return { ok: true, data: session };
+        try {
+          // 1. Create user in Firebase Authentication
+          await firebase.auth().createUserWithEmailAndPassword(email, password);
+          
+          // 2. Save user details to Firestore
+          const hashed = await hashPassword(password);
+          const userData = {
+            name, email, phone: phone || '',
+            state: state || '', city: city || '',
+            password: hashed, // Hashed copy for backward compatibility
+            role: 'user',
+            authMigrated: true,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          };
+          const docRef = await db.collection('users').add(userData);
+          const session = { id: docRef.id, name, email, phone, state, city, role: 'user' };
+          return { ok: true, data: session };
+        } catch (authErr) {
+          console.error('Registration error in Firebase Auth:', authErr);
+          if (authErr.code === 'auth/email-already-in-use') {
+            return { ok: false, error: 'This email is already registered.' };
+          }
+          return { ok: false, error: authErr.message || 'Registration failed.' };
+        }
       }
 
       case 'login': {
         const { email, password } = payload;
-        const snap = await db.collection('users').where('email', '==', email).limit(1).get();
-        if (snap.empty) return { ok: false, error: 'No account found with this email.' };
+        
+        try {
+          // 1. Attempt login with Firebase Authentication
+          await firebase.auth().signInWithEmailAndPassword(email, password);
+          
+          // Login succeeded! Fetch user data from Firestore
+          const snap = await db.collection('users').where('email', '==', email).limit(1).get();
+          if (snap.empty) {
+            // Edge case: user exists in Auth but not in Firestore users database. 
+            // Create user doc on-the-fly.
+            const hashed = await hashPassword(password);
+            const userData = {
+              name: email.split('@')[0], email, phone: '',
+              state: '', city: '',
+              password: hashed,
+              role: 'user',
+              authMigrated: true,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            const docRef = await db.collection('users').add(userData);
+            const session = { id: docRef.id, name: userData.name, email, phone: '', state: '', city: '', role: 'user' };
+            return { ok: true, data: session };
+          }
+          
+          const doc = snap.docs[0];
+          const user = doc.data();
+          const session = {
+            id: doc.id, name: user.name, email: user.email,
+            phone: user.phone || '', state: user.state || '', city: user.city || '',
+            role: user.role || 'user'
+          };
+          return { ok: true, data: session };
+        } catch (authErr) {
+          // 2. If user is not found in Firebase Authentication, attempt lazy migration
+          if (authErr.code === 'auth/user-not-found' || authErr.code === 'auth/invalid-credential') {
+            const snap = await db.collection('users').where('email', '==', email).limit(1).get();
+            if (snap.empty) return { ok: false, error: 'No account found with this email.' };
 
-        const doc = snap.docs[0];
-        const user = doc.data();
-        const hashed = await hashPassword(password);
-        if (user.password !== hashed) return { ok: false, error: 'Invalid password.' };
+            const doc = snap.docs[0];
+            const user = doc.data();
+            const hashed = await hashPassword(password);
+            
+            if (user.password !== hashed) return { ok: false, error: 'Invalid password.' };
 
-        const session = {
-          id: doc.id, name: user.name, email: user.email,
-          phone: user.phone || '', state: user.state || '', city: user.city || '',
-          role: user.role || 'user'
-        };
-        return { ok: true, data: session };
+            // Password is correct! Let's migrate them to Firebase Auth on-the-fly
+            try {
+              await firebase.auth().createUserWithEmailAndPassword(email, password);
+              await doc.ref.update({ authMigrated: true });
+              
+              const session = {
+                id: doc.id, name: user.name, email: user.email,
+                phone: user.phone || '', state: user.state || '', city: user.city || '',
+                role: user.role || 'user'
+              };
+              return { ok: true, data: session };
+            } catch (migrationErr) {
+              console.error('Lazy migration failed:', migrationErr);
+              return { ok: false, error: 'Migration failed: ' + migrationErr.message };
+            }
+          } else if (authErr.code === 'auth/wrong-password') {
+            return { ok: false, error: 'Invalid password.' };
+          }
+          
+          return { ok: false, error: authErr.message || 'Login failed.' };
+        }
       }
 
       case 'requestPasswordReset': {
         const { email } = payload;
+        
+        // Ensure user exists in our Firestore users collection
         const snap = await db.collection('users').where('email', '==', email).limit(1).get();
         if (snap.empty) return { ok: false, error: 'No account found with this email.' };
-
-        // Generate reset code (6-digit numeric code)
-        const resetToken = String(100000 + Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] % 900000));
         
         const doc = snap.docs[0];
         const user = doc.data();
-        const expiresAt = new Date();
-        expiresAt.setHours(expiresAt.getHours() + 1); // Token valid for 1 hour
-        
-        await doc.ref.update({
-          resetToken: resetToken,
-          resetTokenExpiresAt: firebase.firestore.Timestamp.fromDate(expiresAt)
-        });
 
-        return { ok: true, data: { resetToken, email, userName: user.name } };
+        // Check if the user is migrated to Firebase Auth
+        if (!user.authMigrated) {
+          const tempPassword = 'CS_Temp_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+          try {
+            await firebase.auth().createUserWithEmailAndPassword(email, tempPassword);
+            await firebase.auth().signOut(); // Immediately sign out
+            await doc.ref.update({ authMigrated: true });
+          } catch (createErr) {
+            console.error('Failed to create user during reset migration:', createErr);
+            // If the user already exists in Firebase Auth for some reason, just proceed
+            if (createErr.code !== 'auth/email-already-in-use') {
+              return { ok: false, error: 'Failed to initiate password reset: ' + createErr.message };
+            }
+          }
+        }
+
+        try {
+          await firebase.auth().sendPasswordResetEmail(email);
+          return { ok: true, data: { status: 'sent', email: email } };
+        } catch (authErr) {
+          return { ok: false, error: authErr.message || 'Reset request failed.' };
+        }
       }
 
       case 'confirmPasswordReset': {
-        const { email, resetToken, newPassword } = payload;
-        if (!resetToken || !newPassword) return { ok: false, error: 'Reset token and new password required.' };
-        
-        const snap = await db.collection('users').where('email', '==', email).limit(1).get();
-        if (snap.empty) return { ok: false, error: 'No account found with this email.' };
-
-        const doc = snap.docs[0];
-        const user = doc.data();
-
-        // Validate token
-        if (user.resetToken !== resetToken) return { ok: false, error: 'Invalid reset token.' };
-        if (!user.resetTokenExpiresAt) return { ok: false, error: 'Reset token not found.' };
-        
-        const expiresAt = user.resetTokenExpiresAt.toDate ? user.resetTokenExpiresAt.toDate() : new Date(user.resetTokenExpiresAt);
-        if (new Date() > expiresAt) return { ok: false, error: 'Reset token has expired. Please request a new one.' };
-
-        // Hash new password and update
-        const hashed = await hashPassword(newPassword);
-        await doc.ref.update({
-          password: hashed,
-          resetToken: firebase.firestore.FieldValue.delete(),
-          resetTokenExpiresAt: firebase.firestore.FieldValue.delete()
-        });
-
+        // Obsolete case because Firebase Auth handles this natively via its reset link.
         return { ok: true };
       }
 

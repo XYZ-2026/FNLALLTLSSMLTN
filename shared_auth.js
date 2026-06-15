@@ -135,6 +135,225 @@ function injectGlobalUI() {
       height: 14px;
       flex-shrink: 0;
     }
+
+    /* Claim Premium Access Button Styles */
+    .claim-premium-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #fff !important;
+      text-decoration: none;
+      border-radius: 14px;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+      font-family: 'Lexend', sans-serif;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-top: 12px;
+    }
+    .claim-premium-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(37, 99, 235, 0.35);
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+    }
+    @media (min-width: 481px) {
+      .claim-premium-btn {
+        margin-left: 12px;
+        margin-top: 0;
+      }
+    }
+    @media (max-width: 480px) {
+      .claim-premium-btn {
+        padding: 12px 24px;
+        font-size: 13px;
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    /* Verification Claim Modal Styles */
+    .cs-claim-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 999999;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      padding: 20px;
+    }
+    .cs-claim-modal.show {
+      display: flex;
+      opacity: 1;
+    }
+    .cs-claim-modal-content {
+      background: var(--card, #ffffff);
+      border: 1px solid var(--stroke, rgba(0,0,0,0.08));
+      border-radius: 24px;
+      width: 100%;
+      max-width: 460px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+      transform: scale(0.9) translateY(20px);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 32px;
+      box-sizing: border-box;
+    }
+    .cs-claim-modal.show .cs-claim-modal-content {
+      transform: scale(1) translateY(0);
+    }
+    .cs-claim-close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--stroke, rgba(0,0,0,0.08));
+      color: #111827;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: all 0.2s;
+    }
+    .cs-claim-close-btn:hover {
+      background: var(--brand-soft, #fef2f2);
+      color: var(--brand, #dc2626);
+      transform: scale(1.05);
+    }
+    .cs-claim-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .cs-claim-icon-container {
+      width: 64px;
+      height: 64px;
+      background: #eff6ff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .cs-claim-title {
+      font-family: 'Lexend', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--ink, #111827);
+      margin-bottom: 8px;
+      margin-top: 0;
+    }
+    .cs-claim-desc {
+      color: var(--muted, #6b7280);
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 0;
+    }
+    .cs-claim-field {
+      margin-bottom: 18px;
+      text-align: left;
+    }
+    .cs-claim-field label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink2, #374151);
+      margin-bottom: 6px;
+    }
+    .cs-claim-field input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1.5px solid var(--stroke, rgba(0, 0, 0, 0.08));
+      background: var(--bg, #fafafa);
+      color: var(--ink, #111827);
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+      box-sizing: border-box;
+    }
+    .cs-claim-field input:focus {
+      border-color: #2563eb;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .cs-claim-submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Lexend', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 24px;
+      box-sizing: border-box;
+    }
+    .cs-claim-submit-btn:hover {
+      background: linear-gradient(135deg, #1d4ed8, #1e40af);
+      transform: translateY(-1px);
+    }
+    .cs-claim-submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .cs-claim-error {
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      color: #b91c1c;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 18px;
+      text-align: left;
+      line-height: 1.4;
+    }
+    .cs-claim-success {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      color: #15803d;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 18px;
+      text-align: left;
+      line-height: 1.4;
+    }
+    .cs-btn-spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: cs-spin-modal 0.8s linear infinite;
+    }
+    @keyframes cs-spin-modal {
+      to { transform: rotate(360deg); }
+    }
   `;
   document.head.appendChild(style);
 
@@ -264,7 +483,44 @@ function injectGlobalUI() {
     <div id="global-ui-injected" style="display:none"></div>
   `;
 
-  document.body.insertAdjacentHTML('afterbegin', headerHtml + sidebarHtml);
+  // Inject the Claim Premium verification modal HTML
+  var claimModalHtml = `
+    <div id="cs-claim-premium-modal" class="cs-claim-modal">
+      <div class="cs-claim-modal-content">
+        <button class="cs-claim-close-btn" onclick="window.closeClaimPremiumModal()">&times;</button>
+        <div class="cs-claim-header">
+          <div class="cs-claim-icon-container">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <path d="M9 11l2 2 4-4"/>
+            </svg>
+          </div>
+          <h2 class="cs-claim-title">Link Purchase / Grant Access</h2>
+          <p class="cs-claim-desc">Enter the email and phone number used during payment to link your premium benefits to this account.</p>
+        </div>
+        
+        <div id="cs-claim-error-msg" class="cs-claim-error" style="display:none;"></div>
+        <div id="cs-claim-success-msg" class="cs-claim-success" style="display:none;"></div>
+
+        <form id="cs-claim-premium-form" onsubmit="window.submitClaimPremium(event)">
+          <div class="cs-claim-field">
+            <label for="cs-claim-email">Purchase Email Address</label>
+            <input type="email" id="cs-claim-email" required placeholder="e.g. buyer@example.com">
+          </div>
+          <div class="cs-claim-field">
+            <label for="cs-claim-phone">Purchase Phone Number (used as password)</label>
+            <input type="text" id="cs-claim-phone" required placeholder="e.g. 9876543210">
+          </div>
+          <button type="submit" id="cs-claim-submit-btn" class="cs-claim-submit-btn">
+            <span class="btn-text">Validate & Activate Premium</span>
+            <div class="cs-btn-spinner" style="display:none;"></div>
+          </button>
+        </form>
+      </div>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML('afterbegin', headerHtml + sidebarHtml + claimModalHtml);
 }
 
 window.toggleDropdown = function (id) {
@@ -370,7 +626,13 @@ function getSession() { try { return JSON.parse(localStorage.getItem(AUTH_CONFIG
 function setSession(user) { localStorage.setItem(AUTH_CONFIG.SESSION_KEY, JSON.stringify(user)); }
 function clearSession() { localStorage.removeItem(AUTH_CONFIG.SESSION_KEY); }
 function isLoggedIn() { return !!getSession(); }
-function doLogout() { clearSession(); window.location.href = AUTH_CONFIG.HOME_PAGE; }
+function doLogout() { 
+  clearSession(); 
+  if (typeof firebase !== 'undefined' && typeof firebase.auth === 'function') {
+    firebase.auth().signOut().catch(console.error);
+  }
+  window.location.href = AUTH_CONFIG.HOME_PAGE; 
+}
 function escAuth(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
 async function authApi(action, payload) {
@@ -427,6 +689,7 @@ function initAuth(opts) {
     }
     return null;
   }
+  startUpgradeButtonObserver();
   initAdPopup();
   return session || { guest: true };
 }
@@ -991,3 +1254,187 @@ function initAdPopup() {
   // Pop up every 2 minutes
   setInterval(showAd, 120000);
 }
+
+/* ══════════════════════════════════════════
+   CLAIM PREMIUM / LINK PURCHASE LOGIC
+   ══════════════════════════════════════════ */
+
+function injectClaimPremiumButton() {
+  var upgradeLinks = Array.from(document.querySelectorAll('a')).filter(function(a) {
+    var href = a.getAttribute('href') || '';
+    var text = a.innerText || '';
+    return href.includes('conceptsimplified.in/courses') || text.includes('Upgrade to Premium');
+  });
+
+  upgradeLinks.forEach(function(link) {
+    // Check if we already injected a claim button next to this link
+    if (link.nextElementSibling && link.nextElementSibling.classList.contains('claim-premium-btn')) {
+      return;
+    }
+
+    var claimBtn = document.createElement('button');
+    claimBtn.className = 'claim-premium-btn';
+    claimBtn.type = 'button';
+    claimBtn.innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        <path d="M9 11l2 2 4-4"/>
+      </svg>
+      Link Purchase / Grant Access
+    `;
+    claimBtn.onclick = function() {
+      window.openClaimPremiumModal();
+    };
+
+    // Insert next to the upgrade link
+    link.parentNode.insertBefore(claimBtn, link.nextSibling);
+  });
+}
+
+function startUpgradeButtonObserver() {
+  // Run once immediately
+  injectClaimPremiumButton();
+
+  // Watch for dynamic DOM updates (since calculators swap page views dynamically)
+  var observer = new MutationObserver(function() {
+    injectClaimPremiumButton();
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+}
+
+window.openClaimPremiumModal = function() {
+  var modal = document.getElementById('cs-claim-premium-modal');
+  if (modal) {
+    modal.style.display = 'flex';
+    modal.offsetHeight; // force reflow
+    modal.classList.add('show');
+    document.getElementById('cs-claim-email').value = '';
+    document.getElementById('cs-claim-phone').value = '';
+    document.getElementById('cs-claim-error-msg').style.display = 'none';
+    document.getElementById('cs-claim-success-msg').style.display = 'none';
+  }
+};
+
+window.closeClaimPremiumModal = function() {
+  var modal = document.getElementById('cs-claim-premium-modal');
+  if (modal) {
+    modal.classList.remove('show');
+    setTimeout(function() {
+      modal.style.display = 'none';
+    }, 300);
+  }
+};
+
+// Add listener to close when clicking outside the modal content wrapper
+document.addEventListener('DOMContentLoaded', function() {
+  var modal = document.getElementById('cs-claim-premium-modal');
+  if (modal) {
+    modal.addEventListener('click', function(e) {
+      if (e.target === this) {
+        window.closeClaimPremiumModal();
+      }
+    });
+  }
+});
+
+window.submitClaimPremium = async function(event) {
+  event.preventDefault();
+  
+  var emailInput = document.getElementById('cs-claim-email');
+  var phoneInput = document.getElementById('cs-claim-phone');
+  var errorDiv = document.getElementById('cs-claim-error-msg');
+  var successDiv = document.getElementById('cs-claim-success-msg');
+  var submitBtn = document.getElementById('cs-claim-submit-btn');
+
+  errorDiv.style.display = 'none';
+  successDiv.style.display = 'none';
+
+  var email = emailInput.value.trim().toLowerCase();
+  var rawPhone = phoneInput.value.trim();
+  
+  // Normalize phone number (digits only, last 10 digits)
+  var numericPhone = rawPhone.replace(/\D/g, '');
+  var normalizedPhone = numericPhone.slice(-10);
+
+  if (normalizedPhone.length < 10) {
+    errorDiv.innerText = 'Please enter a valid 10-digit phone number.';
+    errorDiv.style.display = 'block';
+    return;
+  }
+
+  // Disable button and show spinner
+  submitBtn.disabled = true;
+  submitBtn.querySelector('.btn-text').innerText = 'Validating Purchase...';
+  submitBtn.querySelector('.cs-btn-spinner').style.display = 'inline-block';
+
+  try {
+    // 1. Fetch current session
+    var currentUser = getSession();
+    if (!currentUser || !currentUser.id) {
+      throw new Error('You must be logged in to claim premium access.');
+    }
+
+    if (currentUser.email.toLowerCase() === email) {
+      throw new Error('This account already matches the purchase email. It should already have access or will migrate automatically.');
+    }
+
+    // 2. Query Firestore for purchase account
+    if (typeof db === 'undefined') {
+      throw new Error('Database connection is not initialized yet. Please refresh.');
+    }
+    
+    var snap = await db.collection('users').where('email', '==', email).limit(1).get();
+    if (snap.empty) {
+      throw new Error('No purchase record found for this email address. Please make sure the email matches your payment receipt.');
+    }
+
+    var purchaseUser = snap.docs[0].data();
+
+    // 3. Verify phone number / password hash
+    var enteredHashed = await hashPassword(normalizedPhone);
+    var matchesPassword = purchaseUser.password === enteredHashed;
+    
+    var purchasePhoneDigits = String(purchaseUser.phone || '').replace(/\D/g, '').slice(-10);
+    var matchesPhone = purchasePhoneDigits && purchasePhoneDigits === normalizedPhone;
+
+    if (!matchesPassword && !matchesPhone) {
+      throw new Error('Incorrect phone number for this purchase account. Please enter the phone number you registered during payment.');
+    }
+
+    // 4. Verify account premium status
+    if (purchaseUser.role !== 'premium' && purchaseUser.premium !== true) {
+      throw new Error('This purchase account does not have Premium status. Please check your payment status.');
+    }
+
+    // 5. Grant premium status to the current user's document
+    await db.collection('users').doc(currentUser.id).update({
+      role: 'premium',
+      premium: true,
+      claimedFromEmail: email,
+      claimedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    // 6. Update local session state
+    currentUser.role = 'premium';
+    currentUser.premium = true;
+    setSession(currentUser);
+
+    // 7. Show success feedback and reload the page
+    successDiv.innerText = 'Premium benefits linked successfully! Reloading page to activate...';
+    successDiv.style.display = 'block';
+
+    setTimeout(function() {
+      window.location.reload();
+    }, 2000);
+
+  } catch (err) {
+    console.error('Claim premium error:', err);
+    errorDiv.innerText = err.message || 'An error occurred during verification. Please try again.';
+    errorDiv.style.display = 'block';
+    
+    // Reset button state
+    submitBtn.disabled = false;
+    submitBtn.querySelector('.btn-text').innerText = 'Validate & Activate Premium';
+    submitBtn.querySelector('.cs-btn-spinner').style.display = 'none';
+  }
+};

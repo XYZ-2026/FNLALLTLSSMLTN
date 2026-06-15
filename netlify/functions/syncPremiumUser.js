@@ -222,43 +222,42 @@ exports.handler = async function (event, context) {
     }
   } catch (err) {
     if (err.code === 'auth/user-not-found') {
-      // User does not exist in Firebase Auth, create them
-      const password = normalizedPhone;
-      if (password.length < 6) {
-        console.error(`[Processing Failure] Cannot create user: Password (normalized phone: '${password}') is less than 6 characters.`);
-        return {
-          statusCode: 400,
-          headers,
-          body: JSON.stringify({ error: { message: 'Bad Request: Password (last 10 digits of phone) must be at least 6 characters.' } })
-        };
-      }
-
-      try {
-        const createOptions = {
-          email: cleanEmail,
-          password: password,
-          displayName: nameVal || undefined
-        };
-        // Align Firebase Auth UID to pre-existing Firestore Doc ID if possible
-        if (targetUid) {
-          createOptions.uid = targetUid;
+      if (existingFirestoreDoc) {
+        // User already has a custom Firestore account. 
+        // We defer their Firebase Auth account creation to the client-side lazy migration
+        // when they next log in. This preserves their existing custom password.
+        console.log(`[Lazy Migration Deferred] User exists in Firestore but not in Firebase Auth. Skipping Auth creation to allow client-side lazy migration.`);
+        userRecord = { uid: targetUid };
+      } else {
+        // User does not exist in Firebase Auth or Firestore. Create them as a new user.
+        const password = normalizedPhone;
+        if (password.length < 6) {
+          console.error(`[Processing Failure] Cannot create user: Password (normalized phone: '${password}') is less than 6 characters.`);
+          return {
+            statusCode: 400,
+            headers,
+            body: JSON.stringify({ error: { message: 'Bad Request: Password (last 10 digits of phone) must be at least 6 characters.' } })
+          };
         }
 
-        userRecord = await auth.createUser(createOptions);
-        
-        // If they were not in Firestore, targetUid becomes the generated Auth UID
-        if (!targetUid) {
+        try {
+          const createOptions = {
+            email: cleanEmail,
+            password: password,
+            displayName: nameVal || undefined
+          };
+          userRecord = await auth.createUser(createOptions);
           targetUid = userRecord.uid;
           isNewUser = true;
+          console.log(`[Auth Created] Created new Firebase Auth user: ${userRecord.uid} (${cleanEmail})`);
+        } catch (createErr) {
+          console.error(`[Processing Failure] Firebase Auth creation failed for email ${cleanEmail}:`, createErr);
+          return {
+            statusCode: 500,
+            headers,
+            body: JSON.stringify({ error: { message: `Firebase Auth Creation Error: ${createErr.message}` } })
+          };
         }
-        console.log(`[Auth Created] Created new Firebase Auth user: ${userRecord.uid} (${cleanEmail})`);
-      } catch (createErr) {
-        console.error(`[Processing Failure] Firebase Auth creation failed for email ${cleanEmail}:`, createErr);
-        return {
-          statusCode: 500,
-          headers,
-          body: JSON.stringify({ error: { message: `Firebase Auth Creation Error: ${createErr.message}` } })
-        };
       }
     } else {
       console.error(`[Processing Failure] Firebase Auth search failed for email ${cleanEmail}:`, err);

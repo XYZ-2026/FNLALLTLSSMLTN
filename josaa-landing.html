@@ -2,21 +2,24 @@
 <html lang="en">
 
 <head>
-    <!-- SEO Optimization Meta Tags -->
-    <title>JoSAA Counselling Explorer (IIT, NIT, IIIT) — College Simplified</title>
-    <meta name="keywords" content="Counselling, mhtcet, josaa counselling, college simplified, mhtcet counselling, concept simplified, mhtcet counseling, josaa counseling, counseling, college predictor, college predictors, engineering college predictor, college admission predictor, josaa dashboard, nit iiit gfti admissions, jee advanced, jee main">
-    <meta name="description" content="Access the national-level JoSAA Counselling Dashboard. Optimize your choices for admission to IITs, NITs, IIITs, and GFTIs.">
-    <link rel="icon" type="image/png" href="favicon.png">
-    
-    <!-- Open Graph / Facebook Meta Tags -->
-    <meta property="og:title" content="JoSAA Counselling Explorer (IIT, NIT, IIIT) — College Simplified">
-    <meta property="og:description" content="Access the national-level JoSAA Counselling Dashboard. Optimize your choices for admission to IITs, NITs, IIITs, and GFTIs.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://counselling.collegesimplified.in/josaa-landing.html">
-    <meta property="og:site_name" content="College Simplified">
-    
-    <!-- Structured Data (JSON-LD) for Search Engines -->
-    <script type="application/ld+json">
+  <!-- SEO Optimization Meta Tags -->
+  <title>JoSAA Counselling Explorer (IIT, NIT, IIIT) — College Simplified</title>
+  <meta name="keywords"
+    content="Counselling, mhtcet, josaa counselling, college simplified, mhtcet counselling, concept simplified, mhtcet counseling, josaa counseling, counseling, college predictor, college predictors, engineering college predictor, college admission predictor, josaa dashboard, nit iiit gfti admissions, jee advanced, jee main">
+  <meta name="description"
+    content="Access the national-level JoSAA Counselling Dashboard. Optimize your choices for admission to IITs, NITs, IIITs, and GFTIs.">
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- Open Graph / Facebook Meta Tags -->
+  <meta property="og:title" content="JoSAA Counselling Explorer (IIT, NIT, IIIT) — College Simplified">
+  <meta property="og:description"
+    content="Access the national-level JoSAA Counselling Dashboard. Optimize your choices for admission to IITs, NITs, IIITs, and GFTIs.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://counselling.collegesimplified.in/josaa-landing.html">
+  <meta property="og:site_name" content="College Simplified">
+
+  <!-- Structured Data (JSON-LD) for Search Engines -->
+  <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
@@ -378,7 +381,7 @@
       font-size: 15px;
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 
     .placement-btn:hover {
@@ -571,7 +574,9 @@
     }
 
     @keyframes spin {
-      to { transform: rotate(360deg); }
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     .scroll-hint {
@@ -597,7 +602,7 @@
         max-width: 100%;
         overflow: hidden;
       }
-      
+
       .placement-controls {
         flex-direction: column;
         align-items: stretch;
@@ -663,7 +668,8 @@
   <div class="hero">
     <div class="badge">National Level Toolset</div>
     <h1>Strategic <span>JOSAA</span> Counseling</h1>
-    <p>Premium tools for IIT, NIT, IIIT & GFTI admissions. Predict your rank, find your dream college, and access verified
+    <p>Premium tools for IIT, NIT, IIIT & GFTI admissions. Predict your rank, find your dream college, and access
+      verified
       cutoff data.</p>
   </div>
 
@@ -675,15 +681,17 @@
           width: 100%;
           font-family: 'Inter', sans-serif;
         }
+
         .banners-grid {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
           gap: 28px;
           margin-top: 24px;
         }
+
         .premium-banner-card {
           background: var(--card, #ffffff);
-          border: 1px solid var(--stroke, rgba(0,0,0,0.08));
+          border: 1px solid var(--stroke, rgba(0, 0, 0, 0.08));
           border-radius: 24px;
           overflow: hidden;
           text-decoration: none;
@@ -693,18 +701,22 @@
           box-shadow: var(--shadow, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
           transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
         .premium-banner-card:hover {
           transform: translateY(-8px);
-          box-shadow: var(--shadow-lg, 0 20px 25px -5px rgba(0,0,0,0.1));
+          box-shadow: var(--shadow-lg, 0 20px 25px -5px rgba(0, 0, 0, 0.1));
           border-color: var(--brand, #dc2626);
         }
+
         .banner-img-container {
           position: relative;
           width: 100%;
-          padding-top: 52%; /* Aspect ratio of banners */
+          padding-top: 52%;
+          /* Aspect ratio of banners */
           overflow: hidden;
           background: #f3f4f6;
         }
+
         .banner-img-container img {
           position: absolute;
           top: 0;
@@ -714,9 +726,11 @@
           object-fit: cover;
           transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
         .premium-banner-card:hover .banner-img-container img {
           transform: scale(1.05);
         }
+
         .banner-overlay {
           position: absolute;
           inset: 0;
@@ -727,9 +741,11 @@
           opacity: 0;
           transition: opacity 0.3s ease;
         }
+
         .premium-banner-card:hover .banner-overlay {
           opacity: 1;
         }
+
         .view-program-btn {
           background: #ffffff;
           color: #111827;
@@ -739,33 +755,39 @@
           font-size: 13px;
           text-transform: uppercase;
           letter-spacing: 0.5px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
           transform: translateY(10px);
           transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
         .premium-banner-card:hover .view-program-btn {
           transform: translateY(0);
         }
+
         .banner-text-details {
           padding: 20px 24px;
           display: flex;
           flex-direction: column;
           gap: 6px;
         }
+
         .banner-text-details h3 {
           font-family: 'Lexend', sans-serif;
           font-weight: 700;
           font-size: 18px;
           color: var(--ink, #111827);
         }
+
         .banner-text-details p {
           font-size: 13.5px;
           color: var(--muted, #6b7280);
           line-height: 1.4;
         }
+
         .section-header-banner {
           margin-bottom: 8px;
         }
+
         .banner-badge-top {
           background: var(--brand-soft, #fef2f2);
           color: var(--brand, #dc2626);
@@ -777,8 +799,9 @@
           letter-spacing: 1px;
           display: inline-block;
           margin-bottom: 12px;
-          border: 1px solid var(--brand-ring, rgba(220,38,38,0.1));
+          border: 1px solid var(--brand-ring, rgba(220, 38, 38, 0.1));
         }
+
         .section-header-banner h2 {
           font-family: 'Lexend', sans-serif;
           font-weight: 800;
@@ -786,22 +809,27 @@
           color: var(--ink, #111827);
           letter-spacing: -0.01em;
         }
+
         .section-header-banner p {
           color: var(--muted, #6b7280);
           font-size: 14.5px;
           margin-top: 4px;
         }
+
         @media (max-width: 640px) {
           .banners-grid {
             grid-template-columns: 1fr;
             gap: 20px;
           }
+
           .banner-text-details {
             padding: 16px 20px;
           }
+
           .banner-text-details h3 {
             font-size: 16px;
           }
+
           .section-header-banner h2 {
             font-size: 20px;
           }
@@ -816,7 +844,8 @@
         <!-- Banner 1 -->
         <a href="https://www.conceptsimplified.in/courses/668919" target="_blank" class="premium-banner-card">
           <div class="banner-img-container">
-            <img src="paid%20banners/banner1.webp" alt="Simplified Pro | Maharashtra Engineering Admission Counselling 2026">
+            <img src="paid%20banners/banner1.webp"
+              alt="Simplified Pro | Maharashtra Engineering Admission Counselling 2026">
             <div class="banner-overlay">
               <span class="view-program-btn">View Program &rarr;</span>
             </div>
@@ -830,7 +859,8 @@
         <!-- Banner 2 -->
         <a href="https://www.conceptsimplified.in/courses/840574" target="_blank" class="premium-banner-card">
           <div class="banner-img-container">
-            <img src="paid%20banners/banner2.webp" alt="Simplified Premium 1:1 | Maharashtra Engineering Admission Counselling 2026">
+            <img src="paid%20banners/banner2.webp"
+              alt="Simplified Premium 1:1 | Maharashtra Engineering Admission Counselling 2026">
             <div class="banner-overlay">
               <span class="view-program-btn">View Program &rarr;</span>
             </div>
@@ -840,108 +870,6 @@
             <p>Maharashtra Engineering Admission Counselling 2026</p>
           </div>
         </a>
-      </div>
-
-      <!-- How to Enroll Guide -->
-      <style>
-        .enroll-guide-container {
-            margin-top: 48px;
-            background: var(--card, #ffffff);
-            border: 1px solid var(--stroke, rgba(0,0,0,0.08));
-            border-radius: 28px;
-            padding: 32px;
-            box-shadow: var(--shadow, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
-            text-align: left;
-        }
-        .enroll-guide-hdr {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 24px;
-            border-bottom: 1.5px solid var(--stroke, rgba(0,0,0,0.08));
-            padding-bottom: 16px;
-        }
-        .enroll-guide-hdr h3 {
-            font-family: 'Lexend', sans-serif;
-            font-weight: 800;
-            font-size: 20px;
-            color: var(--ink, #111827);
-            margin: 0;
-        }
-        .enroll-steps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 24px;
-        }
-        .enroll-step-card {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .enroll-step-badge {
-            width: 36px;
-            height: 36px;
-            border-radius: 12px;
-            background: var(--brand-soft, #fef2f2);
-            color: var(--brand, #dc2626);
-            font-weight: 800;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid var(--brand-ring, rgba(220,38,38,0.1));
-        }
-        .enroll-step-card h4 {
-            font-family: 'Lexend', sans-serif;
-            font-weight: 700;
-            font-size: 15px;
-            color: var(--ink, #111827);
-            margin: 0;
-        }
-        .enroll-step-card p {
-            font-size: 13.5px;
-            color: var(--muted, #6b7280);
-            line-height: 1.5;
-            margin: 0;
-        }
-        @media (max-width: 640px) {
-            .enroll-guide-container {
-                padding: 24px;
-                margin-top: 32px;
-            }
-            .enroll-steps-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-        }
-      </style>
-      <div class="enroll-guide-container">
-        <div class="enroll-guide-hdr">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <h3>How to Enroll Step-by-Step</h3>
-        </div>
-        <div class="enroll-steps-grid">
-            <div class="enroll-step-card">
-                <div class="enroll-step-badge">1</div>
-                <h4>Select Program</h4>
-                <p>Click on the <strong>"Unlock All Choices"</strong> button or click any counselling banner on this page.</p>
-            </div>
-            <div class="enroll-step-card">
-                <div class="enroll-step-badge">2</div>
-                <h4>Choose Course</h4>
-                <p>Select your desired premium engineering counselling course or mentorship program.</p>
-            </div>
-            <div class="enroll-step-card">
-                <div class="enroll-step-badge">3</div>
-                <h4>Enter Details</h4>
-                <p>Fill in your Email and Phone Number (both mandatory). Your phone number will act as your initial account password.</p>
-            </div>
-            <div class="enroll-step-card">
-                <div class="enroll-step-badge">4</div>
-                <h4>Pay & Login</h4>
-                <p>Complete the purchase. Log in to the platform using the same email and your phone number as password.</p>
-            </div>
-        </div>
       </div>
     </section>
 
@@ -1010,8 +938,9 @@
         </a>
         <a class="tool-card" href="josaa_iit.html">
           <div class="tool-top">
-            <div class="tool-icon" style="color: #c2410c; background: #fff7ed;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <div class="tool-icon" style="color: #c2410c; background: #fff7ed;"><svg width="24" height="24"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10" />
                 <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
               </svg></div>
@@ -1054,7 +983,8 @@
           </div>
           <div class="tool-info">
             <h3>JOSAA Preference List Builder</h3>
-            <p>Smart 4-step wizard to build your JOSAA counselling preference list with college matching, drag-and-drop reordering, and PDF/Excel export.</p>
+            <p>Smart 4-step wizard to build your JOSAA counselling preference list with college matching, drag-and-drop
+              reordering, and PDF/Excel export.</p>
             <div class="tool-tag">Counselling Utility</div>
           </div>
         </a>
@@ -1066,7 +996,8 @@
     <!-- PLACEMENT STATISTICS HUB -->
     <section class="section">
       <div class="section-header">
-        <div class="section-icon" style="background: linear-gradient(135deg, #fff5f5, #fff); border-color: rgba(220, 38, 38, 0.2); color: var(--brand);">
+        <div class="section-icon"
+          style="background: linear-gradient(135deg, #fff5f5, #fff); border-color: rgba(220, 38, 38, 0.2); color: var(--brand);">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
             stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="20" x2="18" y2="10" />
@@ -1076,8 +1007,10 @@
         </div>
         <div class="section-title">
           <h2>College Placements Overview</h2>
-          <p>Analyze key placement statistics including average, median, highest packages, and employment percentages across national institutes.</p>
-          <div class="meta-badge" id="placement-meta-badge"><span class="dot"></span> Select a category to view stats</div>
+          <p>Analyze key placement statistics including average, median, highest packages, and employment percentages
+            across national institutes.</p>
+          <div class="meta-badge" id="placement-meta-badge"><span class="dot"></span> Select a category to view stats
+          </div>
         </div>
       </div>
 
@@ -1090,11 +1023,13 @@
             <button class="placement-btn" data-type="GFTI" onclick="loadPlacements('GFTI')">GFTI</button>
           </div>
           <div class="search-box">
-            <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="11" cy="11" r="8" />
               <path d="m21 21-4.35-4.35" />
             </svg>
-            <input type="text" id="placement-search" class="search-input" placeholder="Search by college or state..." oninput="filterPlacements()">
+            <input type="text" id="placement-search" class="search-input" placeholder="Search by college or state..."
+              oninput="filterPlacements()">
           </div>
         </div>
 
@@ -1109,8 +1044,9 @@
 
         <div id="placement-table-container" style="display: none;">
           <div class="scroll-hint">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px; vertical-align: middle;">
-              <path d="m9 18 6-6-6-6"/>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px; vertical-align: middle;">
+              <path d="m9 18 6-6-6-6" />
             </svg>
             Swipe horizontally to view full table
           </div>
