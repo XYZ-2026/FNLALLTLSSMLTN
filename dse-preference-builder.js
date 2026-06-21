@@ -248,14 +248,43 @@ async function loadData() {
     const j2 = await res2.json();
 
     const raw1 = j1['DSE_CUTOFFS'] || [];
-    allData = raw1.map(r => ({
-      code: String(r['Institute Code'] || '').trim(),
-      name: (r['Institute'] || '').replace(/^\d+\s*-\s*/, '').replace(/^\d+\s+/, '').trim(),
-      branch: (r['Course Name'] || '').trim(),
-      percentile: parseFloat(r['Percentile']) || 0,
-      rank: parseInt(r['Rank']) || 999999,
-      seatType: r['Seat Type.'] || ''
-    }));
+    const categoriesSet = new Set();
+    allData = raw1.map(r => {
+      const st = r['Seat Type.'] || '';
+      if (st === 'EWS') {
+        categoriesSet.add('EWS');
+      } else if (st.startsWith('G') || st.startsWith('L')) {
+        const cat = st.substring(1);
+        if (cat) categoriesSet.add(cat);
+      }
+      return {
+        code: String(r['Institute Code'] || '').trim(),
+        name: (r['Institute'] || '').replace(/^\d+\s*-\s*/, '').replace(/^\d+\s+/, '').trim(),
+        branch: (r['Course Name'] || '').trim(),
+        percentile: parseFloat(r['Percentile']) || 0,
+        rank: parseInt(r['Rank']) || 999999,
+        seatType: st
+      };
+    });
+
+    // Populate categories dynamically
+    const categoriesArray = Array.from(categoriesSet);
+    categoriesArray.sort((a, b) => {
+      if (a === 'OPEN') return -1;
+      if (b === 'OPEN') return 1;
+      return a.localeCompare(b);
+    });
+
+    const catSel = document.getElementById('inCategory');
+    if (catSel) {
+      const currentVal = catSel.value || 'OPEN';
+      catSel.innerHTML = categoriesArray.map(c => `<option value="${c}">${c}</option>`).join('');
+      if (categoriesArray.includes(currentVal)) {
+        catSel.value = currentVal;
+      } else if (categoriesArray.includes('OPEN')) {
+        catSel.value = 'OPEN';
+      }
+    }
 
     collegeMetadata = (j2['college-data'] || []).map(c => ({
       code: String(c['Institute Code'] || '').trim(),
