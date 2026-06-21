@@ -383,6 +383,7 @@ background:var(--bg-alt);font-family:inherit;font-size:.82rem;cursor:pointer;tra
 </style>
 </head>
 <body>
+<div id="toolArea">
 
 <!-- ===================== HOMEPAGE ===================== -->
 <div class="homepage-view" id="homepageView">
@@ -552,6 +553,7 @@ background:var(--bg-alt);font-family:inherit;font-size:.82rem;cursor:pointer;tra
 </div>
 <div class="modal-overlay" id="sampleReportModal">
   <div class="modal-content sample-modal-content" id="sampleReportContent"></div>
+</div>
 </div>
 
 <!-- Hidden PDF render area -->
@@ -2961,7 +2963,14 @@ async function generatePDF(isSample = false, customDate = null) {
 
 /* ========== INIT ========== */
 document.addEventListener('DOMContentLoaded',()=>{
-  initAuth({ requireLogin: false });
+  const session = initAuth({
+    requireLogin: true,
+    requirePremium: true,
+    premiumTitle: "Branch Predictor Locked",
+    premiumDescription: "This engineering DNA branch prediction assessment is reserved for Premium members. Upgrade your account or link your purchase to discover the engineering branch you are truly built for and download your premium PDF report.",
+    toolContainerId: 'toolArea'
+  });
+  if (!session) return;
   renderHomepage();
   if (new URLSearchParams(window.location.search).get('autofill') === 'true') {
     answers = Array.from({length: 60}, (_, i) => i % 4);

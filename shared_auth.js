@@ -845,6 +845,8 @@ function initAuth(opts) {
     if (!isPremium) {
       var container = opts.toolContainerId ? document.getElementById(opts.toolContainerId) : null;
       if (container) {
+        var title = opts.premiumTitle || 'Premium Feature Locked';
+        var desc = opts.premiumDescription || 'This advanced preference list builder is reserved for Premium members. Upgrade your account or link your purchase to unlock unlimited choices, expert templates, and custom PDF exports.';
         container.innerHTML = `
           <div style="text-align:center;padding:100px 20px;max-width:550px;margin:0 auto">
             <div style="width:80px;height:80px;background:#fef9e7;border-radius:50%;display:grid;place-items:center;margin:0 auto 24px;box-shadow:0 8px 16px rgba(184,134,11,0.15)">
@@ -852,8 +854,8 @@ function initAuth(opts) {
                 <circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
               </svg>
             </div>
-            <h2 style="font-family:Lexend,sans-serif;font-weight:800;font-size:28px;margin-bottom:12px;color:var(--ink)">Premium Feature Locked</h2>
-            <p style="color:var(--muted);margin-bottom:32px;line-height:1.6;font-size:15px">This advanced preference list builder is reserved for Premium members. Upgrade your account or link your purchase to unlock unlimited choices, expert templates, and custom PDF exports.</p>
+            <h2 style="font-family:Lexend,sans-serif;font-weight:800;font-size:28px;margin-bottom:12px;color:var(--ink)">${title}</h2>
+            <p style="color:var(--muted);margin-bottom:32px;line-height:1.6;font-size:15px">${desc}</p>
             <div class="lock-btn-group" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
               <a href="https://www.conceptsimplified.in/courses" target="_blank" class="claim-premium-btn" style="margin:0 !important;background:linear-gradient(135deg,#fbbf24,#d97706);box-shadow:0 8px 20px rgba(217,119,6,0.25)">Upgrade to Premium →</a>
               <button onclick="window.openClaimPremiumModal()" class="claim-premium-btn" style="margin:0 !important">Link Purchase / Grant Access</button>

@@ -180,55 +180,6 @@
       gap: 10px
     }
 
-    .toggle-wrap {
-      position: relative;
-      width: 42px;
-      height: 22px;
-      flex-shrink: 0
-    }
-
-    .toggle-wrap input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-      position: absolute
-    }
-
-    .toggle-track {
-      position: absolute;
-      inset: 0;
-      background: var(--stroke);
-      border-radius: 999px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 3px;
-      font-size: 9px;
-      transition: background .3s
-    }
-
-    [data-theme="dark"] .toggle-track {
-      background: #4f46e5
-    }
-
-    .toggle-knob {
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 18px;
-      height: 18px;
-      background: #fff;
-      border-radius: 50%;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, .25);
-      transition: transform .3s cubic-bezier(.4, 0, .2, 1);
-      pointer-events: none
-    }
-
-    .toggle-wrap input:checked~.toggle-knob {
-      transform: translateX(20px)
-    }
-
     /* Auth */
     .auth-wrap {
       min-height: calc(100vh - 62px);
@@ -543,12 +494,6 @@
         <div class="brand-logo">C</div>
         <div class="brand-name">College Simplified<span>Login / Register</span></div>
       </a>
-      <div class="topbar-right">
-        <label class="toggle-wrap" title="Toggle dark mode">
-          <input type="checkbox" id="themeToggle">
-          <div class="toggle-track"><span>☀</span><span>🌙</span></div>
-          <div class="toggle-knob"></div>
-        </label>
       </div>
     </div>
   </header>
