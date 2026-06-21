@@ -67,7 +67,7 @@ function injectGlobalUI() {
     body { transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     header { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
-    .sidebar-profile { display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--brand-soft); border-radius: 16px; margin-top: 8px; overflow: hidden; }
+    .sidebar-profile { display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--brand-soft); border-radius: 16px; overflow: hidden; }
     .sidebar-avatar { width: 40px; height: 40px; background: var(--brand); color: #fff; border-radius: 50%; display: grid; place-items: center; font-weight: 800; flex-shrink: 0; }
     .sidebar-user-info { overflow: hidden; min-width: 0; flex: 1; }
     .sidebar-user-name { font-weight: 700; font-size: 14px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -90,6 +90,43 @@ function injectGlobalUI() {
 
     .sidebar-logout { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--stroke); background: none; width: 100%; cursor: pointer; font-weight: 600; color: var(--muted); font-family: inherit; transition: 0.2s; }
     .sidebar-logout:hover { border-color: var(--brand); color: var(--brand); }
+
+    .sidebar-enquiry-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1.5px solid rgba(184, 134, 11, 0.25);
+      background: #fef9e7;
+      color: #b8860b;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 13px;
+      font-family: inherit;
+      transition: all 0.2s ease-in-out;
+      width: 100%;
+      box-shadow: 0 2px 4px rgba(184, 134, 11, 0.08);
+      box-sizing: border-box;
+    }
+    .sidebar-enquiry-btn:hover {
+      background: #fff3cd;
+      color: #966b04;
+      border-color: rgba(184, 134, 11, 0.45);
+      box-shadow: 0 4px 12px rgba(184, 134, 11, 0.15);
+      transform: translateY(-1px);
+    }
+    .sidebar-enquiry-btn svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      color: #b8860b;
+      transition: 0.2s;
+    }
+    .sidebar-enquiry-btn:hover svg {
+      color: #966b04;
+    }
 
     .notif-dropdown-ui { position: absolute; right: 0; top: calc(100% + 12px); width: 340px; max-height: 480px; overflow-y: auto; background: var(--card); border: 1px solid var(--stroke); border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); z-index: 9999; display: none; padding: 8px; }
     .notif-dropdown-ui.show { display: block; animation: navPop 0.2s ease-out; }
@@ -414,7 +451,16 @@ function injectGlobalUI() {
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
-      <div id="sidebarProfile"></div>
+      <div class="sidebar-user-area" style="display:flex;flex-direction:column;gap:12px">
+        <div id="sidebarProfile"></div>
+        <div id="sidebarLogout"></div>
+        <div id="sidebarEnquiry">
+          <a href="https://forms.gle/E5PYRE6bE6pZVvn39" target="_blank" class="sidebar-enquiry-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            Management Seats Enquiry
+          </a>
+        </div>
+      </div>
       <nav style="display:flex;flex-direction:column;gap:4px;overflow-y:auto;padding-right:4px">
         <div class="sidebar-label">Navigation</div>
         <a href="index.html" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Home</a>
@@ -508,8 +554,6 @@ function injectGlobalUI() {
 
 
       </nav>
-
-      <div id="sidebarLogout" style="margin-top:auto"></div>
     </aside>
     <div id="global-ui-injected" style="display:none"></div>
   `;
@@ -592,6 +636,7 @@ function populateSidebar() {
   var adm = document.getElementById('adminArea');
 
   if (user) {
+    log.style.display = '';
     var ini = (user.name || 'U').charAt(0).toUpperCase();
     var badgeHtml = '';
     var avatarStyle = '';
@@ -616,7 +661,7 @@ function populateSidebar() {
     if (user.role === 'admin') {
       var aLink = document.createElement('a');
       aLink.href = 'admin.html'; aLink.className = 'sidebar-link';
-      aLink.style.background = 'var(--brand-soft)'; aLink.style.color = 'var(--brand)'; aLink.style.marginTop = '8px';
+      aLink.style.background = 'var(--brand-soft)'; aLink.style.color = 'var(--brand)';
       aLink.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg> Admin Panel';
       prof.after(aLink);
 
@@ -626,6 +671,7 @@ function populateSidebar() {
     log.innerHTML = '<button class="sidebar-logout" onclick="doLogout()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Logout</button>';
   } else {
     prof.innerHTML = '<a href="' + AUTH_CONFIG.AUTH_PAGE + '" class="sidebar-link" style="background:var(--brand);color:#fff;justify-content:center">Login / Register</a>';
+    log.style.display = 'none';
   }
 }
 
@@ -707,6 +753,59 @@ function initAuth(opts) {
   renderAuthUI();
 
   var session = getSession();
+
+  // Sync user status from Firestore in background to allow instant premium access without relogin
+  if (session && session.id && typeof db !== 'undefined') {
+    db.collection('users').doc(session.id).get().then(function(doc) {
+      if (doc.exists) {
+        var userData = doc.data();
+        var updated = false;
+
+        // Sync role
+        if (userData.role !== session.role) {
+          session.role = userData.role;
+          updated = true;
+        }
+
+        // Sync premium status (role === 'premium' or role === 'admin' or premium === true)
+        var livePremium = userData.premium === true || userData.role === 'premium' || userData.role === 'admin';
+        var cachedPremium = session.premium === true || session.role === 'premium' || session.role === 'admin';
+        if (livePremium !== cachedPremium) {
+          session.premium = livePremium;
+          updated = true;
+        }
+
+        // Sync other profile info
+        if (userData.name && userData.name !== session.name) {
+          session.name = userData.name;
+          updated = true;
+        }
+        if (userData.email && userData.email !== session.email) {
+          session.email = userData.email;
+          updated = true;
+        }
+
+        if (updated) {
+          setSession(session);
+          populateSidebar();
+          renderAuthUI();
+
+          // Hide or show premium banners depending on the updated status
+          var isNowPremium = session.role === 'premium' || session.premium === true || session.role === 'admin';
+          var banners = document.querySelectorAll('.premium-banners-section');
+          banners.forEach(function(el) {
+            el.style.display = isNowPremium ? 'none' : '';
+          });
+
+          // Reload the page to unlock tools/predictors with the new state
+          window.location.reload();
+        }
+      }
+    }).catch(function(err) {
+      console.error('Error syncing user session with Firestore:', err);
+    });
+  }
+
   var isPremium = session && (session.role === 'premium' || session.premium === true);
   if (isPremium) {
     var hidePremiumElements = function() {
@@ -734,6 +833,32 @@ function initAuth(opts) {
     }
     return null;
   }
+
+  // Check if premium is required and user is not premium/admin
+  if (session && opts.requirePremium) {
+    var isPremium = session.role === 'premium' || session.premium === true || session.role === 'admin';
+    if (!isPremium) {
+      var container = opts.toolContainerId ? document.getElementById(opts.toolContainerId) : null;
+      if (container) {
+        container.innerHTML = `
+          <div style="text-align:center;padding:100px 20px;max-width:550px;margin:0 auto">
+            <div style="width:80px;height:80px;background:#fef9e7;border-radius:50%;display:grid;place-items:center;margin:0 auto 24px;box-shadow:0 8px 16px rgba(184,134,11,0.15)">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#b8860b" stroke-width="2.5">
+                <circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+              </svg>
+            </div>
+            <h2 style="font-family:Lexend,sans-serif;font-weight:800;font-size:28px;margin-bottom:12px;color:var(--ink)">Premium Feature Locked</h2>
+            <p style="color:var(--muted);margin-bottom:32px;line-height:1.6;font-size:15px">This advanced preference list builder is reserved for Premium members. Upgrade your account or link your purchase to unlock unlimited choices, expert templates, and custom PDF exports.</p>
+            <div class="lock-btn-group" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+              <a href="https://www.conceptsimplified.in/courses" target="_blank" class="claim-premium-btn" style="margin:0 !important;background:linear-gradient(135deg,#fbbf24,#d97706);box-shadow:0 8px 20px rgba(217,119,6,0.25)">Upgrade to Premium →</a>
+              <button onclick="window.openClaimPremiumModal()" class="claim-premium-btn" style="margin:0 !important">Link Purchase / Grant Access</button>
+            </div>
+          </div>`;
+      }
+      return null;
+    }
+  }
+
   startUpgradeButtonObserver();
   initAdPopup();
   return session || { guest: true };

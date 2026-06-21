@@ -1263,7 +1263,7 @@ function pbToast(msg) {
 
 /* ══════ BOOT ══════ */
 async function boot() {
-  const session = initAuth({ requireLogin: true, toolContainerId: 'toolArea' });
+  const session = initAuth({ requireLogin: true, requirePremium: true, toolContainerId: 'toolArea' });
   if (!session) return;
   const user = getSession();
   if (user) currentUserId = user.id;

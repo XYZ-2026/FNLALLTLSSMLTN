@@ -209,18 +209,20 @@ const CATS = {
   'Other Branches': []
 };
 const FIXED_ASPIRATIONAL = [
-  { code: '16006', instituteName: 'COEP Technological University', branch: 'Computer Engineering', percentile: 99.98, isFixed: true, isAspirational: true },
-  { code: '3012', instituteName: 'Veermata Jijabai Technological Institute (VJTI)', branch: 'Computer Engineering', percentile: 99.95, isFixed: true, isAspirational: true },
-  { code: '3012', instituteName: 'Veermata Jijabai Technological Institute (VJTI)', branch: 'Information Technology', percentile: 99.92, isFixed: true, isAspirational: true },
-  { code: '16006', instituteName: 'COEP Technological University', branch: 'Artificial Intelligence and Machine Learning', percentile: 99.88, isFixed: true, isAspirational: true },
-  { code: '3215', instituteName: 'Sardar Patel Institute of Technology (SPIT)', branch: 'Computer Science and Engineering', percentile: 99.85, isFixed: true, isAspirational: true },
-  { code: '3215', instituteName: 'Sardar Patel Institute of Technology (SPIT)', branch: 'Computer Engineering', percentile: 99.82, isFixed: true, isAspirational: true }
+  { code: '16006', instituteName: 'COEP Technological University', branch: 'Computer Engineering', percentile: 99.98, isFixed: false, isAspirational: true },
+  { code: '3012', instituteName: 'Veermata Jijabai Technological Institute (VJTI)', branch: 'Computer Engineering', percentile: 99.95, isFixed: false, isAspirational: true },
+  { code: '3012', instituteName: 'Veermata Jijabai Technological Institute (VJTI)', branch: 'Information Technology', percentile: 99.92, isFixed: false, isAspirational: true },
+  { code: '16006', instituteName: 'COEP Technological University', branch: 'Artificial Intelligence and Machine Learning', percentile: 99.88, isFixed: false, isAspirational: true },
+  { code: '3215', instituteName: 'Sardar Patel Institute of Technology (SPIT)', branch: 'Computer Science and Engineering', percentile: 99.85, isFixed: false, isAspirational: true },
+  { code: '3215', instituteName: 'Sardar Patel Institute of Technology (SPIT)', branch: 'Computer Engineering', percentile: 99.82, isFixed: false, isAspirational: true }
 ];
 
 /* ══════ STEPPER ══════ */
 let currentStep = 1;
 function goStep(n) {
   if (n < 0 || n > 5) return;
+  // Map step 4 to step 3 for backward compatibility
+  if (n === 4) n = 3;
   if (n === 2) {
     if (!validateStep1()) return;
     saveNonLockedData();
@@ -228,29 +230,13 @@ function goStep(n) {
   if (n === 3 && selectedBranches.size === 0) { pbToast('Select at least one branch'); return }
   if (n === 3) {
     generateMatches();
-    // Restore checkbox selections from keys if available
-    if (window._tempKeys && window._tempKeys.length > 0) {
-      selectedColleges = [];
-      window._tempKeys.forEach(key => {
-        const idx = matchedColleges.findIndex(c => (c.code + '|' + c.branch) === key);
-        if (idx >= 0) selectedColleges.push(idx);
-      });
-      delete window._tempKeys;
-      renderColleges('all');
-    }
-  }
-  if (n === 4) {
-    if (!window._isLoadingForm) {
-      buildPrefList();
-    } else {
-      renderPrefList();
-      renderSuggestions();
-      renderAspirational();
-    }
+    initSplitFilters();
+    renderPrefList();
+    renderSplitPredictorResults();
   }
 
   // Save progress on every step transition
-  if (n > 0 && n <= 4) saveNonLockedData();
+  if (n > 0 && n <= 3) saveNonLockedData();
 
   currentStep = n;
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -377,7 +363,7 @@ function loadForm(formId, step = 1) {
   window._isLoadingForm = true;
   // Use saved step if not explicitly provided
   const targetStep = step || form.currentStep || 1;
-  goStep(targetStep);
+  goStep(targetStep === 4 ? 3 : targetStep);
   window._isLoadingForm = false;
 }
 
@@ -420,7 +406,7 @@ async function saveNonLockedData() {
     examType: examType,
     prefList: prefList,
     selectedBranches: Array.from(selectedBranches),
-    selectedCollegeKeys: selectedColleges.map(idx => matchedColleges[idx] ? matchedColleges[idx].code + '|' + matchedColleges[idx].branch : '').filter(Boolean),
+    selectedCollegeKeys: prefList.filter(p => !p.isFixed).map(p => p.code + '|' + p.branch),
     currentStep: currentStep,
     colType: document.getElementById('inColType').value,
     minority: document.getElementById('inMinority').value,
@@ -929,6 +915,10 @@ function extractMinority(status) {
 function renderColleges(filter = 'all') {
   const grid = document.getElementById('collegeGrid');
   const countEl = document.getElementById('matchCount');
+  if (!grid || !countEl) {
+    renderSplitPredictorResults();
+    return;
+  }
   let items = matchedColleges;
 
   if (filter === 'aspirational') items = matchedColleges.filter(r => r.isAspirational);
@@ -1443,9 +1433,8 @@ function renderPrefList() {
   list.innerHTML = displayPref.map((c, i) => {
     const isLocked = !isPremium && i >= 10;
     if (isLocked) {
-      return `
+       return `
         <tr class="pref-item locked-row" draggable="false" data-idx="${i}" style="cursor: default;">
-          <td class="pref-grip" style="text-align: center; width: 40px; vertical-align: middle">🔒</td>
           <td class="pref-num" style="text-align: center; font-weight: 800; width: 60px; vertical-align: middle">${i + 1}</td>
           <td style="width: 80px; vertical-align: middle"><span style="filter: blur(2px); opacity: 0.5;">0000</span></td>
           <td class="pref-name" style="font-weight: 600; color: var(--ink); vertical-align: middle"><span style="filter: blur(4px); opacity: 0.5;">••••••••••••••••••••••••••••••••••••</span></td>
@@ -1458,11 +1447,12 @@ function renderPrefList() {
     }
 
     const isFixed = c.isFixed;
+    const isMandatoryVisual = isFixed || (i < 6);
     const badges = [];
     if (c.isAspirational) {
       badges.push('<span class="pref-code asp-badge" style="background:#fff7ed; color:#ea580c; border:1px solid rgba(234, 88, 12, 0.15); font-weight:800; font-size:10px; text-transform:uppercase; letter-spacing:0.5px; padding: 2px 8px; border-radius: 6px">Aspirational</span>');
     }
-    if (isFixed) {
+    if (isMandatoryVisual) {
       badges.push('<span class="pref-code fixed-badge" style="background:var(--brand-soft); color:var(--brand); border:1px solid var(--brand-ring); font-weight:800; font-size:10px; text-transform:uppercase; letter-spacing:0.5px; padding: 2px 8px; border-radius: 6px">Mandatory</span>');
     }
 
@@ -1487,7 +1477,7 @@ function renderPrefList() {
     }
 
     return `
-      <tr class="pref-item ${isFixed ? 'is-fixed' : ''} ${c.isAspirational ? 'asp-item' : ''}" 
+      <tr class="pref-item ${isMandatoryVisual ? 'is-fixed' : ''} ${c.isAspirational ? 'asp-item' : ''}" 
           draggable="${!isFixed}" 
           data-idx="${i}"
           ondragstart="${isFixed ? '' : 'dragStart(event)'}" 
@@ -1497,16 +1487,7 @@ function renderPrefList() {
           ontouchstart="${isFixed ? '' : 'handleTouchStart(event)'}" 
           ontouchmove="${isFixed ? '' : 'handleTouchMove(event)'}" 
           ontouchend="${isFixed ? '' : 'handleTouchEnd(event)'}"
-          style="${isFixed ? 'border-left: 4px solid var(--brand); cursor: default' : ''}">
-        <td class="pref-grip" style="text-align: center; width: 40px; vertical-align: middle">
-          ${isFixed ? '' : `
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="cursor: grab; color: var(--muted)">
-            <circle cx="9" cy="5" r="1"/><circle cx="15" cy="5" r="1"/>
-            <circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/>
-            <circle cx="9" cy="19" r="1"/><circle cx="15" cy="19" r="1"/>
-          </svg>
-          `}
-        </td>
+          style="${isMandatoryVisual ? 'border-left: 4px solid var(--brand);' : ''}">
         <td class="pref-num" style="text-align: center; font-weight: 800; width: 60px; vertical-align: middle">${i + 1}</td>
         <td style="width: 80px; vertical-align: middle">${c.code}</td>
         <td class="pref-name" style="font-weight: 600; color: var(--ink); vertical-align: middle" title="${escH(c.instituteName || c.name)}">${escH(c.instituteName || c.name)}</td>
@@ -1558,19 +1539,139 @@ function removePref(i) {
 
 /* ══════ DRAG & DROP ══════ */
 let dragIdx = null;
-function dragStart(e) { dragIdx = +e.target.closest('.pref-item').dataset.idx; e.target.closest('.pref-item').classList.add('dragging') }
-function dragOver(e) { e.preventDefault(); const item = e.target.closest('.pref-item'); if (item) item.classList.add('drag-over') }
+let draggedPredictorCollege = null;
+
+function dragStart(e) { 
+  dragIdx = +e.target.closest('.pref-item').dataset.idx; 
+  e.target.closest('.pref-item').classList.add('dragging'); 
+}
+
+function dragOver(e) { 
+  e.preventDefault(); 
+  const item = e.target.closest('.pref-item'); 
+  if (item) item.classList.add('drag-over'); 
+}
+
+function dragStartPredictor(e, code, branch) {
+  draggedPredictorCollege = { code, branch };
+  e.dataTransfer.setData('text/plain', code + '|' + branch);
+  e.target.classList.add('dragging');
+}
+
+function dragEndPredictor(e) {
+  document.querySelectorAll('.predicted-col-card').forEach(el => el.classList.remove('dragging'));
+}
+
+function findCollegeInPools(code, branch) {
+  let c = matchedColleges.find(r => r.code === code && r.branch === branch);
+  if (!c) c = suggestionPool.find(r => r.code === code && r.branch === branch);
+  if (!c) {
+    const raw = cutoffData.find(r => r.code === code && r.branch === branch);
+    if (raw) {
+      const metaMap = {}; collegeMetadata.forEach(m => metaMap[m.code] = m);
+      const meta = metaMap[code] || {};
+      const status = (meta.status || '').toLowerCase();
+      c = {
+        ...raw, instituteName: meta.name || raw.name, status: meta.status || '',
+        isGov: status.includes('government'), isAuto: status.includes('autonomous'),
+        isMinority: status.includes('minority'), minorityType: extractMinority(meta.status || ''),
+        isAided: status.includes('aided')
+      };
+    }
+  }
+  return c;
+}
+
+function addPredictorCollege(code, branch) {
+  const key = code + '|' + branch;
+  if (prefList.some(p => (p.code + '|' + p.branch) === key)) {
+    pbToast('College already in preference list');
+    return;
+  }
+  const c = findCollegeInPools(code, branch);
+  if (c) {
+    const pct = parseFloat(document.getElementById('inPct').value) || 0;
+    prefList.push({ ...c, isAspirational: c.percentile > pct });
+    renderPrefList();
+    renderSplitPredictorResults();
+    triggerAutosave();
+    pbToast('Added ' + c.instituteName);
+  }
+}
+
 function dropItem(e) {
   e.preventDefault();
+  e.stopPropagation();
   document.querySelectorAll('.pref-item').forEach(el => el.classList.remove('drag-over'));
-  const targetIdx = +e.target.closest('.pref-item').dataset.idx;
-  if (dragIdx === null || dragIdx === targetIdx) return;
-  const [moved] = prefList.splice(dragIdx, 1);
-  prefList.splice(targetIdx, 0, moved);
-  renderPrefList();
-  triggerAutosave();
+  
+  let targetIdx = +e.target.closest('.pref-item').dataset.idx;
+  const firstNonFixedIdx = prefList.findIndex(p => !p.isFixed);
+  let insertIdx = targetIdx < firstNonFixedIdx ? firstNonFixedIdx : targetIdx;
+  
+  const isTemplateMode = (typeof isAdminTemplateEditingMode !== 'undefined' && isAdminTemplateEditingMode);
+  if (draggedPredictorCollege) {
+    if (!isTemplateMode && insertIdx < 6) {
+      insertIdx = 6;
+    }
+    const key = draggedPredictorCollege.code + '|' + draggedPredictorCollege.branch;
+    if (prefList.some(p => (p.code + '|' + p.branch) === key)) {
+      pbToast('College already in preference list');
+      draggedPredictorCollege = null;
+      return;
+    }
+    
+    const c = findCollegeInPools(draggedPredictorCollege.code, draggedPredictorCollege.branch);
+    if (c) {
+      const pct = parseFloat(document.getElementById('inPct').value) || 0;
+      prefList.splice(insertIdx, 0, { ...c, isAspirational: c.percentile > pct });
+      renderPrefList();
+      renderSplitPredictorResults();
+      triggerAutosave();
+      pbToast('Added ' + c.instituteName);
+    }
+    draggedPredictorCollege = null;
+  } else if (dragIdx !== null) {
+    if (!isTemplateMode && dragIdx >= 6 && insertIdx < 6) {
+      insertIdx = 6;
+    }
+    if (dragIdx === insertIdx) return;
+    const [moved] = prefList.splice(dragIdx, 1);
+    prefList.splice(insertIdx, 0, moved);
+    renderPrefList();
+    triggerAutosave();
+  }
 }
-function dragEnd(e) { dragIdx = null; document.querySelectorAll('.pref-item').forEach(el => el.classList.remove('dragging', 'drag-over')) }
+
+function dropOnTbody(e) {
+  if (e.target.closest('.pref-item')) return; // handled by dropItem
+  e.preventDefault();
+  
+  if (draggedPredictorCollege) {
+    const key = draggedPredictorCollege.code + '|' + draggedPredictorCollege.branch;
+    if (prefList.some(p => (p.code + '|' + p.branch) === key)) {
+      pbToast('College already in preference list');
+      draggedPredictorCollege = null;
+      return;
+    }
+    
+    const c = findCollegeInPools(draggedPredictorCollege.code, draggedPredictorCollege.branch);
+    if (c) {
+      const pct = parseFloat(document.getElementById('inPct').value) || 0;
+      prefList.push({ ...c, isAspirational: c.percentile > pct });
+      renderPrefList();
+      renderSplitPredictorResults();
+      triggerAutosave();
+      pbToast('Added ' + c.instituteName);
+    }
+    draggedPredictorCollege = null;
+  }
+}
+
+function dragEnd(e) { 
+  dragIdx = null; 
+  draggedPredictorCollege = null;
+  document.querySelectorAll('.pref-item').forEach(el => el.classList.remove('dragging', 'drag-over'));
+}
 
 // Mobile Touch Support
 let touchElement = null;
@@ -1596,10 +1697,20 @@ function handleTouchEnd(e) {
   const targetItem = target ? target.closest('.pref-item') : null;
   if (targetItem) {
     const targetIdx = parseInt(targetItem.dataset.idx);
-    if (dragIdx !== null && dragIdx !== targetIdx) {
-      const [moved] = prefList.splice(dragIdx, 1);
-      prefList.splice(targetIdx, 0, moved);
-      renderPrefList();
+    const firstNonFixedIdx = prefList.findIndex(p => !p.isFixed);
+    let insertIdx = targetIdx < firstNonFixedIdx ? firstNonFixedIdx : targetIdx;
+    
+    const isTemplateMode = (typeof isAdminTemplateEditingMode !== 'undefined' && isAdminTemplateEditingMode);
+    if (dragIdx !== null) {
+      if (!isTemplateMode && dragIdx >= 6 && insertIdx < 6) {
+        insertIdx = 6;
+      }
+      if (dragIdx !== insertIdx) {
+        const [moved] = prefList.splice(dragIdx, 1);
+        prefList.splice(insertIdx, 0, moved);
+        renderPrefList();
+        triggerAutosave();
+      }
     }
   }
   document.querySelectorAll('.pref-item').forEach(el => el.classList.remove('dragging', 'drag-over'));
@@ -2610,7 +2721,7 @@ async function useTemplate(templateId) {
     closeTplPreview();
     const formId = res.data.formId;
     await loadSavedPrefData();
-    loadForm(formId, 4);
+    loadForm(formId, 3);
   } else {
     pbToast(res.error || 'Failed to apply template.');
   }
@@ -2769,8 +2880,12 @@ async function createNewTemplateInBuilder() {
   };
 
   // Reset/Initialize Builder State
-  prefList = [];
+  prefList = [...FIXED_ASPIRATIONAL];
   selectedBranches = new Set();
+  prefList.forEach(c => {
+    if (c.branch) selectedBranches.add(c.branch);
+  });
+  renderBranches();
   selectedColleges = [];
   currentFormId = null;
 
@@ -3143,7 +3258,7 @@ async function seedDefaultTemplates() {
 
 /* ══════ BOOT ══════ */
 async function boot() {
-  const session = initAuth({ requireLogin: true, toolContainerId: 'toolArea' });
+  const session = initAuth({ requireLogin: true, requirePremium: true, toolContainerId: 'toolArea' });
   if (!session) return;
   const user = getSession();
   if (user) currentUserId = user.id;
@@ -3349,7 +3464,600 @@ function renderTemplatesInDashboard(catKey) {
 }
 
 
+/* ══════ SPLIT SCREEN PREFERENCE BUILDER HELPERS ══════ */
+function initSplitFilters() {
+  const examType = window.currentExamType || 'MHT-CET';
+  const examRadios = document.getElementsByName('splitExamType');
+  for (const r of examRadios) {
+    r.checked = (r.value === examType);
+  }
+  
+  const pct = document.getElementById('inPct').value;
+  const rank = document.getElementById('inRank').value;
+  document.getElementById('splitScoreInput').value = pct;
+  document.getElementById('splitRankInput').value = rank;
+  
+  updateSplitScoreLabels(examType);
+  
+  document.getElementById('splitCategorySelect').value = document.getElementById('inCategory').value || 'OPEN';
+  document.getElementById('splitGenderSelect').value = document.getElementById('inGender').value || 'Gender-Neutral';
+  document.getElementById('splitHomeUnivSelect').value = document.getElementById('inHomeUniv').value || '';
+  document.getElementById('splitColTypeSelect').value = document.getElementById('inColType').value || '';
+  document.getElementById('splitMinoritySelect').value = document.getElementById('inMinority').value || '';
+  
+  renderSplitRegionsDropdown();
+  renderSplitBranchesCollapse();
+}
+
+function updateSplitScoreLabels(examType) {
+  const isJee = (examType === 'JEE');
+  const pctLabel = document.getElementById('splitScoreLabel');
+  const rankLabel = document.getElementById('splitRankLabel');
+  
+  if (pctLabel) pctLabel.textContent = isJee ? 'JEE Percentile' : 'CET Percentile';
+  if (rankLabel) rankLabel.textContent = isJee ? 'AI Rank' : 'CET Rank';
+  
+  const catWrap = document.getElementById('splitCategoryWrap');
+  const huWrap = document.getElementById('splitHomeUnivWrap');
+  const minWrap = document.getElementById('splitMinorityWrap');
+  
+  if (catWrap) catWrap.style.display = isJee ? 'none' : 'block';
+  if (huWrap) huWrap.style.display = isJee ? 'none' : 'block';
+  if (minWrap) minWrap.style.display = isJee ? 'none' : 'block';
+}
+
+function changeSplitFilter(filterType, value) {
+  if (filterType === 'examType') {
+    window.currentExamType = value;
+    const radios = document.getElementsByName('inExamType');
+    for (const r of radios) {
+      if (r.value === value) r.checked = true;
+    }
+    toggleExamPath(value);
+    updateSplitScoreLabels(value);
+    autoFillPctRankSplit();
+  }
+  else if (filterType === 'score') {
+    document.getElementById('inPct').value = value;
+    autoFillPctRankSplit('score');
+  }
+  else if (filterType === 'rank') {
+    document.getElementById('inRank').value = value;
+    autoFillPctRankSplit('rank');
+  }
+  else if (filterType === 'category') {
+    document.getElementById('inCategory').value = value;
+  }
+  else if (filterType === 'gender') {
+    document.getElementById('inGender').value = value;
+  }
+  else if (filterType === 'homeUniv') {
+    document.getElementById('inHomeUniv').value = value;
+  }
+  else if (filterType === 'colType') {
+    document.getElementById('inColType').value = value;
+  }
+  else if (filterType === 'minority') {
+    document.getElementById('inMinority').value = value;
+  }
+  
+  generateMatches();
+  renderSplitPredictorResults();
+  triggerAutosave();
+}
+
+function autoFillPctRankSplit(source = 'score') {
+  const pctEl = document.getElementById('splitScoreInput');
+  const rankEl = document.getElementById('splitRankInput');
+  const pctVal = pctEl.value.trim();
+  const rankVal = rankEl.value.trim();
+  const TOTAL_STUDENTS = 520000;
+
+  if (source === 'score' && pctVal) {
+    const pct = parseFloat(pctVal);
+    if (!isNaN(pct) && pct >= 0 && pct <= 100) {
+      const rank = Math.max(1, Math.round((100 - pct) / 100 * TOTAL_STUDENTS));
+      rankEl.value = rank;
+      document.getElementById('inRank').value = rank;
+    }
+  } else if (source === 'rank' && rankVal) {
+    const rank = parseInt(rankVal);
+    if (!isNaN(rank) && rank >= 1) {
+      const pct = Math.max(0, 100 - (rank / TOTAL_STUDENTS) * 100);
+      pctEl.value = pct.toFixed(4);
+      document.getElementById('inPct').value = pct.toFixed(4);
+    }
+  }
+}
+
+function renderSplitRegionsDropdown() {
+  const container = document.getElementById('splitRegionsDropdown');
+  if (!container) return;
+  
+  container.innerHTML = ALL_REGIONS.map(r => {
+    const checked = selectedRegions.includes(r) ? 'checked' : '';
+    return `
+      <label class="split-regions-dropdown-item">
+        <input type="checkbox" value="${r}" ${checked} onchange="toggleSplitRegion('${r}', this.checked)">
+        <span>${r}</span>
+      </label>
+    `;
+  }).join('');
+  
+  updateSplitRegionsBtnText();
+}
+
+function toggleSplitRegion(region, isChecked) {
+  const idx = selectedRegions.indexOf(region);
+  if (isChecked) {
+    if (idx === -1) selectedRegions.push(region);
+  } else {
+    if (idx >= 0) selectedRegions.splice(idx, 1);
+  }
+  
+  updateSplitRegionsBtnText();
+  renderRegionChips();
+  generateMatches();
+  renderSplitPredictorResults();
+  triggerAutosave();
+}
+
+function updateSplitRegionsBtnText() {
+  const btnText = document.getElementById('splitRegionsBtnText');
+  if (!btnText) return;
+  
+  if (selectedRegions.length === 0) {
+    btnText.textContent = 'All Regions';
+  } else if (selectedRegions.length === 1) {
+    btnText.textContent = selectedRegions[0];
+  } else if (selectedRegions.length === ALL_REGIONS.length) {
+    btnText.textContent = 'All Regions';
+  } else {
+    btnText.textContent = selectedRegions.length + ' Regions';
+  }
+}
+
+function toggleSplitRegionsDropdown() {
+  const dropdown = document.getElementById('splitRegionsDropdown');
+  if (!dropdown) return;
+  
+  const isVisible = dropdown.style.display === 'block';
+  dropdown.style.display = isVisible ? 'none' : 'block';
+  
+  if (!isVisible) {
+    const closeHandler = (e) => {
+      if (!e.target.closest('#splitRegionsDropdown') && !e.target.closest('button[onclick="toggleSplitRegionsDropdown()"]')) {
+        dropdown.style.display = 'none';
+        document.removeEventListener('click', closeHandler);
+      }
+    };
+    setTimeout(() => document.addEventListener('click', closeHandler), 0);
+  }
+}
+
+function toggleSplitBranchesCollapse() {
+  const content = document.getElementById('splitBranchesCollapseContent');
+  const arrow = document.getElementById('splitBranchArrow');
+  if (!content || !arrow) return;
+  
+  const isVisible = content.style.display === 'block';
+  content.style.display = isVisible ? 'none' : 'block';
+  arrow.style.transform = isVisible ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+
+function renderSplitBranchesCollapse() {
+  const container = document.getElementById('splitBranchesCollapseContent');
+  const countSpan = document.getElementById('splitBranchCount');
+  if (!container || !countSpan) return;
+  
+  countSpan.textContent = selectedBranches.size;
+  
+  const grouped = {};
+  Object.keys(CATS).forEach(c => grouped[c] = []);
+  allBranchNames.forEach(b => { const cat = categorizeBranch(b); grouped[cat].push(b) });
+  
+  let html = `
+    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+      <button type="button" class="pb-btn pb-btn-ghost" onclick="toggleAllBranchesSplit(true)" style="padding: 4px 8px; font-size: 10px; border-radius: 6px; height: auto;">Select All</button>
+      <button type="button" class="pb-btn pb-btn-ghost" onclick="toggleAllBranchesSplit(false)" style="padding: 4px 8px; font-size: 10px; border-radius: 6px; height: auto;">Clear All</button>
+    </div>
+  `;
+  
+  Object.entries(grouped).forEach(([cat, branches]) => {
+    if (!branches.length) return;
+    const catSelCount = branches.filter(b => selectedBranches.has(b)).length;
+    html += `
+      <div style="margin-bottom: 8px; text-align: left;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; gap: 8px;">
+          <span style="font-size: 11px; font-weight: 700; color: var(--brand);">${cat} (${catSelCount}/${branches.length})</span>
+          <button type="button" class="branch-cat-toggle" onclick="toggleCategorySplit('${cat.replace(/'/g, "\\'")}')" style="font-size: 9px; padding: 2px 8px; border-radius: 4px; border: none; font-family: inherit; font-weight: 700; color: var(--brand); background: var(--brand-soft); cursor: pointer; transition: 0.2s; white-space: nowrap;">Select All</button>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr; gap: 4px; padding-left: 8px;">
+    `;
+    branches.forEach(b => {
+      const checked = selectedBranches.has(b) ? 'checked' : '';
+      html += `
+        <label class="split-branches-dropdown-item">
+          <input type="checkbox" value="${b}" ${checked} onchange="toggleBranchSplit('${b.replace(/'/g, "\\'")}', this.checked)">
+          <span style="font-size: 11px;">${b}</span>
+        </label>
+      `;
+    });
+    html += `
+        </div>
+      </div>
+    `;
+  });
+  
+  container.innerHTML = html;
+}
+
+function toggleBranchSplit(b, isChecked) {
+  if (isChecked) {
+    selectedBranches.add(b);
+  } else {
+    selectedBranches.delete(b);
+  }
+  
+  document.getElementById('splitBranchCount').textContent = selectedBranches.size;
+  renderBranches();
+  generateMatches();
+  renderSplitPredictorResults();
+  triggerAutosave();
+}
+
+function toggleAllBranchesSplit(selectAll) {
+  if (selectAll) {
+    allBranchNames.forEach(b => selectedBranches.add(b));
+  } else {
+    selectedBranches.clear();
+  }
+  
+  renderSplitBranchesCollapse();
+  renderBranches();
+  generateMatches();
+  renderSplitPredictorResults();
+  triggerAutosave();
+}
+
+function toggleCategorySplit(cat) {
+  const grouped = {};
+  Object.keys(CATS).forEach(c => grouped[c] = []);
+  allBranchNames.forEach(b => { grouped[categorizeBranch(b)].push(b) });
+  const branches = grouped[cat] || [];
+  const allSel = branches.every(b => selectedBranches.has(b));
+  branches.forEach(b => { if (allSel) selectedBranches.delete(b); else selectedBranches.add(b) });
+  
+  renderSplitBranchesCollapse();
+  renderBranches();
+  generateMatches();
+  renderSplitPredictorResults();
+  triggerAutosave();
+}
+
+function renderSplitPredictorResults() {
+  const container = document.getElementById('splitPredictedList');
+  const countEl = document.getElementById('splitMatchCount');
+  if (!container || !countEl) return;
+  
+  const inPref = new Set(prefList.map(p => p.code + '|' + p.branch));
+  let items = matchedColleges || [];
+  
+  countEl.textContent = items.length + ' colleges found';
+  
+  if (!items.length) {
+    const minority = document.getElementById('inMinority').value;
+    const regionsStr = selectedRegions.join(', ');
+    let msg = 'Try adjusting your filters or branch preferences.';
+    if (minority) msg = `No colleges found for ${minority} ${regionsStr ? 'in ' + regionsStr : ''}`;
+    
+    container.innerHTML = `
+      <div class="empty-state" style="padding: 24px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <h4 style="font-size: 14px; margin-bottom: 4px;">No Matches Found</h4>
+        <p style="font-size: 12px;">${msg}</p>
+      </div>
+    `;
+    return;
+  }
+  
+  const userSession = getSession();
+  const isPremium = userSession && (userSession.role === 'premium' || userSession.role === 'admin');
+  const displayItems = isPremium ? items : items.slice(0, 13);
+  
+  container.innerHTML = displayItems.map((c, idx) => {
+    const isLocked = !isPremium && idx >= 10;
+    if (isLocked) {
+      return `
+        <div class="predicted-col-card locked" style="filter: blur(2px); opacity: 0.5; cursor: not-allowed;">
+          <div class="predicted-col-card-name">••••••••••••••••••••••••••••••••••••</div>
+          <div class="predicted-col-card-meta">
+            <span class="predicted-col-card-tag">••••</span>
+          </div>
+          <div class="predicted-col-card-bottom">
+            <span class="predicted-col-card-pct">••.••%</span>
+            <span class="predicted-col-card-code">Code: ••••</span>
+          </div>
+        </div>
+      `;
+    }
+    
+    const isAdded = inPref.has(c.code + '|' + c.branch);
+    const asp = c.isAspirational;
+    
+    const statusTags = [];
+    if (c.isGov) statusTags.push('Gov');
+    if (c.isAuto) statusTags.push('Auto');
+    if (c.isMinority) statusTags.push(c.minorityType || 'Minority');
+    if (c.isAided) statusTags.push('Aided');
+    if (!c.isGov && !c.isAided) statusTags.push('Un-Aided');
+    const statusText = statusTags.join(', ');
+    
+    return `
+      <div class="predicted-col-card ${asp ? 'aspirational' : ''} ${isAdded ? 'added' : ''}" 
+           draggable="${!isAdded}" 
+           ondragstart="dragStartPredictor(event, '${c.code}', '${c.branch.replace(/'/g, "\\'")}')"
+           ondragend="dragEndPredictor(event)">
+        <div class="predicted-col-card-name" title="${escH(c.instituteName)}">${escH(c.instituteName)}</div>
+        <div class="predicted-col-card-meta">
+          <span class="predicted-col-card-tag branch" title="${escH(c.branch)}">${escH(c.branch)}</span>
+          <span class="predicted-col-card-tag">${escH(statusText)}</span>
+        </div>
+        <div class="predicted-col-card-bottom">
+          <span class="predicted-col-card-pct ${asp ? 'aspirational' : ''}"><strong>${c.percentile.toFixed(2)}%</strong></span>
+          <span class="predicted-col-card-code">Code: ${c.code}</span>
+        </div>
+        ${isAdded ? 
+          `<button class="predicted-col-card-add-btn added" disabled title="Already in list">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+           </button>` : 
+          `<button class="predicted-col-card-add-btn" onclick="addPredictorCollege('${c.code}', '${c.branch.replace(/'/g, "\\'")}')" title="Add to preference list">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+           </button>`
+        }
+      </div>
+    `;
+  }).join('');
+  
+  if (!isPremium && items.length > 10) {
+    container.innerHTML += `
+      <div class="lock-paywall-card" style="padding: 20px; margin-top: 16px;">
+        <div class="lock-icon-container" style="width: 48px; height: 48px; margin-bottom: 12px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+        <h4 style="font-size: 15px; font-weight: 800; color: var(--ink); margin-bottom: 4px;">Unlock All Matches</h4>
+        <p style="font-size: 11px; color: var(--muted); margin-bottom: 16px;">Purchase premium counselling to unlock the full list of predicted colleges.</p>
+        <a href="https://www.conceptsimplified.in/courses" target="_blank" class="unlock-btn" style="padding: 8px 20px; font-size: 11px;">Unlock Premium</a>
+      </div>
+    `;
+  }
+}
+
+function switchSplitRightTab(tabName) {
+  document.querySelectorAll('#panel3 .split-tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('#panel3 .sidebar-tab-btn').forEach(b => b.classList.remove('active'));
+  
+  document.getElementById('split-tab-' + tabName).classList.add('active');
+  document.getElementById('btn-tab-' + tabName).classList.add('active');
+  
+  if (tabName === 'templates') {
+    loadSplitTemplatesTab();
+  }
+}
+
+let splitSearchTimeout = null;
+function searchManualCollegesSplit() {
+  clearTimeout(splitSearchTimeout);
+  splitSearchTimeout = setTimeout(async () => {
+    const query = (document.getElementById('splitManualSearchInput').value || '').toLowerCase().trim();
+    const resDiv = document.getElementById('splitManualSearchResults');
+    if (!query) { resDiv.innerHTML = ''; return; }
+    resDiv.innerHTML = '<div class="pb-spinner" style="margin:20px auto"></div>';
+    
+    const category = document.getElementById('inCategory').value || 'OPEN';
+    const minority = document.getElementById('inMinority').value || '';
+    const gender = document.getElementById('inGender').value || 'Gender-Neutral';
+    const isLadiesSeatSelected = (gender === 'Female-only');
+    const baseCategory = category;
+    const homeUniv = (document.getElementById('inHomeUniv') || {}).value || '';
+
+    const isJee = (window.currentExamType === 'JEE');
+    const activeCutoffData = isJee ? (jeeCutoffData || []) : cutoffData;
+
+    const catMap = { 'OPEN': 'OPEN', 'OBC': 'OBC', 'SC': 'SC', 'ST': 'ST', 'VJ/DT': 'VJ', 'NT1': 'NT1', 'NT2': 'NT2', 'NT3': 'NT3', 'EWS': 'EWS', 'TFWS': 'TFWS' };
+    const searchCat = catMap[baseCategory] || 'OPEN';
+
+    const metaMap = {}; collegeMetadata.forEach(c => metaMap[c.code] = c);
+
+    let filtered = activeCutoffData.filter(r => {
+      if (!r.code.includes(query) && !(r.name || '').toLowerCase().includes(query) && !(r.branch || '').toLowerCase().includes(query)) return false;
+
+      const meta = metaMap[r.code] || {};
+      const nameLower = (meta.name || r.name || '').toLowerCase();
+      const statusLower = (meta.status || '').toLowerCase();
+      const isWomenOnly = nameLower.includes('women') || nameLower.includes('girls') || statusLower.includes('women') || statusLower.includes('girls') || r.code === '3035';
+
+      if (isLadiesSeatSelected) {
+        if (!isJee && !isWomenOnly && !(r.seatType || '').startsWith('L')) return false;
+      } else {
+        if (!isJee && (r.seatType || '').startsWith('L')) return false;
+        if (isWomenOnly) return false;
+      }
+
+      if (!isJee && homeUniv) {
+        const suffix = getSeatSuffix(meta.name || r.name || '', meta.status || '', homeUniv);
+        const st = r.seatType || '';
+        if (suffix === 'H' && !st.endsWith('H')) return false;
+        if (suffix === 'O' && !st.endsWith('O')) return false;
+        if (suffix === 'S' && !st.endsWith('S')) return false;
+      }
+
+      return true;
+    });
+    
+    const groups = {};
+    filtered.forEach(r => {
+      const key = r.code + '|' + r.branch;
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(r);
+    });
+
+    let results = Object.values(groups).map(rows => {
+      const meta = metaMap[rows[0].code] || {};
+      const statusLower = (meta.status || '').toLowerCase();
+
+      if (isJee) {
+        return rows[0];
+      }
+
+      const isMatchingMinorityCollege = minority && 
+        statusLower.includes('minority') && 
+        statusLower.includes(minority.toLowerCase());
+
+      const activeSearchCat = isMatchingMinorityCollege ? 'OPEN' : searchCat;
+
+      let matched = rows.filter(r => (r.seatType || '').includes(activeSearchCat));
+      if (!matched.length) matched = rows.filter(r => (r.seatType || '').includes('OPEN'));
+      if (!matched.length) matched = rows;
+      
+      let finalRow;
+      if (isLadiesSeatSelected) {
+        finalRow = matched.find(r => (r.seatType || '').startsWith('L'));
+      } else {
+        finalRow = matched.find(r => (r.seatType || '').startsWith('G'));
+      }
+      return finalRow || matched[0];
+    });
+
+    results.sort((a, b) => b.percentile - a.percentile);
+    const sliced = results.slice(0, 15);
+
+    if (!sliced.length) { resDiv.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">No colleges found</div>'; return; }
+
+    const inPref = new Set(prefList.map(p => p.code + '|' + p.branch));
+
+    resDiv.innerHTML = sliced.map(r => {
+      const meta = metaMap[r.code] || {};
+      const status = (meta.status || '').toLowerCase();
+      const isAdded = inPref.has(r.code + '|' + r.branch);
+      const tags = [];
+      if (status.includes('government')) tags.push('Gov');
+      if (status.includes('autonomous')) tags.push('Auto');
+      if (status.includes('aided') && !status.includes('un-aided')) tags.push('Aided');
+      if (!status.includes('government') && !status.includes('aided')) tags.push('Un-Aided');
+      const statusText = tags.join(', ');
+
+      return `
+        <div class="predicted-col-card ${isAdded ? 'added' : ''}" 
+             draggable="${!isAdded}"
+             ondragstart="dragStartPredictor(event, '${r.code}', '${r.branch.replace(/'/g, "\\'")}')"
+             ondragend="dragEndPredictor(event)">
+          <div class="predicted-col-card-name" title="${escH(meta.name || r.name)}">${escH(meta.name || r.name)}</div>
+          <div class="predicted-col-card-meta">
+            <span class="predicted-col-card-tag branch" title="${escH(r.branch)}">${escH(r.branch)}</span>
+            <span class="predicted-col-card-tag">${escH(statusText)}</span>
+          </div>
+          <div class="predicted-col-card-bottom">
+            <span class="predicted-col-card-pct"><strong>${r.percentile.toFixed(2)}%</strong></span>
+            <span class="predicted-col-card-code">Code: ${r.code}</span>
+          </div>
+          ${isAdded ? 
+            `<button class="predicted-col-card-add-btn added" disabled>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+             </button>` : 
+            `<button class="predicted-col-card-add-btn" onclick="addPredictorCollege('${r.code}','${r.branch.replace(/'/g, "\\'")}')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+             </button>`
+          }
+        </div>`;
+    }).join('');
+  }, 300);
+}
+
+let currentSplitTplCategory = 'all';
+async function loadSplitTemplatesTab() {
+  const container = document.getElementById('splitTplGridContainer');
+  if (!container) return;
+  
+  container.innerHTML = '<div class="pb-loader"><div class="pb-spinner"></div><span>Loading templates...</span></div>';
+  
+  if (!loadedTemplates || loadedTemplates.length === 0) {
+    const res = await authApi('getTemplates', {});
+    if (res.ok) {
+      loadedTemplates = res.data || [];
+    } else {
+      container.innerHTML = `<div style="color:var(--brand);text-align:center;padding:20px">Error loading templates: ${escH(res.error)}</div>`;
+      return;
+    }
+  }
+  
+  renderSplitTemplates();
+}
+
+function renderSplitTemplates() {
+  const container = document.getElementById('splitTplGridContainer');
+  if (!container) return;
+  
+  let templates = loadedTemplates || [];
+  if (currentSplitTplCategory !== 'all') {
+    templates = templates.filter(t => getTplCategory(t) === currentSplitTplCategory);
+  }
+  
+  if (!templates.length) {
+    container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px">No templates found in this category.</div>';
+    return;
+  }
+  
+  container.innerHTML = templates.map(t => {
+    return `
+      <div class="predicted-col-card" style="cursor: pointer;" onclick="previewTemplate('${t.id}')">
+        <div class="predicted-col-card-name">${escH(t.name)}</div>
+        <div class="predicted-col-card-meta" style="margin-top: 4px;">
+          ${(t.tags || []).slice(0, 3).map(tag => `<span class="predicted-col-card-tag">${escH(tag)}</span>`).join('')}
+        </div>
+        <div class="predicted-col-card-bottom" style="margin-top: 8px;">
+          <span style="font-size: 11px; font-weight: 700; color: var(--muted);">${t.prefList ? t.prefList.length : 0} choices</span>
+          <span style="font-size: 11px; font-weight: 800; color: var(--brand);">Preview &rarr;</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function switchSplitTplCategory(cat, btnEl) {
+  document.querySelectorAll('#splitTplCategories .tpl-sub-tab-btn').forEach(btn => {
+    btn.classList.remove('active');
+    btn.style.background = 'transparent';
+    btn.style.color = 'var(--muted)';
+  });
+  
+  btnEl.classList.add('active');
+  btnEl.style.background = 'var(--brand-soft)';
+  btnEl.style.color = 'var(--brand)';
+  
+  currentSplitTplCategory = cat;
+  renderSplitTemplates();
+}
+
 // Expose globals
+window.initSplitFilters = initSplitFilters;
+window.changeSplitFilter = changeSplitFilter;
+window.toggleSplitRegionsDropdown = toggleSplitRegionsDropdown;
+window.toggleSplitRegion = toggleSplitRegion;
+window.toggleSplitBranchesCollapse = toggleSplitBranchesCollapse;
+window.toggleBranchSplit = toggleBranchSplit;
+window.toggleAllBranchesSplit = toggleAllBranchesSplit;
+window.toggleCategorySplit = toggleCategorySplit;
+window.switchSplitRightTab = switchSplitRightTab;
+window.searchManualCollegesSplit = searchManualCollegesSplit;
+window.addPredictorCollege = addPredictorCollege;
+window.dragStartPredictor = dragStartPredictor;
+window.dragEndPredictor = dragEndPredictor;
+window.dropOnTbody = dropOnTbody;
+window.switchSplitTplCategory = switchSplitTplCategory;
 window.goStep = goStep; window.toggleBranch = toggleBranch; window.toggleCategory = toggleCategory;
 window.toggleAllBranches = toggleAllBranches; window.toggleCatCollapse = toggleCatCollapse;
 window.toggleCollege = toggleCollege; window.filterColleges = filterColleges;

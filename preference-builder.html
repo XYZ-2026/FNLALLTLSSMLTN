@@ -39,6 +39,22 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
+  <!-- Mobile Screen Block Warning -->
+  <div class="mobile-block-overlay">
+    <div class="mobile-block-card">
+      <div class="mobile-block-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+          <line x1="8" y1="21" x2="16" y2="21"/>
+          <line x1="12" y1="17" x2="12" y2="21"/>
+        </svg>
+      </div>
+      <h2>Desktop Screen Recommended</h2>
+      <p>The Preference List Builder is a workspace tool designed for desktop and laptop screens. Please switch to a bigger screen to use this tool.</p>
+      <a href="index.html" class="pb-btn pb-btn-primary" style="justify-content: center; width: 100%; text-decoration: none;">Return to Home</a>
+    </div>
+  </div>
+
   <div class="pb-wrap" id="toolArea">
 
     <!-- HERO -->
@@ -78,11 +94,7 @@
       </div>
       <div class="step-line"></div>
       <div class="step-item" onclick="goStep(3)">
-        <div class="step-circle">3</div><div class="step-text">Colleges</div>
-      </div>
-      <div class="step-line"></div>
-      <div class="step-item" onclick="goStep(4)">
-        <div class="step-circle">4</div><div class="step-text">Final List</div>
+        <div class="step-circle">3</div><div class="step-text">Build List</div>
       </div>
     </div>
     <!-- PANEL 0: DASHBOARD -->
@@ -381,171 +393,235 @@
       </div>
     </div>
 
-    <!-- PANEL 3: COLLEGES -->
+    <!-- PANEL 3: SPLIT SCREEN PREFERENCE BUILDER -->
     <div class="panel" id="panel3">
-      <div class="panel-card">
-        <div class="panel-title">Best Fit Colleges</div>
-        <div class="panel-desc">Select colleges for your preference list. 6 aspirational colleges (above your percentile) are auto-added to protect against auto-locking.</div>
-
-        <div class="filter-bar">
-          <button class="filter-chip active" data-f="all" onclick="filterColleges('all',this)">All</button>
-          <button class="filter-chip" data-f="reachable" onclick="filterColleges('reachable',this)">Reachable</button>
-          <button class="filter-chip" data-f="aspirational" onclick="filterColleges('aspirational',this)">Aspirational</button>
-          <button class="filter-chip" data-f="government" onclick="filterColleges('government',this)">Government</button>
-          <button class="filter-chip" data-f="autonomous" onclick="filterColleges('autonomous',this)">Autonomous</button>
+      <div class="split-screen-container">
+        
+        <!-- Left Column: Preference List -->
+        <div class="split-left-panel">
+          <div class="panel-card" style="padding: 24px;">
+            <div class="pref-list-head" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
+              <div style="display:flex; align-items:baseline; gap:12px">
+                <h3 style="font-family: 'Lexend', sans-serif; font-weight: 800; font-size: 16px; margin: 0;">Your Preference Order</h3>
+                <span id="prefCount" style="font-size:12px;color:var(--muted);font-weight:700">0 colleges</span>
+              </div>
+              <button class="pb-btn pb-btn-ghost" onclick="sortPrefList()" style="padding:6px 12px; font-size:12px; border-radius:8px">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:4px"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>
+                Sort by Cutoff
+              </button>
+            </div>
+            
+            <div class="excel-table-wrap final-list-table-wrap" style="margin-top:0; border-radius:12px; overflow-x:auto;">
+              <table class="excel-table final-pref-table cet-pref-table">
+                <thead>
+                  <tr>
+                    <th style="width: 50px; text-align: center">Choice</th>
+                    <th style="width: 70px">Code</th>
+                    <th>Institute Name</th>
+                    <th>Branch</th>
+                    <th style="width: 140px">Type</th>
+                    <th style="width: 80px">Cutoff %</th>
+                    <th style="width: 50px; text-align: center">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="prefListTbody" ondragover="event.preventDefault()" ondrop="dropOnTbody(event)">
+                  <!-- Table rows will be rendered here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
-        <div class="results-count" id="matchCount">0 colleges found</div>
-        <div class="college-grid" id="collegeGrid"></div>
+        
+        <!-- Right Column: Filters and Predicted Colleges / Search / Templates -->
+        <div class="split-right-panel">
+          
+          <!-- Filters Card -->
+          <div class="panel-card filters-card" style="padding: 20px; margin-bottom: 20px; text-align: left;">
+            <h3 style="font-family: 'Lexend', sans-serif; font-weight: 800; font-size: 15px; margin-top: 0; margin-bottom: 16px; color: var(--ink); display: flex; align-items: center; gap: 8px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+              Predictor Filters
+            </h3>
+            
+            <div class="compact-filters-grid">
+              
+              <!-- Row 1: Exam Type & Score -->
+              <div class="filter-row-grid">
+                <div class="fg-compact" style="flex: 1;">
+                  <label class="fg-label-compact">Exam Quota</label>
+                  <div class="exam-toggle-compact">
+                    <label class="exam-lbl-mini"><input type="radio" name="splitExamType" value="MHT-CET" onchange="changeSplitFilter('examType', 'MHT-CET')"> CET</label>
+                    <label class="exam-lbl-mini"><input type="radio" name="splitExamType" value="JEE" onchange="changeSplitFilter('examType', 'JEE')"> JEE</label>
+                  </div>
+                </div>
+                <div class="fg-compact" style="flex: 1;">
+                  <label class="fg-label-compact" id="splitScoreLabel">CET Percentile</label>
+                  <input type="number" id="splitScoreInput" class="fg-input-compact" step="0.0001" min="0" max="100" oninput="changeSplitFilter('score', this.value)">
+                </div>
+                <div class="fg-compact" style="flex: 1;">
+                  <label class="fg-label-compact" id="splitRankLabel">CET Rank</label>
+                  <input type="number" id="splitRankInput" class="fg-input-compact" min="1" oninput="changeSplitFilter('rank', this.value)">
+                </div>
+              </div>
+              
+              <!-- Row 2: Category, Gender, Home University -->
+              <div class="filter-row-grid three-col">
+                <div class="fg-compact" id="splitCategoryWrap">
+                  <label class="fg-label-compact">Category</label>
+                  <select id="splitCategorySelect" class="fg-select-compact" onchange="changeSplitFilter('category', this.value)">
+                    <option value="OPEN">General Open</option>
+                    <option value="OBC">General OBC</option>
+                    <option value="SC">General SC</option>
+                    <option value="ST">General ST</option>
+                    <option value="VJ/DT">General VJ / DT / NT-A</option>
+                    <option value="NT1">General NT-B</option>
+                    <option value="NT2">General NT-C</option>
+                    <option value="NT3">General NT-D</option>
+                    <option value="EWS">EWS</option>
+                    <option value="TFWS">TFWS</option>
+                  </select>
+                </div>
+                <div class="fg-compact">
+                  <label class="fg-label-compact">Gender</label>
+                  <select id="splitGenderSelect" class="fg-select-compact" onchange="changeSplitFilter('gender', this.value)">
+                    <option value="Gender-Neutral">Gender-Neutral</option>
+                    <option value="Female-only">Female Only</option>
+                  </select>
+                </div>
+                <div class="fg-compact" id="splitHomeUnivWrap">
+                  <label class="fg-label-compact">Home University</label>
+                  <select id="splitHomeUnivSelect" class="fg-select-compact" onchange="changeSplitFilter('homeUniv', this.value)">
+                    <option value="">All Regions</option>
+                    <option value="Mumbai">MU (Mumbai)</option>
+                    <option value="Pune">SPPU (Pune)</option>
+                    <option value="Nagpur">RTMNU (Nagpur)</option>
+                    <option value="Aurangabad">BAMU</option>
+                    <option value="Kolhapur">Shivaji</option>
+                    <option value="Jalgaon">KBCNMU</option>
+                    <option value="Amravati">SGBAU</option>
+                    <option value="Nanded">SRTMUN</option>
+                    <option value="Solapur">Solapur</option>
+                  </select>
+                </div>
+              </div>
+              
+              <!-- Row 3: Regions, College Type, Minority -->
+              <div class="filter-row-grid three-col">
+                <div class="fg-compact">
+                  <label class="fg-label-compact">College Type</label>
+                  <select id="splitColTypeSelect" class="fg-select-compact" onchange="changeSplitFilter('colType', this.value)">
+                    <option value="">All Types</option>
+                    <option value="Government">Government</option>
+                    <option value="Aided">Govt-Aided</option>
+                    <option value="Autonomous">Autonomous</option>
+                    <option value="Un-Aided">Private/Un-Aided</option>
+                  </select>
+                </div>
+                <div class="fg-compact" id="splitMinorityWrap">
+                  <label class="fg-label-compact">Minority Quota</label>
+                  <select id="splitMinoritySelect" class="fg-select-compact" onchange="changeSplitFilter('minority', this.value)">
+                    <option value="">No Preference</option>
+                    <option value="Muslim">Muslim</option>
+                    <option value="Christian">Christian</option>
+                    <option value="Jain">Jain</option>
+                    <option value="Gujarathi">Gujarathi</option>
+                    <option value="Hindi">Hindi</option>
+                    <option value="Sindhi">Sindhi</option>
+                    <option value="Tamil">Tamil</option>
+                    <option value="Malyalam">Malayalam</option>
+                    <option value="Punjabi">Punjabi</option>
+                  </select>
+                </div>
+                <div class="fg-compact" style="position: relative;">
+                  <label class="fg-label-compact">Regions</label>
+                  <button type="button" class="pb-btn pb-btn-ghost" onclick="toggleSplitRegionsDropdown()" style="padding: 8px 12px; font-size: 12px; border-radius: 10px; width: 100%; text-align: left; justify-content: space-between; height: 38px; box-sizing: border-box; background: var(--bg);">
+                    <span id="splitRegionsBtnText" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: 110px;">All Regions</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                  </button>
+                  <div id="splitRegionsDropdown" class="split-regions-dropdown-menu" style="display: none;">
+                    <!-- Checkbox regions items will be loaded dynamically -->
+                  </div>
+                </div>
+              </div>
 
-        <div class="pb-actions">
-          <button class="pb-btn pb-btn-ghost" onclick="goStep(2)">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:8px"><path d="m15 18-6-6 6-6"/></svg>
-            Back
-          </button>
-          <button class="pb-btn pb-btn-primary" onclick="goStep(4)">
-            Build Preference List
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:8px"><path d="m9 18 6-6-6-6"/></svg>
-          </button>
+              <!-- Collapsible Branch Selector -->
+              <div style="margin-top: 8px; border-top: 1px dashed var(--stroke); padding-top: 12px;">
+                <div onclick="toggleSplitBranchesCollapse()" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;">
+                  <span style="font-size: 11px; font-weight: 800; color: var(--ink2); text-transform: uppercase; letter-spacing: 0.5px;">Filter by Branches (<span id="splitBranchCount" style="color: var(--brand)">0</span>)</span>
+                  <svg id="splitBranchArrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transition: transform 0.2s; color: var(--muted)"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <div id="splitBranchesCollapseContent" style="display: none; margin-top: 12px; max-height: 220px; overflow-y: auto;">
+                  <!-- Checkbox branches list -->
+                </div>
+              </div>
+              
+            </div>
+          </div>
+          
+          <!-- Bottom Navigation Tabs on Right Side -->
+          <div class="sidebar-tab" style="padding:0 4px; margin-bottom: 12px;">
+            <button class="sidebar-tab-btn active" id="btn-tab-predicted" onclick="switchSplitRightTab('predicted')">Predicted Matches</button>
+            <button class="sidebar-tab-btn" id="btn-tab-search" onclick="switchSplitRightTab('search')">Search All</button>
+            <button class="sidebar-tab-btn" id="btn-tab-templates" onclick="switchSplitRightTab('templates')">Templates</button>
+          </div>
+          
+          <!-- Tab Panel 1: Predicted Matches -->
+          <div class="split-tab-content active" id="split-tab-predicted">
+            <div class="panel-card" style="padding: 20px; min-height: 350px;">
+              <div class="results-count" id="splitMatchCount" style="margin-bottom: 12px; text-align: left;">0 colleges found</div>
+              <div class="predicted-cards-list" id="splitPredictedList" style="max-height: 520px; overflow-y: auto; padding-right: 4px;">
+                <!-- Predicted college cards load here -->
+              </div>
+            </div>
+          </div>
+          
+          <!-- Tab Panel 2: Manual Search -->
+          <div class="split-tab-content" id="split-tab-search">
+            <div class="panel-card" style="padding: 20px;">
+              <div class="fg" style="margin-bottom: 16px;">
+                <div style="display:flex; gap:8px">
+                  <input type="text" class="fg-input" id="splitManualSearchInput" placeholder="Search by name or code..." style="padding: 10px 14px;" oninput="searchManualCollegesSplit()">
+                  <button class="pb-btn pb-btn-primary" onclick="searchManualCollegesSplit()" style="padding:10px 16px; font-size: 13px;">Search</button>
+                </div>
+              </div>
+              <div id="splitManualSearchResults" class="predicted-cards-list" style="max-height: 440px; overflow-y: auto; padding-right: 4px;">
+                <!-- Searched college cards load here -->
+              </div>
+            </div>
+          </div>
+          
+          <!-- Tab Panel 3: Templates -->
+          <div class="split-tab-content" id="split-tab-templates">
+            <div class="panel-card" style="padding: 20px;">
+              <div class="templates-sub-tabs" id="splitTplCategories" style="display:flex; gap:6px; margin-bottom:12px; border-bottom:1px solid var(--stroke); padding-bottom:6px; overflow-x:auto; scrollbar-width:none">
+                <button class="tpl-sub-tab-btn active" data-cat="all" onclick="switchSplitTplCategory('all', this)" style="padding:4px 8px; font-size:10px; font-weight:700; border:none; background:var(--brand-soft); color:var(--brand); border-radius:6px; cursor:pointer; font-family:inherit; white-space:nowrap">All</button>
+                <button class="tpl-sub-tab-btn" data-cat="percentile" onclick="switchSplitTplCategory('percentile', this)" style="padding:4px 8px; font-size:10px; font-weight:700; border:none; background:transparent; color:var(--muted); border-radius:6px; cursor:pointer; font-family:inherit; white-space:nowrap">Percentiles</button>
+                <button class="tpl-sub-tab-btn" data-cat="region" onclick="switchSplitTplCategory('region', this)" style="padding:4px 8px; font-size:10px; font-weight:700; border:none; background:transparent; color:var(--muted); border-radius:6px; cursor:pointer; font-family:inherit; white-space:nowrap">Regions</button>
+                <button class="tpl-sub-tab-btn" data-cat="special" onclick="switchSplitTplCategory('special', this)" style="padding:4px 8px; font-size:10px; font-weight:700; border:none; background:transparent; color:var(--muted); border-radius:6px; cursor:pointer; font-family:inherit; white-space:nowrap">Minority</button>
+                <button class="tpl-sub-tab-btn" data-cat="branch" onclick="switchSplitTplCategory('branch', this)" style="padding:4px 8px; font-size:10px; font-weight:700; border:none; background:transparent; color:var(--muted); border-radius:6px; cursor:pointer; font-family:inherit; white-space:nowrap">Branches</button>
+              </div>
+              <div id="splitTplGridContainer" class="predicted-cards-list" style="max-height: 440px; overflow-y: auto; padding-right: 4px;">
+                <!-- Templates list loads here -->
+              </div>
+            </div>
+          </div>
+          
         </div>
       </div>
-    </div>
-
-    <!-- PANEL 4: FINAL LIST -->
-    <div class="panel" id="panel4">
-      <div class="panel-card" style="padding:0;overflow:visible;background:transparent;border:none;box-shadow:none">
-
-        <div class="sidebar-tab" style="padding:0 4px">
-          <button class="sidebar-tab-btn active" data-tab="list" onclick="switchSideTab('list')">Preference List</button>
-          <button class="sidebar-tab-btn" data-tab="aspirational" onclick="switchSideTab('aspirational')">Edit Aspirational</button>
-          <button class="sidebar-tab-btn" data-tab="templates" onclick="switchSideTab('templates'); loadTemplatesTab()">Templates Library</button>
-        </div>
-
-        <!-- TAB: Main List -->
-        <div class="sidebar-content active" id="side-list">
-          <div class="pref-container">
-            <div class="pref-list-wrap">
-              <div class="pref-list-head" style="display:flex; justify-content:space-between; align-items:center">
-                <div style="display:flex; align-items:baseline; gap:12px">
-                  <h3>Your Preference Order</h3>
-                  <span id="prefCount" style="font-size:12px;color:var(--muted);font-weight:700">0 colleges</span>
-                </div>
-                <button class="pb-btn pb-btn-ghost" onclick="sortPrefList()" style="padding:6px 12px; font-size:12px; border-radius:8px">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:4px"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>
-                  Sort by Cutoff
-                </button>
-              </div>
-              <div class="excel-table-wrap final-list-table-wrap" style="margin-top:0; border-radius:0; border-left:none; border-right:none; border-bottom:none">
-                <table class="excel-table final-pref-table">
-                  <thead>
-                    <tr>
-                      <th style="width: 40px">Drag</th>
-                      <th style="width: 60px; text-align: center">Choice</th>
-                      <th style="width: 80px">Code</th>
-                      <th>Institute Name</th>
-                      <th>Branch</th>
-                      <th style="width: 120px">Type</th>
-                      <th style="width: 100px">Cutoff %</th>
-                      <th style="width: 70px; text-align: center">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody id="prefListTbody"></tbody>
-                </table>
-              </div>
-            </div>
-            <div class="sugg-panel">
-              <div class="sugg-head">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:8px; color:var(--gold)"><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 6a6 6 0 0 0-6 6c0 3.31 2.69 6 6 6s6-2.69 6-6a6 6 0 0 0-6-6Z"/></svg>
-                Suggestions
-              </div>
-              <div id="suggList"></div>
-            </div>
-          </div>
-
-          <div class="panel-card" style="margin-top:24px; padding:24px">
-            <div class="sugg-head" style="margin-bottom:16px; border-bottom:none">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:8px; color:var(--brand)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-              Search & Add Manually
-            </div>
-            <div class="fg" style="margin-bottom:20px; max-width:600px">
-              <div style="display:flex; gap:8px">
-                <input type="text" class="fg-input" id="manualSearchInputList" placeholder="Search by name or code..." oninput="searchManualCollegesList()">
-                <button class="pb-btn pb-btn-primary" onclick="searchManualCollegesList()" style="padding:10px 24px">Search</button>
-              </div>
-            </div>
-            <div id="manualSearchResultsList" class="college-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:16px; max-height:400px; overflow-y:auto; padding-right:8px"></div>
-          </div>
-        </div> <!-- CLOSE side-list -->
-
-        <!-- TAB: Edit Aspirational -->
-        <div class="sidebar-content" id="side-aspirational">
-          <div class="panel-card">
-            <div class="panel-title" style="font-size:18px">Edit Aspirational Colleges</div>
-            <div class="panel-desc">We've added 6 high-ranking colleges as a safety net. You can manually search and add any other college below.</div>
-            
-            <!-- Manual Search -->
-            <div class="fg" style="margin-bottom:20px">
-              <label class="fg-label">Search Any College</label>
-              <div style="display:flex; gap:8px">
-                <input type="text" class="fg-input" id="manualSearchInput" placeholder="Enter college name or code..." oninput="searchManualColleges()">
-                <button class="pb-btn pb-btn-primary" onclick="searchManualColleges()" style="padding:10px 20px">Search</button>
-              </div>
-            </div>
-            
-            <div id="manualSearchResults" class="college-grid" style="margin-bottom:24px; max-height:240px; overflow-y:auto"></div>
-
-            <div id="aspGrid" class="college-grid" style="margin-bottom:24px"></div>
-
-            <div class="sugg-panel" style="margin-top:32px">
-              <div class="sugg-head">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:8px; color:var(--gold)"><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 6a6 6 0 0 0-6 6c0 3.31 2.69 6 6 6s6-2.69 6-6a6 6 0 0 0-6-6Z"/></svg>
-                More Aspirational Suggestions
-              </div>
-              <div id="aspSuggestions" class="college-grid" style="display:grid; grid-template-columns:1fr; gap:12px"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB: Templates Library -->
-        <div class="sidebar-content" id="side-templates">
-          <div class="panel-card" style="padding:24px">
-            <div class="tpl-lib-header" style="text-align: center; margin-bottom: 24px; padding: 16px; border-radius: 16px;">
-              <h2 class="panel-title" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 18px; font-weight: 800; color: var(--ink); margin: 0 auto 4px">
-                Templates Library
-              </h2>
-              <p style="color: var(--muted); font-size: 12px; margin: 0">Apply an expert-curated template list to jumpstart your preference form.</p>
-            </div>
-
-            <!-- Sub-Tabs for Categories -->
-            <div class="templates-sub-tabs" id="tabTplCategories" style="display:flex; gap:6px; margin-bottom:18px; border-bottom:1px solid var(--stroke); padding-bottom:8px; overflow-x:auto; scrollbar-width:none">
-              <button class="tpl-sub-tab-btn active" data-cat="all" onclick="switchTabTplCategory('all', this)" style="padding:6px 12px; font-size:11px; font-weight:700; border:none; background:var(--brand-soft); color:var(--brand); border-radius:8px; cursor:pointer; font-family:inherit; white-space:nowrap">All</button>
-              <button class="tpl-sub-tab-btn" data-cat="percentile" onclick="switchTabTplCategory('percentile', this)" style="padding:6px 12px; font-size:11px; font-weight:700; border:none; background:transparent; color:var(--muted); border-radius:8px; cursor:pointer; font-family:inherit; white-space:nowrap">Percentile-based</button>
-              <button class="tpl-sub-tab-btn" data-cat="region" onclick="switchTabTplCategory('region', this)" style="padding:6px 12px; font-size:11px; font-weight:700; border:none; background:transparent; color:var(--muted); border-radius:8px; cursor:pointer; font-family:inherit; white-space:nowrap">Region-specific</button>
-              <button class="tpl-sub-tab-btn" data-cat="special" onclick="switchTabTplCategory('special', this)" style="padding:6px 12px; font-size:11px; font-weight:700; border:none; background:transparent; color:var(--muted); border-radius:8px; cursor:pointer; font-family:inherit; white-space:nowrap">Minority & Special</button>
-              <button class="tpl-sub-tab-btn" data-cat="branch" onclick="switchTabTplCategory('branch', this)" style="padding:6px 12px; font-size:11px; font-weight:700; border:none; background:transparent; color:var(--muted); border-radius:8px; cursor:pointer; font-family:inherit; white-space:nowrap">Branch-focused</button>
-            </div>
-
-            <!-- Inner Container for Templates Tab Grid -->
-            <div id="tabTplGridContainer" class="tpl-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px;">
-              <div class="pb-loader"><div class="pb-spinner"></div><span>Loading templates...</span></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Done Actions -->
-        <div class="pb-actions" style="margin-top:40px; justify-content: center; gap: 24px">
-          <button class="pb-btn pb-btn-ghost" onclick="goStep(3)" style="padding: 16px 32px">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:10px"><path d="m15 18-6-6 6-6"/></svg>
-            Edit College Selection
-          </button>
-          <button onclick="returnToDashboard()" class="pb-btn pb-btn-success" style="padding: 16px 32px" id="completeSaveBtn">
-            Complete & Save List
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:10px"><path d="M20 6 9 17 4 12"/></svg>
-          </button>
-          <button class="pb-btn pb-btn-primary" onclick="exportPDF()" style="padding: 16px 32px; background: var(--ink)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:10px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Download PDF
-          </button>
-        </div>
+      
+      <!-- Split Screen Bottom Action Panel -->
+      <div class="pb-actions" style="margin-top: 40px; justify-content: center; gap: 24px;">
+        <button class="pb-btn pb-btn-ghost" onclick="goStep(2)" style="padding: 16px 32px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:10px"><path d="m15 18-6-6 6-6"/></svg>
+          Back to Branches
+        </button>
+        <button onclick="returnToDashboard()" class="pb-btn pb-btn-success" style="padding: 16px 32px" id="completeSaveBtn">
+          Complete & Save List
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:10px"><path d="M20 6 9 17 4 12"/></svg>
+        </button>
+        <button class="pb-btn pb-btn-primary" onclick="exportPDF()" style="padding: 16px 32px; background: var(--ink)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:10px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download PDF
+        </button>
       </div>
     </div>
 

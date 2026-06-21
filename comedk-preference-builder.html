@@ -40,6 +40,22 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
+  <!-- Mobile Screen Block Warning -->
+  <div class="mobile-block-overlay">
+    <div class="mobile-block-card">
+      <div class="mobile-block-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+          <line x1="8" y1="21" x2="16" y2="21"/>
+          <line x1="12" y1="17" x2="12" y2="21"/>
+        </svg>
+      </div>
+      <h2>Desktop Screen Recommended</h2>
+      <p>The Preference List Builder is a workspace tool designed for desktop and laptop screens. Please switch to a bigger screen to use this tool.</p>
+      <a href="index.html" class="pb-btn pb-btn-primary" style="justify-content: center; width: 100%; text-decoration: none;">Return to Home</a>
+    </div>
+  </div>
+
   <div class="pb-wrap" id="toolArea">
 
     <!-- HERO -->
@@ -228,14 +244,14 @@
               </div>
               
               <div class="excel-table-wrap final-list-table-wrap" style="margin-top:0; border-radius:0; border-left:none; border-right:none; border-bottom:none">
-                <table class="excel-table final-pref-table">
+                <table class="excel-table final-pref-table comedk-pref-table">
                   <thead>
                     <tr>
                       <th style="width: 40px">Drag</th>
                       <th style="width: 60px; text-align: center">Choice</th>
                       <th>Institute Name</th>
                       <th>Branch</th>
-                      <th style="width: 100px">Category</th>
+                      <th style="width: 120px">Category</th>
                       <th style="width: 140px">Cutoff Rank (R1)</th>
                       <th style="width: 70px; text-align: center">Action</th>
                     </tr>
