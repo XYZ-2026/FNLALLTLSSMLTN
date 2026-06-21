@@ -40,9 +40,126 @@ async function hashPassword(password) {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-// ══════════════════════════════════════════
-//  UNIFIED API — Drop-in replacement for authApi()
-// ══════════════════════════════════════════
+// Helper to normalize legacy psychometric test results to the new format
+function normalizeLegacyReport(data) {
+  if (!data) return null;
+  if (data.traitScores) return data;
+
+  const ds = data.domainScores || {};
+  const traitScores = {
+    Programming: ds.CS_AI || 50,
+    Debugging: ds.CS_AI || 50,
+    SystemsThinking: ds.CS_AI || 50,
+    Electronics: ds.ELECTRONICS || 50,
+    Hardware: ds.ELECTRONICS || 50,
+    MechanicalSystems: ds.MECHANICAL || 50,
+    Construction: ds.CIVIL || 50,
+    ScientificCuriosity: ds.CHEMICAL_BIO || 50,
+    DesignThinking: ds.DESIGN_ARCH || 50,
+    SpatialThinking: ds.DESIGN_ARCH || 50,
+    Creativity: ds.DESIGN_ARCH || 50,
+    Mathematics: ds.DATA_MATH || 50,
+    DataAnalysis: ds.DATA_MATH || 50,
+    LogicalReasoning: ds.DATA_MATH || 50,
+    ProblemSolving: ds.DATA_MATH || 50,
+    Research: ds.ENERGY_ENV || 50
+  };
+
+  const allNewTraits = [
+    'Programming', 'PatternRecognition', 'Innovation', 'Mathematics', 'Research', 'DataAnalysis', 
+    'ProblemSolving', 'LogicalReasoning', 'Creativity', 'SystemsThinking', 'Debugging', 'ScientificCuriosity', 
+    'DesignThinking', 'Automation', 'Entrepreneurship', 'Leadership', 'Communication', 'Hardware', 
+    'Precision', 'Electronics', 'RiskTaking', 'SpatialThinking', 'MechanicalSystems', 'Construction'
+  ];
+
+  const values = Object.values(ds);
+  const avg = values.length > 0 ? Math.round(values.reduce((a, b) => a + b, 0) / values.length) : 50;
+
+  allNewTraits.forEach(t => {
+    if (traitScores[t] === undefined) {
+      traitScores[t] = avg;
+    }
+  });
+
+  const legacyBranches = data.top5Roadmaps || data.allBranches || [];
+  const topBranches = legacyBranches.map(lb => {
+    const name = lb.branch || lb.name || "Engineering";
+    const matchScore = lb.match || lb.matchScore || lb.score || 50;
+    const reason = lb.reason || "";
+    
+    let id = name.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+    if (id.endsWith('-')) id = id.slice(0, -1);
+    
+    if (name.includes("Machine Learning") || name.includes("AI & ML") || name.includes("AI & Machine")) id = "aiml";
+    else if (name === "Computer Science Engineering" || name === "Computer Science & Engineering") id = "cse";
+    else if (name === "Computer Engineering") id = "computer-engineering";
+    else if (name === "Information Technology") id = "it";
+    else if (name === "Software Engineering") id = "software-engineering";
+    else if (name === "Artificial Intelligence") id = "ai";
+    else if (name.includes("Electronics") || name.includes("Telecommunication")) id = "entc";
+    else if (name.includes("Robotics")) id = "robotics";
+    else if (name.includes("Data Science")) id = "data-science";
+    else if (name.includes("Mechanical")) id = "mechanical";
+    else if (name.includes("Civil")) id = "civil";
+    else if (name.includes("Chemical")) id = "chemical";
+    else if (name.includes("Electrical")) id = "electrical";
+    else if (name.includes("Biomedical")) id = "biomedical";
+    else if (name.includes("Aerospace")) id = "aerospace";
+    else if (name.includes("Cyber Security") || name.includes("Cybersecurity")) id = "cybersecurity";
+
+    return { id, name, matchScore, reason };
+  });
+
+  let dnaType = {
+    name: "The Analytical Mind",
+    icon: "🧠",
+    desc: "You have a balanced, highly analytical engineering mindset with a strong foundation in core technical principles."
+  };
+  
+  if (ds.CS_AI >= Math.max(ds.ELECTRONICS||0, ds.MECHANICAL||0, ds.CIVIL||0)) {
+    dnaType = {
+      name: "The Innovator",
+      icon: "🧬",
+      desc: "Driven by creativity, algorithms, and future tech, you excel at building software solutions that push technological boundaries."
+    };
+  } else if (ds.MECHANICAL >= Math.max(ds.CS_AI||0, ds.CIVIL||0)) {
+    dnaType = {
+      name: "The Constructor",
+      icon: "🏗️",
+      desc: "You think in terms of physical structures, mechanisms, and real-world execution. You build things that stand the test of time."
+    };
+  }
+
+  let sectionScores = [avg, avg, avg, avg, avg];
+  if (data.sectionScores) {
+    sectionScores = data.sectionScores;
+  }
+
+  let answersArray = new Array(60).fill(null);
+  if (data.answers) {
+    if (Array.isArray(data.answers)) {
+      answersArray = data.answers;
+    } else {
+      for (let si = 0; si < 5; si++) {
+        for (let qi = 0; qi < 12; qi++) {
+          const key = `s${si}q${qi}`;
+          if (data.answers[key] !== undefined) {
+            answersArray[si * 12 + qi] = data.answers[key];
+          }
+        }
+      }
+    }
+  }
+
+  return {
+    traitScores,
+    topBranches,
+    dnaType,
+    sectionScores,
+    answers: answersArray,
+    allMatches: topBranches
+  };
+}
 
 async function fireApi(action, payload) {
   try {
@@ -607,12 +724,81 @@ async function fireApi(action, payload) {
         return { ok: true };
       }
 
+      case 'saveBranchTestResult': {
+        const { userId, resultData } = payload;
+        if (!userId) return { ok: false, error: 'Missing user ID.' };
+        const docRef = await db.collection('users').doc(userId).collection('branchTestHistory').add({
+          ...resultData,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        return { ok: true, id: docRef.id };
+      }
+
+      case 'getBranchTestHistory': {
+        const { userId } = payload;
+        if (!userId) return { ok: false, error: 'Missing user ID.' };
+        const snap = await db.collection('users').doc(userId).collection('branchTestHistory').orderBy('createdAt', 'desc').get();
+        let history = snap.docs.map(doc => {
+          const data = doc.data();
+          let dateStr = '';
+          if (data.createdAt && typeof data.createdAt.toDate === 'function') {
+            dateStr = data.createdAt.toDate().toISOString();
+          } else if (data.createdAt) {
+            dateStr = new Date(data.createdAt).toISOString();
+          }
+          return { id: doc.id, ...data, dateStr };
+        });
+
+        // Fetch legacy report if it exists and append to history
+        try {
+          const legacyDoc = await db.collection('psychometricReports').doc(userId).get();
+          if (legacyDoc.exists) {
+            const data = legacyDoc.data();
+            const normalized = normalizeLegacyReport(data);
+            let dateStr = '';
+            const ts = data.updatedAt || data.createdAt;
+            if (ts && typeof ts.toDate === 'function') {
+              dateStr = ts.toDate().toISOString();
+            } else if (ts) {
+              dateStr = new Date(ts).toISOString();
+            } else {
+              dateStr = new Date(0).toISOString();
+            }
+            history.push({ id: 'legacy', ...normalized, createdAt: ts || null, dateStr });
+          }
+        } catch (legacyErr) {
+          console.error('Error fetching legacy psychometric report for history:', legacyErr);
+        }
+
+        // Sort combined history by date descending
+        history.sort((a, b) => {
+          const dA = new Date(a.dateStr || a.createdAt || 0);
+          const dB = new Date(b.dateStr || b.createdAt || 0);
+          return dB - dA;
+        });
+
+        return { ok: true, data: history };
+      }
+
       case 'getPsychometricReport': {
         const { userId } = payload;
         if (!userId) return { ok: false, error: 'Missing user ID.' };
+        // Check history subcollection first for the latest entry
+        const historySnap = await db.collection('users').doc(userId).collection('branchTestHistory').orderBy('createdAt', 'desc').limit(1).get();
+        if (!historySnap.empty) {
+          const data = historySnap.docs[0].data();
+          if (!data.allBranches && data.topBranches) {
+            data.allBranches = data.topBranches;
+          }
+          return { ok: true, data: data };
+        }
+        // Fallback to legacy single document
         const doc = await db.collection('psychometricReports').doc(userId).get();
         if (!doc.exists) return { ok: true, data: null };
-        return { ok: true, data: doc.data() };
+        const legacyData = doc.data();
+        const normalized = normalizeLegacyReport(legacyData);
+        normalized.allBranches = normalized.topBranches;
+        return { ok: true, data: normalized };
       }
 
       case 'resetPrefEdits': {

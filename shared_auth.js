@@ -480,7 +480,7 @@ function injectGlobalUI() {
             <a href="cet_colleges.html" class="sidebar-sub-link">Top Colleges</a>
             <a href="compare_colleges.html" class="sidebar-sub-link">Compare Colleges</a>
             <a href="mht_cet_college_predictor.html" class="sidebar-sub-link">MHT CET College Predictor</a>
-            <!-- <a href="engineering-psychometric-test.html" class="sidebar-sub-link">Engineering Psychometric Test</a> -->
+            <a href="Branch.html" class="sidebar-sub-link">Branch Prediction Test</a>
             <a href="percentile_vs_college_predictor.html" class="sidebar-sub-link">JEE ALL INDIA Predictor</a>
             <a href="document_checklist.html" class="sidebar-sub-link">Document Checklist</a>
             <a href="preference-builder.html" class="sidebar-sub-link">CET Preference Builder</a>
@@ -498,6 +498,7 @@ function injectGlobalUI() {
             <a href="dse_cutoff_checker.html" class="sidebar-sub-link">Cutoff Checker</a>
             <a href="dse_college_predictor.html" class="sidebar-sub-link">College Predictor</a>
             <a href="dse_compare_colleges.html" class="sidebar-sub-link">Compare Colleges</a>
+            <a href="Branch.html" class="sidebar-sub-link">Branch Prediction Test</a>
             <a href="dse-preference-builder.html" class="sidebar-sub-link">DSE Preference Builder</a>
           </div>
         </div>
@@ -514,6 +515,7 @@ function injectGlobalUI() {
             <a href="josaa_rank.html" class="sidebar-sub-link">JEE Percentile vs Rank</a>
             <a href="josaa.html" class="sidebar-sub-link">JOSAA Predictor</a>
             <a href="josaa_cutoff.html" class="sidebar-sub-link">JOSAA Cutoff Checker</a>
+            <a href="Branch.html" class="sidebar-sub-link">Branch Prediction Test</a>
             <a href="josaa-preference-builder.html" class="sidebar-sub-link">JOSAA Pref Builder</a>
           </div>
         </div>
@@ -527,6 +529,7 @@ function injectGlobalUI() {
           <div class="dropdown-content" id="drop-csab">
             <a href="csab-landing.html" class="sidebar-sub-link">Hub Overview</a>
             <a href="csab.html" class="sidebar-sub-link">CSAB Predictor</a>
+            <a href="Branch.html" class="sidebar-sub-link">Branch Prediction Test</a>
           </div>
         </div>
 
@@ -540,6 +543,7 @@ function injectGlobalUI() {
             <a href="comedk-landing.html" class="sidebar-sub-link">Hub Overview</a>
             <a href="comedk_predictor.html" class="sidebar-sub-link">COMEDK Predictor</a>
             <a href="comedk_cutoff.html" class="sidebar-sub-link">COMEDK Cutoff Checker</a>
+            <a href="Branch.html" class="sidebar-sub-link">Branch Prediction Test</a>
             <a href="comedk-preference-builder.html" class="sidebar-sub-link">COMEDK Preference Builder</a>
           </div>
         </div>
@@ -547,6 +551,7 @@ function injectGlobalUI() {
         <a href="manipal_cutoff.html" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg> Manipal MET</a>
         
         <div class="sidebar-label">Tools</div>
+        <a href="Branch.html" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg> Branch Prediction Test</a>
         <a href="document_checklist.html" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Document Checklist</a>
         <a href="calendar.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Event Calendar</a>
         <a href="non-cap-admissions.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> NON-CAP Admissions</a>
@@ -1371,7 +1376,7 @@ function initAdPopup() {
         <div class="cs-ad-cards-container">
           <div class="cs-ad-card">
             <div class="cs-ad-image-container">
-              <img src="paid%20banners/banner1.webp" alt="Simplified Pro">
+              <img src="paid%20banners/banner1.png" alt="Simplified Pro">
             </div>
             <div class="cs-ad-text-container">
               <div class="cs-ad-badge">Simplified Pro</div>
@@ -1382,13 +1387,24 @@ function initAdPopup() {
           </div>
           <div class="cs-ad-card">
             <div class="cs-ad-image-container">
-              <img src="paid%20banners/banner2.webp" alt="Personalized 1:1">
+              <img src="paid%20banners/banner2.png" alt="Personalized 1:1">
             </div>
             <div class="cs-ad-text-container">
               <div class="cs-ad-badge">Personalized 1:1</div>
               <h3 class="cs-ad-title">Simplified Premium 1:1 counselling</h3>
               <p class="cs-ad-description">Tired of searching manually? Get personalized 1:1 counselling support and dedicated mentoring from expert counselors.</p>
               <a href="https://www.conceptsimplified.in/courses/840574" target="_blank" class="cs-ad-cta-btn">Get Personalized 1:1 Help</a>
+            </div>
+          </div>
+          <div class="cs-ad-card">
+            <div class="cs-ad-image-container">
+              <img src="paid%20banners/banner3.png" alt="AI Counselling">
+            </div>
+            <div class="cs-ad-text-container">
+              <div class="cs-ad-badge">AI Counselling</div>
+              <h3 class="cs-ad-title">AI-Powered College Predictor Platform</h3>
+              <p class="cs-ad-description">Leverage our AI-driven college predictor to get data-backed recommendations, branch predictions, and personalized admission strategies.</p>
+              <a href="https://www.conceptsimplified.in/courses/860295" target="_blank" class="cs-ad-cta-btn">Explore AI Counselling</a>
             </div>
           </div>
         </div>
