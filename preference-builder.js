@@ -1371,8 +1371,8 @@ function toggleAspirational(code, branch) {
   const key = code + '|' + branch;
   const idx = prefList.findIndex(p => p.code === code && p.branch === branch);
   if (idx >= 0) {
-    // Prevent removing fixed aspirational
-    if (prefList[idx].isFixed) return pbToast('Cannot remove fixed college');
+    // Prevent removing fixed/mandatory aspirational
+    if (prefList[idx].isFixed || idx < 6) return pbToast('Cannot remove mandatory college');
     prefList.splice(idx, 1);
     pbToast('Removed from preference list');
   } else {
@@ -1478,17 +1478,23 @@ function renderPrefList() {
 
     return `
       <tr class="pref-item ${isMandatoryVisual ? 'is-fixed' : ''} ${c.isAspirational ? 'asp-item' : ''}" 
-          draggable="${!isFixed}" 
+          draggable="false" 
           data-idx="${i}"
-          ondragstart="${isFixed ? '' : 'dragStart(event)'}" 
-          ondragover="${isFixed ? '' : 'dragOver(event)'}" 
-          ondrop="${isFixed ? '' : 'dropItem(event)'}" 
-          ondragend="${isFixed ? '' : 'dragEnd(event)'}"
-          ontouchstart="${isFixed ? '' : 'handleTouchStart(event)'}" 
-          ontouchmove="${isFixed ? '' : 'handleTouchMove(event)'}" 
-          ontouchend="${isFixed ? '' : 'handleTouchEnd(event)'}"
+          ondragstart="${isMandatoryVisual ? '' : 'dragStart(event)'}" 
+          ondragover="dragOver(event)" 
+          ondragleave="dragLeave(event)"
+          ondrop="dropItem(event)" 
+          ondragend="${isMandatoryVisual ? '' : 'dragEnd(event)'}"
+          ontouchstart="${isMandatoryVisual ? '' : 'handleTouchStart(event)'}" 
+          ontouchmove="${isMandatoryVisual ? '' : 'handleTouchMove(event)'}" 
+          ontouchend="${isMandatoryVisual ? '' : 'handleTouchEnd(event)'}"
           style="${isMandatoryVisual ? 'border-left: 4px solid var(--brand);' : ''}">
-        <td class="pref-num" style="text-align: center; font-weight: 800; width: 60px; vertical-align: middle">${i + 1}</td>
+        <td class="pref-num" 
+            style="text-align: center; font-weight: 800; width: 60px; vertical-align: middle; cursor: grab"
+            onmousedown="enableRowDrag(event)"
+            onmouseup="disableRowDrag(event)"
+            onmouseleave="disableRowDrag(event)"
+            ontouchstart="enableRowDrag(event)">${i + 1}</td>
         <td style="width: 80px; vertical-align: middle">${c.code}</td>
         <td class="pref-name" style="font-weight: 600; color: var(--ink); vertical-align: middle" title="${escH(c.instituteName || c.name)}">${escH(c.instituteName || c.name)}</td>
         <td style="vertical-align: middle" title="${escH(c.branch)}">${escH(c.branch)}</td>
@@ -1499,13 +1505,22 @@ function renderPrefList() {
           </div>
         </td>
         <td class="excel-td-pct" style="vertical-align: middle"><strong>${c.percentile ? c.percentile.toFixed(2) + '%' : 'N/A'}</strong></td>
-        <td style="text-align: center; width: 70px; vertical-align: middle">
-          ${isFixed ?
-            '<span style="font-size:9px; font-weight:800; color:var(--brand); opacity:0.6; text-transform:uppercase">Mandatory</span>' :
-            `<button class="pref-remove" onclick="removePref(${i})" title="Remove" style="background:none; border:none; color:var(--muted); cursor:pointer; padding:4px; border-radius:6px; transition:0.2s">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>`
-          }
+        <td style="text-align: center; vertical-align: middle">
+          <div class="pref-action-cell">
+            ${isMandatoryVisual ? `
+              <span style="font-size:9px; font-weight:800; color:var(--brand); opacity:0.6; text-transform:uppercase">Mandatory</span>
+            ` : `
+              <button class="pref-action-btn" onclick="movePrefUp(${i})" title="Move Up" ${i === 6 ? 'disabled' : ''}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+              </button>
+              <button class="pref-action-btn" onclick="movePrefDown(${i})" title="Move Down" ${i === prefList.length - 1 ? 'disabled' : ''}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </button>
+              <button class="pref-remove" onclick="removePref(${i})" title="Remove" style="background:none; border:none; color:var(--muted); cursor:pointer; padding:4px; border-radius:6px; transition:0.2s">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            `}
+          </div>
         </td>
       </tr>`;
   }).join('');
@@ -1531,7 +1546,7 @@ function renderPrefList() {
 }
 
 function removePref(i) {
-  if (prefList[i] && prefList[i].isFixed) return pbToast('Cannot remove fixed college');
+  if (prefList[i] && (prefList[i].isFixed || i < 6)) return pbToast('Cannot remove mandatory college');
   prefList.splice(i, 1);
   renderPrefList();
   triggerAutosave();
@@ -1540,22 +1555,62 @@ function removePref(i) {
 /* ══════ DRAG & DROP ══════ */
 let dragIdx = null;
 let draggedPredictorCollege = null;
+let hoveredPrefRow = null;
+
+function enableRowDrag(e) {
+  const row = e.target.closest('.pref-item');
+  if (row && !row.classList.contains('is-fixed')) {
+    row.setAttribute('draggable', 'true');
+  }
+}
+
+function disableRowDrag(e) {
+  const row = e.target.closest('.pref-item');
+  if (row) {
+    row.setAttribute('draggable', 'false');
+  }
+}
 
 function dragStart(e) { 
-  dragIdx = +e.target.closest('.pref-item').dataset.idx; 
-  e.target.closest('.pref-item').classList.add('dragging'); 
+  const row = e.target.closest('.pref-item');
+  if (!row) return;
+  dragIdx = +row.dataset.idx; 
+  setTimeout(() => {
+    if (dragIdx !== null && row) {
+      row.classList.add('dragging'); 
+    }
+  }, 0);
 }
 
 function dragOver(e) { 
   e.preventDefault(); 
-  const item = e.target.closest('.pref-item'); 
-  if (item) item.classList.add('drag-over'); 
+  const row = e.target.closest('.pref-item'); 
+  if (!row) return;
+  
+  if (hoveredPrefRow !== row) {
+    if (hoveredPrefRow) {
+      hoveredPrefRow.classList.remove('drag-over');
+    }
+    row.classList.add('drag-over');
+    hoveredPrefRow = row;
+  }
+}
+
+function dragLeave(e) {
+  const row = e.target.closest('.pref-item');
+  if (row && row === hoveredPrefRow) {
+    row.classList.remove('drag-over');
+    hoveredPrefRow = null;
+  }
 }
 
 function dragStartPredictor(e, code, branch) {
   draggedPredictorCollege = { code, branch };
   e.dataTransfer.setData('text/plain', code + '|' + branch);
-  e.target.classList.add('dragging');
+  const card = e.target.closest('.predicted-col-card') || e.target;
+  setTimeout(() => {
+    if (card) card.classList.add('dragging');
+  }, 0);
 }
 
 function dragEndPredictor(e) {
@@ -1602,9 +1657,16 @@ function addPredictorCollege(code, branch) {
 function dropItem(e) {
   e.preventDefault();
   e.stopPropagation();
-  document.querySelectorAll('.pref-item').forEach(el => el.classList.remove('drag-over'));
   
-  let targetIdx = +e.target.closest('.pref-item').dataset.idx;
+  if (hoveredPrefRow) {
+    hoveredPrefRow.classList.remove('drag-over');
+    hoveredPrefRow = null;
+  }
+  document.querySelectorAll('.pref-item').forEach(el => el.classList.remove('drag-over', 'dragging'));
+  
+  const prefRow = e.target.closest('.pref-item');
+  if (!prefRow) return;
+  let targetIdx = +prefRow.dataset.idx;
   const firstNonFixedIdx = prefList.findIndex(p => !p.isFixed);
   let insertIdx = targetIdx < firstNonFixedIdx ? firstNonFixedIdx : targetIdx;
   
@@ -1631,12 +1693,20 @@ function dropItem(e) {
     }
     draggedPredictorCollege = null;
   } else if (dragIdx !== null) {
-    if (!isTemplateMode && dragIdx >= 6 && insertIdx < 6) {
-      insertIdx = 6;
+    if (!isTemplateMode) {
+      if (dragIdx < 6 && insertIdx >= 6) {
+        insertIdx = 5;
+      } else if (dragIdx >= 6 && insertIdx < 6) {
+        insertIdx = 6;
+      }
     }
-    if (dragIdx === insertIdx) return;
+    if (dragIdx === insertIdx) {
+      dragIdx = null;
+      return;
+    }
     const [moved] = prefList.splice(dragIdx, 1);
     prefList.splice(insertIdx, 0, moved);
+    dragIdx = null;
     renderPrefList();
     triggerAutosave();
   }
@@ -1667,12 +1737,6 @@ function dropOnTbody(e) {
   }
 }
 
-function dragEnd(e) { 
-  dragIdx = null; 
-  draggedPredictorCollege = null;
-  document.querySelectorAll('.pref-item').forEach(el => el.classList.remove('dragging', 'drag-over'));
-}
-
 // Mobile Touch Support
 let touchElement = null;
 function handleTouchStart(e) {
@@ -1686,8 +1750,21 @@ function handleTouchMove(e) {
   const touch = e.touches[0];
   const target = document.elementFromPoint(touch.clientX, touch.clientY);
   const targetItem = target ? target.closest('.pref-item') : null;
-  document.querySelectorAll('.pref-item').forEach(el => el.classList.remove('drag-over'));
-  if (targetItem && targetItem !== touchElement) targetItem.classList.add('drag-over');
+  
+  if (targetItem && targetItem !== touchElement) {
+    if (hoveredPrefRow !== targetItem) {
+      if (hoveredPrefRow) {
+        hoveredPrefRow.classList.remove('drag-over');
+      }
+      targetItem.classList.add('drag-over');
+      hoveredPrefRow = targetItem;
+    }
+  } else {
+    if (hoveredPrefRow) {
+      hoveredPrefRow.classList.remove('drag-over');
+      hoveredPrefRow = null;
+    }
+  }
   e.preventDefault();
 }
 function handleTouchEnd(e) {
@@ -1702,8 +1779,12 @@ function handleTouchEnd(e) {
     
     const isTemplateMode = (typeof isAdminTemplateEditingMode !== 'undefined' && isAdminTemplateEditingMode);
     if (dragIdx !== null) {
-      if (!isTemplateMode && dragIdx >= 6 && insertIdx < 6) {
-        insertIdx = 6;
+      if (!isTemplateMode) {
+        if (dragIdx < 6 && insertIdx >= 6) {
+          insertIdx = 5;
+        } else if (dragIdx >= 6 && insertIdx < 6) {
+          insertIdx = 6;
+        }
       }
       if (dragIdx !== insertIdx) {
         const [moved] = prefList.splice(dragIdx, 1);
@@ -1713,8 +1794,25 @@ function handleTouchEnd(e) {
       }
     }
   }
+  if (hoveredPrefRow) {
+    hoveredPrefRow.classList.remove('drag-over');
+    hoveredPrefRow = null;
+  }
   document.querySelectorAll('.pref-item').forEach(el => el.classList.remove('dragging', 'drag-over'));
   touchElement = null; dragIdx = null;
+}
+
+function dragEnd(e) { 
+  dragIdx = null; 
+  draggedPredictorCollege = null;
+  if (hoveredPrefRow) {
+    hoveredPrefRow.classList.remove('drag-over');
+    hoveredPrefRow = null;
+  }
+  document.querySelectorAll('.pref-item').forEach(el => {
+    el.classList.remove('dragging', 'drag-over');
+    el.setAttribute('draggable', 'false');
+  });
 }
 
 /* ══════ SUGGESTIONS ══════ */
@@ -3541,9 +3639,6 @@ function changeSplitFilter(filterType, value) {
     document.getElementById('inMinority').value = value;
   }
   
-  generateMatches();
-  renderSplitPredictorResults();
-  triggerAutosave();
 }
 
 function autoFillPctRankSplit(source = 'score') {
@@ -3597,9 +3692,6 @@ function toggleSplitRegion(region, isChecked) {
   
   updateSplitRegionsBtnText();
   renderRegionChips();
-  generateMatches();
-  renderSplitPredictorResults();
-  triggerAutosave();
 }
 
 function updateSplitRegionsBtnText() {
@@ -3701,9 +3793,6 @@ function toggleBranchSplit(b, isChecked) {
   
   document.getElementById('splitBranchCount').textContent = selectedBranches.size;
   renderBranches();
-  generateMatches();
-  renderSplitPredictorResults();
-  triggerAutosave();
 }
 
 function toggleAllBranchesSplit(selectAll) {
@@ -3715,9 +3804,6 @@ function toggleAllBranchesSplit(selectAll) {
   
   renderSplitBranchesCollapse();
   renderBranches();
-  generateMatches();
-  renderSplitPredictorResults();
-  triggerAutosave();
 }
 
 function toggleCategorySplit(cat) {
@@ -3730,9 +3816,6 @@ function toggleCategorySplit(cat) {
   
   renderSplitBranchesCollapse();
   renderBranches();
-  generateMatches();
-  renderSplitPredictorResults();
-  triggerAutosave();
 }
 
 function renderSplitPredictorResults() {
@@ -4067,8 +4150,37 @@ window.exportPDF = exportPDF; window.switchSideTab = switchSideTab;
 window.toggleExamPath = toggleExamPath;
 window.toggleCollegeRow = toggleCollegeRow;
 window.toggleSelectAllColleges = toggleSelectAllColleges;
+function runPredictor() {
+  generateMatches();
+  renderSplitPredictorResults();
+  triggerAutosave();
+  pbToast('Predictions updated successfully!');
+}
+
+function movePrefUp(i) {
+  if (i <= 6) return;
+  const temp = prefList[i];
+  prefList[i] = prefList[i - 1];
+  prefList[i - 1] = temp;
+  renderPrefList();
+  triggerAutosave();
+}
+
+function movePrefDown(i) {
+  if (i < 6 || i >= prefList.length - 1) return;
+  const temp = prefList[i];
+  prefList[i] = prefList[i + 1];
+  prefList[i + 1] = temp;
+  renderPrefList();
+  triggerAutosave();
+}
+
+window.runPredictor = runPredictor;
+window.movePrefUp = movePrefUp;
+window.movePrefDown = movePrefDown;
 window.deleteForm = deleteForm;
-window.dragStart = dragStart; window.dragOver = dragOver; window.dropItem = dropItem; window.dragEnd = dragEnd;
+window.dragStart = dragStart; window.dragOver = dragOver; window.dragLeave = dragLeave; window.dropItem = dropItem; window.dragEnd = dragEnd;
+window.enableRowDrag = enableRowDrag; window.disableRowDrag = disableRowDrag;
 window.toggleAspirational = toggleAspirational;
 window.enableEditing = enableEditing; window.saveProfileData = saveProfileData;
 window.openReportModal = openReportModal; window.closeReportModal = closeReportModal;

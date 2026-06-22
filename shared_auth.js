@@ -779,6 +779,9 @@ function injectGlobalUI() {
           
           <h4>3. User Data Consent</h4>
           <p>We collect and store your contact information (name, email, phone, state, city) and rank details to process predictions. You consent that Concept Simplified may use your contact details for future promotions and platform updates related to Concept Simplified only. Your data is secure and will never be shared with third-party advertising networks.</p>
+          
+          <h4>4. Branch Predictor Test Disclaimer</h4>
+          <p>The Branch Predictor Test is strictly an informational and preference-based guidance tool. It is designed to suggest potential engineering branches based on student responses to interest-based questions. This assessment is not a psychological test, clinical diagnostic tool, or professional psychometric evaluation. It does not refer to, represent, or substitute for any certified medical, psychiatric, or licensed psychological counseling or assessment.</p>
         </div>
 
         <div class="cs-terms-checkbox-container" onclick="window.toggleTermsCheckbox(event)">

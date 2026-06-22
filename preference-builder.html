@@ -421,7 +421,7 @@
                     <th>Branch</th>
                     <th style="width: 140px">Type</th>
                     <th style="width: 80px">Cutoff %</th>
-                    <th style="width: 50px; text-align: center">Action</th>
+                    <th style="width: 100px; text-align: center">Action</th>
                   </tr>
                 </thead>
                 <tbody id="prefListTbody" ondragover="event.preventDefault()" ondrop="dropOnTbody(event)">
@@ -551,7 +551,14 @@
                 </div>
                 <div id="splitBranchesCollapseContent" style="display: none; margin-top: 12px; max-height: 220px; overflow-y: auto;">
                   <!-- Checkbox branches list -->
-                </div>
+              </div>
+
+              <!-- Run Predictor Button -->
+              <div style="margin-top: 16px; border-top: 1px solid var(--stroke); padding-top: 16px;">
+                <button type="button" class="pb-btn pb-btn-primary" onclick="runPredictor()" style="width: 100%; justify-content: center; gap: 8px; font-weight: 700; height: 42px; border-radius: 12px; font-size: 13.5px; box-shadow: var(--shadow-sm);">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                  Generate Options (Run Predictor)
+                </button>
               </div>
               
             </div>
