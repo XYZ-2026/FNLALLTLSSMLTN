@@ -1378,7 +1378,7 @@ function initAdPopup() {
         <div class="cs-ad-cards-container">
           <div class="cs-ad-card">
             <div class="cs-ad-image-container">
-              <img src="paid%20banners/banner1.png" alt="Simplified Pro">
+              <img src="https://courses-assets-v2.classplus.co/_next/image?url=/api/proxyimage?url=https%3A%2F%2Fcdn-wl-assets.classplus.co%2Fproduction%2Fsingle%2Fijpsrw%2Fa181e913-c49f-4ed8-8838-c15b38cf7a58.png&w=640&q=75" alt="Simplified Pro">
             </div>
             <div class="cs-ad-text-container">
               <div class="cs-ad-badge">Simplified Pro</div>
@@ -1389,7 +1389,7 @@ function initAdPopup() {
           </div>
           <div class="cs-ad-card">
             <div class="cs-ad-image-container">
-              <img src="paid%20banners/banner2.png" alt="Personalized 1:1">
+              <img src="https://courses-assets-v2.classplus.co/_next/image?url=/api/proxyimage?url=https%3A%2F%2Fcdn-wl-assets.classplus.co%2Fproduction%2Fsingle%2Fijpsrw%2Fbde224eb-a206-48f0-ae15-2d2d20fbfaf5.png&w=640&q=75" alt="Personalized 1:1">
             </div>
             <div class="cs-ad-text-container">
               <div class="cs-ad-badge">Personalized 1:1</div>
@@ -1400,7 +1400,7 @@ function initAdPopup() {
           </div>
           <div class="cs-ad-card">
             <div class="cs-ad-image-container">
-              <img src="paid%20banners/banner3.png" alt="AI Counselling">
+              <img src="https://courses-assets-v2.classplus.co/_next/image?url=/api/proxyimage?url=https%3A%2F%2Fcdn-wl-assets.classplus.co%2Fproduction%2Fsingle%2Fijpsrw%2F79751778-f0dd-4a31-be62-47dd801de8e3.png&w=640&q=75" alt="AI Counselling">
             </div>
             <div class="cs-ad-text-container">
               <div class="cs-ad-badge">AI Counselling</div>
