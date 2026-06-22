@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <!-- SEO Optimization Meta Tags -->
+    <title>Branch Explorer & Library — College Simplified</title>
+    <meta name="keywords" content="branch explorer, branch library, engineering branches, academic journey, career pathways, average salary, engineering roadmap, cs, mechanical, entc, electrical, civil, VLSI, mechatronics, iot">
+    <meta name="description" content="Explore detailed profiles, 4-year academic roadmaps, essential tools, project ideas, salary directions, and future industry trends for every engineering specialization.">
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <!-- Open Graph / Facebook Meta Tags -->
+    <meta property="og:title" content="Branch Explorer & Library — College Simplified">
+    <meta property="og:description" content="Explore detailed profiles, 4-year academic roadmaps, essential tools, project ideas, salary directions, and future industry trends for every engineering specialization.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://counselling.collegesimplified.in/branch_explorer.html">
+    <meta property="og:site_name" content="College Simplified">
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=Lexend:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        (function(){var t=localStorage.getItem('cs_theme')||'light';document.documentElement.setAttribute('data-theme',t)})();
+    </script>
+
+    <style>
+        :root {
+            --brand: #dc2626; 
+            --brand-soft: #fef2f2; 
+            --brand-ring: rgba(220, 38, 38, 0.15);
+            --ink: #111827; 
+            --ink2: #374151;
+            --muted: #6b7280; 
+            --bg: #f4f6fb; 
+            --card: #ffffff; 
+            --stroke: rgba(0, 0, 0, 0.08);
+            --blue: #2563eb;
+            --blue-soft: #eff6ff;
+            --green: #16a34a;
+            --green-soft: #f0fdf4;
+            --orange: #d97706;
+            --orange-soft: #fffbeb;
+            --purple: #7c3aed;
+            --purple-soft: #f5f3ff;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-sm: 10px;
+        }
+
+        [data-theme="dark"] {
+            --brand: #ff6b74;
+            --brand-soft: #2a1215;
+            --brand-ring: rgba(255, 107, 116, 0.15);
+            --ink: #f0f1f6;
+            --ink2: #c8cad8;
+            --muted: #8b90a8;
+            --bg: #0b0d14;
+            --card: #131620;
+            --stroke: #222636;
+            --blue: #60a5fa;
+            --blue-soft: #0e1a38;
+            --green: #4ade80;
+            --green-soft: #0a1f10;
+            --orange: #fb923c;
+            --orange-soft: #1f1208;
+            --purple: #a78bfa;
+            --purple-soft: #21153b;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.4);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            padding-top: 64px;
+        }
+
+        .wrap {
+            max-width: 1250px;
+            margin: 0 auto;
+            padding: 40px 20px 80px;
+        }
+
+        /* Page Header */
+        .page-hdr {
+            margin-bottom: 32px;
+            border-bottom: 2px solid var(--stroke);
+            padding-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-hdr-title {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .page-hdr h1 {
+            font-family: 'Lexend', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--ink);
+            letter-spacing: -0.02em;
+        }
+
+        .page-hdr p {
+            color: var(--muted);
+            font-size: 14.5px;
+            margin-top: 6px;
+            line-height: 1.6;
+        }
+
+        /* Search & Filters Section */
+        .search-card {
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 32px;
+        }
+
+        .filters-row {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .search-input-group {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 16px 14px 44px;
+            border: 1.5px solid var(--stroke);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 14.5px;
+            font-weight: 500;
+            color: var(--ink);
+            background: var(--bg);
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--brand);
+            background: var(--card);
+            box-shadow: 0 0 0 4px var(--brand-ring);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            pointer-events: none;
+            width: 18px;
+            height: 18px;
+        }
+
+        .select-filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .filter-select {
+            padding: 12px 16px;
+            border: 1.5px solid var(--stroke);
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ink);
+            background: var(--card);
+            outline: none;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+        }
+
+        .filter-select:focus {
+            border-color: var(--brand);
+            box-shadow: 0 0 0 3px var(--brand-ring);
+        }
+
+        /* Cluster Tabs/Pills */
+        .cluster-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .cluster-pill {
+            padding: 10px 18px;
+            border-radius: 50px;
+            font-family: 'Lexend', sans-serif;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1.5px solid var(--stroke);
+            background: var(--card);
+            color: var(--ink2);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            user-select: none;
+        }
+
+        .cluster-pill:hover {
+            border-color: var(--brand);
+            color: var(--brand);
+            background: var(--brand-soft);
+        }
+
+        .cluster-pill.active {
+            background: var(--brand);
+            color: #fff;
+            border-color: var(--brand);
+            box-shadow: 0 4px 12px var(--brand-ring);
+        }
+
+        /* Library List Layout */
+        .list-view-panel {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .list-view-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .count-badge {
+            font-family: 'Lexend', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--muted);
+            background: var(--card);
+            padding: 6px 14px;
+            border-radius: 50px;
+            border: 1px solid var(--stroke);
+        }
+
+        .clear-filters-btn {
+            background: none;
+            border: none;
+            color: var(--brand);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .branches-list-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
+            gap: 24px;
+        }
+
+        /* Branch Card Styles */
+        .branch-card {
+            background: var(--card);
+            border: 1.5px solid var(--stroke);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .branch-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--brand);
+        }
+
+        .branch-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .branch-card-name {
+            font-family: 'Lexend', sans-serif;
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.35;
+        }
+
+        .branch-cluster-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cluster-computer-it { background: var(--blue-soft); color: var(--blue); border: 1px solid rgba(37,99,235,0.1); }
+        .cluster-electronics { background: var(--purple-soft); color: var(--purple); border: 1px solid rgba(124,58,237,0.1); }
+        .cluster-core { background: var(--orange-soft); color: var(--orange); border: 1px solid rgba(217,119,6,0.1); }
+        .cluster-emerging { background: var(--green-soft); color: var(--green); border: 1px solid rgba(22,163,74,0.1); }
+
+        .match-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            width: fit-content;
+        }
+
+        .match-badge.high { background: var(--green-soft); color: var(--green); border: 1.5px solid rgba(22,163,74,0.15); }
+        .match-badge.promo { background: var(--brand-soft); color: var(--brand); border: 1.5px dashed var(--brand-ring); cursor: pointer; transition: 0.2s; }
+        .match-badge.promo:hover { background: #fee2e2; }
+
+        .branch-card-desc {
+            font-size: 13.5px;
+            color: var(--muted);
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+
+        .branch-card-meta {
+            display: flex;
+            gap: 16px;
+            border-top: 1px solid var(--stroke);
+            padding-top: 14px;
+        }
+
+        .card-meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .card-meta-label {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+        }
+
+        .card-meta-val {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Detail Dashboard Styles */
+        .branch-dashboard {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--card);
+            border: 1.5px solid var(--stroke);
+            color: var(--ink2);
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .back-btn:hover {
+            border-color: var(--brand);
+            color: var(--brand);
+            background: var(--brand-soft);
+            transform: translateX(-4px);
+        }
+
+        /* Detail Header */
+        .detail-header-card {
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .detail-header-inner {
+            position: relative;
+            z-index: 2;
+        }
+
+        .detail-header-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .detail-header-title {
+            font-family: 'Lexend', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--ink);
+            line-height: 1.25;
+            letter-spacing: -0.02em;
+        }
+
+        .detail-header-desc {
+            font-size: 15px;
+            color: var(--muted);
+            margin-top: 8px;
+            max-width: 800px;
+            line-height: 1.6;
+        }
+
+        /* 2-Column Detail Grid Layout */
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 32px;
+            align-items: start;
+        }
+
+        @media (min-width: 992px) {
+            .detail-grid {
+                grid-template-columns: 1.6fr 1fr;
+            }
+        }
+
+        /* Detail section card standard styles */
+        .detail-card {
+            background: var(--card);
+            border: 1px solid var(--stroke);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow);
+        }
+
+        .detail-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-card h3 {
+            font-family: 'Lexend', sans-serif;
+            font-size: 19px;
+            font-weight: 800;
+            color: var(--ink);
+            margin-bottom: 20px;
+            border-left: 4px solid var(--brand);
+            padding-left: 12px;
+            line-height: 1.1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Subtext inside boxes */
+        .why-fits-box {
+            background: var(--brand-soft);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            border-left: 4px solid var(--brand);
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: var(--ink);
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .who-suits-box {
+            background: var(--blue-soft);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            border-left: 4px solid var(--blue);
+            font-size: 14px;
+            color: var(--ink);
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        /* 4-Year Journey Timeline styling */
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+            padding-left: 20px;
+            border-left: 2px dashed var(--stroke);
+            margin-left: 10px;
+        }
+
+        .timeline-item {
+            position: relative;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -31px;
+            top: 4px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--card);
+            border: 4px solid var(--brand);
+            z-index: 2;
+        }
+
+        .timeline-content {
+            background: var(--bg);
+            border: 1px solid var(--stroke);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            transition: 0.2s;
+        }
+
+        .timeline-content:hover {
+            border-color: var(--brand-ring);
+            background: var(--card);
+            box-shadow: var(--shadow);
+        }
+
+        .timeline-year {
+            font-family: 'Lexend', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--brand);
+            margin-bottom: 8px;
+        }
+
+        .timeline-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .timeline-list li {
+            font-size: 13.5px;
+            color: var(--ink2);
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .timeline-list li::before {
+            content: '•';
+            color: var(--brand);
+            position: absolute;
+            left: 0;
+            font-size: 16px;
+        }
+
+        /* Badge/Chip lists */
+        .badge-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chip {
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            background: var(--bg);
+            border: 1px solid var(--stroke);
+            color: var(--ink2);
+            transition: all 0.2s;
+        }
+
+        .chip:hover {
+            border-color: var(--brand);
+            color: var(--brand);
+            background: var(--brand-soft);
+        }
+
+        .chip.subject {
+            background: var(--blue-soft);
+            color: var(--blue);
+            border-color: rgba(37,99,235,0.1);
+        }
+        .chip.subject:hover {
+            background: #dbeafe;
+        }
+
+        .chip.tool {
+            background: var(--purple-soft);
+            color: var(--purple);
+            border-color: rgba(124,58,237,0.1);
+        }
+        .chip.tool:hover {
+            background: #ede9fe;
+        }
+
+        /* Project card styles */
+        .projects-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .project-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--stroke);
+            background: var(--bg);
+        }
+
+        .project-icon {
+            font-size: 18px;
+            margin-top: 2px;
+        }
+
+        .project-text {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--ink2);
+            line-height: 1.4;
+        }
+
+        /* Strategy Callout */
+        .strategy-box {
+            background: var(--green-soft);
+            border-left: 4px solid var(--green);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            font-size: 13.5px;
+            color: var(--ink);
+            line-height: 1.6;
+            margin-top: 16px;
+        }
+
+        /* Salary direction box */
+        .salary-box {
+            background: linear-gradient(135deg, var(--blue) 0%, var(--purple) 100%);
+            color: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(37,99,235,0.15);
+        }
+
+        .salary-box::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 80%);
+        }
+
+        .salary-box-title {
+            font-family: 'Lexend', sans-serif;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.85);
+            margin-bottom: 8px;
+        }
+
+        .salary-box-val {
+            font-size: 14.5px;
+            font-weight: 500;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Risks & Challenges box */
+        .risks-box {
+            background: var(--orange-soft);
+            border-left: 4px solid var(--orange);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .risk-item {
+            font-size: 13px;
+            color: var(--ink2);
+            font-weight: 500;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        /* Milestones Accordion */
+        .milestones-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .milestone-item {
+            background: var(--bg);
+            border: 1px solid var(--stroke);
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .milestone-sem {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--brand);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .milestone-desc {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ink2);
+            flex: 1;
+            text-align: right;
+            padding-left: 12px;
+        }
+
+        /* Recruiter Grid */
+        .recruiter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 10px;
+        }
+
+        .recruiter-tag {
+            background: var(--bg);
+            border: 1px solid var(--stroke);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--ink2);
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .recruiter-tag:hover {
+            background: var(--card);
+            border-color: var(--brand);
+            color: var(--brand);
+            box-shadow: var(--shadow);
+        }
+
+        /* Action Plan Box */
+        .action-plan-box {
+            background: var(--green-soft);
+            border: 1.5px solid rgba(22,163,74,0.15);
+            border-radius: var(--radius-md);
+            padding: 24px;
+        }
+
+        .action-plan-box h4 {
+            font-family: 'Lexend', sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--green);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .action-list li {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--ink);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            line-height: 1.4;
+        }
+
+        .action-list li svg {
+            color: var(--green);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* Loader Styles */
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+            gap: 16px;
+        }
+
+        .loader-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--stroke);
+            border-top-color: var(--brand);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loader-container p {
+            color: var(--muted);
+            font-weight: 600;
+            font-size: 14.5px;
+        }
+
+        /* Layout Grid Helpers */
+        .col-flex {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Dynamic Star Metrics */
+        .stars-container {
+            display: inline-flex;
+            gap: 3px;
+        }
+
+        .star-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--stroke);
+        }
+
+        .star-dot.filled {
+            background: var(--brand);
+        }
+
+        .star-dot.filled-scope {
+            background: var(--blue);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+  <div class="wrap" id="toolArea">
+    <!-- Page Header -->
+    <div class="page-hdr">
+      <div class="page-hdr-title">
+        <h1>Branch Explorer & Library</h1>
+        <p>Explore engineering branches, detailed academic roadmaps, tools, careers, and future industry trends.</p>
+      </div>
+    </div>
+
+    <!-- Data loader spinner -->
+    <div id="dataLoader" class="loader-container">
+      <div class="loader-spinner"></div>
+      <p>Initializing Branch Library & matching user profile...</p>
+    </div>
+
+    <!-- Explorer Main Content -->
+    <div id="explorerContent" style="display: none;">
+      <!-- Search & Filters Container -->
+      <div class="search-card">
+        <div class="filters-row">
+          <!-- Search input and Clear button -->
+          <div class="search-input-group">
+            <div class="search-box">
+              <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="searchQuery" placeholder="Search branch names, descriptions, tools, or careers..." autocomplete="off" oninput="renderListView()">
+            </div>
+          </div>
+
+          <!-- Cluster Filter Pills -->
+          <div class="cluster-tabs" id="clusterPills">
+            <div class="cluster-pill active" data-cluster="all" onclick="selectCluster('all')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              </svg>
+              All Branches
+            </div>
+            <div class="cluster-pill" data-cluster="computer-it" onclick="selectCluster('computer-it')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+              Computer & IT
+            </div>
+            <div class="cluster-pill" data-cluster="electronics" onclick="selectCluster('electronics')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="2"/>
+                <path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/>
+              </svg>
+              Electronics
+            </div>
+            <div class="cluster-pill" data-cluster="core" onclick="selectCluster('core')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+              Core Engineering
+            </div>
+            <div class="cluster-pill" data-cluster="emerging" onclick="selectCluster('emerging')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 18h8M3 22h18M14 9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM12 4h-2a2 2 0 0 0-2 2v12m8-9v9m-4-6h4"/>
+              </svg>
+              Emerging/Interdisciplinary
+            </div>
+          </div>
+
+          <!-- Select Filters (Difficulty, Future Scope) -->
+          <div class="select-filters-grid">
+            <select id="filterDifficulty" class="filter-select" onchange="renderListView()">
+              <option value="all">Any Difficulty Level</option>
+              <option value="3">Moderate (3/5)</option>
+              <option value="4">Hard (4/5)</option>
+              <option value="5">Very Challenging (5/5)</option>
+            </select>
+
+            <select id="filterFutureScope" class="filter-select" onchange="renderListView()">
+              <option value="all">Any Future Scope</option>
+              <option value="3">Good Scope (3+ Stars)</option>
+              <option value="4">Very High Scope (4+ Stars)</option>
+              <option value="5">Exceptional Scope (5 Stars)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Branch Cards List View -->
+      <div id="listViewPanel" class="list-view-panel">
+        <div class="list-view-header">
+          <span id="branchesCountBadge" class="count-badge">0 Specializations</span>
+          <button id="clearFiltersBtn" class="clear-filters-btn hidden" onclick="resetFilters()">Clear Filters</button>
+        </div>
+        <div id="branchesListGrid" class="branches-list-grid">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- Detailed Dashboard Panel -->
+      <div id="branchDashboard" class="branch-dashboard">
+        <button onclick="showListView()" class="back-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Back to Branch Library
+        </button>
+
+        <!-- Detailed Header -->
+        <div class="detail-header-card">
+          <div class="detail-header-inner">
+            <div class="detail-header-tags">
+              <span class="branch-cluster-badge" id="dbClusterBadge">Computer & IT</span>
+              <div id="dbMatchBadge" class="match-badge"></div>
+            </div>
+            <h2 class="detail-header-title" id="dbBranchName">Computer Science Engineering</h2>
+            <p class="detail-header-desc" id="dbBranchDesc">Bridges hardware and software engineering.</p>
+          </div>
+        </div>
+
+        <!-- 2-Column Dashboard Details Grid -->
+        <div class="detail-grid">
+          <!-- Left Column (Academic, Fit, Subjects) -->
+          <div class="col-flex">
+            <!-- Suitability & Overview -->
+            <div class="detail-card">
+              <h3>Why This Branch Fits You</h3>
+              <div class="why-fits-box" id="dbWhyFits">Loading suitability analysis...</div>
+              
+              <h3 style="margin-top: 24px; border-left-color: var(--blue);">Who This Branch Suits</h3>
+              <div class="who-suits-box" id="dbWhoSuits">Loading student profiles...</div>
+            </div>
+
+            <!-- 4-Year Academic Journey -->
+            <div class="detail-card">
+              <h3>4-Year Academic Journey</h3>
+              <div class="timeline" id="dbTimeline">
+                <!-- Timeline Year cards filled dynamically -->
+              </div>
+            </div>
+
+            <!-- Core Subjects & Tools -->
+            <div class="detail-card">
+              <h3>Core Subjects & Essential Tools</h3>
+              <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+                <div>
+                  <h4 style="font-size: 13.5px; font-weight: 700; color: var(--ink2); margin-bottom: 10px;">Core Engineering Subjects</h4>
+                  <div class="badge-list" id="dbCoreSubjects">
+                    <!-- Subject chips -->
+                  </div>
+                </div>
+                <div>
+                  <h4 style="font-size: 13.5px; font-weight: 700; color: var(--ink2); margin-bottom: 10px;">Essential Tools & Technologies</h4>
+                  <div class="badge-list" id="dbTools">
+                    <!-- Tool chips -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Project Ideas & Internship Strategy -->
+            <div class="detail-card">
+              <h3>Practical Experience & Strategy</h3>
+              <h4 style="font-size: 13.5px; font-weight: 700; color: var(--ink2); margin-bottom: 12px;">Recommended Project Ideas</h4>
+              <div class="projects-list" id="dbProjects">
+                <!-- Projects list -->
+              </div>
+
+              <h4 style="font-size: 13.5px; font-weight: 700; color: var(--ink2); margin-top: 24px; margin-bottom: 10px;">Internship Strategy</h4>
+              <div class="strategy-box" id="dbInternshipStrategy">
+                <!-- Strategy paragraph -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column (Careers, Salary, Trends) -->
+          <div class="col-flex">
+            <!-- Career & Salaries -->
+            <div class="detail-card">
+              <h3>Careers & Salary Outlook</h3>
+              
+              <!-- Salary Box -->
+              <div class="salary-box">
+                <div class="salary-box-title">Expected Salary Direction</div>
+                <div class="salary-box-val" id="dbSalaryDirection">Loading package details...</div>
+              </div>
+
+              <h4 style="font-size: 13.5px; font-weight: 700; color: var(--ink2); margin-bottom: 12px;">Potential Career Pathways</h4>
+              <div class="badge-list" id="dbCareers" style="margin-bottom: 24px;">
+                <!-- Career chips -->
+              </div>
+
+              <h4 style="font-size: 13.5px; font-weight: 700; color: var(--ink2); margin-bottom: 12px;">Top Recruiters & Industries</h4>
+              <div class="recruiter-grid" id="dbRecruiters">
+                <!-- Recruiter tags -->
+              </div>
+            </div>
+
+            <!-- Milestones, Trends & Risks -->
+            <div class="detail-card">
+              <h3>Milestones & Future Trends</h3>
+
+              <h4 style="font-size: 13.5px; font-weight: 700; color: var(--ink2); margin-bottom: 12px;">Skill-Building Milestones</h4>
+              <div class="milestones-list" id="dbMilestones" style="margin-bottom: 24px;">
+                <!-- Milestones items -->
+              </div>
+
+              <h4 style="font-size: 13.5px; font-weight: 700; color: var(--ink2); margin-bottom: 10px;">Future Industry Trends</h4>
+              <div class="badge-list" id="dbFutureTrends" style="margin-bottom: 24px;">
+                <!-- Trend chips -->
+              </div>
+
+              <h4 style="font-size: 13.5px; font-weight: 700; color: var(--ink2); margin-bottom: 12px;">Risks & Challenges</h4>
+              <div class="risks-box" id="dbRisks">
+                <!-- Risk items -->
+              </div>
+            </div>
+
+            <!-- Action Plan Card -->
+            <div class="action-plan-box">
+              <h4>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                Your Action Plan
+              </h4>
+              <ul class="action-list" id="dbActionPlan">
+                <!-- Action steps -->
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase & Core Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase_config.js"></script>
+  <script src="shared_auth.js"></script>
+  <script src="branches_data.js"></script>
+
+  <script>
+    let activeCluster = 'all';
+    let userReport = null;
+    let branchList = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 1. Guard with Authentication. This checks Firestore for acceptedTermsAt and displays modal.
+      const session = initAuth({ requireLogin: true, toolContainerId: 'toolArea' });
+      
+      if (session && session.id) {
+        try {
+          // 2. Load user's psychometric test results to calculate match percentage
+          const res = await authApi('getPsychometricReport', { userId: session.id });
+          if (res.ok && res.data) {
+            userReport = res.data;
+          }
+        } catch (err) {
+          console.error('Failed to load user report:', err);
+        }
+      }
+
+      // Hide loader and display explorer content
+      document.getElementById('dataLoader').style.display = 'none';
+      document.getElementById('explorerContent').style.display = 'block';
+
+      // 3. Initialize list view and parse elements
+      branchList = BRANCHES || [];
+      renderListView();
+    });
+
+    // Helper to get cluster SVG icon instead of emoji
+    function getClusterIcon(clusterId) {
+      switch (clusterId) {
+        case 'computer-it':
+          return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px;">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>`;
+        case 'electronics':
+          return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px;">
+            <circle cx="12" cy="12" r="2"/>
+            <path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/>
+          </svg>`;
+        case 'core':
+          return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px;">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>`;
+        case 'emerging':
+          return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px;">
+            <path d="M6 18h8M3 22h18M14 9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM12 4h-2a2 2 0 0 0-2 2v12m8-9v9m-4-6h4"/>
+          </svg>`;
+        default:
+          return '';
+      }
+    }
+
+    // Helper to compute match score
+    function getMatchPercentage(branchId, branchName) {
+      if (!userReport || !userReport.allBranches) return null;
+      const match = userReport.allBranches.find(item => 
+        (item.id && item.id.toLowerCase() === branchId.toLowerCase()) ||
+        (item.branch && item.branch.toLowerCase() === branchId.toLowerCase()) ||
+        (item.name && item.name.toLowerCase() === branchName.toLowerCase()) ||
+        (item.branch && item.branch.toLowerCase() === branchName.toLowerCase())
+      );
+      return match ? Math.round(match.matchScore || match.match || 0) : null;
+    }
+
+    // Helper to render star/dot indicators for difficulty/scope
+    function renderRatingDots(rating, isScope) {
+      let html = '<div class="stars-container">';
+      const filledClass = isScope ? 'filled-scope' : 'filled';
+      for (let i = 1; i <= 5; i++) {
+        html += `<span class="star-dot ${i <= rating ? filledClass : ''}"></span>`;
+      }
+      html += '</div>';
+      return html;
+    }
+
+    function selectCluster(clusterId) {
+      activeCluster = clusterId;
+      
+      // Update active state in UI
+      const pills = document.querySelectorAll('#clusterPills .cluster-pill');
+      pills.forEach(pill => {
+        if (pill.getAttribute('data-cluster') === clusterId) {
+          pill.classList.add('active');
+        } else {
+          pill.classList.remove('active');
+        }
+      });
+
+      renderListView();
+    }
+
+    function resetFilters() {
+      document.getElementById('searchQuery').value = '';
+      document.getElementById('filterDifficulty').value = 'all';
+      document.getElementById('filterFutureScope').value = 'all';
+      selectCluster('all');
+    }
+
+    function renderListView() {
+      const q = document.getElementById('searchQuery').value.toLowerCase().trim();
+      const diffVal = document.getElementById('filterDifficulty').value;
+      const scopeVal = document.getElementById('filterFutureScope').value;
+      const grid = document.getElementById('branchesListGrid');
+      
+      let filtered = branchList.filter(b => {
+        // 1. Cluster Filter
+        if (activeCluster !== 'all' && b.cluster !== activeCluster) return false;
+        
+        // 2. Difficulty Filter
+        if (diffVal !== 'all' && b.difficulty !== parseInt(diffVal)) return false;
+
+        // 3. Future Scope Filter
+        if (scopeVal !== 'all' && b.futureScope < parseInt(scopeVal)) return false;
+
+        // 4. Text Query Filter
+        if (q) {
+          const matchName = b.name.toLowerCase().includes(q);
+          const matchDesc = b.desc.toLowerCase().includes(q);
+          const matchWho = b.whoSuits && b.whoSuits.toLowerCase().includes(q);
+          const matchSkills = b.coreSkills && b.coreSkills.some(s => s.toLowerCase().includes(q));
+          const matchTools = b.tools && b.tools.some(t => t.toLowerCase().includes(q));
+          const matchCareers = b.careers && b.careers.some(c => c.toLowerCase().includes(q));
+          
+          if (!matchName && !matchDesc && !matchWho && !matchSkills && !matchTools && !matchCareers) {
+            return false;
+          }
+        }
+        return true;
+      });
+
+      // Show/Hide Clear Filters button
+      const hasActiveFilters = q || diffVal !== 'all' || scopeVal !== 'all' || activeCluster !== 'all';
+      const clearBtn = document.getElementById('clearFiltersBtn');
+      if (hasActiveFilters) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+
+      // Update badge count
+      document.getElementById('branchesCountBadge').textContent = `${filtered.length} Specialization${filtered.length === 1 ? '' : 's'}`;
+
+      // Populate grid
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 40px; background: var(--card); border: 1px solid var(--stroke); border-radius: 16px; color: var(--muted); font-weight: 600;">
+            No branches match your search parameters. Try widening your filters.
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(b => {
+        const clusterInfo = CLUSTERS[b.cluster] || { name: 'Core' };
+        const matchPercent = getMatchPercentage(b.id, b.name);
+        
+        let matchHtml = '';
+        if (matchPercent !== null) {
+          matchHtml = `<div class="match-badge high">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;">
+              <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+            </svg>
+            ${matchPercent}% Match
+          </div>`;
+        }
+
+        return `
+          <div class="branch-card" onclick="showBranchDetails('${b.id}')">
+            <div class="branch-card-header">
+              <span class="branch-cluster-badge cluster-${b.cluster}">${getClusterIcon(b.cluster)} ${clusterInfo.name}</span>
+              ${matchHtml}
+            </div>
+            <h3 class="branch-card-name">${b.name}</h3>
+            <p class="branch-card-desc">${b.desc}</p>
+            <div class="branch-card-meta">
+              <div class="card-meta-item">
+                <span class="card-meta-label">Difficulty</span>
+                <span class="card-meta-val">${b.difficulty}/5 ${renderRatingDots(b.difficulty, false)}</span>
+              </div>
+              <div class="card-meta-item">
+                <span class="card-meta-label">Future Scope</span>
+                <span class="card-meta-val">${b.futureScope}/5 ${renderRatingDots(b.futureScope, true)}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function showListView() {
+      document.getElementById('listViewPanel').style.display = 'block';
+      document.getElementById('branchDashboard').style.display = 'none';
+      
+      // Scroll back to page top smoothly
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showBranchDetails(branchId) {
+      const b = branchList.find(item => item.id === branchId);
+      const r = ROADMAPS[branchId];
+      if (!b || !r) {
+        alert('Detailed profile data not found for this branch.');
+        return;
+      }
+
+      // Hide list view & show dashboard
+      document.getElementById('listViewPanel').style.display = 'none';
+      const db = document.getElementById('branchDashboard');
+      db.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Populate elements
+      const clusterInfo = CLUSTERS[b.cluster] || { name: 'Core' };
+      const clusterBadge = document.getElementById('dbClusterBadge');
+      clusterBadge.className = `branch-cluster-badge cluster-${b.cluster}`;
+      clusterBadge.innerHTML = `${getClusterIcon(b.cluster)} ${clusterInfo.name}`;
+
+      // Match Score
+      const matchPercent = getMatchPercentage(b.id, b.name);
+      const matchBadge = document.getElementById('dbMatchBadge');
+      if (matchPercent !== null) {
+        matchBadge.className = 'match-badge high';
+        matchBadge.innerHTML = `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;">
+            <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+          </svg>
+          ${matchPercent}% Match with Your DNA
+        `;
+        matchBadge.removeAttribute('onclick');
+        matchBadge.style.display = 'inline-flex';
+      } else {
+        matchBadge.style.display = 'none';
+      }
+
+      document.getElementById('dbBranchName').textContent = b.name;
+      document.getElementById('dbBranchDesc').textContent = b.desc;
+      
+      // Suitability overview
+      document.getElementById('dbWhyFits').textContent = r.whyFits;
+      document.getElementById('dbWhoSuits').textContent = b.whoSuits;
+
+      // 4-Year Academic Journey Timeline
+      const timeline = document.getElementById('dbTimeline');
+      if (r.yearByYear && r.yearByYear.length > 0) {
+        timeline.innerHTML = r.yearByYear.map(yearObj => `
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <div class="timeline-year">${yearObj.year}</div>
+              <ul class="timeline-list">
+                ${yearObj.items.map(subject => `<li>${subject}</li>`).join('')}
+              </ul>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        timeline.innerHTML = '<p style="color: var(--muted)">Timeline not available.</p>';
+      }
+
+      // Core Subjects & Tools
+      const subjectsBox = document.getElementById('dbCoreSubjects');
+      subjectsBox.innerHTML = (r.coreSubjects || b.coreSkills || []).map(sub => `
+        <span class="chip subject">${sub}</span>
+      `).join('');
+
+      const toolsBox = document.getElementById('dbTools');
+      toolsBox.innerHTML = (r.tools || b.tools || []).map(tool => `
+        <span class="chip tool">${tool}</span>
+      `).join('');
+
+      // Project Ideas
+      const projectsBox = document.getElementById('dbProjects');
+      projectsBox.innerHTML = (r.projects || []).map(proj => `
+        <div class="project-item">
+          <span class="project-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--orange); display:block;">
+              <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A5 5 0 0 0 8 8c0 1 .3 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/>
+              <line x1="9" y1="18" x2="15" y2="18"/>
+              <line x1="10" y1="22" x2="14" y2="22"/>
+            </svg>
+          </span>
+          <span class="project-text">${proj}</span>
+        </div>
+      `).join('');
+
+      // Internship Strategy
+      document.getElementById('dbInternshipStrategy').innerHTML = `
+        <strong>OEM & Field Strategy:</strong> ${r.internshipStrategy}
+      `;
+
+      // Careers
+      const careersBox = document.getElementById('dbCareers');
+      careersBox.innerHTML = (r.careerPaths || b.careers || []).map(car => `
+        <span class="chip" style="font-weight:700; display:inline-flex; align-items:center; gap:6px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+          </svg>
+          ${car}
+        </span>
+      `).join('');
+
+      // Salary
+      document.getElementById('dbSalaryDirection').textContent = r.salaryDirection;
+
+      // Recruiters
+      const recruitersBox = document.getElementById('dbRecruiters');
+      recruitersBox.innerHTML = (r.topRecruiters || []).map(rec => `
+        <div class="recruiter-tag">${rec}</div>
+      `).join('');
+
+      // Milestones
+      const milestonesBox = document.getElementById('dbMilestones');
+      if (r.skillMilestones && r.skillMilestones.length > 0) {
+        milestonesBox.innerHTML = r.skillMilestones.map(ms => {
+          const splitIdx = ms.indexOf(':');
+          const semTitle = splitIdx !== -1 ? ms.slice(0, splitIdx) : 'Milestone';
+          const semDesc = splitIdx !== -1 ? ms.slice(splitIdx + 1) : ms;
+          return `
+            <div class="milestone-item">
+              <span class="milestone-sem">${semTitle}</span>
+              <span class="milestone-desc">${semDesc}</span>
+            </div>
+          `;
+        }).join('');
+      } else {
+        milestonesBox.innerHTML = '<p style="color: var(--muted)">Milestones not specified.</p>';
+      }
+
+      // Future Trends
+      const trendsBox = document.getElementById('dbFutureTrends');
+      trendsBox.innerHTML = (r.futureTrends || []).map(trend => `
+        <span class="chip" style="background:var(--blue-soft); color:var(--blue); border-color:rgba(37,99,235,0.05); font-weight:700; display:inline-flex; align-items:center; gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+            <path d="M4.5 16.5c-1.5 1.25-2.5 3.5-2.5 3.5s2.25-1 3.5-2.5"></path>
+            <path d="M12 2C6.5 2 2 6.5 2 12c0 1 .5 2 1 2.5L7 10l4 4 2.5 4c.5.5 1.5 1 2.5 1 5.5 0 10-4.5 10-10S17.5 2 12 2z"></path>
+            <path d="M9 12a3 3 0 1 0 6 0 3 3 0 1 0-6 0Z"></path>
+            <path d="M14 8a1 1 0 1 0 2 0 1 1 0 1 0-2 0Z"></path>
+          </svg>
+          ${trend}
+        </span>
+      `).join('');
+
+      // Risks
+      const risksBox = document.getElementById('dbRisks');
+      risksBox.innerHTML = (r.risks || []).map(risk => `
+        <div class="risk-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--orange); flex-shrink:0; margin-top:2px;">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <span>${risk}</span>
+        </div>
+      `).join('');
+
+      // Action Plan list
+      const actionBox = document.getElementById('dbActionPlan');
+      actionBox.innerHTML = (r.actionPlan || []).map(action => `
+        <li>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span>${action}</span>
+        </li>
+      `).join('');
+    }
+  </script>
+</body>
+</html>

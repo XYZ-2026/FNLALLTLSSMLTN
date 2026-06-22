@@ -557,6 +557,14 @@
             <input type="password" id="rCfm" placeholder="repeat" onkeydown="if(event.key==='Enter')doRegister()">
           </div>
         </div>
+        
+        <div style="display:flex; align-items:flex-start; gap:10px; margin-top:16px; margin-bottom:8px; cursor:pointer; user-select:none; text-align:left;" onclick="document.getElementById('rTerms').click()">
+          <input type="checkbox" id="rTerms" style="margin-top:4px; cursor:pointer;" onclick="event.stopPropagation()">
+          <label for="rTerms" style="font-size:13px; font-weight:500; color:var(--ink2); display:inline; margin:0; cursor:pointer; line-height:1.4;" onclick="event.stopPropagation()">
+            I agree to the <a href="terms.html" target="_blank" class="link" onclick="event.stopPropagation()">Terms & Conditions</a> and <a href="privacy.html" target="_blank" class="link" onclick="event.stopPropagation()">Privacy Policy</a>.
+          </label>
+        </div>
+        
         <div id="rErr" class="err"></div>
         <button class="btn btn-primary" id="regBtn" onclick="doRegister()">Create Account →</button>
         <p style="text-align:center;margin-top:14px;font-size:13px;color:var(--muted)">
@@ -720,6 +728,9 @@
       if (!city) return showErr('rErr', 'City required.');
       if (pwd.length < 6) return showErr('rErr', 'Password min 6 characters.');
       if (pwd !== cfm) return showErr('rErr', 'Passwords do not match.');
+      
+      var termsChecked = document.getElementById('rTerms').checked;
+      if (!termsChecked) return showErr('rErr', 'You must agree to the Terms & Conditions and Privacy Policy to register.');
 
       var btn = document.getElementById('regBtn');
       btn.disabled = true; btn.textContent = 'Creating account…';

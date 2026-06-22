@@ -40,7 +40,7 @@ async function hashPassword(password) {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-// Helper to normalize legacy psychometric test results to the new format
+// Helper to normalize legacy branch prediction test results to the new format
 function normalizeLegacyReport(data) {
   if (!data) return null;
   if (data.traitScores) return data;
@@ -81,7 +81,19 @@ function normalizeLegacyReport(data) {
     }
   });
 
-  const legacyBranches = data.top5Roadmaps || data.allBranches || [];
+  let legacyBranches = [];
+  if (Array.isArray(data.allBranches)) {
+    legacyBranches = data.allBranches;
+  } else if (Array.isArray(data.top5Roadmaps)) {
+    legacyBranches = data.top5Roadmaps;
+  } else if (data.allBranches && typeof data.allBranches === 'object') {
+    legacyBranches = Object.values(data.allBranches);
+  } else if (data.top5Roadmaps && typeof data.top5Roadmaps === 'object') {
+    legacyBranches = Object.keys(data.top5Roadmaps).map(function(key) {
+      return { branch: key, matchScore: 50 };
+    });
+  }
+
   const topBranches = legacyBranches.map(lb => {
     const name = lb.branch || lb.name || "Engineering";
     const matchScore = lb.match || lb.matchScore || lb.score || 50;
@@ -184,10 +196,11 @@ async function fireApi(action, payload) {
             password: hashed, // Hashed copy for backward compatibility
             role: 'user',
             authMigrated: true,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            acceptedTermsAt: firebase.firestore.FieldValue.serverTimestamp()
           };
           const docRef = await db.collection('users').add(userData);
-          const session = { id: docRef.id, name, email, phone, state, city, role: 'user' };
+          const session = { id: docRef.id, name, email, phone, state, city, role: 'user', acceptedTermsAt: new Date().toISOString() };
           return { ok: true, data: session };
         } catch (authErr) {
           console.error('Registration error in Firebase Auth:', authErr);
@@ -220,7 +233,7 @@ async function fireApi(action, payload) {
               createdAt: firebase.firestore.FieldValue.serverTimestamp()
             };
             const docRef = await db.collection('users').add(userData);
-            const session = { id: docRef.id, name: userData.name, email, phone: '', state: '', city: '', role: 'user' };
+            const session = { id: docRef.id, name: userData.name, email, phone: '', state: '', city: '', role: 'user', acceptedTermsAt: null };
             return { ok: true, data: session };
           }
           
@@ -229,7 +242,8 @@ async function fireApi(action, payload) {
           const session = {
             id: doc.id, name: user.name, email: user.email,
             phone: user.phone || '', state: user.state || '', city: user.city || '',
-            role: user.role || 'user'
+            role: user.role || 'user',
+            acceptedTermsAt: user.acceptedTermsAt ? (user.acceptedTermsAt.toDate ? user.acceptedTermsAt.toDate().toISOString() : user.acceptedTermsAt) : null
           };
           return { ok: true, data: session };
         } catch (authErr) {
@@ -252,7 +266,8 @@ async function fireApi(action, payload) {
               const session = {
                 id: doc.id, name: user.name, email: user.email,
                 phone: user.phone || '', state: user.state || '', city: user.city || '',
-                role: user.role || 'user'
+                role: user.role || 'user',
+                acceptedTermsAt: user.acceptedTermsAt ? (user.acceptedTermsAt.toDate ? user.acceptedTermsAt.toDate().toISOString() : user.acceptedTermsAt) : null
               };
               return { ok: true, data: session };
             } catch (migrationErr) {

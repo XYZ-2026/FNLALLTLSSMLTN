@@ -422,6 +422,150 @@ function injectGlobalUI() {
     @keyframes cs-spin-modal {
       to { transform: rotate(360deg); }
     }
+
+    /* Terms Acceptance Modal Styles */
+    .cs-terms-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 9999999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .cs-terms-modal.show {
+      display: flex;
+    }
+    .cs-terms-modal-content {
+      background: var(--card, #ffffff);
+      border: 1px solid var(--stroke, rgba(0,0,0,0.08));
+      border-radius: 24px;
+      width: 100%;
+      max-width: 520px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      padding: 32px;
+      box-sizing: border-box;
+      animation: cs-fade-in 0.3s ease;
+    }
+    @keyframes cs-fade-in {
+      from { opacity: 0; transform: scale(0.95) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .cs-terms-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .cs-terms-icon-container {
+      width: 64px;
+      height: 64px;
+      background: var(--brand-soft);
+      color: var(--brand);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .cs-terms-title {
+      font-family: 'Lexend', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--ink, #111827);
+      margin-bottom: 8px;
+      margin-top: 0;
+    }
+    .cs-terms-desc {
+      color: var(--muted, #6b7280);
+      font-size: 13.5px;
+      line-height: 1.5;
+      margin: 0;
+    }
+    .cs-terms-body {
+      background: var(--bg);
+      border: 1px solid var(--stroke);
+      border-radius: 16px;
+      padding: 16px;
+      max-height: 200px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      font-size: 12.5px;
+      color: var(--ink2);
+      text-align: left;
+    }
+    .cs-terms-body h4 {
+      font-family: 'Lexend', sans-serif;
+      font-weight: 700;
+      margin-top: 12px;
+      margin-bottom: 4px;
+      color: var(--ink);
+    }
+    .cs-terms-body h4:first-child {
+      margin-top: 0;
+    }
+    .cs-terms-body p {
+      margin-bottom: 8px;
+    }
+    .cs-terms-body ul {
+      margin-left: 16px;
+      margin-bottom: 8px;
+    }
+    .cs-terms-checkbox-container {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 24px;
+      cursor: pointer;
+      user-select: none;
+      text-align: left;
+    }
+    .cs-terms-checkbox-container input {
+      margin-top: 4px;
+      cursor: pointer;
+    }
+    .cs-terms-checkbox-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink2);
+      line-height: 1.4;
+    }
+    .cs-terms-checkbox-label a {
+      color: var(--brand);
+      text-decoration: underline;
+    }
+    .cs-terms-submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--brand);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Lexend', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px var(--brand-ring);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-sizing: border-box;
+    }
+    .cs-terms-submit-btn:hover {
+      background: var(--dark-red);
+      transform: translateY(-1px);
+    }
+    .cs-terms-submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
   `;
   document.head.appendChild(style);
 
@@ -481,6 +625,7 @@ function injectGlobalUI() {
             <a href="compare_colleges.html" class="sidebar-sub-link">Compare Colleges</a>
             <a href="mht_cet_college_predictor.html" class="sidebar-sub-link">MHT CET College Predictor</a>
             <a href="Branch.html" class="sidebar-sub-link">Branch Prediction Test</a>
+            <a href="branch_explorer.html" class="sidebar-sub-link">Branch Explorer</a>
             <a href="percentile_vs_college_predictor.html" class="sidebar-sub-link">JEE ALL INDIA Predictor</a>
             <a href="document_checklist.html" class="sidebar-sub-link">Document Checklist</a>
             <a href="preference-builder.html" class="sidebar-sub-link">CET Preference Builder</a>
@@ -499,6 +644,7 @@ function injectGlobalUI() {
             <a href="dse_college_predictor.html" class="sidebar-sub-link">College Predictor</a>
             <a href="dse_compare_colleges.html" class="sidebar-sub-link">Compare Colleges</a>
             <a href="Branch.html" class="sidebar-sub-link">Branch Prediction Test</a>
+            <a href="branch_explorer.html" class="sidebar-sub-link">Branch Explorer</a>
             <a href="dse-preference-builder.html" class="sidebar-sub-link">DSE Preference Builder</a>
           </div>
         </div>
@@ -516,6 +662,7 @@ function injectGlobalUI() {
             <a href="josaa.html" class="sidebar-sub-link">JOSAA Predictor</a>
             <a href="josaa_cutoff.html" class="sidebar-sub-link">JOSAA Cutoff Checker</a>
             <a href="Branch.html" class="sidebar-sub-link">Branch Prediction Test</a>
+            <a href="branch_explorer.html" class="sidebar-sub-link">Branch Explorer</a>
             <a href="josaa-preference-builder.html" class="sidebar-sub-link">JOSAA Pref Builder</a>
           </div>
         </div>
@@ -530,6 +677,7 @@ function injectGlobalUI() {
             <a href="csab-landing.html" class="sidebar-sub-link">Hub Overview</a>
             <a href="csab.html" class="sidebar-sub-link">CSAB Predictor</a>
             <a href="Branch.html" class="sidebar-sub-link">Branch Prediction Test</a>
+            <a href="branch_explorer.html" class="sidebar-sub-link">Branch Explorer</a>
           </div>
         </div>
 
@@ -544,6 +692,7 @@ function injectGlobalUI() {
             <a href="comedk_predictor.html" class="sidebar-sub-link">COMEDK Predictor</a>
             <a href="comedk_cutoff.html" class="sidebar-sub-link">COMEDK Cutoff Checker</a>
             <a href="Branch.html" class="sidebar-sub-link">Branch Prediction Test</a>
+            <a href="branch_explorer.html" class="sidebar-sub-link">Branch Explorer</a>
             <a href="comedk-preference-builder.html" class="sidebar-sub-link">COMEDK Preference Builder</a>
           </div>
         </div>
@@ -552,12 +701,15 @@ function injectGlobalUI() {
         
         <div class="sidebar-label">Tools</div>
         <a href="Branch.html" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg> Branch Prediction Test</a>
+        <a href="branch_explorer.html" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> Branch Explorer</a>
         <a href="document_checklist.html" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Document Checklist</a>
         <a href="calendar.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Event Calendar</a>
         <a href="non-cap-admissions.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> NON-CAP Admissions</a>
         <a href="index.html#latest-notices" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Latest Notices</a>
 
-
+        <div class="sidebar-label">Legal</div>
+        <a href="terms.html" class="sidebar-link" target="_blank"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Terms & Conditions</a>
+        <a href="privacy.html" class="sidebar-link" target="_blank"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Privacy Policy</a>
       </nav>
     </aside>
     <div id="global-ui-injected" style="display:none"></div>
@@ -600,7 +752,91 @@ function injectGlobalUI() {
     </div>
   `;
 
-  document.body.insertAdjacentHTML('afterbegin', headerHtml + sidebarHtml + claimModalHtml);
+  // Inject the Terms & Conditions acceptance modal HTML
+  var termsModalHtml = `
+    <div id="cs-terms-acceptance-modal" class="cs-terms-modal">
+      <div class="cs-terms-modal-content">
+        <div class="cs-terms-header">
+          <div class="cs-terms-icon-container">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+          </div>
+          <h2 class="cs-terms-title">Terms & Privacy Policy</h2>
+          <p class="cs-terms-desc">We have revised our Terms & Conditions and Privacy Policy. Please review and accept them to continue using College Simplified counselling tools.</p>
+        </div>
+        
+        <div class="cs-terms-body">
+          <h4>1. Predictive Nature of Tools</h4>
+          <p>All recommendations and cutoff predictions are estimates based on historical statistical cutoff data (primarily last year's official CAP data). Concept Simplified does not guarantee or assure any prediction, college admission, or branch allocation.</p>
+          
+          <h4>2. Accuracy Disclaimer</h4>
+          <p>Actual admission distributions fluctuate depending on real-time merit ranks, current-year preferences, and authorized board decisions. Users should confirm official brochures before making decisions.</p>
+          
+          <h4>3. User Data Consent</h4>
+          <p>We collect and store your contact information (name, email, phone, state, city) and rank details to process predictions. You consent that Concept Simplified may use your contact details for future promotions and platform updates related to Concept Simplified only. Your data is secure and will never be shared with third-party advertising networks.</p>
+        </div>
+
+        <div class="cs-terms-checkbox-container" onclick="window.toggleTermsCheckbox(event)">
+          <input type="checkbox" id="cs-terms-checkbox" onchange="window.updateTermsButtonState()">
+          <label class="cs-terms-checkbox-label" for="cs-terms-checkbox">
+            I have read and agree to the <a href="terms.html" target="_blank" onclick="event.stopPropagation()">Terms & Conditions</a> and <a href="privacy.html" target="_blank" onclick="event.stopPropagation()">Privacy Policy</a>.
+          </label>
+        </div>
+
+        <button id="cs-terms-accept-btn" class="cs-terms-submit-btn" disabled onclick="window.acceptTermsAndConditions()">
+          <span class="btn-text">Accept & Continue</span>
+          <div class="cs-btn-spinner" id="cs-terms-spinner" style="display:none;"></div>
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML('afterbegin', headerHtml + sidebarHtml + claimModalHtml + termsModalHtml);
+
+  // Dynamic Sidebar Link Activation based on current page pathname
+  try {
+    var path = window.location.pathname.split('/').pop() || 'index.html';
+    path = path.split('?')[0]; // strip query parameters
+    
+    // 1. Activate and highlight dropdown sub-links
+    var subLinks = document.querySelectorAll('.sidebar-sub-link');
+    subLinks.forEach(function(link) {
+      var href = link.getAttribute('href');
+      if (href && href.split('?')[0] === path) {
+        link.style.color = 'var(--brand)';
+        link.style.background = 'var(--brand-soft)';
+        link.classList.add('active');
+        
+        // Find closest parent dropdown content container and open it
+        var drop = link.closest('.dropdown-content');
+        if (drop) {
+          drop.classList.add('active');
+          var btn = drop.previousElementSibling;
+          if (btn) btn.classList.add('active');
+        }
+      }
+    });
+
+    // 2. Activate and highlight main sidebar links
+    var mainLinks = document.querySelectorAll('.sidebar-link:not(.dropdown-toggle)');
+    mainLinks.forEach(function(link) {
+      var href = link.getAttribute('href');
+      if (href && href.split('?')[0] === path) {
+        link.style.color = 'var(--brand)';
+        link.style.background = 'var(--brand-soft)';
+        link.classList.add('active');
+        var svg = link.querySelector('svg');
+        if (svg) svg.style.color = 'var(--brand)';
+      }
+    });
+  } catch (err) {
+    console.error('Sidebar link activation error:', err);
+  }
 }
 
 window.toggleDropdown = function (id) {
@@ -608,6 +844,57 @@ window.toggleDropdown = function (id) {
   var btn = content.previousElementSibling;
   content.classList.toggle('active');
   btn.classList.toggle('active');
+};
+
+window.toggleTermsCheckbox = function(e) {
+  if (e.target.tagName === 'A' || e.target.tagName === 'INPUT') return;
+  var cb = document.getElementById('cs-terms-checkbox');
+  if (cb) {
+    cb.checked = !cb.checked;
+    window.updateTermsButtonState();
+  }
+};
+
+window.updateTermsButtonState = function() {
+  var cb = document.getElementById('cs-terms-checkbox');
+  var btn = document.getElementById('cs-terms-accept-btn');
+  if (cb && btn) {
+    btn.disabled = !cb.checked;
+  }
+};
+
+window.acceptTermsAndConditions = async function() {
+  var user = getSession();
+  if (!user || !user.id) return;
+  
+  var btn = document.getElementById('cs-terms-accept-btn');
+  var spinner = document.getElementById('cs-terms-spinner');
+  
+  if (btn) btn.disabled = true;
+  if (spinner) spinner.style.display = 'block';
+  
+  try {
+    // 1. Update user document in Firestore with the timestamp
+    if (typeof db !== 'undefined') {
+      var ts = firebase.firestore.FieldValue.serverTimestamp();
+      await db.collection('users').doc(user.id).update({
+        acceptedTermsAt: ts
+      });
+    }
+    
+    // 2. Update local storage session
+    user.acceptedTermsAt = new Date().toISOString();
+    setSession(user);
+    
+    // 3. Hide the modal
+    var modal = document.getElementById('cs-terms-acceptance-modal');
+    if (modal) modal.classList.remove('show');
+  } catch (err) {
+    console.error('Failed to save terms acceptance:', err);
+    alert('Failed to save your acceptance. Please try again.');
+    if (btn) btn.disabled = false;
+    if (spinner) spinner.style.display = 'none';
+  }
 };
 
 window.toggleSidebar = function () {
@@ -759,6 +1046,12 @@ function initAuth(opts) {
 
   var session = getSession();
 
+  // Immediately show Terms Acceptance Modal if logged in but not accepted
+  if (session && session.id && !session.acceptedTermsAt) {
+    var termsModal = document.getElementById('cs-terms-acceptance-modal');
+    if (termsModal) termsModal.classList.add('show');
+  }
+
   // Sync user status from Firestore in background to allow instant premium access without relogin
   if (session && session.id && typeof db !== 'undefined') {
     db.collection('users').doc(session.id).get().then(function(doc) {
@@ -788,6 +1081,22 @@ function initAuth(opts) {
         if (userData.email && userData.email !== session.email) {
           session.email = userData.email;
           updated = true;
+        }
+
+        // Sync accepted terms
+        var dbTerms = userData.acceptedTermsAt ? (userData.acceptedTermsAt.toDate ? userData.acceptedTermsAt.toDate().toISOString() : userData.acceptedTermsAt) : null;
+        if (dbTerms && dbTerms !== session.acceptedTermsAt) {
+          session.acceptedTermsAt = dbTerms;
+          updated = true;
+        }
+
+        // Hide or show modal based on acceptance status
+        if (dbTerms || session.acceptedTermsAt) {
+          var termsModal = document.getElementById('cs-terms-acceptance-modal');
+          if (termsModal) termsModal.classList.remove('show');
+        } else {
+          var termsModal = document.getElementById('cs-terms-acceptance-modal');
+          if (termsModal) termsModal.classList.add('show');
         }
 
         if (updated) {
