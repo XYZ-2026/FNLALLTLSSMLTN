@@ -461,7 +461,7 @@ background:var(--bg-alt);font-family:inherit;font-size:.82rem;cursor:pointer;tra
       <ul class="sample-features">
         <li>Premium cover page with your Engineering DNA type</li>
         <li>Detailed trait analysis with radar chart visualization</li>
-        <li>Top 5 personalized branch recommendations</li>
+        <li>Top 7 personalized branch recommendations</li>
         <li>Match percentages with explanations</li>
         <li>Unique roadmap for every recommended branch</li>
         <li>Career pathways, salary direction, and action plan</li>
@@ -567,6 +567,7 @@ background:var(--bg-alt);font-family:inherit;font-size:.82rem;cursor:pointer;tra
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="firebase_config.js"></script>
 <script src="shared_auth.js"></script>
+<script src="branches_data.js"></script>
 
 <script>
 /* ========== THEME & UI ========== */
@@ -635,11 +636,6 @@ document.addEventListener('keydown',e=>{
 });
 
 /* ========== CONSTANTS ========== */
-const TRAITS=['Programming','Mathematics','Research','Creativity','Leadership','Communication',
-'Hardware','Electronics','MechanicalSystems','Construction','Automation','DataAnalysis',
-'DesignThinking','Entrepreneurship','ScientificCuriosity','RiskTaking','Precision',
-'ProblemSolving','Innovation','SystemsThinking','Debugging','LogicalReasoning','SpatialThinking','PatternRecognition'];
-
 const SECTION_NAMES=['Problem Solving & Technical Aptitude','Subject Interest & Domain Curiosity',
 'Creative Approach & Design Thinking','Work Style & Personality','Career Goals & Industry Vision'];
 
@@ -661,10 +657,15 @@ const DNA_TYPES=[
 {name:'The Practical Engineer',icon:'🔧',desc:'You prefer real-world applications over theory. Getting things to work reliably is your strength.',
  traits:['Hardware','Electronics','Precision'],color:'#6B7280'},
 {name:'The Tech Explorer',icon:'🚀',desc:'You are always exploring the latest technologies and eager to experiment with cutting-edge tools.',
- traits:['Programming','RiskTaking','Entrepreneurship'],color:'#06B6D4'}
+ traits:['Programming','RiskTaking','Entrepreneurship'],color:'#06B6D4'},
+{name:'The Molecular Pioneer',icon:'🧪',desc:'You are fascinated by chemical processes, biological systems, and engineering at the microscopic level.',
+ traits:['ChemicalProcessing','BiologicalScience','MaterialScience','ScientificCuriosity'],color:'#EF4444'},
+{name:'The Eco-Guardian',icon:'🌱',desc:'You want to engineer solutions that protect our planet, conserve resources, and build a sustainable future.',
+ traits:['EnvironmentalAwareness','BiologicalScience','SystemsThinking'],color:'#10B981'},
+{name:'The Process Master',icon:'🏭',desc:'You love optimizing production lines, industrial workflows, and manufacturing systems for maximum scale and efficiency.',
+ traits:['IndustrialProcess','Automation','Precision','SystemsThinking'],color:'#84CC16'}
 ];
 
-/* ========== QUESTIONS DATA (60 questions) ========== */
 const QUESTIONS=[
 // === SECTION 1: Problem Solving & Technical Aptitude (12 questions) ===
 {section:0,text:"A critical system crashes during peak hours. How do you approach fixing it?",options:[
@@ -731,7 +732,7 @@ const QUESTIONS=[
 {text:"Create a detailed Gantt chart and reallocate resources precisely",traits:{Construction:3,Precision:2,Mathematics:1}},
 {text:"Identify the critical path and focus efforts on bottleneck tasks",traits:{LogicalReasoning:3,SystemsThinking:2,ProblemSolving:2}},
 {text:"Motivate the team and improve coordination between departments",traits:{Leadership:3,Communication:3,Entrepreneurship:1}},
-{text:"Propose alternative construction methods that can run in parallel",traits:{Innovation:3,MechanicalSystems:2,RiskTaking:1}}
+{text:"Streamline manufacturing steps and optimize resource assembly layout",traits:{IndustrialProcess:3,Automation:2,Precision:1}}
 ]},
 {section:0,text:"You discover an unexpected pattern in experimental data. What do you do?",options:[
 {text:"Run statistical tests to verify the pattern is significant",traits:{Mathematics:3,DataAnalysis:3,Precision:2}},
@@ -743,55 +744,55 @@ const QUESTIONS=[
 // === SECTION 2: Subject Interest & Domain Curiosity (12 questions) ===
 {section:1,text:"You have a free weekend to learn something new. What draws you most?",options:[
 {text:"Building a machine learning model to predict stock trends",traits:{DataAnalysis:3,Programming:2,PatternRecognition:2}},
-{text:"Understanding how a jet engine converts fuel to thrust",traits:{MechanicalSystems:3,ScientificCuriosity:2,Mathematics:1}},
-{text:"Learning to design and 3D-print a custom drone frame",traits:{DesignThinking:3,SpatialThinking:2,Innovation:2}},
+{text:"Investigating how aerospace systems design aerodynamics for spacecraft and jet engines",traits:{AerospaceInterest:3,MechanicalSystems:2,ScientificCuriosity:2}},
+{text:"Experimenting with biotechnology or creating a new organic product formula",traits:{BiologicalScience:3,ChemicalProcessing:2,ScientificCuriosity:2,FoodScience:2}},
 {text:"Studying how 5G networks transmit data across cities",traits:{Electronics:3,Communication:1,SystemsThinking:2}}
 ]},
 {section:1,text:"Which YouTube video title would you click on first?",options:[
 {text:"How Google's Search Algorithm Actually Works",traits:{Programming:3,DataAnalysis:2,SystemsThinking:1}},
-{text:"Inside a Nuclear Reactor: Engineering Explained",traits:{ScientificCuriosity:3,MechanicalSystems:2,Research:2}},
+{text:"Inside a Bio-Reactor: How Vaccines and Medicines are Engineered",traits:{BiologicalScience:3,ScientificCuriosity:3,Research:2}},
 {text:"Building a Smart Home from Scratch with Arduino",traits:{Electronics:3,Hardware:2,Automation:2}},
-{text:"How Architects Design Earthquake-Resistant Buildings",traits:{Construction:3,SpatialThinking:2,Precision:1}}
+{text:"How High-Performance Polymers and Advanced Materials are Engineered",traits:{MaterialScience:3,ScientificCuriosity:2,Precision:1}}
 ]},
 {section:1,text:"Your college announces an interdisciplinary project competition. Which team do you join?",options:[
 {text:"The team building an autonomous delivery robot",traits:{Automation:3,Programming:2,Hardware:2}},
-{text:"The team designing a sustainable housing prototype",traits:{Construction:3,DesignThinking:2,SpatialThinking:2}},
+{text:"The team designing a zero-emission water purification or recycling plant",traits:{EnvironmentalAwareness:3,DesignThinking:2,Research:2}},
 {text:"The team creating a health monitoring wearable device",traits:{Electronics:3,DataAnalysis:2,Innovation:2}},
-{text:"The team developing a crop disease detection app using AI",traits:{Research:2,DataAnalysis:3,Programming:2}}
+{text:"The team engineering agricultural automation systems or sustainable food processing",traits:{FoodScience:3,EnvironmentalAwareness:2,IndustrialProcess:1}}
 ]},
 {section:1,text:"Which problem would keep you up at night trying to solve?",options:[
 {text:"Making renewable energy storage 10x more efficient",traits:{ScientificCuriosity:3,Innovation:2,MechanicalSystems:2}},
 {text:"Detecting cyber attacks before they happen using AI",traits:{Programming:3,PatternRecognition:2,DataAnalysis:2}},
-{text:"Designing a bridge that can withstand a Category 5 hurricane",traits:{Construction:3,Mathematics:2,Precision:2}},
-{text:"Creating a chip that runs neural networks with zero latency",traits:{Electronics:3,Hardware:2,Automation:2}}
+{text:"Preventing environmental hazards and purifying polluted ecosystems",traits:{EnvironmentalAwareness:3,ChemicalProcessing:2,Research:2}},
+{text:"Designing smart textiles and fabrics that change properties or monitor health",traits:{TextileDesign:3,MaterialScience:2,DesignThinking:2}}
 ]},
 {section:1,text:"You're browsing a bookstore. Which section do you gravitate toward?",options:[
 {text:"Algorithms, data structures, and software architecture",traits:{Programming:3,LogicalReasoning:2,SystemsThinking:1}},
-{text:"Physics, thermodynamics, and material science",traits:{ScientificCuriosity:3,MechanicalSystems:2,Mathematics:1}},
+{text:"Biochemical reactions, genetics, and pharmaceutical technology",traits:{BiologicalScience:3,ChemicalProcessing:3,Research:2}},
 {text:"Robotics, embedded systems, and control theory",traits:{Automation:3,Electronics:2,Hardware:1}},
-{text:"Architecture, structural engineering, and urban planning",traits:{Construction:3,SpatialThinking:2,DesignThinking:2}}
+{text:"Industrial plant operations, supply chain logistics, and packaging systems",traits:{IndustrialProcess:3,SystemsThinking:2,Precision:2}}
 ]},
 {section:1,text:"A friend asks you to explain your favorite concept in engineering. What do you talk about?",options:[
 {text:"How neural networks learn to recognize images from raw pixels",traits:{DataAnalysis:3,PatternRecognition:3,Research:1}},
 {text:"How feedback loops maintain stability in control systems",traits:{Automation:3,SystemsThinking:2,Electronics:1}},
-{text:"How load distribution works in skyscrapers and bridges",traits:{Construction:3,Mathematics:2,SpatialThinking:2}},
+{text:"How chemical plants refine crude resources into plastics, paints, and fuels",traits:{ChemicalProcessing:3,SystemsThinking:2,IndustrialProcess:1}},
 {text:"How processors execute billions of instructions per second",traits:{Hardware:3,Electronics:2,Programming:1}}
 ]},
 {section:1,text:"Which internship listing excites you the most?",options:[
 {text:"Data Science Intern — build predictive models for healthcare outcomes",traits:{DataAnalysis:3,Research:2,Programming:2}},
-{text:"Mechanical Design Intern — optimize turbine blade geometries using CFD",traits:{MechanicalSystems:3,Mathematics:2,SpatialThinking:2}},
+{text:"Aerospace Engineering Intern — optimize wing aerodynamics for flight vehicles",traits:{AerospaceInterest:3,MechanicalSystems:2,Precision:2}},
 {text:"Embedded Systems Intern — develop firmware for automotive sensors",traits:{Electronics:3,Hardware:2,Programming:2}},
-{text:"Construction Engineering Intern — manage a commercial building project",traits:{Construction:3,Leadership:2,Precision:1}}
+{text:"Textile Technology Intern — develop high-strength flame-retardant fibers",traits:{TextileDesign:3,MaterialScience:2,Precision:1}}
 ]},
 {section:1,text:"Which school subject did you enjoy the most and why?",options:[
 {text:"Mathematics — the elegance of proofs and problem solving thrills me",traits:{Mathematics:3,LogicalReasoning:2,Precision:2}},
 {text:"Physics — understanding how forces and energy shape the world",traits:{ScientificCuriosity:3,MechanicalSystems:2,Research:1}},
 {text:"Computer Science — the power of creating things with code",traits:{Programming:3,Creativity:2,Innovation:1}},
-{text:"Art & Design — expressing ideas visually and spatially",traits:{DesignThinking:3,Creativity:3,SpatialThinking:1}}
+{text:"Chemistry & Biology — exploring chemical reactions and how living organisms work",traits:{ChemicalProcessing:2,BiologicalScience:3,ScientificCuriosity:2}}
 ]},
 {section:1,text:"Which technological breakthrough would you most want to witness in your lifetime?",options:[
 {text:"True artificial general intelligence",traits:{Research:3,DataAnalysis:2,ScientificCuriosity:2}},
-{text:"Commercial nuclear fusion energy",traits:{ScientificCuriosity:3,MechanicalSystems:2,Innovation:2}},
+{text:"A complete cure for chronic diseases using targeted nanomedicines",traits:{BiologicalScience:3,Research:3,Innovation:2}},
 {text:"Fully autonomous smart cities",traits:{SystemsThinking:3,Automation:2,Construction:2}},
 {text:"Brain-computer interfaces for everyone",traits:{Electronics:3,Hardware:2,Innovation:2}}
 ]},
@@ -799,18 +800,18 @@ const QUESTIONS=[
 {text:"Coding tutorials — building apps, APIs, and systems from scratch",traits:{Programming:3,Communication:2,Debugging:1}},
 {text:"DIY engineering — building mechanical gadgets and machines",traits:{MechanicalSystems:3,Hardware:2,Creativity:2}},
 {text:"Electronics projects — circuits, PCBs, and microcontroller hacks",traits:{Electronics:3,Hardware:2,Automation:1}},
-{text:"Data visualization — making beautiful dashboards from raw data",traits:{DataAnalysis:3,DesignThinking:2,PatternRecognition:1}}
+{text:"Eco-friendly hacks — waste recycling, water purification, and safety systems",traits:{EnvironmentalAwareness:3,DesignThinking:2,Creativity:2}}
 ]},
 {section:1,text:"Which museum exhibit fascinates you the most?",options:[
 {text:"A working model of the Large Hadron Collider",traits:{ScientificCuriosity:3,Research:3,Mathematics:1}},
 {text:"An interactive display of how self-driving cars perceive the world",traits:{Automation:3,DataAnalysis:2,Programming:1}},
-{text:"A scale replica of famous architectural structures through history",traits:{Construction:3,SpatialThinking:3,DesignThinking:1}},
+{text:"An exhibit on smart textile history — from traditional weaving to space suits",traits:{TextileDesign:3,MaterialScience:2,Creativity:2}},
 {text:"A demo of quantum computing solving real-time problems",traits:{Innovation:3,Programming:2,Mathematics:2}}
 ]},
 {section:1,text:"You can shadow an engineer for a day. Who do you choose?",options:[
 {text:"A software architect at a major tech company",traits:{Programming:3,SystemsThinking:2,DesignThinking:1}},
-{text:"A civil engineer building the world's tallest skyscraper",traits:{Construction:3,SpatialThinking:2,Precision:2}},
-{text:"An aerospace engineer testing rocket propulsion systems",traits:{MechanicalSystems:3,ScientificCuriosity:2,Precision:1}},
+{text:"A chemical process engineer optimizing a large-scale pharmaceutical plant",traits:{ChemicalProcessing:3,IndustrialProcess:2,Precision:2}},
+{text:"An aerospace engineer designing supersonic commercial jets and satellite payloads",traits:{AerospaceInterest:3,MechanicalSystems:2,Precision:2}},
 {text:"A robotics engineer at a leading AI lab",traits:{Automation:3,Hardware:2,Innovation:2}}
 ]},
 
@@ -871,8 +872,8 @@ const QUESTIONS=[
 ]},
 {section:2,text:"You're tasked with making a factory more sustainable. What's your angle?",options:[
 {text:"Install IoT sensors to monitor and optimize energy consumption in real time",traits:{Automation:3,Electronics:2,DataAnalysis:2}},
-{text:"Redesign the production layout to minimize material waste",traits:{DesignThinking:2,SpatialThinking:3,MechanicalSystems:2}},
-{text:"Research and propose alternative eco-friendly materials",traits:{Research:3,ScientificCuriosity:2,Innovation:1}},
+{text:"Re-engineer assembly line workflows and industrial packaging to reduce scrap",traits:{IndustrialProcess:3,SystemsThinking:2,Precision:2}},
+{text:"Synthesize biodegradable alternatives to replace hazardous chemical agents",traits:{ChemicalProcessing:3,MaterialScience:3,EnvironmentalAwareness:2}},
 {text:"Build a digital twin of the factory for simulation-based optimization",traits:{Programming:3,SystemsThinking:2,Mathematics:1}}
 ]},
 {section:2,text:"How do you feel about aesthetics in engineering products?",options:[
@@ -917,7 +918,7 @@ const QUESTIONS=[
 {text:"A quiet lab or workspace where I can focus deeply on research",traits:{Research:3,ScientificCuriosity:2,Precision:2}},
 {text:"A dynamic startup where things change fast and ideas flow freely",traits:{Entrepreneurship:3,RiskTaking:2,Innovation:2}},
 {text:"A well-organized corporate environment with clear processes",traits:{SystemsThinking:2,Precision:3,Communication:1}},
-{text:"An outdoor or hands-on setting — workshops, construction sites, or field work",traits:{Construction:3,MechanicalSystems:2,Hardware:1}}
+{text:"A chemical processing plant, food production facility, or textile mill",traits:{IndustrialProcess:3,ChemicalProcessing:2,Precision:2,FoodScience:2,TextileDesign:2}}
 ]},
 {section:3,text:"When learning a new skill, what's your approach?",options:[
 {text:"Read documentation and theory thoroughly before practicing",traits:{Research:3,Mathematics:2,Precision:1}},
@@ -953,7 +954,7 @@ const QUESTIONS=[
 {text:"Tinkering with personal projects or side experiments",traits:{Creativity:3,Innovation:2,Hardware:1}},
 {text:"Reading research papers or learning new concepts",traits:{Research:3,ScientificCuriosity:3,Mathematics:1}},
 {text:"Socializing with friends or discussing ideas with peers",traits:{Communication:3,Leadership:2,Entrepreneurship:1}},
-{text:"Physical activity — sports, hiking, or hands-on work",traits:{MechanicalSystems:2,Construction:2,RiskTaking:1}}
+{text:"Nature and outdoors — gardening, hiking, or environmental volunteering",traits:{EnvironmentalAwareness:3,ScientificCuriosity:2,RiskTaking:1}}
 ]},
 {section:3,text:"How important is work-life balance to you compared to career achievement?",options:[
 {text:"Balance is essential — I want a fulfilling life beyond work",traits:{Communication:2,DesignThinking:2,Creativity:2}},
@@ -972,7 +973,7 @@ const QUESTIONS=[
 {section:4,text:"Which industry excites you the most?",options:[
 {text:"Tech — software, AI, cloud, and digital platforms",traits:{Programming:3,DataAnalysis:2,Innovation:2}},
 {text:"Manufacturing — automotive, aerospace, or heavy machinery",traits:{MechanicalSystems:3,Hardware:2,Precision:1}},
-{text:"Infrastructure — construction, smart cities, and urban development",traits:{Construction:3,SpatialThinking:2,Leadership:1}},
+{text:"Process & Manufacturing — chemicals, pharmaceuticals, food, or textiles",traits:{ChemicalProcessing:2,IndustrialProcess:2,MaterialScience:2}},
 {text:"Electronics — semiconductors, telecom, and embedded systems",traits:{Electronics:3,Hardware:2,Automation:1}}
 ]},
 {section:4,text:"What motivates you most in your career?",options:[
@@ -1001,7 +1002,7 @@ const QUESTIONS=[
 ]},
 {section:4,text:"What's your dream project to work on?",options:[
 {text:"An autonomous vehicle that navigates Indian roads safely",traits:{Automation:3,DataAnalysis:2,Electronics:2}},
-{text:"A hyperloop-style transit system connecting Indian cities",traits:{MechanicalSystems:3,Innovation:2,Construction:2}},
+{text:"A satellite launcher or zero-emission commercial aircraft",traits:{AerospaceInterest:3,MechanicalSystems:2,Innovation:2}},
 {text:"A cybersecurity platform that protects national infrastructure",traits:{Programming:3,SystemsThinking:2,ProblemSolving:2}},
 {text:"A satellite or space exploration instrument",traits:{Electronics:2,ScientificCuriosity:3,Precision:2}}
 ]},
@@ -1012,9 +1013,9 @@ const QUESTIONS=[
 {text:"Excited by it — I can't pick just one discipline",traits:{RiskTaking:2,Entrepreneurship:2,DesignThinking:2}}
 ]},
 {section:4,text:"If you could solve one global challenge through engineering, what would it be?",options:[
-{text:"Climate change — sustainable energy and carbon reduction technologies",traits:{ScientificCuriosity:3,MechanicalSystems:2,Innovation:2}},
+{text:"Climate change — carbon capture, resource recycling, and green chemical plants",traits:{EnvironmentalAwareness:3,ChemicalProcessing:2,ScientificCuriosity:2}},
 {text:"Digital access — bringing affordable tech and internet to underserved communities",traits:{Electronics:2,Communication:3,Entrepreneurship:2}},
-{text:"Healthcare — affordable diagnostic devices and health monitoring systems",traits:{Electronics:2,DataAnalysis:2,DesignThinking:2}},
+{text:"Healthcare — advanced medical machinery, biotech therapies, and drug delivery",traits:{BiologicalScience:3,Research:2,Precision:2}},
 {text:"Housing — earthquake-resistant, affordable, and sustainable housing for all",traits:{Construction:3,SpatialThinking:2,Precision:1}}
 ]},
 {section:4,text:"How important is salary in your career decision?",options:[
@@ -1036,831 +1037,6 @@ const QUESTIONS=[
 {text:"Products and businesses that improve everyday life for millions",traits:{Entrepreneurship:3,DesignThinking:2,Leadership:2}}
 ]}
 ];
-
-/* ========== BRANCH PROFILES ========== */
-const CLUSTERS={
-  'computer-it':{name:'Computer & IT',icon:'🖥️',max:3},
-  'electronics':{name:'Electronics',icon:'📡',max:2},
-  'core':{name:'Core Engineering',icon:'⚙️',max:2},
-  'emerging':{name:'Emerging / Interdisciplinary',icon:'🔬',max:2}
-};
-
-const BRANCHES=[
-{id:'computer-engineering',name:'Computer Engineering',cluster:'computer-it',
-desc:'Bridges hardware and software — from processor design to systems programming.',
-difficulty:4,futureScope:5,
-whoSuits:'Students who love both coding and understanding how hardware works at the chip level.',
-traitVector:{Programming:.95,Mathematics:.7,Research:.4,Creativity:.4,Leadership:.3,Communication:.3,Hardware:.6,Electronics:.5,MechanicalSystems:.1,Construction:0,Automation:.4,DataAnalysis:.5,DesignThinking:.3,Entrepreneurship:.4,ScientificCuriosity:.4,RiskTaking:.3,Precision:.6,ProblemSolving:.8,Innovation:.5,SystemsThinking:.85,Debugging:.9,LogicalReasoning:.85,SpatialThinking:.2,PatternRecognition:.6},
-coreSkills:['Data Structures & Algorithms','Operating Systems','Computer Networks','Database Systems','Computer Architecture','Software Engineering'],
-tools:['C/C++','Java','Python','Linux','Git','Docker','MySQL','VS Code'],
-careers:['Software Engineer','Systems Architect','DevOps Engineer','Backend Developer','Database Administrator','Embedded Software Developer']
-},
-{id:'cse',name:'Computer Science Engineering',cluster:'computer-it',
-desc:'Pure computer science — algorithms, theory of computation, AI foundations, and software development.',
-difficulty:4,futureScope:5,
-whoSuits:'Students passionate about algorithms, programming, and the theory behind computing.',
-traitVector:{Programming:.98,Mathematics:.75,Research:.5,Creativity:.45,Leadership:.3,Communication:.35,Hardware:.3,Electronics:.2,MechanicalSystems:0,Construction:0,Automation:.45,DataAnalysis:.6,DesignThinking:.35,Entrepreneurship:.45,ScientificCuriosity:.5,RiskTaking:.35,Precision:.55,ProblemSolving:.85,Innovation:.55,SystemsThinking:.8,Debugging:.85,LogicalReasoning:.9,SpatialThinking:.15,PatternRecognition:.7},
-coreSkills:['Advanced DSA','Theory of Computation','Compiler Design','Machine Learning Basics','Software Architecture','Discrete Mathematics'],
-tools:['Python','Java','C++','TensorFlow','AWS','Git','PostgreSQL','IntelliJ'],
-careers:['Software Developer','ML Engineer','Full-Stack Developer','Compiler Engineer','Tech Lead','Cloud Architect']
-},
-{id:'it',name:'Information Technology',cluster:'computer-it',
-desc:'Focuses on managing and deploying technology solutions for businesses and organizations.',
-difficulty:3,futureScope:4,
-whoSuits:'Students who enjoy networking, system administration, and bridging tech with business needs.',
-traitVector:{Programming:.75,Mathematics:.5,Research:.3,Creativity:.4,Leadership:.5,Communication:.65,Hardware:.3,Electronics:.15,MechanicalSystems:0,Construction:0,Automation:.5,DataAnalysis:.55,DesignThinking:.45,Entrepreneurship:.55,ScientificCuriosity:.3,RiskTaking:.35,Precision:.5,ProblemSolving:.65,Innovation:.45,SystemsThinking:.75,Debugging:.7,LogicalReasoning:.65,SpatialThinking:.1,PatternRecognition:.5},
-coreSkills:['Networking','Web Development','Database Management','Cybersecurity Basics','Cloud Infrastructure','IT Service Management'],
-tools:['JavaScript','PHP','SQL','AWS','Azure','Cisco','Jira','ServiceNow'],
-careers:['IT Manager','Web Developer','Network Administrator','Cloud Consultant','Business Analyst','Systems Administrator']
-},
-{id:'software-engineering',name:'Software Engineering',cluster:'computer-it',
-desc:'Engineering discipline focused on building scalable, reliable, and maintainable software systems.',
-difficulty:4,futureScope:5,
-whoSuits:'Students who think in terms of clean code, architecture patterns, and scalable systems.',
-traitVector:{Programming:.95,Mathematics:.6,Research:.35,Creativity:.5,Leadership:.45,Communication:.5,Hardware:.15,Electronics:.1,MechanicalSystems:0,Construction:0,Automation:.55,DataAnalysis:.45,DesignThinking:.55,Entrepreneurship:.5,ScientificCuriosity:.3,RiskTaking:.4,Precision:.7,ProblemSolving:.8,Innovation:.55,SystemsThinking:.9,Debugging:.85,LogicalReasoning:.8,SpatialThinking:.15,PatternRecognition:.55},
-coreSkills:['Software Design Patterns','Agile Methodologies','Testing & QA','CI/CD Pipelines','Microservices Architecture','API Design'],
-tools:['Java','Python','TypeScript','Docker','Kubernetes','Jenkins','GitHub Actions','Figma'],
-careers:['Software Engineer','DevOps Engineer','QA Lead','Solutions Architect','Engineering Manager','Product Engineer']
-},
-{id:'ai',name:'Artificial Intelligence',cluster:'computer-it',
-desc:'Core AI — knowledge representation, reasoning, NLP, computer vision, and intelligent agents.',
-difficulty:5,futureScope:5,
-whoSuits:'Students fascinated by making machines think, reason, and perceive like humans.',
-traitVector:{Programming:.85,Mathematics:.9,Research:.85,Creativity:.5,Leadership:.3,Communication:.35,Hardware:.2,Electronics:.15,MechanicalSystems:0,Construction:0,Automation:.55,DataAnalysis:.75,DesignThinking:.35,Entrepreneurship:.4,ScientificCuriosity:.9,RiskTaking:.45,Precision:.6,ProblemSolving:.75,Innovation:.75,SystemsThinking:.6,Debugging:.6,LogicalReasoning:.85,SpatialThinking:.3,PatternRecognition:.95},
-coreSkills:['Machine Learning','Deep Learning','Natural Language Processing','Computer Vision','Reinforcement Learning','Knowledge Graphs'],
-tools:['Python','PyTorch','TensorFlow','Hugging Face','OpenCV','Jupyter','LaTeX','CUDA'],
-careers:['AI Researcher','NLP Engineer','Computer Vision Engineer','AI Product Manager','Research Scientist','Robotics AI Developer']
-},
-{id:'aiml',name:'AI & Machine Learning',cluster:'computer-it',
-desc:'Applied ML — building, training, and deploying models for real-world prediction and automation.',
-difficulty:5,futureScope:5,
-whoSuits:'Students who love math, statistics, and building models that learn from data.',
-traitVector:{Programming:.85,Mathematics:.88,Research:.75,Creativity:.4,Leadership:.25,Communication:.3,Hardware:.15,Electronics:.1,MechanicalSystems:0,Construction:0,Automation:.6,DataAnalysis:.8,DesignThinking:.3,Entrepreneurship:.4,ScientificCuriosity:.8,RiskTaking:.4,Precision:.65,ProblemSolving:.7,Innovation:.65,SystemsThinking:.55,Debugging:.55,LogicalReasoning:.8,SpatialThinking:.2,PatternRecognition:.92},
-coreSkills:['Statistical Learning','Neural Networks','Feature Engineering','Model Deployment (MLOps)','Experiment Tracking','Mathematics for ML'],
-tools:['Python','Scikit-learn','PyTorch','MLflow','Docker','Weights & Biases','SQL','Spark'],
-careers:['ML Engineer','Data Scientist','MLOps Engineer','Applied Researcher','AI Consultant','Deep Learning Engineer']
-},
-{id:'aids',name:'AI & Data Science',cluster:'computer-it',
-desc:'Combines AI with data engineering — extracting insights, building pipelines, and predictive analytics.',
-difficulty:4,futureScope:5,
-whoSuits:'Students who love working with data, finding stories in numbers, and building dashboards.',
-traitVector:{Programming:.75,Mathematics:.75,Research:.6,Creativity:.4,Leadership:.35,Communication:.5,Hardware:.05,Electronics:.05,MechanicalSystems:0,Construction:0,Automation:.5,DataAnalysis:.95,DesignThinking:.4,Entrepreneurship:.45,ScientificCuriosity:.6,RiskTaking:.35,Precision:.6,ProblemSolving:.65,Innovation:.5,SystemsThinking:.55,Debugging:.5,LogicalReasoning:.7,SpatialThinking:.15,PatternRecognition:.85},
-coreSkills:['SQL & NoSQL Databases','Data Cleaning & Wrangling','Statistical Analysis','Business Intelligence','Data Pipelines','Predictive Modeling'],
-tools:['Python','SQL','Tableau','Power BI','Pandas','Apache Airflow','BigQuery','Excel'],
-careers:['Data Scientist','Data Analyst','BI Developer','Analytics Manager','Data Engineer','Quantitative Analyst']
-},
-{id:'data-science',name:'Data Science',cluster:'computer-it',
-desc:'End-to-end data lifecycle — collection, cleaning, analysis, modeling, and communication of insights.',
-difficulty:4,futureScope:5,
-whoSuits:'Students who enjoy statistics, visualization, and translating data into actionable business decisions.',
-traitVector:{Programming:.7,Mathematics:.8,Research:.55,Creativity:.45,Leadership:.35,Communication:.55,Hardware:.05,Electronics:.05,MechanicalSystems:0,Construction:0,Automation:.4,DataAnalysis:.98,DesignThinking:.45,Entrepreneurship:.45,ScientificCuriosity:.55,RiskTaking:.3,Precision:.55,ProblemSolving:.6,Innovation:.45,SystemsThinking:.5,Debugging:.45,LogicalReasoning:.7,SpatialThinking:.1,PatternRecognition:.8},
-coreSkills:['Probability & Statistics','Data Visualization','Regression & Classification','A/B Testing','Data Storytelling','Feature Selection'],
-tools:['Python','R','Tableau','Matplotlib','Seaborn','Jupyter','Hadoop','Kaggle'],
-careers:['Data Scientist','Statistician','Research Analyst','Product Analyst','Growth Analyst','Decision Scientist']
-},
-{id:'cyber-security',name:'Cyber Security',cluster:'computer-it',
-desc:'Protecting systems, networks, and data from digital threats through offense and defense strategies.',
-difficulty:4,futureScope:5,
-whoSuits:'Students with a hacker mindset who love finding vulnerabilities and securing systems.',
-traitVector:{Programming:.75,Mathematics:.55,Research:.55,Creativity:.45,Leadership:.35,Communication:.4,Hardware:.35,Electronics:.25,MechanicalSystems:0,Construction:0,Automation:.45,DataAnalysis:.5,DesignThinking:.3,Entrepreneurship:.35,ScientificCuriosity:.55,RiskTaking:.5,Precision:.75,ProblemSolving:.8,Innovation:.5,SystemsThinking:.8,Debugging:.8,LogicalReasoning:.75,SpatialThinking:.1,PatternRecognition:.65},
-coreSkills:['Network Security','Ethical Hacking','Cryptography','Incident Response','Penetration Testing','Security Auditing'],
-tools:['Kali Linux','Wireshark','Metasploit','Burp Suite','Nmap','Python','SIEM Tools','Nessus'],
-careers:['Security Analyst','Penetration Tester','Security Architect','SOC Analyst','Cryptographer','CISO']
-},
-{id:'cloud-computing',name:'Cloud Computing',cluster:'computer-it',
-desc:'Designing, deploying, and managing scalable infrastructure and services in the cloud.',
-difficulty:4,futureScope:5,
-whoSuits:'Students who enjoy infrastructure, automation, and building resilient distributed systems.',
-traitVector:{Programming:.7,Mathematics:.45,Research:.3,Creativity:.35,Leadership:.4,Communication:.45,Hardware:.35,Electronics:.15,MechanicalSystems:0,Construction:0,Automation:.85,DataAnalysis:.4,DesignThinking:.3,Entrepreneurship:.5,ScientificCuriosity:.35,RiskTaking:.4,Precision:.6,ProblemSolving:.7,Innovation:.5,SystemsThinking:.9,Debugging:.7,LogicalReasoning:.65,SpatialThinking:.1,PatternRecognition:.4},
-coreSkills:['Cloud Architecture','Containerization','Infrastructure as Code','Serverless Computing','Networking','Cost Optimization'],
-tools:['AWS','Azure','GCP','Docker','Kubernetes','Terraform','Ansible','Linux'],
-careers:['Cloud Architect','DevOps Engineer','SRE','Cloud Consultant','Platform Engineer','Infrastructure Lead']
-},
-{id:'iot',name:'IoT Engineering',cluster:'computer-it',
-desc:'Connecting physical devices to the internet — sensors, embedded systems, and smart infrastructure.',
-difficulty:4,futureScope:4,
-whoSuits:'Students who love the intersection of hardware, networking, and software.',
-traitVector:{Programming:.65,Mathematics:.5,Research:.4,Creativity:.5,Leadership:.3,Communication:.35,Hardware:.75,Electronics:.7,MechanicalSystems:.3,Construction:.15,Automation:.8,DataAnalysis:.45,DesignThinking:.45,Entrepreneurship:.45,ScientificCuriosity:.5,RiskTaking:.4,Precision:.55,ProblemSolving:.65,Innovation:.65,SystemsThinking:.75,Debugging:.65,LogicalReasoning:.55,SpatialThinking:.25,PatternRecognition:.45},
-coreSkills:['Embedded Programming','Sensor Integration','Communication Protocols (MQTT, BLE)','Edge Computing','IoT Security','Data Streaming'],
-tools:['Arduino','Raspberry Pi','ESP32','Node-RED','AWS IoT','Python','C','MQTT Broker'],
-careers:['IoT Developer','Embedded Engineer','Smart Systems Designer','IoT Solutions Architect','Edge Computing Engineer','Industrial IoT Specialist']
-},
-{id:'robotics',name:'Robotics Engineering',cluster:'emerging',
-desc:'Designing, building, and programming robots — combining mechanical, electrical, and software engineering.',
-difficulty:5,futureScope:5,
-whoSuits:'Students who want to build machines that move, sense, and interact with the physical world.',
-traitVector:{Programming:.7,Mathematics:.7,Research:.6,Creativity:.55,Leadership:.3,Communication:.3,Hardware:.8,Electronics:.7,MechanicalSystems:.75,Construction:.2,Automation:.9,DataAnalysis:.4,DesignThinking:.45,Entrepreneurship:.35,ScientificCuriosity:.65,RiskTaking:.45,Precision:.7,ProblemSolving:.75,Innovation:.7,SystemsThinking:.8,Debugging:.65,LogicalReasoning:.65,SpatialThinking:.7,PatternRecognition:.55},
-coreSkills:['Kinematics & Dynamics','Control Systems','ROS (Robot Operating System)','Computer Vision for Robotics','Motion Planning','Sensor Fusion'],
-tools:['ROS/ROS2','Python','C++','MATLAB','Gazebo','SolidWorks','Arduino','OpenCV'],
-careers:['Robotics Engineer','Automation Specialist','Control Systems Engineer','ROS Developer','Robotics Researcher','Drone Engineer']
-},
-{id:'mechatronics',name:'Mechatronics Engineering',cluster:'emerging',
-desc:'Synergy of mechanical, electronics, and computing — designing smart machines and automated systems.',
-difficulty:4,futureScope:4,
-whoSuits:'Students who want to build smart mechanical systems with integrated electronics and software.',
-traitVector:{Programming:.6,Mathematics:.65,Research:.45,Creativity:.5,Leadership:.3,Communication:.3,Hardware:.75,Electronics:.7,MechanicalSystems:.8,Construction:.2,Automation:.85,DataAnalysis:.35,DesignThinking:.45,Entrepreneurship:.35,ScientificCuriosity:.5,RiskTaking:.4,Precision:.7,ProblemSolving:.7,Innovation:.6,SystemsThinking:.75,Debugging:.6,LogicalReasoning:.6,SpatialThinking:.65,PatternRecognition:.45},
-coreSkills:['Control Theory','PLC Programming','Sensor & Actuator Integration','CAD/CAM','Embedded Systems','Industrial Automation'],
-tools:['MATLAB/Simulink','Arduino','SolidWorks','LabVIEW','PLC Software','AutoCAD','Python','C'],
-careers:['Mechatronics Engineer','Automation Engineer','Control Systems Designer','Smart Manufacturing Engineer','Robotics Technician','CNC Programmer']
-},
-{id:'electronics',name:'Electronics Engineering',cluster:'electronics',
-desc:'Design and development of electronic circuits, devices, and systems.',
-difficulty:4,futureScope:4,
-whoSuits:'Students fascinated by circuits, signals, and how electronic devices work at the component level.',
-traitVector:{Programming:.45,Mathematics:.7,Research:.5,Creativity:.4,Leadership:.25,Communication:.3,Hardware:.9,Electronics:.95,MechanicalSystems:.2,Construction:.1,Automation:.5,DataAnalysis:.4,DesignThinking:.35,Entrepreneurship:.3,ScientificCuriosity:.55,RiskTaking:.3,Precision:.8,ProblemSolving:.65,Innovation:.5,SystemsThinking:.6,Debugging:.6,LogicalReasoning:.7,SpatialThinking:.4,PatternRecognition:.55},
-coreSkills:['Analog & Digital Circuit Design','Signal Processing','Semiconductor Physics','PCB Design','Microprocessors','Control Systems'],
-tools:['MATLAB','Multisim','Proteus','Eagle','VHDL/Verilog','Oscilloscope','Arduino','LTSpice'],
-careers:['Electronics Design Engineer','Signal Processing Engineer','Test Engineer','Hardware Engineer','Analog IC Designer','RF Engineer']
-},
-{id:'entc',name:'Electronics & Telecommunication Engineering',cluster:'electronics',
-desc:'Communication systems — wireless, optical, satellite, and network protocols.',
-difficulty:4,futureScope:4,
-whoSuits:'Students interested in how signals travel, wireless communication, and networking technologies.',
-traitVector:{Programming:.5,Mathematics:.7,Research:.5,Creativity:.35,Leadership:.3,Communication:.45,Hardware:.8,Electronics:.85,MechanicalSystems:.1,Construction:.05,Automation:.45,DataAnalysis:.45,DesignThinking:.3,Entrepreneurship:.3,ScientificCuriosity:.55,RiskTaking:.3,Precision:.75,ProblemSolving:.6,Innovation:.5,SystemsThinking:.7,Debugging:.55,LogicalReasoning:.7,SpatialThinking:.3,PatternRecognition:.55},
-coreSkills:['Digital Communication','Antenna Theory','Wireless Networks','Signal Processing','Optical Fiber Communication','Network Protocols'],
-tools:['MATLAB','NS3','Wireshark','GNURadio','Cadence','HFSS','LabVIEW','Python'],
-careers:['Telecom Engineer','RF Engineer','Network Planning Engineer','Satellite Engineer','5G Specialist','Signal Processing Engineer']
-},
-{id:'electrical',name:'Electrical Engineering',cluster:'electronics',
-desc:'Power generation, transmission, electrical machines, and energy systems.',
-difficulty:4,futureScope:4,
-whoSuits:'Students interested in power systems, electrical machines, and energy infrastructure.',
-traitVector:{Programming:.4,Mathematics:.8,Research:.5,Creativity:.3,Leadership:.35,Communication:.35,Hardware:.75,Electronics:.7,MechanicalSystems:.4,Construction:.2,Automation:.55,DataAnalysis:.4,DesignThinking:.25,Entrepreneurship:.3,ScientificCuriosity:.55,RiskTaking:.3,Precision:.8,ProblemSolving:.65,Innovation:.45,SystemsThinking:.7,Debugging:.5,LogicalReasoning:.7,SpatialThinking:.35,PatternRecognition:.45},
-coreSkills:['Power Systems Analysis','Electrical Machines','Control Systems','Power Electronics','Renewable Energy Systems','Substation Design'],
-tools:['MATLAB','ETAP','PSCAD','AutoCAD Electrical','PLC','SCADA','LabVIEW','Simulink'],
-careers:['Power Systems Engineer','Electrical Design Engineer','Control Engineer','Renewable Energy Engineer','Substation Engineer','Grid Planning Engineer']
-},
-{id:'vlsi',name:'VLSI Design',cluster:'electronics',
-desc:'Designing integrated circuits and chips with millions of transistors — the backbone of all electronics.',
-difficulty:5,futureScope:5,
-whoSuits:'Students who love digital logic, chip architecture, and miniaturization of electronic systems.',
-traitVector:{Programming:.55,Mathematics:.8,Research:.65,Creativity:.4,Leadership:.2,Communication:.25,Hardware:.9,Electronics:.9,MechanicalSystems:.1,Construction:0,Automation:.4,DataAnalysis:.4,DesignThinking:.35,Entrepreneurship:.25,ScientificCuriosity:.65,RiskTaking:.25,Precision:.9,ProblemSolving:.7,Innovation:.55,SystemsThinking:.7,Debugging:.65,LogicalReasoning:.8,SpatialThinking:.5,PatternRecognition:.6},
-coreSkills:['Digital Logic Design','RTL Coding','Physical Design','DFT (Design for Test)','Timing Analysis','Semiconductor Fabrication'],
-tools:['Verilog','SystemVerilog','Cadence Virtuoso','Synopsys','HSPICE','ModelSim','Xilinx Vivado','Mentor Graphics'],
-careers:['VLSI Design Engineer','Verification Engineer','Physical Design Engineer','FPGA Engineer','Chip Architect','DFT Engineer']
-},
-{id:'embedded',name:'Embedded Systems',cluster:'electronics',
-desc:'Programming microcontrollers and processors that run inside devices — from cars to medical equipment.',
-difficulty:4,futureScope:5,
-whoSuits:'Students who enjoy low-level programming and making hardware come alive with firmware.',
-traitVector:{Programming:.75,Mathematics:.6,Research:.45,Creativity:.4,Leadership:.25,Communication:.3,Hardware:.85,Electronics:.8,MechanicalSystems:.25,Construction:.05,Automation:.7,DataAnalysis:.3,DesignThinking:.35,Entrepreneurship:.35,ScientificCuriosity:.5,RiskTaking:.35,Precision:.8,ProblemSolving:.75,Innovation:.55,SystemsThinking:.7,Debugging:.8,LogicalReasoning:.7,SpatialThinking:.3,PatternRecognition:.5},
-coreSkills:['Embedded C/C++','RTOS','Microcontroller Programming','Device Drivers','Memory Management','Hardware-Software Co-design'],
-tools:['Keil','STM32','ARM Cortex','FreeRTOS','JTAG Debugger','Logic Analyzer','Arduino','Embedded Linux'],
-careers:['Embedded Software Engineer','Firmware Developer','IoT Developer','Automotive Software Engineer','Medical Device Engineer','RTOS Developer']
-},
-{id:'instrumentation',name:'Instrumentation Engineering',cluster:'electronics',
-desc:'Measurement, control, and automation of industrial processes using sensors and instruments.',
-difficulty:3,futureScope:3,
-whoSuits:'Students interested in sensors, process control, and industrial automation systems.',
-traitVector:{Programming:.45,Mathematics:.65,Research:.45,Creativity:.3,Leadership:.3,Communication:.35,Hardware:.7,Electronics:.75,MechanicalSystems:.35,Construction:.15,Automation:.8,DataAnalysis:.5,DesignThinking:.25,Entrepreneurship:.25,ScientificCuriosity:.5,RiskTaking:.25,Precision:.85,ProblemSolving:.6,Innovation:.4,SystemsThinking:.7,Debugging:.55,LogicalReasoning:.6,SpatialThinking:.25,PatternRecognition:.45},
-coreSkills:['Process Control','Sensor Technology','PLC & DCS','SCADA Systems','Calibration','Industrial Safety'],
-tools:['MATLAB','LabVIEW','PLC (Siemens/AB)','DCS','SCADA','P&ID Software','AutoCAD','Instrumentation Diagrams'],
-careers:['Instrumentation Engineer','Process Control Engineer','Calibration Specialist','Automation Engineer','Plant Engineer','Control Room Operator']
-},
-{id:'mechanical',name:'Mechanical Engineering',cluster:'core',
-desc:'The broadest core engineering discipline — design, manufacturing, thermodynamics, and machines.',
-difficulty:4,futureScope:4,
-whoSuits:'Students who love machines, manufacturing, and understanding how physical systems work.',
-traitVector:{Programming:.3,Mathematics:.75,Research:.45,Creativity:.5,Leadership:.4,Communication:.35,Hardware:.6,Electronics:.25,MechanicalSystems:.95,Construction:.4,Automation:.45,DataAnalysis:.35,DesignThinking:.55,Entrepreneurship:.35,ScientificCuriosity:.5,RiskTaking:.35,Precision:.75,ProblemSolving:.7,Innovation:.5,SystemsThinking:.6,Debugging:.35,LogicalReasoning:.6,SpatialThinking:.85,PatternRecognition:.4},
-coreSkills:['Engineering Mechanics','Thermodynamics','Fluid Mechanics','Manufacturing Processes','Machine Design','Heat Transfer'],
-tools:['SolidWorks','AutoCAD','ANSYS','CATIA','MATLAB','CNC Machines','3D Printers','Fusion 360'],
-careers:['Mechanical Design Engineer','Manufacturing Engineer','Thermal Engineer','CAD/CAM Engineer','R&D Engineer','Quality Control Engineer']
-},
-{id:'automobile',name:'Automobile Engineering',cluster:'core',
-desc:'Design, development, and manufacturing of vehicles — from engines to electric powertrains.',
-difficulty:4,futureScope:4,
-whoSuits:'Students passionate about cars, engines, EVs, and vehicle dynamics.',
-traitVector:{Programming:.35,Mathematics:.7,Research:.45,Creativity:.5,Leadership:.35,Communication:.3,Hardware:.55,Electronics:.35,MechanicalSystems:.9,Construction:.25,Automation:.5,DataAnalysis:.35,DesignThinking:.55,Entrepreneurship:.4,ScientificCuriosity:.5,RiskTaking:.4,Precision:.7,ProblemSolving:.65,Innovation:.55,SystemsThinking:.6,Debugging:.4,LogicalReasoning:.55,SpatialThinking:.8,PatternRecognition:.35},
-coreSkills:['Vehicle Dynamics','IC Engines','EV Powertrain','Automotive Design','Chassis Engineering','Vehicle Testing'],
-tools:['SolidWorks','CATIA','MATLAB','ANSYS','CarSim','Adams','AutoCAD','Fusion 360'],
-careers:['Automotive Design Engineer','EV Powertrain Engineer','Vehicle Testing Engineer','Motorsport Engineer','Production Engineer','R&D Engineer (Auto)']
-},
-{id:'production',name:'Production Engineering',cluster:'core',
-desc:'Optimizing manufacturing processes — from factory floor to supply chain.',
-difficulty:3,futureScope:3,
-whoSuits:'Students interested in factory optimization, manufacturing systems, and operational efficiency.',
-traitVector:{Programming:.3,Mathematics:.65,Research:.35,Creativity:.4,Leadership:.5,Communication:.45,Hardware:.5,Electronics:.2,MechanicalSystems:.75,Construction:.35,Automation:.6,DataAnalysis:.5,DesignThinking:.4,Entrepreneurship:.45,ScientificCuriosity:.35,RiskTaking:.3,Precision:.75,ProblemSolving:.6,Innovation:.45,SystemsThinking:.7,Debugging:.35,LogicalReasoning:.6,SpatialThinking:.55,PatternRecognition:.4},
-coreSkills:['Manufacturing Technology','Quality Engineering','Supply Chain Management','Lean & Six Sigma','Industrial Automation','Tool Design'],
-tools:['AutoCAD','SolidWorks','SAP','ERP Systems','CNC Machines','Minitab','MATLAB','3D Printing'],
-careers:['Production Manager','Quality Engineer','Supply Chain Analyst','Manufacturing Engineer','Process Improvement Specialist','Industrial Planner']
-},
-{id:'industrial',name:'Industrial Engineering',cluster:'core',
-desc:'Optimizing complex systems — workforce, materials, machines, and processes for maximum efficiency.',
-difficulty:3,futureScope:4,
-whoSuits:'Students who think in terms of systems optimization, operations research, and efficiency.',
-traitVector:{Programming:.4,Mathematics:.7,Research:.4,Creativity:.4,Leadership:.55,Communication:.55,Hardware:.3,Electronics:.15,MechanicalSystems:.5,Construction:.25,Automation:.55,DataAnalysis:.7,DesignThinking:.45,Entrepreneurship:.55,ScientificCuriosity:.35,RiskTaking:.35,Precision:.65,ProblemSolving:.7,Innovation:.5,SystemsThinking:.85,Debugging:.35,LogicalReasoning:.7,SpatialThinking:.4,PatternRecognition:.55},
-coreSkills:['Operations Research','Ergonomics','Facility Planning','Statistical Quality Control','Work Study','Project Management'],
-tools:['MATLAB','Arena Simulation','Python','Excel','SAP','Minitab','MS Project','Tableau'],
-careers:['Operations Manager','Supply Chain Manager','Management Consultant','Process Engineer','Logistics Analyst','Quality Director']
-},
-{id:'civil',name:'Civil Engineering',cluster:'core',
-desc:'Planning, designing, and constructing infrastructure — buildings, bridges, roads, and water systems.',
-difficulty:4,futureScope:4,
-whoSuits:'Students who want to build the physical world — structures that last for decades.',
-traitVector:{Programming:.2,Mathematics:.75,Research:.4,Creativity:.4,Leadership:.5,Communication:.45,Hardware:.25,Electronics:.1,MechanicalSystems:.4,Construction:.95,Automation:.2,DataAnalysis:.35,DesignThinking:.5,Entrepreneurship:.4,ScientificCuriosity:.4,RiskTaking:.3,Precision:.8,ProblemSolving:.6,Innovation:.35,SystemsThinking:.55,Debugging:.2,LogicalReasoning:.6,SpatialThinking:.9,PatternRecognition:.3},
-coreSkills:['Structural Analysis','Geotechnical Engineering','Surveying','Construction Management','Environmental Engineering','Transportation Engineering'],
-tools:['AutoCAD','STAAD Pro','ETABS','Revit','Primavera','MS Project','GIS Software','MATLAB'],
-careers:['Structural Engineer','Construction Manager','Transportation Engineer','Geotechnical Engineer','Urban Planner','Environmental Engineer']
-},
-{id:'construction-eng',name:'Construction Engineering',cluster:'core',
-desc:'Managing and executing construction projects — scheduling, budgeting, site operations, and safety.',
-difficulty:3,futureScope:3,
-whoSuits:'Students who enjoy project management, site work, and turning blueprints into reality.',
-traitVector:{Programming:.15,Mathematics:.6,Research:.3,Creativity:.35,Leadership:.6,Communication:.55,Hardware:.3,Electronics:.1,MechanicalSystems:.35,Construction:.98,Automation:.2,DataAnalysis:.3,DesignThinking:.4,Entrepreneurship:.5,ScientificCuriosity:.3,RiskTaking:.35,Precision:.75,ProblemSolving:.55,Innovation:.3,SystemsThinking:.5,Debugging:.2,LogicalReasoning:.5,SpatialThinking:.8,PatternRecognition:.25},
-coreSkills:['Construction Planning','Cost Estimation','Contract Management','Site Safety','Building Codes','Material Testing'],
-tools:['Primavera','MS Project','AutoCAD','Revit','Procore','Building Estimation Software','Excel','GIS'],
-careers:['Construction Manager','Site Engineer','Project Planner','Quantity Surveyor','Safety Officer','Real Estate Developer']
-},
-{id:'smart-systems',name:'Smart Systems',cluster:'emerging',
-desc:'Intelligent systems that sense, process, and respond — combining AI, IoT, and embedded computing.',
-difficulty:5,futureScope:5,
-whoSuits:'Students who love building intelligent, connected, autonomous systems.',
-traitVector:{Programming:.7,Mathematics:.65,Research:.55,Creativity:.55,Leadership:.3,Communication:.3,Hardware:.65,Electronics:.6,MechanicalSystems:.3,Construction:.1,Automation:.9,DataAnalysis:.55,DesignThinking:.5,Entrepreneurship:.4,ScientificCuriosity:.6,RiskTaking:.45,Precision:.6,ProblemSolving:.7,Innovation:.75,SystemsThinking:.85,Debugging:.6,LogicalReasoning:.65,SpatialThinking:.4,PatternRecognition:.6},
-coreSkills:['AI at the Edge','IoT Architecture','Real-Time Systems','Smart Sensor Networks','Autonomous Systems','Human-Machine Interfaces'],
-tools:['Python','TensorFlow Lite','ROS','MQTT','Raspberry Pi','Edge TPU','Docker','Arduino'],
-careers:['Smart Systems Engineer','IoT Architect','Edge AI Developer','Autonomous Vehicle Engineer','Smart City Planner','HMI Designer']
-},
-{id:'embedded-ai',name:'Embedded AI Systems',cluster:'emerging',
-desc:'Running AI models on resource-constrained hardware — TinyML, edge inference, and neural accelerators.',
-difficulty:5,futureScope:5,
-whoSuits:'Students who want to bring AI directly into physical devices without cloud dependency.',
-traitVector:{Programming:.75,Mathematics:.75,Research:.65,Creativity:.45,Leadership:.25,Communication:.25,Hardware:.8,Electronics:.7,MechanicalSystems:.15,Construction:0,Automation:.75,DataAnalysis:.55,DesignThinking:.35,Entrepreneurship:.35,ScientificCuriosity:.65,RiskTaking:.4,Precision:.75,ProblemSolving:.7,Innovation:.7,SystemsThinking:.75,Debugging:.7,LogicalReasoning:.7,SpatialThinking:.3,PatternRecognition:.7},
-coreSkills:['TinyML','Model Quantization','Neural Architecture Search','FPGA-based AI','Edge Deployment','Hardware-Software Co-optimization'],
-tools:['TensorFlow Lite','ONNX Runtime','Edge Impulse','Coral Edge TPU','STM32 AI','Python','C++','Vitis AI'],
-careers:['Embedded AI Engineer','TinyML Developer','Edge AI Researcher','FPGA AI Developer','AIoT Engineer','Neural Accelerator Designer']
-}
-];
-
-/* ========== ROADMAPS (unique per branch) ========== */
-const ROADMAPS={
-'computer-engineering':{
-  whyFits:'Computer Engineering is ideal for you because you combine strong programming instincts with curiosity about how hardware executes your code. You think in systems.',
-  yearByYear:[
-    {year:'Year 1',items:['Engineering Mathematics I & II','Physics & Chemistry for Engineers','Basic Electrical & Electronics','Introduction to Programming (C)','Engineering Graphics','Workshop Practice']},
-    {year:'Year 2',items:['Data Structures & Algorithms','Digital Logic Design','Computer Organization & Architecture','Object-Oriented Programming (Java)','Discrete Mathematics','Database Management Systems']},
-    {year:'Year 3',items:['Operating Systems','Computer Networks','Microprocessor & Interfacing','Software Engineering','Theory of Computation','Web Technologies']},
-    {year:'Year 4',items:['Distributed Systems','Compiler Design','Elective: Cloud Computing / AI / IoT','Industry Internship','Capstone Project','Technical Paper Presentation']}
-  ],
-  coreSubjects:['Data Structures','Computer Architecture','Operating Systems','Computer Networks','DBMS','Software Engineering','Microprocessors','Theory of Computation'],
-  tools:['C/C++','Java','Python','Linux CLI','Git/GitHub','Docker','MySQL/PostgreSQL','VS Code','GDB Debugger'],
-  projects:['Build a custom shell/OS scheduler in C','Design a CPU pipeline simulator','Create a peer-to-peer file sharing application','Develop a multi-threaded web server from scratch','Build a compiler for a mini-language'],
-  internshipStrategy:'Target system-level roles at product companies (Google, Microsoft, Intel). Apply for GSoC with OS/compiler projects. Contribute to open-source systems projects (Linux kernel, LLVM).',
-  skillMilestones:['Sem 1-2: Master C, pointers, memory management','Sem 3-4: DSA proficiency, competitive coding','Sem 5: OS internals, networking stack','Sem 6: Build full-stack projects','Sem 7-8: Specialize in systems/architecture'],
-  careerPaths:['Systems Software Engineer','Backend Developer','DevOps Engineer','Database Administrator','Embedded Software Developer','Computer Architect'],
-  topRecruiters:['Intel','AMD','Qualcomm','Google','Microsoft','NVIDIA','Oracle','Samsung R&D'],
-  salaryDirection:'Starting: ₹6-15 LPA | Mid-career: ₹15-35 LPA | Senior: ₹35-60+ LPA. Systems-level expertise commands premium salaries at chip and platform companies.',
-  higherEd:['M.Tech in Computer Engineering / Architecture','MS in Computer Science (US/Europe)','Specialization in Embedded Systems','Research in Hardware-Software Co-design'],
-  futureTrends:['RISC-V open architecture','Quantum computing','Neuromorphic chips','Edge computing','Hardware security'],
-  risks:['Rapid technology changes require continuous learning','Hardware companies have fewer openings than software','Lower initial salaries compared to pure software roles'],
-  actionPlan:['Master C/C++ and systems programming by Year 2','Build 3 significant projects showing hardware-software understanding','Contribute to open-source systems projects','Target GSoC or internships at Intel/AMD/Qualcomm','Prepare for DSA + systems design interviews']
-},
-'cse':{
-  whyFits:'Computer Science Engineering matches your deep love for algorithms, computation theory, and building elegant software solutions. You think in code.',
-  yearByYear:[
-    {year:'Year 1',items:['Engineering Mathematics','Discrete Mathematics','Programming in C','Basic Sciences','Engineering Drawing','Communication Skills']},
-    {year:'Year 2',items:['Data Structures','Object-Oriented Programming (Java/C++)','Database Systems','Digital Logic','Computer Organization','Probability & Statistics']},
-    {year:'Year 3',items:['Algorithms','Operating Systems','Computer Networks','Software Engineering','Machine Learning Basics','Theory of Computation']},
-    {year:'Year 4',items:['Compiler Design','Distributed Computing','Elective: AI/Cloud/Security','Major Project','Industry Internship','Research Paper/Seminar']}
-  ],
-  coreSubjects:['DSA','Algorithms','OS','DBMS','Computer Networks','Theory of Computation','Compiler Design','Software Engineering'],
-  tools:['Python','Java','C++','Git','Docker','AWS/GCP','PostgreSQL','IntelliJ/VS Code','Postman'],
-  projects:['Build a search engine with ranking algorithm','Create a real-time collaborative code editor','Design a distributed key-value store','Develop an AI chatbot with NLP','Build a full-stack SaaS application'],
-  internshipStrategy:'Focus on software engineering internships at FAANG companies. Build a strong GitHub profile. Participate in competitive programming (Codeforces, LeetCode). Apply for research internships if interested in ML/AI.',
-  skillMilestones:['Sem 1-2: Strong programming fundamentals','Sem 3-4: DSA mastery, start competitive coding','Sem 5: System design basics, first internship','Sem 6: Full-stack development, ML basics','Sem 7-8: Specialize and build production-grade projects'],
-  careerPaths:['Software Developer','Full-Stack Engineer','ML Engineer','Cloud Architect','Tech Lead','CTO (Startup)'],
-  topRecruiters:['Google','Amazon','Microsoft','Meta','Apple','Flipkart','Adobe','Uber','Atlassian'],
-  salaryDirection:'Starting: ₹8-25 LPA | Mid-career: ₹25-50 LPA | Senior: ₹50-80+ LPA. Highest-paying engineering branch with strong demand globally.',
-  higherEd:['MS in Computer Science (Stanford, MIT, CMU)','M.Tech in CS/AI at IITs','Research-track PhD in ML/Systems','MBA for tech management track'],
-  futureTrends:['AI-assisted coding','Quantum algorithms','WebAssembly','Decentralized computing','LLM-native applications'],
-  risks:['Extremely competitive job market at top companies','Requires constant upskilling','AI may automate routine coding tasks'],
-  actionPlan:['Achieve 500+ problems on LeetCode by Year 3','Build and deploy 3 production-quality projects','Get at least one FAANG internship','Contribute meaningfully to 2+ open-source projects','Prepare system design skills for senior roles']
-},
-'it':{
-  whyFits:'Information Technology fits your interest in practical technology deployment. You bridge the gap between complex technology and real business needs.',
-  yearByYear:[
-    {year:'Year 1',items:['Mathematics','Basic Programming','Physics','Communication Skills','Computer Fundamentals','IT Workshop']},
-    {year:'Year 2',items:['Web Development (HTML/CSS/JS)','Database Management','Data Structures','Networking Fundamentals','Object-Oriented Programming','Software Development Methodologies']},
-    {year:'Year 3',items:['Advanced Web Technologies','Cloud Computing','Cybersecurity Basics','Mobile App Development','Data Analytics','IT Infrastructure Management']},
-    {year:'Year 4',items:['Enterprise Systems','DevOps Practices','Elective: AI/Blockchain/IoT','Industry Project','Internship','IT Governance & Compliance']}
-  ],
-  coreSubjects:['Web Technologies','DBMS','Computer Networks','Cloud Computing','IT Security','Software Project Management','Enterprise Architecture'],
-  tools:['JavaScript','React/Angular','Node.js','SQL','AWS/Azure','Docker','Jira','ServiceNow','Cisco Packet Tracer'],
-  projects:['Build a full-featured e-commerce platform','Create an IT helpdesk ticketing system','Develop a cloud-based inventory management system','Design a network monitoring dashboard','Build a progressive web app with offline support'],
-  internshipStrategy:'Target IT consulting firms (Accenture, Deloitte, TCS) and product companies. Focus on web development or cloud certifications. Build a portfolio website showcasing projects.',
-  skillMilestones:['Sem 1-2: HTML/CSS/JS mastery','Sem 3-4: Full-stack web development','Sem 5: Cloud certifications (AWS/Azure)','Sem 6: Enterprise solutions experience','Sem 7-8: IT management and consulting skills'],
-  careerPaths:['Web Developer','IT Manager','Cloud Consultant','Business Analyst','Network Administrator','IT Consultant'],
-  topRecruiters:['TCS','Infosys','Accenture','Deloitte','Wipro','Cognizant','IBM','Capgemini'],
-  salaryDirection:'Starting: ₹4-12 LPA | Mid-career: ₹12-30 LPA | Senior: ₹30-50+ LPA. Consulting and cloud roles command premium packages.',
-  higherEd:['MBA in IT Management','MS in Information Systems','Cloud Architecture certifications','PG Diploma in Cyber Security'],
-  futureTrends:['Low-code/no-code platforms','AI-powered IT operations (AIOps)','Zero trust security','Multi-cloud strategies','Digital transformation consulting'],
-  risks:['Some IT roles are being automated','Service company roles may feel repetitive','Need for continuous certification'],
-  actionPlan:['Get AWS/Azure certified by Year 3','Build 5 full-stack web projects','Complete an IT consulting internship','Learn ITIL framework and agile methodologies','Develop strong communication and presentation skills']
-},
-'software-engineering':{
-  whyFits:'Software Engineering aligns with your systematic approach to building reliable, scalable systems. You think in architecture patterns and clean code.',
-  yearByYear:[
-    {year:'Year 1',items:['Mathematics','Programming Fundamentals','Engineering Sciences','Technical Communication','Computer Basics','Logic & Reasoning']},
-    {year:'Year 2',items:['Object-Oriented Design','Data Structures','Software Requirements Engineering','Version Control & Collaboration','Database Design','Statistics for SE']},
-    {year:'Year 3',items:['Software Architecture & Design Patterns','Testing & Quality Assurance','Agile & DevOps','Cloud-Native Development','API Design & Microservices','Human-Computer Interaction']},
-    {year:'Year 4',items:['Software Project Management','Enterprise Architecture','Elective: ML Engineering/Security','Capstone Software Project','Internship','Technical Writing & Documentation']}
-  ],
-  coreSubjects:['Software Design Patterns','Requirements Engineering','Testing & QA','DevOps','Software Architecture','Agile Methodologies','API Design','Project Management'],
-  tools:['Java','Python','TypeScript','Docker','Kubernetes','Jenkins','GitHub Actions','Figma','Swagger','SonarQube'],
-  projects:['Build a CI/CD pipeline for a microservices app','Create a code review and static analysis tool','Design and document an API-first product','Develop an automated testing framework','Build a project management tool like mini-Jira'],
-  internshipStrategy:'Look for Software Engineering intern roles specifically (not just "developer"). Focus on companies with strong engineering culture (Atlassian, ThoughtWorks, Microsoft). Showcase clean code and testing practices.',
-  skillMilestones:['Sem 1-2: Clean coding practices and Git workflow','Sem 3-4: Design patterns and OOP mastery','Sem 5: CI/CD, testing strategies','Sem 6: Architecture decisions, microservices','Sem 7-8: Tech lead readiness'],
-  careerPaths:['Software Engineer','Solutions Architect','DevOps Engineer','QA Lead','Engineering Manager','CTO'],
-  topRecruiters:['ThoughtWorks','Atlassian','Microsoft','GitHub','JetBrains','Spotify','Stripe','Pivotal'],
-  salaryDirection:'Starting: ₹7-18 LPA | Mid-career: ₹18-40 LPA | Senior: ₹40-70+ LPA. Architecture and platform roles are highly valued.',
-  higherEd:['MS in Software Engineering','MBA + Tech dual degree','Certified Scrum Master / SAFe Agilist','AWS Solutions Architect certification'],
-  futureTrends:['AI-assisted development (Copilot)','Platform engineering','Observability & SRE','Green software engineering','Developer experience (DevEx)'],
-  risks:['Requires balancing speed with quality','Architecture decisions have long-term consequences','Fast-evolving tools and frameworks'],
-  actionPlan:['Master 2 programming languages deeply','Build projects with proper testing and CI/CD','Read "Clean Code" and "Designing Data-Intensive Applications"','Get experience with Agile teams through internships','Practice system design for interviews']
-},
-'ai':{
-  whyFits:'Artificial Intelligence matches your fascination with machine cognition — making systems that reason, perceive, and learn. You are driven by intellectual challenge.',
-  yearByYear:[
-    {year:'Year 1',items:['Linear Algebra','Calculus','Probability','Programming (Python)','Introduction to AI Concepts','Basic Data Science']},
-    {year:'Year 2',items:['Machine Learning Fundamentals','Data Structures & Algorithms','Statistical Inference','Knowledge Representation','Logic & Reasoning','Database Systems']},
-    {year:'Year 3',items:['Deep Learning','Natural Language Processing','Computer Vision','Reinforcement Learning','AI Ethics & Safety','Research Methodology']},
-    {year:'Year 4',items:['Advanced AI Topics','Thesis/Research Project','Elective: Robotics AI/Generative AI','Industry Research Internship','Technical Paper Publication','AI Capstone']}
-  ],
-  coreSubjects:['Machine Learning','Deep Learning','NLP','Computer Vision','Reinforcement Learning','Knowledge Graphs','AI Ethics','Research Methods'],
-  tools:['Python','PyTorch','TensorFlow','Hugging Face','OpenCV','Jupyter','LaTeX','CUDA','Weights & Biases'],
-  projects:['Build a GPT-style language model from scratch','Create a visual question-answering system','Develop a reinforcement learning agent for game playing','Build a knowledge graph from unstructured text','Research paper replication and improvement'],
-  internshipStrategy:'Target AI research labs (Google DeepMind, Microsoft Research, OpenAI). Publish papers at workshops or conferences. Contribute to open-source AI projects. Build a strong research portfolio.',
-  skillMilestones:['Sem 1-2: Python + math foundations','Sem 3-4: Classical ML mastery','Sem 5: Deep learning architectures','Sem 6: Specialize in NLP/CV/RL','Sem 7-8: Research publication and advanced projects'],
-  careerPaths:['AI Researcher','NLP Engineer','Computer Vision Engineer','AI Product Manager','Research Scientist','Robotics AI Developer'],
-  topRecruiters:['Google DeepMind','OpenAI','Microsoft Research','Meta FAIR','NVIDIA','Amazon Science','Anthropic','Cohere'],
-  salaryDirection:'Starting: ₹10-30 LPA | Mid-career: ₹30-60 LPA | Senior: ₹60-1.5 Cr+. Research scientists at top labs earn exceptionally well.',
-  higherEd:['MS/PhD in AI or Machine Learning','Research fellowships at top universities','Specialized certifications in NLP/CV','Postdoctoral research positions'],
-  futureTrends:['AGI research','Multimodal AI','AI alignment and safety','Neuromorphic computing','AI regulation and governance'],
-  risks:['Extremely competitive field for research positions','Rapid pace makes knowledge quickly outdated','Ethical concerns around AI applications','Requires strong mathematical foundation'],
-  actionPlan:['Build iron-strong math foundations (linear algebra, calculus, probability)','Implement 5+ papers from scratch','Start a research blog documenting your learnings','Submit to at least one workshop/conference by Year 4','Build a portfolio of AI projects on GitHub']
-},
-'aiml':{
-  whyFits:'AI & Machine Learning is perfect for you because you love the practical side of ML — building models, tuning hyperparameters, and deploying them at scale.',
-  yearByYear:[
-    {year:'Year 1',items:['Mathematics for ML','Python Programming','Statistics & Probability','Intro to Data Science','Engineering Sciences','Basic Computing']},
-    {year:'Year 2',items:['Machine Learning Algorithms','Data Structures','Linear Algebra Applications','Feature Engineering','SQL & Databases','Exploratory Data Analysis']},
-    {year:'Year 3',items:['Deep Learning (CNN, RNN, Transformers)','MLOps & Model Deployment','Natural Language Processing','Time Series Analysis','Experiment Tracking','Cloud ML Services']},
-    {year:'Year 4',items:['Advanced ML Topics','Production ML Systems','Elective: Generative AI / Reinforcement Learning','Industry Internship','ML Capstone Project','Research Seminar']}
-  ],
-  coreSubjects:['Statistical Learning','Neural Networks','Feature Engineering','MLOps','Experiment Design','Model Optimization','ML Mathematics','Deployment Pipelines'],
-  tools:['Python','Scikit-learn','PyTorch','TensorFlow','MLflow','Docker','W&B','Spark','DVC','Optuna'],
-  projects:['End-to-end ML pipeline with automated retraining','Build a recommendation engine for an e-commerce platform','Create a time-series forecasting system for stock prices','Develop a model monitoring and drift detection system','Kaggle competition top 10% finish'],
-  internshipStrategy:'Focus on ML Engineering roles (not just data science). Target companies with production ML systems (Flipkart, Zomato, Amazon). Get Kaggle rankings. Build MLOps experience.',
-  skillMilestones:['Sem 1-2: Python, numpy, pandas mastery','Sem 3-4: Scikit-learn, classical ML algorithms','Sem 5: Deep learning, first Kaggle medals','Sem 6: MLOps, deployment pipelines','Sem 7-8: Production-grade ML systems'],
-  careerPaths:['ML Engineer','Data Scientist','MLOps Engineer','Applied Researcher','AI Platform Engineer','Deep Learning Engineer'],
-  topRecruiters:['Amazon','Google','Flipkart','Uber','Netflix','Zomato','Swiggy','PhonePe','Fractal Analytics'],
-  salaryDirection:'Starting: ₹8-22 LPA | Mid-career: ₹22-45 LPA | Senior: ₹45-80+ LPA. ML Engineers with deployment skills are in very high demand.',
-  higherEd:['MS in Machine Learning / Data Science','Research-track in Applied ML','Professional certifications (Google ML, AWS ML)','Short courses from deeplearning.ai'],
-  futureTrends:['AutoML and neural architecture search','Foundation models and fine-tuning','Responsible AI and fairness','MLOps maturation','Real-time ML inference'],
-  risks:['Model performance plateaus are frustrating','Production ML is harder than notebook ML','Tool landscape changes very fast'],
-  actionPlan:["Complete Andrew Ng's ML courses",'Achieve top 10% in at least 2 Kaggle competitions','Build 3 end-to-end ML projects with deployment','Learn Docker + cloud deployment for ML models','Get MLOps experience through internships']
-},
-'aids':{
-  whyFits:'AI & Data Science suits your talent for working with data at scale — cleaning, analyzing, visualizing, and building predictive models that drive decisions.',
-  yearByYear:[
-    {year:'Year 1',items:['Mathematics','Statistics & Probability','Python Programming','Introduction to Data Science','Database Fundamentals','Communication Skills']},
-    {year:'Year 2',items:['SQL & Advanced Databases','Data Cleaning & Wrangling','Exploratory Data Analysis','Machine Learning Basics','Business Analytics','Data Visualization']},
-    {year:'Year 3',items:['Predictive Modeling','Big Data Technologies','Deep Learning Applications','Dashboard Development','A/B Testing & Experimentation','Data Ethics & Governance']},
-    {year:'Year 4',items:['Advanced Analytics','AI for Business Intelligence','Elective: NLP / Recommendation Systems','Capstone Data Project','Industry Internship','Data Storytelling Seminar']}
-  ],
-  coreSubjects:['Statistics','SQL','Data Wrangling','Business Intelligence','Predictive Modeling','Big Data','Data Visualization','A/B Testing'],
-  tools:['Python','SQL','Tableau','Power BI','Pandas','Apache Spark','BigQuery','Excel','Airflow','Looker'],
-  projects:['Build an interactive business intelligence dashboard','Create an automated data pipeline for real-time analytics','Develop a customer churn prediction model with business recommendations','Design an A/B testing framework for a product team','Analyze a large public dataset and publish insights'],
-  internshipStrategy:'Target analytics and data science roles at data-driven companies (Swiggy, PhonePe, Razorpay). Get proficient in SQL and dashboarding tools. Build a portfolio of analysis projects on GitHub/Kaggle.',
-  skillMilestones:['Sem 1-2: SQL mastery, Python basics','Sem 3-4: EDA, visualization, ML fundamentals','Sem 5: Business analytics, dashboarding','Sem 6: Big data tools, cloud analytics','Sem 7-8: End-to-end analytics projects'],
-  careerPaths:['Data Scientist','Data Analyst','BI Developer','Analytics Manager','Data Engineer','Quantitative Analyst'],
-  topRecruiters:['Swiggy','PhonePe','Razorpay','McKinsey','BCG','Tiger Analytics','Mu Sigma','American Express'],
-  salaryDirection:'Starting: ₹6-16 LPA | Mid-career: ₹16-35 LPA | Senior: ₹35-60+ LPA. Analytics leadership roles at top firms are very well-compensated.',
-  higherEd:['MS in Data Science / Analytics','MBA with analytics specialization','Google Data Analytics Certificate','Professional certifications (Tableau, Power BI)'],
-  futureTrends:['Augmented analytics with AI','Data mesh architecture','Real-time streaming analytics','Decision intelligence','Democratization of data'],
-  risks:['Data quality issues can be frustrating','Business stakeholder management is challenging','Some analyst roles feel repetitive without growth'],
-  actionPlan:['Master SQL with complex queries and window functions','Build 5 data analysis projects with storytelling','Learn Tableau or Power BI for professional dashboards','Get comfortable with Python pandas and visualization','Apply to analytics internships at product companies']
-},
-'data-science':{
-  whyFits:'Data Science is your calling because you combine statistical rigor with curiosity — you love exploring data and communicating findings that influence decisions.',
-  yearByYear:[
-    {year:'Year 1',items:['Calculus & Linear Algebra','Statistics & Probability','Python for Data Science','Intro to Computing','Scientific Methodology','Technical Writing']},
-    {year:'Year 2',items:['Statistical Inference','Data Collection & Cleaning','Regression Analysis','Data Visualization','SQL & NoSQL Databases','Computational Thinking']},
-    {year:'Year 3',items:['Machine Learning','Bayesian Statistics','Time Series Analysis','Experimental Design','Natural Language Processing Basics','Data Ethics']},
-    {year:'Year 4',items:['Deep Learning','Causal Inference','Research Project','Elective: Bioinformatics / Econometrics','Capstone','Data Science Seminar']}
-  ],
-  coreSubjects:['Probability & Statistics','Regression','Bayesian Methods','Machine Learning','Time Series','Experimental Design','Data Visualization','Causal Inference'],
-  tools:['Python','R','Jupyter','Matplotlib/Seaborn','Scikit-learn','Hadoop','Kaggle','SPSS','LaTeX','Plotly'],
-  projects:['Conduct a full statistical study on a social/health dataset','Build a Bayesian A/B testing framework','Create a time-series forecast for weather or energy consumption','Develop a recommendation engine with collaborative filtering','Publish an analysis on Kaggle with top votes'],
-  internshipStrategy:'Focus on research-oriented data science roles at analytics firms. Build strong statistical foundations. Publish analysis notebooks. Target companies that value statistical rigor over just ML.',
-  skillMilestones:['Sem 1-2: Statistics and probability fundamentals','Sem 3-4: R/Python for statistical computing','Sem 5: ML algorithms with statistical understanding','Sem 6: Advanced methods (Bayesian, causal)','Sem 7-8: Research and publication'],
-  careerPaths:['Data Scientist','Research Analyst','Statistician','Product Analyst','Decision Scientist','Growth Analyst'],
-  topRecruiters:['Google','Netflix','Airbnb','McKinsey Analytics','Uber','LinkedIn','Spotify','Two Sigma'],
-  salaryDirection:'Starting: ₹7-18 LPA | Mid-career: ₹18-40 LPA | Senior: ₹40-70+ LPA. Companies pay premium for strong statistical thinkers.',
-  higherEd:['MS in Statistics / Data Science','PhD in Computational Statistics','Applied Math programs','Stanford / CMU data science programs'],
-  futureTrends:['Causal ML','Federated learning','Synthetic data generation','Data-centric AI','Responsible data science'],
-  risks:['Often confused with analytics roles','Requires very strong math foundation','Academic pressure if pursuing research track'],
-  actionPlan:['Take online statistics courses (MIT OCW, Khan Academy)','Master R and Python for statistical computing','Complete 3 end-to-end statistical analyses','Participate in Kaggle competitions focusing on insights','Read research papers and replicate methods']
-},
-'cyber-security':{
-  whyFits:'Cyber Security matches your analytical mind and defensive instincts. You think like an attacker to build better defenses — a rare and valuable skillset.',
-  yearByYear:[
-    {year:'Year 1',items:['Computer Fundamentals','Programming (Python/C)','Mathematics','Networking Basics','Linux Administration','Introduction to Security']},
-    {year:'Year 2',items:['Network Security','Cryptography','Operating System Security','Web Application Security','Ethical Hacking Basics','Database Security']},
-    {year:'Year 3',items:['Penetration Testing','Malware Analysis','Digital Forensics','Incident Response','Cloud Security','Security Compliance & Governance']},
-    {year:'Year 4',items:['Advanced Threat Hunting','Red Team Operations','Elective: Blockchain Security / IoT Security','Security Capstone Project','Internship','CTF Competitions & Research']}
-  ],
-  coreSubjects:['Network Security','Cryptography','Ethical Hacking','Penetration Testing','Digital Forensics','Incident Response','Security Architecture','Compliance'],
-  tools:['Kali Linux','Wireshark','Metasploit','Burp Suite','Nmap','Python','Splunk','Nessus','OWASP ZAP','Hashcat'],
-  projects:['Build a vulnerability scanner tool','Create a SIEM dashboard for network monitoring','Conduct a full penetration test on a lab environment','Develop a phishing detection system','Build a CTF challenge platform'],
-  internshipStrategy:'Participate in CTF competitions (HackTheBox, TryHackMe). Get certifications (CEH, CompTIA Security+). Target security roles at product companies and consulting firms. Build a security research blog.',
-  skillMilestones:['Sem 1-2: Linux, networking, Python','Sem 3-4: Ethical hacking, CTF competitions','Sem 5: Penetration testing certifications','Sem 6: Incident response, forensics','Sem 7-8: Specialization (red team / blue team)'],
-  careerPaths:['Security Analyst','Penetration Tester','Security Architect','SOC Analyst','Cryptographer','CISO'],
-  topRecruiters:['Palo Alto Networks','CrowdStrike','FireEye','Deloitte Cyber','EY Forensics','KPMG','Quick Heal','Tata CERT'],
-  salaryDirection:'Starting: ₹5-14 LPA | Mid-career: ₹14-35 LPA | Senior: ₹35-60+ LPA. Bug bounty hunters can earn additionally through platforms like HackerOne.',
-  higherEd:['MS in Cybersecurity','CISSP Certification','OSCP (Offensive Security)','CEH (Certified Ethical Hacker)','PhD in Cryptography'],
-  futureTrends:['AI-powered threat detection','Zero trust architecture','Quantum-safe cryptography','Supply chain security','Cloud-native security'],
-  risks:['Constant cat-and-mouse with attackers','Burnout from alert fatigue in SOC roles','Certifications can be expensive','Legal and ethical boundaries are critical'],
-  actionPlan:['Complete TryHackMe or HackTheBox learning paths','Get CompTIA Security+ certification','Participate in at least 5 CTF competitions','Build a security lab at home for practice','Network with the cybersecurity community']
-},
-'cloud-computing':{
-  whyFits:'Cloud Computing aligns with your systems-thinking mindset. You love building resilient infrastructure and automating everything.',
-  yearByYear:[
-    {year:'Year 1',items:['Programming Fundamentals','Networking Basics','Linux Administration','Mathematics','Web Technologies','Introduction to Cloud']},
-    {year:'Year 2',items:['Cloud Platforms (AWS/Azure/GCP)','Containerization (Docker)','Infrastructure as Code','Database Administration','Scripting (Bash/Python)','DevOps Basics']},
-    {year:'Year 3',items:['Kubernetes & Orchestration','Serverless Architecture','Cloud Security','CI/CD Pipelines','Monitoring & Observability','Multi-Cloud Strategies']},
-    {year:'Year 4',items:['Cloud Architecture Design','Cost Optimization','Elective: Edge Computing / Cloud AI','Enterprise Cloud Migration Project','Internship','Cloud Certification Prep']}
-  ],
-  coreSubjects:['Cloud Architecture','Containerization','IaC','Serverless','Cloud Security','Networking','CI/CD','Monitoring & Logging'],
-  tools:['AWS','Azure','GCP','Docker','Kubernetes','Terraform','Ansible','Jenkins','Prometheus','Grafana'],
-  projects:['Deploy a microservices app on Kubernetes with auto-scaling','Build a serverless API with AWS Lambda and DynamoDB','Create infrastructure-as-code for a full production environment','Design a multi-region disaster recovery architecture','Build a cloud cost monitoring and optimization dashboard'],
-  internshipStrategy:'Get cloud certified (AWS SAA, Azure AZ-104). Target DevOps/Cloud roles at startups and enterprises. Contribute to cloud-native open-source projects (CNCF ecosystem).',
-  skillMilestones:['Sem 1-2: Linux, networking, scripting','Sem 3-4: Docker, first cloud certification','Sem 5: Kubernetes, IaC mastery','Sem 6: Serverless, security','Sem 7-8: Architecture design and multi-cloud'],
-  careerPaths:['Cloud Architect','DevOps Engineer','SRE','Cloud Consultant','Platform Engineer','Infrastructure Lead'],
-  topRecruiters:['Amazon Web Services','Microsoft Azure','Google Cloud','Hashicorp','Datadog','Cloudflare','Rackspace','VMware'],
-  salaryDirection:'Starting: ₹6-16 LPA | Mid-career: ₹16-40 LPA | Senior: ₹40-70+ LPA. Certified cloud architects are among the highest-paid in IT.',
-  higherEd:['AWS Solutions Architect Professional','CKA/CKAD (Kubernetes)','Azure Solutions Architect Expert','Google Cloud Professional Architect'],
-  futureTrends:['FinOps and cloud cost management','Green cloud computing','Edge-cloud hybrid','AI/ML cloud services','Platform engineering rise'],
-  risks:['Vendor lock-in concerns','Certification-heavy career path','Rapid pace of cloud service changes'],
-  actionPlan:['Get AWS Cloud Practitioner certified immediately','Set up a personal cloud lab using free tiers','Master Docker and Kubernetes hands-on','Build 3 cloud projects with IaC and CI/CD','Contribute to a CNCF open-source project']
-},
-'iot':{
-  whyFits:'IoT Engineering is ideal for your love of connecting the physical and digital worlds. You see smart devices everywhere and want to build them.',
-  yearByYear:[
-    {year:'Year 1',items:['Basic Electronics','Programming (C/Python)','Physics','Mathematics','Workshop Practice','Introduction to IoT']},
-    {year:'Year 2',items:['Microcontroller Programming','Sensor Technologies','Communication Protocols (MQTT, BLE, Zigbee)','Embedded C','PCB Design Basics','Cloud Connectivity']},
-    {year:'Year 3',items:['Edge Computing','IoT Security','Data Streaming & Processing','IoT Platform Integration','Industrial IoT','Smart Systems Design']},
-    {year:'Year 4',items:['Advanced IoT Applications','Elective: AI at Edge / Smart Agriculture','IoT Capstone Project','Industry Internship','Research Paper','IoT Standards & Governance']}
-  ],
-  coreSubjects:['Embedded Systems','Sensor Networks','Communication Protocols','Edge Computing','IoT Security','Cloud Integration','Data Streaming','Smart Systems'],
-  tools:['Arduino','Raspberry Pi','ESP32','Node-RED','AWS IoT Core','Python','MQTT Broker','ThingsBoard','Grafana'],
-  projects:['Build a smart home automation system','Create an air quality monitoring network with real-time dashboards','Develop a smart agriculture irrigation system','Design an industrial predictive maintenance sensor network','Build a GPS-based fleet tracking system'],
-  internshipStrategy:'Target IoT/smart manufacturing companies. Build hardware projects and document them well. Learn cloud IoT platforms. Participate in hardware hackathons.',
-  skillMilestones:['Sem 1-2: Electronics and embedded C','Sem 3-4: Arduino/RPi projects with cloud','Sem 5: Communication protocols mastery','Sem 6: Edge computing and IoT platforms','Sem 7-8: Industrial IoT applications'],
-  careerPaths:['IoT Developer','Embedded Engineer','Smart Systems Designer','IoT Solutions Architect','Edge Computing Engineer','Industrial IoT Specialist'],
-  topRecruiters:['Bosch','Siemens','Honeywell','L&T Technology Services','Tata Elxsi','Qualcomm','PTC','ABB'],
-  salaryDirection:'Starting: ₹5-12 LPA | Mid-career: ₹12-28 LPA | Senior: ₹28-50+ LPA. Industrial IoT roles at multinational companies pay well.',
-  higherEd:['MS in Embedded Systems / IoT','Specialized certifications in AWS IoT / Azure IoT','M.Tech in Smart Systems','Research in Edge AI'],
-  futureTrends:['AIoT (AI + IoT convergence)','Digital twins','5G-enabled IoT','Sustainable IoT','Matter protocol adoption'],
-  risks:['Hardware prototyping can be expensive','Fragmented ecosystem with many competing standards','Security remains a major challenge','Niche job market compared to software'],
-  actionPlan:['Build 3 IoT projects with real sensors and cloud integration','Learn MQTT, BLE, and at least one cloud IoT platform','Document projects with schematics and GitHub repos','Participate in a hardware hackathon','Get familiar with industrial protocols (Modbus, OPC-UA)']
-},
-'robotics':{
-  whyFits:'Robotics Engineering matches your desire to build machines that move, sense, and interact. You combine mechanical intuition with software control.',
-  yearByYear:[
-    {year:'Year 1',items:['Mathematics & Physics','Programming (Python/C++)','Engineering Mechanics','Basic Electronics','Engineering Drawing','Intro to Robotics']},
-    {year:'Year 2',items:['Kinematics & Dynamics','Control Systems','Microcontroller Programming','Sensor & Actuator Technology','CAD Modeling','Linear Algebra for Robotics']},
-    {year:'Year 3',items:['Robot Operating System (ROS)','Computer Vision for Robotics','Motion Planning & SLAM','AI for Robotics','Industrial Robotics','Human-Robot Interaction']},
-    {year:'Year 4',items:['Advanced Robotics','Autonomous Systems','Elective: Drone Tech / Surgical Robotics','Robotics Capstone Project','Research Internship','Competition/Publication']}
-  ],
-  coreSubjects:['Kinematics','Control Systems','ROS','Computer Vision','Motion Planning','SLAM','Sensor Fusion','AI for Robotics'],
-  tools:['ROS/ROS2','Python','C++','MATLAB','Gazebo','SolidWorks','Arduino','OpenCV','MoveIt','Simulink'],
-  projects:['Build an autonomous mobile robot with SLAM navigation','Create a robotic arm that sorts objects by color/shape','Develop a drone with autonomous flight and obstacle avoidance','Design a warehouse robot for inventory management','Build a legged robot with dynamic balance control'],
-  internshipStrategy:'Target robotics labs and companies (ISRO, DRDO, Addverb). Participate in robotics competitions (RoboMaster, FIRST). Contribute to ROS open-source packages. Build and document physical robots.',
-  skillMilestones:['Sem 1-2: Mechanics, electronics, basic programming','Sem 3-4: Control systems, first robot build','Sem 5: ROS, computer vision integration','Sem 6: SLAM, motion planning','Sem 7-8: Autonomous systems, competition/research'],
-  careerPaths:['Robotics Engineer','Automation Specialist','Control Systems Engineer','ROS Developer','Drone Engineer','Robotics Researcher'],
-  topRecruiters:['Boston Dynamics','ISRO','DRDO','Addverb','GreyOrange','ABB','FANUC','Universal Robots','Tesla'],
-  salaryDirection:'Starting: ₹6-15 LPA | Mid-career: ₹15-35 LPA | Senior: ₹35-60+ LPA. Autonomous vehicle and industrial robotics roles are growing fast.',
-  higherEd:['MS/PhD in Robotics (CMU, MIT, ETH Zurich)','M.Tech in Autonomous Systems','Research at ISRO/DRDO','Specialized programs at IIT Robotics Labs'],
-  futureTrends:['Collaborative robots (cobots)','Autonomous vehicles','Soft robotics','Swarm robotics','Humanoid robots'],
-  risks:['Hardware development is slow and expensive','Limited job openings in India currently','Requires strong math and physics','Competition with AI-pure roles for talent'],
-  actionPlan:['Build at least 2 physical robots by Year 3','Master ROS through tutorials and projects','Participate in at least one robotics competition','Learn computer vision and control theory deeply','Consider MS/PhD for advanced robotics careers']
-},
-'mechatronics':{
-  whyFits:'Mechatronics matches your interdisciplinary nature — you love where mechanical design meets electronics and intelligent control.',
-  yearByYear:[
-    {year:'Year 1',items:['Engineering Mechanics','Basic Electronics','Programming (C/Python)','Engineering Drawing','Physics','Mathematics']},
-    {year:'Year 2',items:['Control Theory','Sensor & Actuator Systems','Digital Electronics','CAD/CAM','Embedded Systems Basics','Fluid Mechanics']},
-    {year:'Year 3',items:['PLC Programming','Industrial Automation','Robotics Fundamentals','CNC & Manufacturing','Smart Manufacturing','System Integration']},
-    {year:'Year 4',items:['Advanced Automation','Elective: Industry 4.0 / Smart Factory','Mechatronics Capstone','Industrial Internship','Project Documentation','Technical Seminar']}
-  ],
-  coreSubjects:['Control Theory','PLC/DCS','Sensors & Actuators','CAD/CAM','Embedded Systems','Industrial Automation','CNC Programming','System Integration'],
-  tools:['MATLAB/Simulink','Arduino','SolidWorks','LabVIEW','PLC Software (Siemens/AB)','AutoCAD','Python','Fusion 360'],
-  projects:['Build a PLC-controlled conveyor sorting system','Create an automated greenhouse with sensor control','Design a CNC machine from scratch','Develop a robotic welding cell simulation','Build a smart manufacturing monitoring dashboard'],
-  internshipStrategy:'Target manufacturing and automation companies (Siemens, Bosch, ABB). Learn PLC programming thoroughly. Build automation projects. Get industry certifications in PLC/SCADA.',
-  skillMilestones:['Sem 1-2: Mechanical and electronics basics','Sem 3-4: Control systems, CAD modeling','Sem 5: PLC programming, sensor integration','Sem 6: Industrial automation projects','Sem 7-8: System integration and Industry 4.0'],
-  careerPaths:['Mechatronics Engineer','Automation Engineer','PLC Programmer','Manufacturing Systems Engineer','Smart Factory Consultant','CNC Specialist'],
-  topRecruiters:['Siemens','Bosch','ABB','Honeywell','Schneider Electric','Rockwell Automation','FANUC','Mitsubishi Electric'],
-  salaryDirection:'Starting: ₹4-10 LPA | Mid-career: ₹10-25 LPA | Senior: ₹25-45+ LPA. Industry 4.0 is driving demand for mechatronics specialists.',
-  higherEd:['M.Tech in Mechatronics / Automation','MS in Manufacturing Engineering','Siemens Certified PLC Professional','Specialized courses in Industry 4.0'],
-  futureTrends:['Industry 4.0 and smart factories','Digital twins for manufacturing','Collaborative robots in production','Additive manufacturing integration','Predictive maintenance'],
-  risks:['Can feel like a "jack of all trades"','Manufacturing sector can be cyclical','Some automation jobs are location-dependent','Need to keep up with multiple disciplines'],
-  actionPlan:['Build a PLC-controlled automation project','Master CAD (SolidWorks) and basic electronics','Learn at least one industrial PLC platform','Complete an industrial internship at a manufacturing plant','Get certified in industrial automation tools']
-},
-'electronics':{
-  whyFits:'Electronics Engineering is your match because you think in circuits — you see the world through signals, components, and elegant circuit design.',
-  yearByYear:[
-    {year:'Year 1',items:['Mathematics','Physics','Basic Electrical Engineering','Programming (C)','Engineering Drawing','Workshop Practice']},
-    {year:'Year 2',items:['Analog Circuit Design','Digital Electronics','Semiconductor Physics','Signals & Systems','Electronic Devices','Network Theory']},
-    {year:'Year 3',items:['Microprocessors','VLSI Basics','Communication Systems','Control Systems','PCB Design','Signal Processing']},
-    {year:'Year 4',items:['Advanced IC Design','Embedded Systems','Elective: RF / Power Electronics','Electronics Capstone','Internship','Technical Seminar']}
-  ],
-  coreSubjects:['Analog & Digital Circuits','Semiconductor Physics','Signal Processing','Microprocessors','PCB Design','VLSI Basics','Control Systems','Communication'],
-  tools:['MATLAB','Multisim','Proteus','Eagle/KiCad','VHDL/Verilog','Oscilloscope','Arduino','LTSpice','Cadence'],
-  projects:['Design a multi-band radio receiver','Build a digital oscilloscope using an FPGA','Create a solar charge controller with MPPT','Develop an audio amplifier with custom PCB','Design a signal processing filter for biomedical signals'],
-  internshipStrategy:'Target electronics design companies (Texas Instruments, Analog Devices). Learn PCB design tools professionally. Build and test real circuits. Get FPGA experience.',
-  skillMilestones:['Sem 1-2: Circuit fundamentals, breadboard prototyping','Sem 3-4: Analog/digital design, simulation tools','Sem 5: PCB design, microprocessor programming','Sem 6: Signal processing, VLSI concepts','Sem 7-8: Specialization and industry projects'],
-  careerPaths:['Electronics Design Engineer','Hardware Engineer','Signal Processing Engineer','Test Engineer','Analog IC Designer','RF Engineer'],
-  topRecruiters:['Texas Instruments','Analog Devices','Intel','Qualcomm','Samsung Semiconductor','NXP','STMicroelectronics','MediaTek'],
-  salaryDirection:'Starting: ₹4-12 LPA | Mid-career: ₹12-30 LPA | Senior: ₹30-55+ LPA. Semiconductor companies offer competitive packages for skilled designers.',
-  higherEd:['M.Tech in Electronics / VLSI','MS in Electrical Engineering','Cadence Certified Design Professional','Specialized courses in RF or Analog Design'],
-  futureTrends:['Wide-bandgap semiconductors (GaN, SiC)','Flexible electronics','Neuromorphic chips','Advanced packaging (chiplets)','Energy harvesting'],
-  risks:['Fewer job openings compared to software','Design cycles can be long (months to years)','Requires expensive lab equipment for practice','India has limited chip fabrication facilities'],
-  actionPlan:['Master circuit simulation tools by Year 2','Build 5 real circuits (not just simulations)','Learn PCB design with KiCad or Eagle','Get FPGA experience with Xilinx or Intel boards','Apply to semiconductor internships early']
-},
-'entc':{
-  whyFits:'E&TC Engineering fits your fascination with how information travels — from wireless signals to fiber optics to satellite communication.',
-  yearByYear:[
-    {year:'Year 1',items:['Mathematics','Physics','Basic Electronics','Programming','Engineering Graphics','Communication Skills']},
-    {year:'Year 2',items:['Signals & Systems','Analog Communication','Digital Electronics','Electromagnetic Theory','Network Analysis','Probability for Communication']},
-    {year:'Year 3',items:['Digital Communication','Microwave Engineering','Antenna Theory','Wireless Networks','Optical Communication','DSP']},
-    {year:'Year 4',items:['Mobile Communication (4G/5G)','Satellite Communication','Elective: IoT / Radar Systems','E&TC Capstone','Industry Internship','Research Project']}
-  ],
-  coreSubjects:['Communication Theory','Antenna Design','Wireless Networks','Signal Processing','Electromagnetic Theory','Optical Communication','Network Protocols','Microwave Engineering'],
-  tools:['MATLAB','GNURadio','Wireshark','HFSS','NS3','Cadence','LabVIEW','Python','CST Studio'],
-  projects:['Design and simulate a 5G antenna array','Build an FM radio transmitter/receiver','Create a wireless sensor network for environmental monitoring','Develop a software-defined radio platform','Simulate and analyze fiber optic communication link'],
-  internshipStrategy:'Target telecom companies (Qualcomm, Nokia, Ericsson). Learn 5G standards. Get comfortable with RF simulation tools. Participate in communication-related research projects.',
-  skillMilestones:['Sem 1-2: Electronics and signal fundamentals','Sem 3-4: Communication theory, analog/digital','Sem 5: Antenna design, wireless networks','Sem 6: 4G/5G technologies, DSP','Sem 7-8: Specialization in RF/wireless/optical'],
-  careerPaths:['Telecom Engineer','RF Engineer','Network Planning Engineer','Antenna Designer','5G Specialist','Satellite Communication Engineer'],
-  topRecruiters:['Qualcomm','Nokia','Ericsson','Samsung Networks','Reliance Jio','Bharti Airtel','ISRO','DRDO'],
-  salaryDirection:'Starting: ₹4-12 LPA | Mid-career: ₹12-30 LPA | Senior: ₹30-50+ LPA. 5G deployment is creating strong demand for telecom engineers.',
-  higherEd:['M.Tech in Communication Systems','MS in Wireless Engineering','PhD in RF/Antenna Design','Specialized 5G certifications'],
-  futureTrends:['5G and 6G networks','Satellite internet (Starlink)','Terahertz communication','Quantum communication','Network slicing'],
-  risks:['Telecom industry cycles affect hiring','Hardware-focused roles may limit flexibility','Software-defined networking is changing the field','Academic research can feel disconnected from industry'],
-  actionPlan:['Master MATLAB for signal processing','Build a real RF project (FM transmitter/SDR)','Study 3GPP 5G NR standards','Get comfortable with antenna simulation tools','Apply to telecom internships at Qualcomm/Nokia/Jio']
-},
-'electrical':{
-  whyFits:'Electrical Engineering matches your interest in power — generation, transmission, and the electrical systems that keep the modern world running.',
-  yearByYear:[
-    {year:'Year 1',items:['Engineering Mathematics','Physics','Basic Electrical Engineering','Programming','Workshop','Engineering Drawing']},
-    {year:'Year 2',items:['Electrical Machines','Network Theory','Power Systems I','Electromagnetic Fields','Analog Electronics','Control Systems']},
-    {year:'Year 3',items:['Power Systems II','Power Electronics','Switchgear & Protection','Renewable Energy Systems','Electrical Drives','Instrumentation']},
-    {year:'Year 4',items:['High Voltage Engineering','Smart Grid Technology','Elective: EV Systems / Energy Storage','Electrical Capstone','Industry Internship','Technical Seminar']}
-  ],
-  coreSubjects:['Electrical Machines','Power Systems','Power Electronics','Control Systems','Renewable Energy','Switchgear & Protection','Electrical Drives','Smart Grid'],
-  tools:['MATLAB/Simulink','ETAP','PSCAD','AutoCAD Electrical','PLC/SCADA','LabVIEW','DIgSILENT','Homer Pro'],
-  projects:['Design a solar microgrid for a village','Build a variable frequency drive controller','Simulate protection relay coordination for a substation','Create a smart energy meter with IoT integration','Develop a battery management system for EVs'],
-  internshipStrategy:'Target power utilities (NTPC, Power Grid), EV companies (Tata Motors EV, Ather), and renewable energy firms. Get certified in electrical safety. Learn ETAP or PSCAD.',
-  skillMilestones:['Sem 1-2: Electrical fundamentals, circuit analysis','Sem 3-4: Machines, power systems basics','Sem 5: Power electronics, protection systems','Sem 6: Renewable energy, smart grid','Sem 7-8: Specialization in power/EV/renewables'],
-  careerPaths:['Power Systems Engineer','Electrical Design Engineer','Renewable Energy Engineer','EV Powertrain Engineer','Control Engineer','Grid Planning Engineer'],
-  topRecruiters:['NTPC','Power Grid Corporation','Siemens','ABB','L&T Electrical','Tata Power','Adani Green','Schneider Electric'],
-  salaryDirection:'Starting: ₹4-10 LPA | Mid-career: ₹10-25 LPA | Senior: ₹25-45+ LPA. Renewable energy and EV sectors are driving salary growth.',
-  higherEd:['M.Tech in Power Systems / Power Electronics','MS in Electrical Engineering','PhD in Renewable Energy','Professional Engineer (PE) certification'],
-  futureTrends:['Electric vehicles and charging infrastructure','Green hydrogen','Battery energy storage systems','Smart grid and demand response','Solar + storage microgrids'],
-  risks:['Core power sector hiring can be slow','Government sector jobs are competitive','Field work in harsh conditions','Slow adoption of new technologies in utilities'],
-  actionPlan:['Master MATLAB/Simulink for power system simulation','Build a renewable energy project (solar inverter/MPPT)','Get industrial training at a power plant or substation','Learn about EV powertrains and battery systems','Apply to NTPC/Power Grid internship programs']
-},
-'vlsi':{
-  whyFits:'VLSI Design is your calling because you love the precision of chip design — millions of transistors working in harmony to create computing power.',
-  yearByYear:[
-    {year:'Year 1',items:['Mathematics','Physics (Semiconductor Focus)','Digital Logic','Programming (C/Verilog)','Engineering Drawing','Electronics Basics']},
-    {year:'Year 2',items:['CMOS Circuit Design','Digital System Design','Verilog/VHDL','Computer Architecture','Semiconductor Devices','Signal Integrity']},
-    {year:'Year 3',items:['RTL Design & Synthesis','Physical Design','Verification (SystemVerilog/UVM)','Timing Analysis','Low-Power Design','DFT']},
-    {year:'Year 4',items:['Advanced IC Design','FPGA Prototyping','Elective: Analog IC / SoC Design','VLSI Capstone (Tapeout Project)','Industry Internship','Technical Paper']}
-  ],
-  coreSubjects:['CMOS Circuit Design','RTL Coding','Physical Design','Verification','Timing Analysis','DFT','Low-Power Design','Semiconductor Physics'],
-  tools:['Verilog','SystemVerilog','Cadence Virtuoso','Synopsys DC/ICC','HSPICE','ModelSim','Xilinx Vivado','Mentor Questa','UVM'],
-  projects:['Design a RISC-V processor core in Verilog','Build a complete verification environment using UVM','Create a low-power SRAM design','Implement an image processing pipeline on FPGA','Design and simulate a PLL circuit'],
-  internshipStrategy:'Target semiconductor companies (Intel, Qualcomm, AMD, Samsung). Learn industry EDA tools through university licenses. Join chip design contests. Build a strong RTL design portfolio.',
-  skillMilestones:['Sem 1-2: Digital logic, Verilog basics','Sem 3-4: CMOS design, RTL coding','Sem 5: Synthesis, timing analysis','Sem 6: Verification (UVM), physical design','Sem 7-8: Tapeout experience, specialization'],
-  careerPaths:['VLSI Design Engineer','Verification Engineer','Physical Design Engineer','FPGA Engineer','Chip Architect','Analog IC Designer'],
-  topRecruiters:['Intel','Qualcomm','AMD','Samsung Semiconductor','NVIDIA','Synopsys','Cadence','Texas Instruments','MediaTek'],
-  salaryDirection:'Starting: ₹6-18 LPA | Mid-career: ₹18-40 LPA | Senior: ₹40-70+ LPA. Semiconductor industry pays very well for experienced designers.',
-  higherEd:['M.Tech in VLSI Design / Microelectronics','MS in Electrical Engineering (VLSI track)','PhD in IC Design','Cadence Certified Design Professional'],
-  futureTrends:['Chiplet architecture','3nm and below process nodes','RISC-V ecosystem growth','Heterogeneous integration','AI accelerator chips'],
-  risks:['Very specialized — limited to semiconductor industry','Long design cycles (6-18 months)','Expensive EDA tools limit home practice','India is growing but most fabs are overseas'],
-  actionPlan:['Master Verilog/SystemVerilog by Year 2','Design a complete processor core','Learn at least one EDA tool thoroughly','Participate in a chip design contest','Get FPGA board experience with real projects']
-},
-'embedded':{
-  whyFits:'Embedded Systems is your forte because you love writing code that directly controls hardware — firmware that makes devices come alive.',
-  yearByYear:[
-    {year:'Year 1',items:['Electronics Basics','C Programming','Mathematics','Physics','Computer Fundamentals','Workshop']},
-    {year:'Year 2',items:['Embedded C/C++','Microcontroller Architecture (ARM, AVR)','Digital Electronics','Data Structures','Assembly Language','Interfacing & Peripherals']},
-    {year:'Year 3',items:['RTOS (FreeRTOS, Zephyr)','Device Drivers','Communication Protocols (SPI, I2C, UART)','Linux Kernel Basics','Power Management','Testing & Debugging']},
-    {year:'Year 4',items:['Embedded Linux','Automotive Embedded Systems','Elective: IoT / Medical Devices','Embedded Capstone Project','Industry Internship','Technical Documentation']}
-  ],
-  coreSubjects:['Embedded C','Microcontroller Architecture','RTOS','Device Drivers','Communication Protocols','Memory Management','Low-Level Debugging','Hardware-Software Co-design'],
-  tools:['Keil μVision','STM32CubeIDE','ARM Cortex','FreeRTOS','JTAG/SWD Debugger','Logic Analyzer','Buildroot','Yocto','GDB'],
-  projects:['Build a real-time data logger with STM32 and FreeRTOS','Create a Bluetooth-enabled health monitor','Develop device drivers for custom hardware','Build an automotive dashboard display system','Design a battery-powered IoT sensor with 2-year battery life'],
-  internshipStrategy:'Target embedded systems companies (Bosch, Continental, Tata Elxsi). Build projects on STM32 or ESP32. Get comfortable with debugging tools (JTAG, logic analyzer). Learn automotive standards (AUTOSAR).',
-  skillMilestones:['Sem 1-2: C mastery, basic electronics','Sem 3-4: Microcontroller programming, peripherals','Sem 5: RTOS, real-time constraints','Sem 6: Device drivers, protocols','Sem 7-8: Embedded Linux, specialization'],
-  careerPaths:['Embedded Software Engineer','Firmware Developer','IoT Developer','Automotive Software Engineer','Medical Device Engineer','RTOS Developer'],
-  topRecruiters:['Bosch','Continental','Tata Elxsi','Samsung','Qualcomm','NXP','Texas Instruments','L&T Technology Services','Visteon'],
-  salaryDirection:'Starting: ₹5-14 LPA | Mid-career: ₹14-30 LPA | Senior: ₹30-55+ LPA. Automotive embedded roles are growing rapidly in India.',
-  higherEd:['M.Tech in Embedded Systems','MS in Computer Engineering','AUTOSAR certification','Specialized courses in automotive/medical embedded'],
-  futureTrends:['AUTOSAR and automotive software','RISC-V for embedded','TinyML on microcontrollers','Embedded security','Rust for embedded systems'],
-  risks:['Debugging hardware issues is time-consuming','Requires physical hardware for practice','Niche compared to web/app development','Tight resource constraints can be frustrating'],
-  actionPlan:['Buy an STM32 board and build 5 projects','Master embedded C and memory management','Learn FreeRTOS through hands-on projects','Build at least one project with custom PCB','Apply to embedded roles at automotive companies']
-},
-'instrumentation':{
-  whyFits:'Instrumentation Engineering matches your precision-oriented mindset — you love measuring, controlling, and automating real-world processes.',
-  yearByYear:[
-    {year:'Year 1',items:['Mathematics','Physics','Basic Electrical','Programming','Workshop','Engineering Drawing']},
-    {year:'Year 2',items:['Sensor Technology','Measurement Systems','Analog & Digital Electronics','Process Control','Industrial Instrumentation','Signals & Systems']},
-    {year:'Year 3',items:['PLC & DCS','SCADA Systems','Control System Design','Biomedical Instrumentation','Optical Instrumentation','Calibration & Standards']},
-    {year:'Year 4',items:['Advanced Process Control','Industrial Safety','Elective: Smart Sensors / Virtual Instrumentation','Capstone Project','Plant Training','Technical Seminar']}
-  ],
-  coreSubjects:['Measurement Systems','Process Control','PLC & DCS','SCADA','Sensor Technology','Calibration','Industrial Safety','Control System Design'],
-  tools:['MATLAB','LabVIEW','PLC (Siemens S7/Allen-Bradley)','DCS','SCADA Software','P&ID Tools','AutoCAD','Calibration Equipment'],
-  projects:['Build an automated temperature control system with PLC','Create a virtual instrumentation lab using LabVIEW','Design a water treatment plant monitoring system','Develop a smart calibration management system','Build a biomedical signal monitoring setup'],
-  internshipStrategy:'Target process industries (Reliance, ONGC, Thermax). Get plant training experience. Learn PLC programming for major vendors (Siemens, AB). Get ISA certifications.',
-  skillMilestones:['Sem 1-2: Electronics and measurement basics','Sem 3-4: Sensors, process control theory','Sem 5: PLC/DCS programming','Sem 6: SCADA, industrial safety','Sem 7-8: Plant training and specialization'],
-  careerPaths:['Instrumentation Engineer','Process Control Engineer','Calibration Specialist','Plant Engineer','Automation Engineer','Safety Systems Engineer'],
-  topRecruiters:['Reliance Industries','ONGC','IOCL','Thermax','Emerson','Yokogawa','Honeywell','ABB'],
-  salaryDirection:'Starting: ₹3-8 LPA | Mid-career: ₹8-20 LPA | Senior: ₹20-40+ LPA. Process industry roles offer stability and growth.',
-  higherEd:['M.Tech in Instrumentation & Control','MS in Process Engineering','ISA Certified Automation Professional','Specialized courses in functional safety (IEC 61511)'],
-  futureTrends:['Smart sensors with AI','Digital twins for process plants','Wireless instrumentation','IIoT in process industries','Advanced process control (APC)'],
-  risks:['Plant locations may be remote','Fewer job openings than IT/software','Process industry hiring is cyclical','Limited startup opportunities'],
-  actionPlan:['Learn PLC programming (Siemens or Allen-Bradley)','Get plant training at a refinery or chemical plant','Master LabVIEW for virtual instrumentation','Build a process control project with real sensors','Study ISA standards and get certified']
-},
-'mechanical':{
-  whyFits:'Mechanical Engineering is your foundation because you love understanding physical systems — from the tiniest gear to massive manufacturing plants.',
-  yearByYear:[
-    {year:'Year 1',items:['Engineering Mathematics','Physics','Engineering Mechanics','Engineering Drawing','Workshop Practice','Basic Electrical']},
-    {year:'Year 2',items:['Strength of Materials','Thermodynamics','Fluid Mechanics','Manufacturing Processes I','Material Science','Kinematics of Machines']},
-    {year:'Year 3',items:['Machine Design','Heat Transfer','Manufacturing Processes II','Dynamics of Machinery','Industrial Engineering','CAD/CAM']},
-    {year:'Year 4',items:['Automobile Engineering','Refrigeration & AC','Elective: Robotics / FEA / CFD','Capstone Design Project','Industry Internship','Technical Seminar']}
-  ],
-  coreSubjects:['Engineering Mechanics','Thermodynamics','Fluid Mechanics','Strength of Materials','Machine Design','Manufacturing Processes','Heat Transfer','Kinematics'],
-  tools:['SolidWorks','AutoCAD','ANSYS','CATIA','MATLAB','CNC Machines','3D Printers','Fusion 360','Creo'],
-  projects:['Design and fabricate a go-kart/mini baja vehicle','Perform CFD analysis on an airfoil design','Build a solar-powered water desalination system','Design a prosthetic limb using 3D printing','Create a CNC-machined engine component with FEA validation'],
-  internshipStrategy:'Target manufacturing companies (L&T, Tata Motors, Mahindra). Join SAE Baja or Formula Student teams. Learn CAD/FEA thoroughly. Get CNC/3D printing hands-on experience.',
-  skillMilestones:['Sem 1-2: Engineering drawing, mechanics basics','Sem 3-4: Thermo, fluids, materials mastery','Sem 5: Machine design, CAD proficiency','Sem 6: Manufacturing, CAM experience','Sem 7-8: FEA/CFD, capstone design project'],
-  careerPaths:['Mechanical Design Engineer','Manufacturing Engineer','Thermal Engineer','CAD/CAM Engineer','Automotive Engineer','R&D Engineer'],
-  topRecruiters:['Tata Motors','L&T','Mahindra','Bosch','Siemens','BHEL','Thermax','Godrej','John Deere'],
-  salaryDirection:'Starting: ₹3-8 LPA | Mid-career: ₹8-22 LPA | Senior: ₹22-45+ LPA. Core roles pay modestly; design and R&D roles in automotive/aerospace pay well.',
-  higherEd:['M.Tech in Thermal/Design/Manufacturing','MS in Mechanical Engineering (US/Germany)','MBA for management track','PhD for research positions'],
-  futureTrends:['Electric vehicle design','Additive manufacturing','Digital twin technology','Sustainable engineering','Advanced composite materials'],
-  risks:['Lower starting salaries compared to IT','Some manufacturing jobs are location-dependent','Slow career growth in traditional companies','Need for continuous CAD/CAE tool upgradation'],
-  actionPlan:['Master SolidWorks and ANSYS by Year 3','Join Formula Student or SAE Baja team','Build at least 2 mechanical projects with fabrication','Get CNC machining or 3D printing experience','Apply for internships at Tata/Mahindra/L&T']
-},
-'automobile':{
-  whyFits:'Automobile Engineering is perfect for your passion for vehicles — from IC engines to EV powertrains, you dream of designing the cars of tomorrow.',
-  yearByYear:[
-    {year:'Year 1',items:['Engineering Mathematics','Physics','Mechanics','Engineering Drawing','Workshop Practice','Material Science']},
-    {year:'Year 2',items:['IC Engines','Vehicle Dynamics','Automotive Materials','Manufacturing Processes','Fluid Mechanics','Electrical Systems in Vehicles']},
-    {year:'Year 3',items:['Chassis Engineering','EV Powertrain Design','Vehicle Testing & Homologation','Automotive Electronics','Transmission Systems','NVH (Noise, Vibration, Harshness)']},
-    {year:'Year 4',items:['Autonomous Vehicle Technology','Connected Vehicles','Elective: Motorsport / Hybrid Systems','Vehicle Design Capstone','Industry Internship','SAE Competition']}
-  ],
-  coreSubjects:['IC Engines','Vehicle Dynamics','Chassis Design','EV Powertrain','Automotive Electronics','Transmission','NVH','Vehicle Testing'],
-  tools:['SolidWorks','CATIA','MATLAB/Simulink','ANSYS','CarSim','Adams','AutoCAD','GT-SUITE'],
-  projects:['Design an electric go-kart with custom battery pack','Build a driver drowsiness detection system','Simulate vehicle crash analysis using FEA','Develop a regenerative braking system','Design and test a CVT transmission'],
-  internshipStrategy:"Target automotive OEMs (Tata Motors, Mahindra, Hyundai). Join Formula Student or BAJA SAE team. Focus on EV technology as it's the future. Get hands-on with vehicle testing.",
-  skillMilestones:['Sem 1-2: Mechanical fundamentals, workshop skills','Sem 3-4: IC engines, vehicle systems','Sem 5: Chassis design, EV basics','Sem 6: Vehicle testing, NVH analysis','Sem 7-8: EV/autonomous vehicle specialization'],
-  careerPaths:['Automotive Design Engineer','EV Powertrain Engineer','Vehicle Testing Engineer','Motorsport Engineer','NVH Engineer','Production Engineer (Auto)'],
-  topRecruiters:['Tata Motors','Mahindra & Mahindra','Hyundai','Maruti Suzuki','Bajaj Auto','Ather Energy','Ola Electric','Hero MotoCorp','Continental'],
-  salaryDirection:'Starting: ₹3-9 LPA | Mid-career: ₹9-25 LPA | Senior: ₹25-50+ LPA. EV startup roles and R&D positions offer higher packages.',
-  higherEd:['M.Tech in Automotive Engineering (ARAI/IITs)','MS in Vehicle Engineering (Germany)','SAE certifications','Specialized EV/ADAS courses'],
-  futureTrends:['Electric vehicles and battery technology','Autonomous driving','Connected vehicles (V2X)','Lightweight materials','Hydrogen fuel cells'],
-  risks:['Traditional automotive is being disrupted by EVs','Core roles may be location-specific (Pune/Chennai)','Manufacturing roles can be physically demanding','Salary growth is slower than IT initially'],
-  actionPlan:['Join Formula Student or BAJA SAE team','Learn EV systems (battery, motor, BMS)','Master CATIA and vehicle simulation tools','Get an internship at an automotive OEM','Study ADAS and autonomous vehicle technology']
-},
-'production':{
-  whyFits:'Production Engineering matches your optimization mindset — you see waste in every process and want to eliminate it systematically.',
-  yearByYear:[
-    {year:'Year 1',items:['Mathematics','Physics','Engineering Mechanics','Workshop Practice','Engineering Drawing','Basic Electrical']},
-    {year:'Year 2',items:['Manufacturing Technology I','Material Science','Thermodynamics','Strength of Materials','Industrial Engineering Basics','Statistics for Quality']},
-    {year:'Year 3',items:['Manufacturing Technology II','Quality Engineering (Six Sigma)','Production Planning & Control','Tool Design','Operations Research','Supply Chain Management']},
-    {year:'Year 4',items:['Lean Manufacturing','Automation in Manufacturing','Elective: Smart Manufacturing / Additive Manufacturing','Capstone Project','Industry Internship','Management Seminar']}
-  ],
-  coreSubjects:['Manufacturing Technology','Quality Engineering','Production Planning','Operations Research','Tool Design','Lean Manufacturing','Supply Chain','Industrial Automation'],
-  tools:['AutoCAD','SolidWorks','SAP','Minitab','CNC Machines','3D Printing','MS Project','ERP Systems'],
-  projects:['Implement 5S and Lean in a workshop','Design a quality control system using statistical methods','Optimize a supply chain using linear programming','Build an automated sorting and packaging system','Create a production scheduling optimization tool'],
-  internshipStrategy:'Target manufacturing companies (Godrej, L&T, Bajaj). Learn Lean Six Sigma methodology. Get Green Belt certification. Focus on operations and quality roles.',
-  skillMilestones:['Sem 1-2: Workshop skills, manufacturing basics','Sem 3-4: Quality tools, statistical methods','Sem 5: Lean Six Sigma, production planning','Sem 6: Supply chain, operations research','Sem 7-8: Smart manufacturing, Industry 4.0'],
-  careerPaths:['Production Manager','Quality Engineer','Supply Chain Manager','Manufacturing Engineer','Process Improvement Specialist','Operations Manager'],
-  topRecruiters:['Godrej','L&T','Bajaj','Kirloskar','Bharat Forge','Cummins','Mahindra','SKF','Tata Steel'],
-  salaryDirection:'Starting: ₹3-7 LPA | Mid-career: ₹7-20 LPA | Senior: ₹20-40+ LPA. Management roles in operations command good packages.',
-  higherEd:['MBA in Operations Management','M.Tech in Industrial Engineering','Six Sigma Black Belt','PG in Supply Chain Management'],
-  futureTrends:['Industry 4.0 and smart manufacturing','Digital supply chains','Additive manufacturing','Sustainable manufacturing','AI-driven quality control'],
-  risks:['Factory-based roles may be in industrial areas','Career growth may require MBA','Manufacturing sector can be cyclical','Starting salaries are modest'],
-  actionPlan:['Get Lean Six Sigma Green Belt certified','Learn SAP or ERP basics','Complete manufacturing internship at a factory','Master statistical tools (Minitab, Excel)','Study supply chain management fundamentals']
-},
-'industrial':{
-  whyFits:'Industrial Engineering matches your systems optimization talent — you see organizations as complex systems and know how to make them more efficient.',
-  yearByYear:[
-    {year:'Year 1',items:['Mathematics','Physics','Engineering Mechanics','Programming','Statistics','Communication Skills']},
-    {year:'Year 2',items:['Operations Research','Probability & Statistics','Ergonomics','Work Study','Manufacturing Processes','Engineering Economy']},
-    {year:'Year 3',items:['Facility Planning','Statistical Quality Control','Simulation Modeling','Project Management','Inventory Management','Decision Analysis']},
-    {year:'Year 4',items:['Supply Chain Optimization','Data Analytics for IE','Elective: Healthcare IE / Services IE','Capstone Project','Industry Internship','Management Seminar']}
-  ],
-  coreSubjects:['Operations Research','Ergonomics','Statistical QC','Facility Planning','Project Management','Simulation','Supply Chain','Decision Analysis'],
-  tools:['Python','MATLAB','Arena Simulation','Excel (Advanced)','SAP','Minitab','MS Project','Tableau','CPLEX/Gurobi'],
-  projects:['Optimize a hospital emergency department flow using simulation','Design a warehouse layout using facility planning methods','Build a demand forecasting model for a retail company','Create a project scheduling tool with CPM/PERT','Develop an ergonomic assessment tool for a workplace'],
-  internshipStrategy:'Target consulting firms (McKinsey, Deloitte), FMCG companies (HUL, P&G), or tech companies in operations roles. Focus on analytics and optimization. Consider MBA as a career accelerator.',
-  skillMilestones:['Sem 1-2: Math, statistics, programming basics','Sem 3-4: OR techniques, work study','Sem 5: Simulation, project management','Sem 6: Data analytics, supply chain','Sem 7-8: Consulting readiness, leadership'],
-  careerPaths:['Operations Manager','Management Consultant','Supply Chain Director','Data Analyst','Process Engineer','Logistics Manager'],
-  topRecruiters:['McKinsey','Deloitte','Amazon Operations','Flipkart Supply Chain','HUL','P&G','Asian Paints','Accenture Operations'],
-  salaryDirection:'Starting: ₹4-12 LPA | Mid-career: ₹12-30 LPA | Senior: ₹30-60+ LPA. Consulting and management roles pay very well after MBA.',
-  higherEd:['MBA from top B-schools (IIMs, ISB)','MS in Industrial Engineering / OR','PhD in Operations Research','Professional certifications (PMP, CSCP)'],
-  futureTrends:['AI-driven operations optimization','Digital supply chain twins','Sustainable operations','Healthcare systems engineering','Autonomous logistics'],
-  risks:['May need MBA for significant career advancement','Not a traditional "engineering" path','Some roles feel more managerial than technical','Limited awareness of the field in India'],
-  actionPlan:['Master Excel, Python, and OR techniques','Learn simulation software (Arena or AnyLogic)','Get PMP or Lean Six Sigma certification','Complete an operations internship at an FMCG/consulting firm','Prepare for MBA entrance exams as a backup path']
-},
-'civil':{
-  whyFits:'Civil Engineering is your calling because you want to build the physical world — structures that stand strong for generations, shaping cities and communities.',
-  yearByYear:[
-    {year:'Year 1',items:['Engineering Mathematics','Physics','Engineering Mechanics','Engineering Drawing','Geology','Workshop Practice']},
-    {year:'Year 2',items:['Structural Analysis','Building Materials','Surveying','Fluid Mechanics','Geotechnical Engineering I','Concrete Technology']},
-    {year:'Year 3',items:['Design of Steel Structures','Design of RC Structures','Transportation Engineering','Environmental Engineering','Construction Management','Estimation & Costing']},
-    {year:'Year 4',items:['Advanced Structural Design','Earthquake Engineering','Elective: Bridge Engineering / Smart Infrastructure','Capstone Project','Industry Internship','Site Visit Documentation']}
-  ],
-  coreSubjects:['Structural Analysis','Geotechnical Engineering','Surveying','Construction Management','RCC Design','Steel Design','Transportation','Environmental Engineering'],
-  tools:['AutoCAD','STAAD Pro','ETABS','Revit BIM','Primavera','MS Project','GIS (QGIS)','MATLAB','SAP2000'],
-  projects:['Design a multi-story earthquake-resistant building','Conduct a complete site survey and prepare contour maps','Plan and schedule a road construction project','Design a water supply network for a small town','Create a BIM model for a commercial building'],
-  internshipStrategy:'Target construction companies (L&T, Shapoorji Pallonji) and consulting firms (Arup, Mott MacDonald). Get site experience. Learn BIM (Revit) and project management. Prepare for government exams as backup.',
-  skillMilestones:['Sem 1-2: Drawing, surveying basics','Sem 3-4: Structural analysis, geotechnical','Sem 5: Design of structures (RCC & steel)','Sem 6: Construction management, BIM','Sem 7-8: Specialization and site experience'],
-  careerPaths:['Structural Engineer','Construction Manager','Transportation Engineer','Geotechnical Engineer','Urban Planner','Environmental Engineer'],
-  topRecruiters:['L&T Construction','Shapoorji Pallonji','Tata Projects','DLF','Arup','AECOM','Mott MacDonald','NHAI'],
-  salaryDirection:'Starting: ₹3-7 LPA | Mid-career: ₹7-20 LPA | Senior: ₹20-40+ LPA. Government roles offer stability; private sector infrastructure roles growing.',
-  higherEd:['M.Tech in Structural/Geotech/Transportation','MS in Civil Engineering (US/UK)','MBA in Construction Management','GATE for PSU/IIT admissions'],
-  futureTrends:['BIM and digital construction','Smart infrastructure','Green building design','3D-printed construction','Resilient infrastructure for climate change'],
-  risks:['Site work can be physically demanding','Government project delays','Lower starting salaries compared to IT','Career growth may require GATE/PSU route'],
-  actionPlan:['Master AutoCAD and STAAD Pro by Year 3','Learn Revit BIM for modern construction workflows','Get site experience through internships','Prepare for GATE if targeting PSU or M.Tech','Join professional bodies (ICE, ASCE India Chapter)']
-},
-'construction-eng':{
-  whyFits:'Construction Engineering fits your project management talent — you thrive on turning architectural blueprints into physical reality on time and on budget.',
-  yearByYear:[
-    {year:'Year 1',items:['Mathematics','Physics','Engineering Drawing','Surveying Basics','Material Science','Workshop']},
-    {year:'Year 2',items:['Building Construction','Estimation & Costing','Surveying','Construction Materials','Concrete Technology','Basic Structural Analysis']},
-    {year:'Year 3',items:['Construction Management','Project Planning (CPM/PERT)','Contract Administration','Safety Management','Quality Control in Construction','Heavy Equipment']},
-    {year:'Year 4',items:['Green Building Technology','Real Estate Development','Elective: Highway / High-Rise Construction','Capstone Project','Site Internship','Valuation & Arbitration']}
-  ],
-  coreSubjects:['Building Construction','Estimation','Construction Management','Safety','Contract Administration','Project Planning','Quality Control','Material Testing'],
-  tools:['Primavera P6','MS Project','AutoCAD','Revit','Procore','Excel (Advanced)','GIS','Building Estimation Software'],
-  projects:['Prepare a complete construction estimate for a residential complex','Create a project schedule with resource leveling for a bridge project','Develop a construction safety management plan','Build a cost tracking and reporting dashboard','Plan a green building project with LEED compliance'],
-  internshipStrategy:'Get site experience at active construction projects. Learn Primavera P6 for scheduling. Study contract and tender documents. Target L&T ECC, Shapoorji Pallonji for structured training programs.',
-  skillMilestones:['Sem 1-2: Drawing, surveying, materials basics','Sem 3-4: Estimation, construction methods','Sem 5: Project planning, contracts','Sem 6: Safety, quality management','Sem 7-8: Site management experience'],
-  careerPaths:['Construction Manager','Site Engineer','Project Planner','Quantity Surveyor','Safety Officer','Real Estate Developer'],
-  topRecruiters:['L&T ECC','Shapoorji Pallonji','Tata Projects','Godrej Properties','Sobha Developers','NCC Limited','Afcons','JMC Projects'],
-  salaryDirection:'Starting: ₹3-6 LPA | Mid-career: ₹6-18 LPA | Senior: ₹18-35+ LPA. Project management and real estate roles offer good growth.',
-  higherEd:['MBA in Construction Management','PG in Project Management','RICS certification','Quantity Surveying certifications'],
-  futureTrends:['Modular and prefab construction','BIM for construction','Drone surveys and monitoring','Green and sustainable construction','Construction tech startups'],
-  risks:['Site-based roles often in remote locations','Physical demands and safety risks','Project delays affect morale and timelines','Need strong interpersonal and management skills'],
-  actionPlan:['Learn Primavera P6 for project scheduling','Get at least 2 months of site experience','Study estimation and tendering processes','Learn about green building certifications','Develop strong communication and negotiation skills']
-},
-'smart-systems':{
-  whyFits:'Smart Systems matches your vision of building intelligent, connected environments — you see technology as an enabler for smarter living and working.',
-  yearByYear:[
-    {year:'Year 1',items:['Mathematics','Physics','Programming (Python)','Electronics Basics','Introduction to Smart Systems','Engineering Drawing']},
-    {year:'Year 2',items:['IoT Fundamentals','Embedded Programming','Sensor Networks','Cloud Computing Basics','AI/ML Basics','Data Communication']},
-    {year:'Year 3',items:['Smart Infrastructure Design','Edge AI','Autonomous Systems','Cyber-Physical Systems','Human-Machine Interaction','Smart City Technologies']},
-    {year:'Year 4',items:['Advanced Smart Systems','System Integration Project','Elective: Smart Healthcare / Smart Agriculture','Capstone Smart System','Industry Internship','Research Paper']}
-  ],
-  coreSubjects:['IoT Architecture','Edge Computing','AI at the Edge','Autonomous Systems','Cyber-Physical Systems','Smart Sensors','System Integration','Human-Machine Interaction'],
-  tools:['Python','TensorFlow Lite','ROS','MQTT','Raspberry Pi','Edge TPU','Docker','Arduino','Node-RED','Grafana'],
-  projects:['Build a smart classroom with automated attendance and environment control','Create an AI-powered traffic management system','Develop a smart parking system with real-time availability','Design an elderly care monitoring system with fall detection','Build a precision agriculture system with drone integration'],
-  internshipStrategy:'Target smart city projects and IoT companies. Build cross-disciplinary projects combining AI, IoT, and embedded systems. Look for research internships at IIT smart systems labs.',
-  skillMilestones:['Sem 1-2: Programming and electronics basics','Sem 3-4: IoT and embedded systems','Sem 5: AI at the edge, sensor fusion','Sem 6: System integration, smart infrastructure','Sem 7-8: End-to-end smart system design'],
-  careerPaths:['Smart Systems Engineer','IoT Architect','Smart City Planner','Edge AI Developer','Autonomous Systems Engineer','CPS Researcher'],
-  topRecruiters:['Bosch','Siemens','Honeywell','Cisco','L&T Smart World','IBM','Accenture Digital','Infosys BPM'],
-  salaryDirection:'Starting: ₹5-12 LPA | Mid-career: ₹12-30 LPA | Senior: ₹30-50+ LPA. Smart city and digital transformation roles are growing rapidly.',
-  higherEd:['M.Tech in Smart Systems / Cyber-Physical Systems','MS in IoT / Embedded Intelligence','Research in Autonomous Systems','Specialized courses in Smart Infrastructure'],
-  futureTrends:['Smart cities 2.0','Digital twins for infrastructure','Ambient intelligence','Autonomous everything','Sustainable smart systems'],
-  risks:['Very new field with evolving job titles','Requires breadth across multiple disciplines','Standards and protocols are still maturing','ROI of smart systems not always proven'],
-  actionPlan:['Build 3 cross-disciplinary smart system projects','Learn both hardware (Arduino/RPi) and software (Python/AI)','Study smart city case studies and standards','Get experience with edge AI deployment','Network with smart city project teams and startups']
-},
-'embedded-ai':{
-  whyFits:'Embedded AI Systems is your niche because you want to bring intelligence directly into devices — no cloud, no latency, just smart hardware.',
-  yearByYear:[
-    {year:'Year 1',items:['Mathematics','Physics','Programming (C/Python)','Electronics Basics','Intro to AI','Digital Logic']},
-    {year:'Year 2',items:['Microcontroller Programming','Machine Learning Fundamentals','Embedded C/C++','Data Structures','Signals & Systems','Computer Architecture']},
-    {year:'Year 3',items:['TinyML','Model Optimization (Quantization, Pruning)','FPGA for AI','Edge Inference Engines','Neural Architecture Search','Real-Time AI Systems']},
-    {year:'Year 4',items:['Advanced Edge AI','Hardware-Software Co-optimization','Elective: Autonomous Vehicles / Medical AI Devices','Capstone Project','Research Internship','Publication/Patent']}
-  ],
-  coreSubjects:['TinyML','Model Quantization','Edge Inference','FPGA-based AI','Neural Architecture Search','Hardware-Software Co-optimization','Real-Time Systems','Embedded C++'],
-  tools:['TensorFlow Lite Micro','ONNX Runtime','Edge Impulse','Coral Edge TPU','STM32 AI','Python','C++','Vitis AI','OpenVINO'],
-  projects:['Deploy a keyword spotting model on a microcontroller','Build a real-time object detection system on NVIDIA Jetson','Create a predictive maintenance model running on edge hardware','Develop a gesture recognition system using TinyML','Design an AI-powered autonomous drone with onboard inference'],
-  internshipStrategy:'Target AI hardware companies (NVIDIA, Qualcomm, Intel). Build TinyML projects and publish results. Contribute to Edge Impulse or TFLite Micro. Research focus is highly valued in this niche.',
-  skillMilestones:['Sem 1-2: Programming and electronics fundamentals','Sem 3-4: ML basics, embedded programming','Sem 5: TinyML, model optimization','Sem 6: FPGA AI, edge deployment','Sem 7-8: Research publication, advanced projects'],
-  careerPaths:['Embedded AI Engineer','TinyML Developer','Edge AI Researcher','FPGA AI Developer','AIoT Engineer','Neural Accelerator Designer'],
-  topRecruiters:['NVIDIA','Qualcomm AI Research','Intel','Google (Coral)','Arm','Synopsys','STMicroelectronics','Edge Impulse','Samsung AI'],
-  salaryDirection:'Starting: ₹8-20 LPA | Mid-career: ₹20-45 LPA | Senior: ₹45-80+ LPA. One of the highest-demand specializations in emerging tech.',
-  higherEd:['MS/PhD in Embedded AI or TinyML','Research positions at AI hardware labs','M.Tech in Computer Engineering (AI track)','Specialized TinyML courses (Harvard/edX)'],
-  futureTrends:['Sub-milliwatt AI inference','Neuromorphic processors','AI compiler technology','Privacy-preserving edge AI','Ambient intelligence'],
-  risks:['Very specialized niche with limited positions','Requires deep knowledge of both AI and hardware',"Rapidly evolving — today's tools may be obsolete soon",'Research-heavy field may require higher education'],
-  actionPlan:['Complete Harvard TinyML course','Deploy 3 AI models on microcontrollers','Get FPGA experience with AI accelerator design','Publish a paper or blog on edge AI optimization','Target research internships at NVIDIA/Qualcomm/Intel']
-}
-};
 
 /* ========== RENDER HOMEPAGE & HISTORY ========== */
 let loadedHistory = [];
@@ -2169,23 +1345,45 @@ function calculateResults(){
     return{...branch,matchScore:Math.round(sim*100)};
   });
   matches.sort((a,b)=>b.matchScore-a.matchScore);
-  // Apply cluster diversity
-  const top=[];const clusterCount={};
+  
+  // Apply cluster diversity and family uniqueness (Top 7)
+  const top=[];
+  const clusterCount={};
+  const seenFamilies=new Set();
+  
+  // First pass: try with cluster limits and family uniqueness
   for(const m of matches){
+    if(m.family && seenFamilies.has(m.family)) continue;
     const cc=clusterCount[m.cluster]||0;
     const maxForCluster=CLUSTERS[m.cluster]?.max||2;
-    if(cc<maxForCluster){top.push(m);clusterCount[m.cluster]=cc+1}
-    if(top.length>=5)break;
+    if(cc<maxForCluster){
+      top.push(m);
+      clusterCount[m.cluster]=cc+1;
+      if(m.family) seenFamilies.add(m.family);
+    }
+    if(top.length>=7)break;
   }
+  
+  // Second pass: if we still don't have 7, relax cluster limit but keep family uniqueness
+  if(top.length<7){
+    for(const m of matches){
+      if(top.includes(m)) continue;
+      if(m.family && seenFamilies.has(m.family)) continue;
+      top.push(m);
+      if(m.family) seenFamilies.add(m.family);
+      if(top.length>=7)break;
+    }
+  }
+
   // Determine DNA type
   const dnaType=determineDNAType(traitScores);
   // Calculate section scores cleanly by averaging the normalized trait scores of their core traits
   const sectionTraits = [
     ['ProblemSolving', 'Debugging', 'LogicalReasoning', 'Mathematics', 'Precision'],
-    ['ScientificCuriosity', 'Programming', 'Hardware', 'Electronics', 'MechanicalSystems'],
-    ['Creativity', 'DesignThinking', 'Innovation', 'SpatialThinking', 'PatternRecognition'],
-    ['Leadership', 'Communication', 'RiskTaking', 'Construction', 'Automation'],
-    ['Entrepreneurship', 'Research', 'SystemsThinking', 'DataAnalysis']
+    ['ScientificCuriosity', 'Programming', 'Hardware', 'Electronics', 'MechanicalSystems', 'AerospaceInterest', 'BiologicalScience', 'ChemicalProcessing'],
+    ['Creativity', 'DesignThinking', 'Innovation', 'SpatialThinking', 'PatternRecognition', 'TextileDesign', 'MaterialScience'],
+    ['Leadership', 'Communication', 'RiskTaking', 'Construction', 'Automation', 'EnvironmentalAwareness'],
+    ['Entrepreneurship', 'Research', 'SystemsThinking', 'DataAnalysis', 'IndustrialProcess']
   ];
   const sectionScores = sectionTraits.map(traits => {
     const sum = traits.reduce((acc, t) => acc + (traitScores[t] || 0), 0);
@@ -2291,7 +1489,7 @@ function renderResults(){
 
     <div class="text-center mb-40">
       <p class="section-label">Your Results</p>
-      <h2 class="section-title">Top 5 <span class="text-gradient">Branch Recommendations</span></h2>
+      <h2 class="section-title">Top 7 <span class="text-gradient">Branch Recommendations</span></h2>
       <p class="section-sub">Click any branch to explore its detailed roadmap, career paths, and action plan.</p>
     </div>
 
@@ -2575,7 +1773,7 @@ function openSampleReport(){
     <div class="sample-page">
       <h2 style="color:var(--red);margin-bottom:16px">Executive Summary</h2>
       <p>Arjun demonstrates a strong profile characterized by analytical thinking, creative problem-solving, and a deep curiosity for emerging technologies. His trait analysis reveals high scores in Programming (92), Pattern Recognition (88), and Innovation (85), placing him firmly in the <strong>Innovator</strong> archetype.</p>
-      <p style="margin-top:12px">His top 5 branch recommendations span three distinct clusters, ensuring diverse career pathways. AI & Machine Learning emerges as the strongest match at 94%, followed by Computer Science Engineering at 89%.</p>
+      <p style="margin-top:12px">His top 7 branch recommendations span five distinct clusters, ensuring diverse career pathways. Artificial Intelligence and Machine Learning emerges as the strongest match at 94%, followed by Computer Science and Engineering at 89%.</p>
     </div>
 
     <div class="sample-page">
@@ -2614,13 +1812,15 @@ function openSampleReport(){
     </div>
 
     <div class="sample-page">
-      <h2 style="color:var(--red);margin-bottom:16px">Top 5 Recommendations</h2>
+      <h2 style="color:var(--red);margin-bottom:16px">Top 7 Recommendations</h2>
       ${[
-        {name:'AI & Machine Learning',match:94,reason:'Exceptional alignment with your research curiosity, mathematical aptitude, and pattern recognition skills.'},
-        {name:'Computer Science Engineering',match:89,reason:'Strong programming instincts combined with systems thinking make CSE a natural fit.'},
-        {name:'Electronics & Telecommunication',match:76,reason:'Your interest in how systems communicate and signal processing provides a strong foundation.'},
-        {name:'Robotics Engineering',match:72,reason:'Your blend of hardware curiosity and software skills align well with robotics.'},
-        {name:'Data Science',match:68,reason:'Your analytical nature and love for pattern discovery make data science a viable path.'}
+        {name:'Artificial Intelligence and Machine Learning',match:94,reason:'Exceptional alignment with your computational curiosity, mathematical aptitude, and pattern recognition.'},
+        {name:'Computer Science and Engineering',match:89,reason:'Strong programming instincts combined with logical reasoning make CSE a natural fit.'},
+        {name:'Aerospace Engineering',match:82,reason:'Your high mechanical curiosity and interest in flight systems align with aerospace technologies.'},
+        {name:'Electronics and Communication Engineering',match:76,reason:'Your interest in signal processing, networks, and communication systems provides a strong base.'},
+        {name:'Chemical Engineering',match:73,reason:'Strong chemical processing interest and scientific curiosity suit large-scale industrial chemistry.'},
+        {name:'Mechatronics Engineering',match:68,reason:'Perfect blend of mechanical systems, electronics, and automation fits your practical build style.'},
+        {name:'Environmental Engineering',match:62,reason:'Your passion for sustainability and ecology aligns with water and waste resource management.'}
       ].map((b,i)=>`
         <div style="padding:14px;border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:10px;display:flex;align-items:center;gap:14px">
           <div style="background:var(--grad);color:#fff;min-width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700">#${i+1}</div>
@@ -2719,8 +1919,8 @@ async function generatePDF(isSample = false, customDate = null) {
       <h2 class="pdf-title">Executive Summary</h2>
       <div class="pdf-card" style="font-size:16px; line-height:1.8;">
         <p style="margin-bottom:20px;"><strong>${studentName}</strong> completed a comprehensive 60-question assessment across 5 dimensions: Problem Solving & Technical Aptitude, Subject Interest & Domain Curiosity, Creative Approach & Design Thinking, Work Style & Personality, and Career Goals & Industry Vision.</p>
-        <p style="margin-bottom:20px;">Based on the analysis of 24 engineering traits, ${studentName} has been identified as <strong>"${dnaType.name}"</strong> — ${dnaType.desc}</p>
-        <p style="margin-bottom:20px;">The top branch recommendation is <strong>${topBranches[0].name}</strong> with a <strong>${topBranches[0].matchScore}%</strong> match score. The top 5 recommendations span ${new Set(topBranches.map(b=>b.cluster)).size} different engineering clusters, ensuring diverse career pathways.</p>
+        <p style="margin-bottom:20px;">Based on the analysis of 32 engineering traits, ${studentName} has been identified as <strong>"${dnaType.name}"</strong> — ${dnaType.desc}</p>
+        <p style="margin-bottom:20px;">The top branch recommendation is <strong>${topBranches[0].name}</strong> with a <strong>${topBranches[0].matchScore}%</strong> match score. The top 7 recommendations span ${new Set(topBranches.map(b=>b.cluster)).size} different engineering clusters, ensuring diverse career pathways.</p>
         <p>This report contains detailed trait analysis, branch-specific roadmaps, career pathways, salary direction, and a personalized action plan.</p>
       </div>
     `);
@@ -2729,16 +1929,16 @@ async function generatePDF(isSample = false, customDate = null) {
     const radarId = 'pdfRadarCanvas';
     createPage(`
       <h2 class="pdf-title">Trait Analysis</h2>
-      <div class="pdf-card" style="display:flex; justify-content:center; align-items:center; height:450px;">
+      <div class="pdf-card" style="display:flex; justify-content:center; align-items:center; height:360px; padding:10px; margin-bottom:15px;">
         <canvas id="${radarId}" style="max-height:100%;"></canvas>
       </div>
-      <h3 style="color:var(--red);margin:30px 0 15px;">All 24 Evaluated Traits</h3>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <h3 style="color:var(--red);margin:15px 0 10px;font-size:16px;">All 32 Evaluated Traits</h3>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px 16px;">
         ${sortedTraits.map(([t,v]) => `
-          <div style="display:flex;align-items:center;gap:12px;font-size:12px;">
-            <span style="min-width:140px;">${t.replace(/([A-Z])/g, ' $1').trim()}</span>
-            <div style="flex:1;height:8px;background:#eee;border-radius:4px;overflow:hidden;">
-              <div style="height:100%;width:${v}%;background:var(--grad);border-radius:4px;"></div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:11px;line-height:1.2;">
+            <span style="min-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.replace(/([A-Z])/g, ' $1').trim()}</span>
+            <div style="flex:1;height:6px;background:#eee;border-radius:3px;overflow:hidden;">
+              <div style="height:100%;width:${v}%;background:var(--grad);border-radius:3px;"></div>
             </div>
             <span style="font-weight:600;color:var(--red);min-width:30px;text-align:right;">${v}%</span>
           </div>
@@ -2770,7 +1970,7 @@ async function generatePDF(isSample = false, customDate = null) {
     // PAGE 4: Section-Wise Assessment
     createPage(`
       <h2 class="pdf-title">Section-Wise Summary</h2>
-      <div style="display:flex;flex-direction:column;gap:20px;">
+      <div style="display:flex;flex-direction:column;gap:15px;">
         ${SECTION_NAMES.map((name, i) => {
           const score = sectionScores[i];
           let analysis = '';
@@ -2781,34 +1981,34 @@ async function generatePDF(isSample = false, customDate = null) {
           else if (i === 4) analysis = score > 75 ? "You have a clear, forward-looking industry vision and highly ambitious career goals. Whether it is launching a startup or leading cutting-edge research, you are driven by long-term impact." : (score >= 50 ? "You seek a stable and progressive career path. You value financial security, career stability, and a healthy work-life balance." : "Your career focus is highly practical and immediate. You prefer concrete, hands-on engineering work over long-term strategic management.");
 
           return `
-            <div class="pdf-card" style="margin-bottom:0;">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                <h3 style="color:var(--red);margin:0;font-size:16px;">Section ${i + 1}: ${name}</h3>
-                <span style="font-weight:700;font-size:16px;">${score}%</span>
+            <div class="pdf-card" style="margin-bottom:0; padding:12px 18px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <h3 style="color:var(--red);margin:0;font-size:15px;">Section ${i + 1}: ${name}</h3>
+                <span style="font-weight:700;font-size:15px;">${score}%</span>
               </div>
-              <div style="width:100%;height:6px;background:#eee;border-radius:3px;margin-bottom:15px;overflow:hidden;">
+              <div style="width:100%;height:6px;background:#eee;border-radius:3px;margin-bottom:10px;overflow:hidden;">
                 <div style="width:${score}%;height:100%;background:var(--grad);border-radius:3px;"></div>
               </div>
-              <p style="font-size:13px;line-height:1.6;color:#444;">${analysis}</p>
+              <p style="font-size:12px;line-height:1.5;color:#444;margin:0;">${analysis}</p>
             </div>
           `;
         }).join('')}
       </div>
     `);
 
-    // PAGE 5: Top 5 Recommendations
+    // PAGE 5: Top 7 Recommendations
     createPage(`
-      <h2 class="pdf-title">Top 5 Recommendations</h2>
-      <div style="display:flex;flex-direction:column;gap:20px;">
+      <h2 class="pdf-title">Top 7 Recommendations</h2>
+      <div style="display:flex;flex-direction:column;gap:14px;">
         ${topBranches.map((b, i) => `
-          <div class="pdf-card" style="display:flex;align-items:center;gap:20px;margin-bottom:0;border-left:4px solid var(--red);">
-            <div style="background:var(--grad);color:#fff;width:50px;height:50px;border-radius:50%;text-align:center;line-height:50px;display:block;font-size:20px;font-weight:700;flex-shrink:0;">#${i+1}</div>
+          <div class="pdf-card" style="display:flex;align-items:center;gap:16px;margin-bottom:0;border-left:4px solid var(--red);padding:10px 16px;">
+            <div style="background:var(--grad);color:#fff;width:36px;height:36px;border-radius:50%;text-align:center;line-height:36px;display:block;font-size:15px;font-weight:700;flex-shrink:0;">#${i+1}</div>
             <div style="flex:1;">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                <h3 style="margin:0;font-size:18px;">${b.name}</h3>
-                <span style="color:var(--red);font-weight:700;font-size:18px;">${b.matchScore}% Match</span>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                <h3 style="margin:0;font-size:15px;">${b.name}</h3>
+                <span style="color:var(--red);font-weight:700;font-size:15px;">${b.matchScore}% Match</span>
               </div>
-              <p style="font-size:14px;color:#555;margin:0;line-height:1.5;">${b.desc}</p>
+              <p style="font-size:12px;color:#555;margin:0;line-height:1.45;">${b.desc}</p>
             </div>
           </div>
         `).join('')}
