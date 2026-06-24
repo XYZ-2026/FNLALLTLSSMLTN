@@ -317,7 +317,8 @@
         try {
           const meta = JSON.parse(metaRaw);
           const scoreStr = meta.scoreType === 'pct' ? `Percentile: <b>${meta.percentile}</b>` : `Rank: <b>${meta.rank}</b>`;
-          const genderStr = ['EWS', 'TFWS', 'MI', 'ORPHAN'].includes(meta.category) ? '' : ` (${meta.gender || 'G'})`;
+          const isGenderNeutral = ['EWS', 'TFWS', 'MI', 'ORPHAN'].includes(meta.category) || (meta.category && (meta.category.startsWith('DEF') || meta.category.startsWith('PWD')));
+          const genderStr = isGenderNeutral ? '' : ` (${meta.gender || 'G'})`;
           let minTypeStr = meta.minorityType || '';
           if (minTypeStr === 'Linguistic Minority - Gujarathi') {
             minTypeStr = 'Linguistic Minority - Gujarathi (including Jain)';

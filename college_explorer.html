@@ -1132,6 +1132,32 @@
             }
         }
 
+        .web-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 10px;
+            background: var(--brand-soft);
+            border: 1px solid var(--brand);
+            color: var(--brand);
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            box-shadow: 0 1px 2px var(--brand-ring);
+        }
+        .web-link-btn:hover {
+            background: var(--brand);
+            color: var(--card);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px var(--brand-ring);
+        }
+        .web-link-btn svg {
+            transition: stroke 0.2s ease;
+        }
+
         .hidden {
             display: none !important;
         }
@@ -1218,12 +1244,20 @@
           Back to College List
         </button>
         <!-- Overview Banner -->
-        <div class="college-info-header">
-          <h2 id="dbCollegeName">Government College of Engineering, Amravati</h2>
-          <div class="college-meta-tags">
-            <span class="meta-tag code" id="dbCollegeCode">Code: 1002</span>
-            <span class="meta-tag type" id="dbCollegeType">Government, Autonomous</span>
-            <span class="meta-tag region" id="dbCollegeRegion">Region: Amravati</span>
+        <div class="college-info-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+          <div style="flex: 1; min-width: 250px;">
+            <h2 id="dbCollegeName">Government College of Engineering, Amravati</h2>
+            <div class="college-meta-tags">
+              <span class="meta-tag code" id="dbCollegeCode">Code: 1002</span>
+              <span class="meta-tag type" id="dbCollegeType">Government, Autonomous</span>
+              <span class="meta-tag region" id="dbCollegeRegion">Region: Amravati</span>
+            </div>
+          </div>
+          <div>
+            <a id="dbCollegeWebsiteBtn" href="#" target="_blank" class="web-link-btn" style="display: none;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+              Visit Official Site
+            </a>
           </div>
         </div>
 
@@ -1551,9 +1585,16 @@
           }
         }
         
+        let website = '';
+        if (match) {
+          const webKey = Object.keys(match).find(k => k.trim() === 'Official Sites');
+          website = webKey ? (match[webKey] || '').trim() : '';
+        }
+        
         return {
           average: match ? match["Avg Package (LPA)"] : '—',
-          tier: match ? match["Tier"] : '—'
+          tier: match ? match["Tier"] : '—',
+          website: website
         };
       }
 
@@ -1803,6 +1844,17 @@
         const placement = findPlacementData(college.name, college.code);
         document.getElementById('pkgAverage').innerHTML = placement.average && placement.average !== '—' ? `${placement.average} <span>LPA</span>` : '—';
         document.getElementById('pkgTier').innerText = placement.tier || '—';
+
+        // Update Official Website button visibility & link
+        const webBtn = document.getElementById('dbCollegeWebsiteBtn');
+        if (webBtn) {
+          if (placement.website) {
+            webBtn.href = placement.website;
+            webBtn.style.display = 'inline-flex';
+          } else {
+            webBtn.style.display = 'none';
+          }
+        }
 
         // Render seats matrix
         const collegeSeats = seatsData.filter(row => parseInt(row.College_Code) === code);

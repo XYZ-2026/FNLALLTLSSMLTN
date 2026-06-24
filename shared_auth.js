@@ -618,6 +618,7 @@ function injectGlobalUI() {
           </button>
           <div class="dropdown-content" id="drop-cet">
             <a href="cet-landing.html" class="sidebar-sub-link">Hub Overview</a>
+            <a href="cet_chatbot.html" class="sidebar-sub-link">MHT CET Chatbot</a>
             <a href="cet_marks.html" class="sidebar-sub-link">Marks vs Percentile</a>
             <a href="cet_rank.html" class="sidebar-sub-link">Percentile vs Rank</a>
             <a href="college_explorer.html" class="sidebar-sub-link">College Explorer & Cutoffs</a>

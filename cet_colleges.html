@@ -564,6 +564,32 @@
       font-size: 12px;
       white-space: nowrap;
     }
+    .web-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+      border: 1px solid #fca5a5;
+      color: #dc2626;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(220, 38, 38, 0.05);
+    }
+    .web-link-btn:hover {
+      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+      border-color: #b91c1c;
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px rgba(220, 38, 38, 0.15);
+    }
+    .web-link-btn svg {
+      transition: stroke 0.2s ease;
+    }
   </style>
 </head>
 
@@ -662,6 +688,7 @@
                   <th>College Name</th>
                   <th>Avg Placement</th>
                   <th>Tier</th>
+                  <th>Official Site</th>
                 </tr>
               </thead>
               <tbody id="tableBody">
@@ -769,6 +796,7 @@
                   <th>College Name</th>
                   <th>Avg Package</th>
                   <th>Tier</th>
+                  <th>Official Site</th>
                 </tr>
               </thead>
               <tbody id="regionTableBody">
@@ -859,14 +887,15 @@
         row.push(currentField.trim());
         if (row.length >= 2) {
           const name = row[1].replace(/^"|"$/g, '');
-          // If the CSV has 5 columns (new format: Sr No, College Name, Avg Package (LPA), Tier, College Code)
+          // If the CSV has 5 columns or more (new format: Sr No, College Name, Avg Package (LPA), Tier, College Code, Official Sites)
           if (row.length >= 5) {
             result.push({
               srNo: parseInt(row[0]) || i,
               name: name,
               avgPackage: row[2].replace(/^"|"$/g, ''),
               tier: row[3].replace(/^"|"$/g, ''),
-              code: row[4].replace(/^"|"$/g, '')
+              code: row[4].replace(/^"|"$/g, ''),
+              website: row[5] ? row[5].replace(/^"|"$/g, '').trim() : ''
             });
           } else {
             // Fallback to older format (3 columns: Sr No, College Name, College Code)
@@ -875,7 +904,8 @@
               name: name,
               avgPackage: '',
               tier: '',
-              code: (row[2] || '').replace(/^"|"$/g, '')
+              code: (row[2] || '').replace(/^"|"$/g, ''),
+              website: ''
             });
           }
         }
@@ -967,6 +997,7 @@
         const tierClass = col.tier ? col.tier.toLowerCase().replace(/\s+/g, '-') : '';
         const tierBadge = col.tier ? `<span class="tier-badge ${tierClass}">${escAuth(col.tier)}</span>` : '<span style="color: var(--muted); font-size: 13px;">—</span>';
         const packageBadge = col.avgPackage ? `<span class="placement-badge">${escAuth(col.avgPackage)} LPA</span>` : '<span style="color: var(--muted); font-size: 13px;">—</span>';
+        const webButton = col.website ? `<a href="${escAuth(col.website)}" target="_blank" class="web-link-btn" onclick="event.stopPropagation()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg> Visit Site</a>` : '<span style="color: var(--muted); font-size: 13px;">—</span>';
 
         return `
           <tr onclick="goToCutoff('${cleanName}', '${col.code}')">
@@ -977,6 +1008,7 @@
             </td>
             <td>${packageBadge}</td>
             <td>${tierBadge}</td>
+            <td>${webButton}</td>
           </tr>`;
       }).join('');
     }
@@ -1154,6 +1186,8 @@
         const tierClass = placement && placement.tier ? placement.tier.toLowerCase().replace(/\s+/g, '-') : '';
         const tierBadge = placement && placement.tier ? `<span class="tier-badge ${tierClass}">${escAuth(placement.tier)}</span>` : '<span style="color: var(--muted); font-size: 13px;">—</span>';
         const packageBadge = placement && placement.avgPackage ? `<span class="placement-badge">${escAuth(placement.avgPackage)} LPA</span>` : '<span style="color: var(--muted); font-size: 13px;">—</span>';
+        const websiteUrl = match ? match.website : '';
+        const webButton = websiteUrl ? `<a href="${escAuth(websiteUrl)}" target="_blank" class="web-link-btn" onclick="event.stopPropagation()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg> Visit Site</a>` : '<span style="color: var(--muted); font-size: 13px;">—</span>';
 
         return `
           <tr onclick="goToCutoff('${jsName}', '${code}')">
@@ -1164,6 +1198,7 @@
             </td>
             <td>${packageBadge}</td>
             <td>${tierBadge}</td>
+            <td>${webButton}</td>
           </tr>`;
       }).join('');
     }

@@ -503,7 +503,33 @@
         'TFWS': 'TFWS (Tuition Fee Waiver Scheme)',
         'MI': 'MI (Minority Quota Seat)',
         'ORPHAN': 'ORPHAN (Orphan Quota)',
-        'SEBC': 'SEBC (Socially and Educationally Backward Class)'
+        'SEBC': 'SEBC (Socially and Educationally Backward Class)',
+        'DEFOPEN': 'DEF OPEN (Defence - Open)',
+        'DEFOBC': 'DEF OBC (Defence - OBC)',
+        'DEFSC': 'DEF SC (Defence - SC)',
+        'DEFST': 'DEF ST (Defence - ST)',
+        'DEFSEBC': 'DEF SEBC (Defence - SEBC)',
+        'DEFROBC': 'DEF ROBC (Defence - Reserved OBC)',
+        'DEFRNT1': 'DEF RNT1 (Defence - Reserved NT-B)',
+        'DEFRNT2': 'DEF RNT2 (Defence - Reserved NT-C)',
+        'DEFRNT3': 'DEF RNT3 (Defence - Reserved NT-D)',
+        'DEFRSC': 'DEF RSC (Defence - Reserved SC)',
+        'DEFRSEBC': 'DEF RSEBC (Defence - Reserved SEBC)',
+        'DEFRST': 'DEF RST (Defence - Reserved ST)',
+        'DEFRVJ': 'DEF RVJ (Defence - Reserved VJ)',
+        'PWDOPEN': 'PWD OPEN (Disability - Open)',
+        'PWDOBC': 'PWD OBC (Disability - OBC)',
+        'PWDSC': 'PWD SC (Disability - SC)',
+        'PWDST': 'PWD ST (Disability - ST)',
+        'PWDSEBC': 'PWD SEBC (Disability - SEBC)',
+        'PWDROBC': 'PWD ROBC (Disability - Reserved OBC)',
+        'PWDRNT1': 'PWD RNT1 (Disability - Reserved NT-B)',
+        'PWDRNT2': 'PWD RNT2 (Disability - Reserved NT-C)',
+        'PWDRNT3': 'PWD RNT3 (Disability - Reserved NT-D)',
+        'PWDRSC': 'PWD RSC (Disability - Reserved SC)',
+        'PWDRSEBC': 'PWD RSEBC (Disability - Reserved SEBC)',
+        'PWDRST': 'PWD RST (Disability - Reserved ST)',
+        'PWDRVJ': 'PWD RVJ (Disability - Reserved VJ)'
       };
       return labels[cat] || cat;
     }
@@ -621,7 +647,8 @@
         });
       }
 
-      const expectedBaseCat = ['EWS', 'TFWS', 'MI', 'ORPHAN'].includes(cat) ? cat : gender + cat;
+      const isGenderNeutral = ['EWS', 'TFWS', 'MI', 'ORPHAN'].includes(cat) || cat.startsWith('DEF') || cat.startsWith('PWD');
+      const expectedBaseCat = isGenderNeutral ? cat : gender + cat;
 
       // Filter by Category and Home University (H / O / S suffix mapping)
       filtered = filtered.filter(r => {

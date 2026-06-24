@@ -1,0 +1,11 @@
+const fs = require('fs');
+const data = JSON.parse(fs.readFileSync('d:\\Concept Simplified\\new project final\\data.json', 'utf8'));
+const rows = data['MHT-CET College Data'] || [];
+const cats = new Set();
+rows.forEach(r => cats.add(r['Seat Type']));
+const sorted = Array.from(cats).sort();
+const openObc = sorted.filter(c => c && (c.includes('OPEN') || c.includes('OBC')));
+console.log('OPEN/OBC categories in data.json:');
+openObc.forEach(c => console.log(' ', c));
+console.log('\nAll categories:');
+sorted.forEach(c => console.log(' ', c));

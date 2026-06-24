@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <!-- SEO Optimization Meta Tags -->
+  <title>MHT-CET Chatbot Mentor — College Simplified</title>
+  <meta name="keywords" content="Counselling, mhtcet, josaa counselling, college simplified, mhtcet counselling, concept simplified, mhtcet counseling, college predictor, chatbot, mentor, spot rounds, marks vs percentile, percentile vs rank, college cutoffs">
+  <meta name="description" content="Talk to our MHT-CET Chatbot to estimate your percentile, rank, and find matching colleges conversationally with voice inputs.">
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- Open Graph / Facebook Meta Tags -->
+  <meta property="og:title" content="MHT-CET Chatbot Mentor — College Simplified">
+  <meta property="og:description" content="Talk to our MHT-CET Chatbot to estimate your percentile, rank, and find matching colleges conversationally.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://counselling.collegesimplified.in/cet_chatbot.html">
+  <meta property="og:site_name" content="College Simplified">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --brand: #dc2626; --brand-d: #991b1b; --brand-soft: #fef2f2; --brand-ring: rgba(220, 38, 38, 0.15);
+      --ink: #0f172a; --ink2: #475569; --muted: #94a3b8; --bg: #f8fafc; --card: #ffffff; --stroke: #e2e8f0;
+      --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.05);
+      --blue: #2563eb; --blue-soft: #eff6ff; --green: #16a34a; --green-soft: #f0fdf4;
+      --orange: #d97706; --orange-soft: #fffbeb;
+    }
+
+    [data-theme="dark"] {
+      --brand: #ff6b74; --brand-d: #b91c1c; --brand-soft: #2a1215; --brand-ring: rgba(255, 107, 116, 0.15);
+      --ink: #f0f1f6; --ink2: #c8cad8; --muted: #8b90a8; --bg: #0b0d14; --card: #131620; --stroke: #222636;
+      --blue: #60a5fa; --blue-soft: #0e1a38; --green: #4ade80; --green-soft: #0a1f10;
+      --orange: #fb923c; --orange-soft: #1f1208;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; padding-top: 80px; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+    
+    .wrap { max-width: 1250px; width: 100%; margin: 0 auto; padding: 0 24px 24px; flex: 1; display: flex; gap: 24px; height: calc(100vh - 100px); overflow: hidden; }
+
+    /* Left Pane - Active Candidate Profile */
+    .profile-sidebar { width: 340px; background: var(--card); border: 1px solid var(--stroke); border-radius: 24px; padding: 24px; box-shadow: var(--shadow-lg); display: flex; flex-direction: column; gap: 20px; overflow-y: auto; transition: all 0.3s ease; }
+    .profile-hdr { border-bottom: 2px solid var(--stroke); padding-bottom: 12px; }
+    .profile-title { font-family: 'Lexend', sans-serif; font-size: 18px; font-weight: 800; color: var(--ink); display: flex; align-items: center; gap: 8px; }
+    .profile-title svg { color: var(--brand); }
+    .profile-desc { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    .persona-box { background: var(--bg); border: 1.5px solid var(--stroke); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+    .persona-label { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--muted); letter-spacing: 0.5px; }
+    .persona-select { padding: 10px 14px; border-radius: 10px; border: 1.5px solid var(--stroke); font-family: inherit; font-size: 13.5px; font-weight: 600; background: var(--card); color: var(--ink); outline: none; width: 100%; }
+    .persona-select:focus { border-color: var(--brand); }
+
+    .state-list { display: flex; flex-direction: column; gap: 10px; }
+    .state-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--stroke); background: var(--bg); font-size: 13px; }
+    .state-key { font-weight: 700; color: var(--ink2); }
+    .state-val { font-family: 'Lexend', sans-serif; font-weight: 800; font-size: 12px; padding: 4px 10px; border-radius: 100px; background: var(--card); border: 1px solid var(--stroke); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .state-val.unset { color: var(--muted); font-weight: 500; background: transparent; border-style: dashed; }
+    .state-val.set { color: var(--brand); background: var(--brand-soft); border-color: var(--brand-ring); }
+
+    /* Right Pane - Chat Window */
+    .chat-container { flex: 1; display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--stroke); border-radius: 24px; box-shadow: var(--shadow-lg); overflow: hidden; position: relative; }
+    .chat-header { padding: 16px 24px; border-bottom: 1.5px solid var(--stroke); display: flex; align-items: center; justify-content: space-between; background: var(--card); }
+    .chat-header-info { display: flex; align-items: center; gap: 12px; }
+    .bot-avatar { width: 42px; height: 42px; border-radius: 12px; background: var(--brand-soft); color: var(--brand); display: grid; place-items: center; border: 1px solid var(--brand-ring); }
+    .bot-name { font-family: 'Lexend', sans-serif; font-weight: 700; font-size: 15px; }
+    .bot-status { font-size: 11px; color: var(--green); display: flex; align-items: center; gap: 4px; font-weight: 600; }
+    .bot-status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+
+    .chat-actions { display: flex; gap: 8px; }
+    .chat-btn { background: var(--bg); border: 1.5px solid var(--stroke); border-radius: 12px; width: 38px; height: 38px; display: grid; place-items: center; color: var(--ink2); cursor: pointer; transition: 0.2s; }
+    .chat-btn:hover { background: var(--brand-soft); color: var(--brand); border-color: var(--brand-ring); }
+    .chat-btn.mobile-toggle { display: none; }
+
+    /* Chat Messages */
+    .chat-messages { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; background: linear-gradient(180deg, var(--bg) 0%, var(--card) 100%); }
+    .message-row { display: flex; gap: 12px; max-width: 80%; align-self: flex-start; animation: slideUp 0.3s ease both; }
+    .message-row.user { align-self: flex-end; flex-direction: row-reverse; }
+    .message-avatar { width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; flex-shrink: 0; font-size: 14px; }
+    .message-row.bot .message-avatar { background: var(--brand-soft); color: var(--brand); border: 1.5px solid var(--brand-ring); }
+    .message-row.user .message-avatar { background: var(--blue-soft); color: var(--blue); border: 1.5px solid rgba(37,99,235,0.15); }
+    
+    .message-bubble { background: var(--card); border: 1.5px solid var(--stroke); border-radius: 18px; padding: 14px 18px; position: relative; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.01); }
+    .message-row.bot .message-bubble { border-top-left-radius: 4px; }
+    .message-row.user .message-bubble { border-top-right-radius: 4px; background: var(--ink); color: #fff; border-color: var(--ink); }
+    
+    .message-text { font-size: 13.5px; line-height: 1.5; font-weight: 500; }
+    .message-text p { margin-bottom: 8px; }
+    .message-text p:last-child { margin-bottom: 0; }
+    .message-text strong { font-weight: 700; }
+    .message-text ul { padding-left: 18px; margin-top: 6px; }
+    .message-text li { margin-bottom: 4px; }
+    .message-text li:last-child { margin-bottom: 0; }
+
+    .tts-btn { align-self: flex-end; background: transparent; border: none; color: var(--muted); cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; transition: 0.15s; text-transform: uppercase; margin-top: 4px; padding: 4px 8px; border-radius: 6px; }
+    .tts-btn:hover { color: var(--brand); background: var(--brand-soft); }
+    .tts-btn svg { width: 14px; height: 14px; }
+    .message-row.user .tts-btn { display: none; }
+
+    /* Visual speaking states and wave animations */
+    .tts-btn.speaking { color: var(--brand); background: var(--brand-soft); border-color: var(--brand-ring); }
+    .chat-btn.speaking { color: var(--brand); background: var(--brand-soft); border-color: var(--brand-ring); }
+    
+    .voice-wave { display: none; align-items: flex-end; gap: 2px; width: 14px; height: 12px; margin-bottom: 2px; }
+    .tts-btn.speaking .voice-wave { display: inline-flex; }
+    .tts-btn.speaking .speaker-icon { display: none; }
+    .chat-btn.speaking .voice-wave { display: inline-flex; }
+    .chat-btn.speaking .speaker-icon { display: none; }
+    
+    .voice-wave span { width: 2px; height: 3px; background-color: var(--brand); border-radius: 1px; animation: bounce-wave 0.8s ease-in-out infinite alternate; }
+    .voice-wave span:nth-child(2) { animation-delay: 0.15s; }
+    .voice-wave span:nth-child(3) { animation-delay: 0.3s; }
+    
+    @keyframes bounce-wave {
+      0% { height: 3px; }
+      100% { height: 12px; }
+    }
+
+    /* Results layout inside message */
+    .college-suggestions { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; width: 100%; }
+    .suggested-college-card { background: var(--bg); border: 1.5px solid var(--stroke); border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); transition: 0.2s; min-width: 0; }
+    .suggested-college-card:hover { border-color: var(--brand); background: var(--brand-soft); transform: translateY(-1px); }
+    .suggested-college-info { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+    .suggested-college-code { font-size: 9px; font-weight: 800; background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 4px; align-self: flex-start; text-transform: uppercase; letter-spacing: 0.5px; }
+    .suggested-college-name { font-size: 12.5px; font-weight: 700; line-height: 1.3; word-wrap: break-word; overflow-wrap: break-word; }
+    .suggested-college-branch { font-size: 11px; color: var(--muted); font-weight: 600; word-wrap: break-word; overflow-wrap: break-word; }
+    .suggested-college-cutoff { font-family: 'Lexend', sans-serif; font-size: 12px; font-weight: 800; color: var(--brand); text-align: right; white-space: nowrap; flex-shrink: 0; }
+
+
+    /* Warning box */
+    .spot-warning-box { background: var(--orange-soft); border: 1.5px solid rgba(217, 119, 6, 0.2); border-radius: 12px; padding: 12px; display: flex; gap: 10px; align-items: flex-start; color: #92400e; margin-top: 8px; text-align: left; }
+    .spot-warning-box svg { flex-shrink: 0; color: var(--orange); margin-top: 2px; }
+    .spot-warning-text { font-size: 12px; font-weight: 600; line-height: 1.4; }
+
+    /* Quick Reply Chips */
+    .quick-replies-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .quick-reply-chip { background: var(--bg); border: 1.5px solid var(--stroke); border-radius: 100px; padding: 6px 14px; font-size: 12px; font-weight: 700; color: var(--ink2); cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; }
+    .quick-reply-chip:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
+
+    /* Chat Input Form */
+    .chat-input-area { padding: 16px 24px; border-top: 1.5px solid var(--stroke); background: var(--card); }
+    .chat-input-form { display: flex; gap: 12px; align-items: center; position: relative; }
+    .chat-input-field { flex: 1; min-width: 0; padding: 14px 18px; border: 2px solid var(--stroke); border-radius: 16px; font-family: inherit; font-size: 14px; font-weight: 500; color: var(--ink); background: var(--bg); outline: none; transition: 0.2s; }
+    .chat-input-field:focus { border-color: var(--brand); background: var(--card); box-shadow: 0 0 0 5px var(--brand-ring); }
+    
+    .mic-btn { width: 50px; height: 50px; border-radius: 16px; border: 2px solid var(--stroke); background: var(--bg); color: var(--muted); cursor: pointer; display: grid; place-items: center; transition: 0.2s; flex-shrink: 0; }
+    .mic-btn:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-soft); }
+    .mic-btn.listening { background: var(--brand); border-color: var(--brand); color: #fff; animation: pulseGlow 1.5s infinite; }
+    
+    .send-btn { width: 50px; height: 50px; border-radius: 16px; border: none; background: linear-gradient(135deg, var(--brand), var(--brand-d)); color: #fff; cursor: pointer; display: grid; place-items: center; transition: 0.3s; flex-shrink: 0; box-shadow: 0 4px 10px var(--brand-ring); }
+    .send-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 15px var(--brand-ring); }
+
+    @keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+    }
+
+    /* Database loading cover */
+    .db-loader-wrapper { position: absolute; inset: 0; background: rgba(255,255,255,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; z-index: 1000; transition: opacity 0.3s ease; }
+    .db-loader-spinner { width: 44px; height: 44px; border: 4px solid var(--stroke); border-top-color: var(--brand); border-radius: 50%; animation: spin 1s linear infinite; }
+    .db-loader-text { font-family: 'Lexend', sans-serif; font-weight: 700; font-size: 15px; color: var(--ink); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Mobile Responsive styling */
+    @media (max-width: 900px) {
+      body { padding-top: 64px; }
+      .wrap { padding: 8px 12px; height: calc(100vh - 64px); gap: 0; }
+      
+      /* Slide-out Sidebar Panel for Mobile */
+      .profile-sidebar { position: fixed; top: 64px; left: -340px; height: calc(100vh - 64px); z-index: 1000; border-radius: 0; border-top: none; border-bottom: none; width: 280px; box-shadow: 10px 0 25px rgba(0,0,0,0.15); }
+      .profile-sidebar.open { left: 0; }
+      .chat-btn.mobile-toggle { display: grid; }
+
+      .chat-container { border-radius: 16px; border: none; }
+      .chat-messages { padding: 16px; }
+      .message-row { max-width: 90%; }
+      .chat-input-area { padding: 12px 16px; }
+      .chat-input-field { padding: 12px 14px; }
+      .mic-btn, .send-btn { width: 44px; height: 44px; border-radius: 12px; }
+    }
+
+    /* Mobile backdrop overlay */
+    .mobile-overlay { display: none; position: fixed; inset: 64px 0 0 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 999; }
+    .mobile-overlay.open { display: block; }
+  </style>
+</head>
+<body>
+
+  <div class="wrap" id="toolArea">
+    <!-- MOBILE OVERLAY BACKDROP -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileSidebar()"></div>
+
+    <!-- LEFT SIDEBAR: PROFILE & PERSONA -->
+    <aside class="profile-sidebar" id="profileSidebar">
+      <div class="profile-hdr">
+        <h2 class="profile-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          Active Profile
+        </h2>
+        <p class="profile-desc">Counselling parameters parsed from chat</p>
+      </div>
+
+      <div class="persona-box">
+        <span class="persona-label">Mentor Persona</span>
+        <select class="persona-select" id="personaSelect" onchange="changePersona()">
+          <option value="counsellor">Supportive Counsellor</option>
+          <option value="analyst">Technical Analyst</option>
+          <option value="buddy">Friendly Senior (Buddy)</option>
+        </select>
+      </div>
+
+      <div class="state-list">
+        <div class="state-item">
+          <span class="state-key">Percentile</span>
+          <span class="state-val unset" id="statePct">Not set yet</span>
+        </div>
+        <div class="state-item">
+          <span class="state-key">Merit Rank</span>
+          <span class="state-val unset" id="stateRank">Not set yet</span>
+        </div>
+        <div class="state-item">
+          <span class="state-key">Marks</span>
+          <span class="state-val unset" id="stateMarks">Not set yet</span>
+        </div>
+        <div class="state-item">
+          <span class="state-key">Category</span>
+          <span class="state-val unset" id="stateCat">Not set yet</span>
+        </div>
+        <div class="state-item">
+          <span class="state-key">Gender</span>
+          <span class="state-val unset" id="stateGender">Not set yet</span>
+        </div>
+        <div class="state-item">
+          <span class="state-key">Home Univ</span>
+          <span class="state-val unset" id="stateUniv">Not set yet</span>
+        </div>
+        <div class="state-item">
+          <span class="state-key">Branches</span>
+          <span class="state-val unset" id="stateBranch" style="font-size: 11px;">All Branches</span>
+        </div>
+      </div>
+
+      <button class="chat-btn" onclick="resetChat()" style="width: 100%; height: 44px; display: flex; gap: 8px; font-weight: 700; font-size: 13.5px; border-radius: 12px; align-items: center; justify-content: center;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+        </svg>
+        Reset Chat Context
+      </button>
+    </aside>
+
+    <!-- RIGHT MAIN WINDOW: CHAT WRAPPER -->
+    <div class="chat-container">
+      
+      <!-- DATABASE LOAD STATUS COVER -->
+      <div class="db-loader-wrapper" id="dbLoader">
+        <div class="db-loader-spinner"></div>
+        <span class="db-loader-text" id="dbLoaderText">Syncing MHT-CET Predictor Database...</span>
+      </div>
+
+      <!-- CHAT HEADER -->
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <div class="bot-avatar">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M12 2v2M5 5l1.5 1.5M19 5l-1.5 1.5" />
+              <circle cx="8" cy="15" r="1" />
+              <circle cx="16" cy="15" r="1" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="bot-name" id="headerBotName">Simplified Mentor</h3>
+            <div class="bot-status"><span class="bot-status-dot"></span> Online & Active</div>
+          </div>
+        </div>
+        <div class="chat-actions">
+          <button class="chat-btn mobile-toggle" onclick="toggleMobileSidebar()" title="Toggle Profile Details">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+            </svg>
+          </button>
+          <button class="chat-btn" id="headerSpeakBtn" onclick="speakLastResponse()" title="Read Last Response Aloud">
+            <svg class="speaker-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+            </svg>
+            <span class="voice-wave" style="margin-bottom: 0;">
+              <span></span><span></span><span></span>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- CHAT MESSAGE LOG -->
+      <main class="chat-messages" id="chatLog"></main>
+
+      <!-- CHAT INPUT CONTROLLER -->
+      <footer class="chat-input-area">
+        <form class="chat-input-form" onsubmit="handleSend(event)">
+          <button type="button" class="mic-btn" id="micBtn" onclick="toggleVoiceInput()" title="Voice Input (STT)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/>
+            </svg>
+          </button>
+          
+          <input type="text" class="chat-input-field" id="chatInput" autocomplete="off" placeholder="Ask details about VJTI, predict marks/percentile, or type score..." />
+          
+          <button type="submit" class="send-btn" title="Send Message">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"/>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+          </button>
+        </form>
+      </footer>
+
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase_config.js"></script>
+  <script src="shared_auth.js"></script>
+  <script>
+    'use strict';
+
+    // Global databases
+    let allData = [];
+    let collegeMetadata = [];
+    let rankRangeData = [];
+    let marksVsPercentileData = [];
+    let collegeList = [];
+    
+    // Voice Recognition Instance
+    let recognition = null;
+    let isListening = false;
+
+    // Session State
+    const sessionState = {
+      percentile: null,
+      rank: null,
+      marks: null,
+      shiftDifficulty: 'moderate',
+      category: null,
+      gender: null,
+      homeUniv: null,
+      branches: []
+    };
+
+    const HOME_UNIVERSITY_MAP = {
+      'Mumbai': {
+        name: 'University of Mumbai (MU)',
+        cities: ['mumbai', 'thane', 'raigad', 'palghar', 'ratnagiri', 'sindhudurg', 'navi mumbai', 'panvel', 'ulhasnagar', 'vasai', 'virar', 'badlapur', 'karjat', 'kharghar', 'andheri', 'boisar', 'new panvel', 'khalapur', 'bapsai', 'tal-ambernath']
+      },
+      'Pune': {
+        name: 'Savitribai Phule Pune University (SPPU)',
+        cities: ['pune', 'ahmednagar', 'nashik', 'baramati', 'lonavala', 'talegaon', 'kopargaon', 'sangamner', 'narhe', 'wagholi', 'pisoli', 'ravet', 'haveli', 'indapur', 'shegaon', 'malegaon-baramati', 'chincholi', 'swami - chincholi', 'avasari', 'kuran', 'ohar']
+      },
+      'Nagpur': {
+        name: 'RTMNU, Nagpur',
+        cities: ['nagpur', 'wardha', 'bhandara', 'gondia', 'gadchiroli', 'chandrapur', 'ramtek', 'sevagram', 'bhadrawati', 'sakoli', 'hingna', 'babulgaon', 'sindhi(meghe)']
+      },
+      'Aurangabad': {
+        name: 'BAMU, Chhatrapati Sambhajinagar',
+        cities: ['aurangabad', 'chhatrapati sambhajinagar', 'jalna', 'beed', 'osmanabad', 'ambejogai', 'dharashiv']
+      },
+      'Kolhapur': {
+        name: 'Shivaji University, Kolhapur',
+        cities: ['kolhapur', 'sangli', 'satara', 'karad', 'ichalkaranji', 'gadhinglaj', 'jaysingpur', 'warananagar', 'miraj', 'yadrav', 'kankavli']
+      },
+      'Jalgaon': {
+        name: 'KBCNMU, Jalgaon',
+        cities: ['jalgaon', 'dhule', 'nandurbar', 'bhusawal', 'chopda', 'shirpur', 'faizpur', 'dondaicha', 'malegaon']
+      },
+      'Amravati': {
+        name: 'SGBAU, Amravati',
+        cities: ['amravati', 'akola', 'yavatmal', 'buldhana', 'washim', 'badnera', 'shegaon', 'pusad', 'achalpur']
+      },
+      'Nanded': {
+        name: 'SRTMUN, Nanded',
+        cities: ['nanded', 'latur', 'parbhani', 'hingoli', 'tuljapur']
+      },
+      'Solapur': {
+        name: 'Solapur University',
+        cities: ['solapur', 'pandharpur', 'barshi', 'sangola', 'akluj']
+      }
+    };
+
+    const SHIFT_PERCENTILE_DATA = {
+      hard: [
+        { min: 170, max: 200, lowPct: 99.95, highPct: 100 },
+        { min: 160, max: 170, lowPct: 99.80, highPct: 99.95 },
+        { min: 150, max: 160, lowPct: 99.50, highPct: 99.80 },
+        { min: 140, max: 150, lowPct: 99.10, highPct: 99.50 },
+        { min: 130, max: 140, lowPct: 98.80, highPct: 99.10 },
+        { min: 120, max: 130, lowPct: 98.00, highPct: 98.80 },
+        { min: 110, max: 120, lowPct: 96.70, highPct: 98.00 },
+        { min: 100, max: 110, lowPct: 95.50, highPct: 96.70 },
+        { min: 90, max: 100, lowPct: 92.00, highPct: 95.50 },
+        { min: 85, max: 90, lowPct: 88.00, highPct: 92.00 },
+        { min: 80, max: 85, lowPct: 84.00, highPct: 88.00 },
+        { min: 75, max: 80, lowPct: 80.00, highPct: 84.00 },
+        { min: 70, max: 75, lowPct: 76.00, highPct: 80.00 },
+        { min: 60, max: 70, lowPct: 67.00, highPct: 76.00 },
+        { min: 0, max: 60, unpredictable: true }
+      ],
+      moderate: [
+        { min: 170, max: 200, lowPct: 99.90, highPct: 100 },
+        { min: 160, max: 170, lowPct: 99.60, highPct: 99.90 },
+        { min: 150, max: 160, lowPct: 99.30, highPct: 99.60 },
+        { min: 140, max: 150, lowPct: 98.90, highPct: 99.30 },
+        { min: 130, max: 140, lowPct: 98.50, highPct: 98.90 },
+        { min: 120, max: 130, lowPct: 97.40, highPct: 98.50 },
+        { min: 110, max: 120, lowPct: 96.50, highPct: 97.40 },
+        { min: 100, max: 110, lowPct: 94.10, highPct: 96.50 },
+        { min: 90, max: 100, lowPct: 89.00, highPct: 94.10 },
+        { min: 85, max: 90, lowPct: 86.00, highPct: 89.00 },
+        { min: 80, max: 85, lowPct: 82.00, highPct: 86.00 },
+        { min: 75, max: 80, lowPct: 77.00, highPct: 82.00 },
+        { min: 70, max: 75, lowPct: 72.00, highPct: 77.00 },
+        { min: 60, max: 70, lowPct: 64.00, highPct: 72.00 },
+        { min: 0, max: 60, unpredictable: true }
+      ],
+      easy: [
+        { min: 170, max: 200, lowPct: 99.90, highPct: 100 },
+        { min: 160, max: 170, lowPct: 99.50, highPct: 99.90 },
+        { min: 150, max: 160, lowPct: 99.10, highPct: 99.50 },
+        { min: 140, max: 150, lowPct: 98.50, highPct: 99.10 },
+        { min: 130, max: 140, lowPct: 97.80, highPct: 98.50 },
+        { min: 120, max: 130, lowPct: 96.50, highPct: 97.80 },
+        { min: 110, max: 120, lowPct: 94.80, highPct: 96.50 },
+        { min: 100, max: 110, lowPct: 91.50, highPct: 94.80 },
+        { min: 90, max: 100, lowPct: 87.00, highPct: 91.50 },
+        { min: 85, max: 90, lowPct: 83.00, highPct: 87.00 },
+        { min: 80, max: 85, lowPct: 79.00, highPct: 83.00 },
+        { min: 75, max: 80, lowPct: 74.00, highPct: 79.00 },
+        { min: 70, max: 75, lowPct: 69.00, highPct: 74.00 },
+        { min: 60, max: 70, lowPct: 60.00, highPct: 69.00 },
+        { min: 0, max: 60, unpredictable: true }
+      ]
+    };
+
+    // Persona template configurations
+    let activePersona = 'counsellor';
+    let lastBotText = '';
+
+    const PERSONAS = {
+      counsellor: {
+        name: 'Counsellor Mentor',
+        avatarColor: 'var(--brand)',
+        greetings: [
+          "Greetings! I am your Counselling Mentor. I am here to help you evaluate your MHT-CET choices systematically. Let's start. Please tell me your percentile, rank, or raw marks + shift difficulty.",
+          "Welcome! Navigating engineering admissions in Maharashtra can be complex, but we'll outline your options step by step. What score or percentile are we planning with?"
+        ],
+        missingContext: {
+          score: "To help you find the absolute best college options, could you please share your MHT-CET percentile, merit rank, or marks with me? Take your time, there is no rush!",
+          category: "Thank you! To make sure I get you the most accurate predictions, could you tell me your candidate category? (For example: OPEN, OBC, SC, ST, EWS, or TFWS)",
+          gender: "You're doing great! Could you also let me know your gender category so I can look up both General and Ladies quota seats for you?",
+          homeUniv: "Just one tiny detail left! Which home university or region do you belong to? (Like Mumbai, Pune, or Nagpur)"
+        },
+        updateSuccess: (key, val) => `I have updated your profile: **${key}** is set to **${val}**. Let me know if we should refine further.`,
+        spotDisclaimer: "Spot Round warning: Seat allocations in Spot and Institutional Rounds are conducted independently by colleges. They are highly unpredictable, subject to seat vacancies, and carry no official CAP round allocation guarantee. I advise seeking advice from our expert mentors for a safe backup plan."
+      },
+      analyst: {
+        name: 'Admissions Data Analyst',
+        avatarColor: 'var(--ink)',
+        greetings: [
+          "Analysis engine active. Ready to process candidate parameters for MHT-CET CAP allocation matrices. Provide percentile, merit rank, or marks for probability distribution calculation.",
+          "MHT-CET dataset synchronized. Submit candidate variables (Score, Category, Gender, Home University) to evaluate matching cutoff parameters."
+        ],
+        missingContext: {
+          score: "To begin matching, kindly input your score or percentile value when convenient. Thank you!",
+          category: "To filter the allocation matrix correctly, please specify your candidate category (e.g., OPEN, OBC, SC, EWS, TFWS).",
+          gender: "Please specify candidate gender type so I can run both General and Ladies seat allocations.",
+          homeUniv: "Location context is required: Select Home University region to match suffix identifiers (H/O/S)."
+        },
+        updateSuccess: (key, val) => `System log: Candidate variable **${key}** registered as **${val}**. Processing updated context.`,
+        spotDisclaimer: "Statistical notice: Spot and ILS rounds exhibit high volatility and vacancy dependency. Allocations are mathematically non-guaranteed. Consult our advisory panel for direct vacancy analysis."
+      },
+      buddy: {
+        name: 'Senior Buddy',
+        avatarColor: '#1d4ed8',
+        greetings: [
+          "Hey! Super glad you're here. Let's make this MHT-CET counselling stress-free. Drop your percentile or rank, and I'll find you some great options, bro!",
+          "Yo! Worrying about CAP rounds? Don't be. Tell me your CET percentile, rank, or marks, and let's check what awesome colleges you can get."
+        ],
+        missingContext: {
+          score: "First things first, what percentile, rank, or marks are we working with? Let me know so we can get started!",
+          category: "Awesome! What's your category? (e.g. OPEN, OBC, SC, ST, EWS, TFWS). Let me know so I can filter correctly for you!",
+          gender: "And are you applying as Male (General) or Female (Ladies)? Just want to make sure we don't miss ladies quota benefits!",
+          homeUniv: "Which city or university region are you from? (e.g. Pune, Mumbai, Nagpur) - this determines your home quota. Almost there!"
+        },
+        updateSuccess: (key, val) => `Got it, bro! Set your **${key}** to **${val}**. Tell me what else you want to update.`,
+        spotDisclaimer: "Quick heads-up, mate: Spot rounds and ILS quotas are like wildcards. You might get a top branch if seats are empty, but there is zero guarantee. Make sure you talk to our premium mentors to draft a solid backup list!"
+      }
+    };
+
+    // Auto-boot
+    async function boot() {
+      // Shared Auth Guard check
+      const session = initAuth({ requireLogin: true, toolContainerId: 'toolArea' });
+      if (!session) return;
+
+      const isAdmin = session.role === 'admin';
+      if (!isAdmin) {
+        document.getElementById('toolArea').innerHTML = `
+          <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; text-align:center; padding:40px 20px; width:100%; min-height:60vh;">
+            <div style="color:var(--brand);margin-bottom:24px;filter:drop-shadow(0 0 8px var(--brand-ring))">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 22h14" />
+                <path d="M5 2h14" />
+                <path d="M17 22c0-5.5-4.5-10-5-10s-5 4.5-5 10" />
+                <path d="M17 2c0 5.5-4.5 10-5 10s-5-4.5-5-10" />
+              </svg>
+            </div>
+            <h2 style="font-family:Lexend,sans-serif;font-weight:800;font-size:28px;margin-bottom:12px;color:var(--ink)">Coming Soon!</h2>
+            <p style="color:var(--muted);max-width:480px;margin:0 auto 32px;line-height:1.6">The Chatbot Mentor tool is currently in private preview. Candidate access will open in the next release phase. Stay tuned!</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Select random persona
+      const keys = Object.keys(PERSONAS);
+      activePersona = keys[Math.floor(Math.random() * keys.length)];
+      document.getElementById('personaSelect').value = activePersona;
+      updateHeaderBot();
+
+      // Start loading databases
+      try {
+        const [rData, rMeta, rRank, rMarks] = await Promise.all([
+          fetch('data.json').then(r => r.json()),
+          fetch('college-data.json').then(r => r.json()),
+          fetch('MHT CET percentile vs rank.json').then(r => r.json()),
+          fetch('MHT CET marks vs percentile.json').then(r => r.json())
+        ]);
+        
+        allData = (rData['MHT-CET College Data'] || rData || []).map(r => {
+          const rawRank = String(r['Rank'] || '999999').replace(/,/g, '').trim();
+          const rankVal = parseInt(rawRank);
+          const rawPct = String(r['Percentile'] || '0').trim();
+          const pctVal = parseFloat(rawPct);
+          return {
+            code: String(r['Institute Code'] || ''),
+            name: (r['Institute'] || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
+            branch: (r['Branch'] || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
+            category: (r['Seat Type'] || '').trim(),
+            rank: isNaN(rankVal) ? 999999 : rankVal,
+            percentile: isNaN(pctVal) ? 0.0 : pctVal
+          };
+        }).filter(r => r.category !== 'AI' && r.category !== 'All India');
+
+        collegeMetadata = (rMeta["college-data"] || []).map(m => ({
+          code: parseInt(m["Institute Code"]),
+          name: m["Institute Name"] || "",
+          status: m["Status"] || "",
+          region: getRegionByCode(parseInt(m["Institute Code"]))
+        }));
+
+        rankRangeData = (rRank["MHT CET percentile vs rank"] || []).map(r => ({
+          percentile: parseFloat(r["Percentile"]),
+          minRank: parseInt(r["Minimum Rank"]),
+          maxRank: parseInt(r["Maximum Rank"])
+        })).sort((a, b) => b.percentile - a.percentile);
+
+        marksVsPercentileData = rMarks["MHT CET marks vs percentile"] || [];
+
+        // Build simple lookup lists
+        const uniqueMap = {};
+        allData.forEach(r => {
+          const c = parseInt(r.code);
+          if (c && !uniqueMap[c]) {
+            uniqueMap[c] = {
+              code: c,
+              name: r.name,
+              status: '',
+              region: getRegionByCode(c)
+            };
+          }
+        });
+        collegeMetadata.forEach(m => {
+          if (uniqueMap[m.code]) {
+            uniqueMap[m.code].status = m.status;
+          }
+        });
+        collegeList = Object.values(uniqueMap);
+
+        // Hide Loader
+        document.getElementById('dbLoader').style.opacity = 0;
+        setTimeout(() => document.getElementById('dbLoader').style.display = 'none', 300);
+
+        // Add greeting message
+        const greetText = getRandomElem(PERSONAS[activePersona].greetings);
+        addBotBubble(greetText);
+
+      } catch (err) {
+        console.error(err);
+        document.getElementById('dbLoaderText').innerHTML = `<span style="color:var(--brand)">Sync failed. Please reload.</span>`;
+      }
+
+      // Initialize Speech Recognition if allowed
+      initSpeechRecognition();
+    }
+
+    function updateHeaderBot() {
+      const p = PERSONAS[activePersona];
+      document.getElementById('headerBotName').innerText = p.name;
+    }
+
+    function changePersona() {
+      activePersona = document.getElementById('personaSelect').value;
+      updateHeaderBot();
+      addBotBubble(`Switching tone. ${activePersona === 'buddy' ? "Yo, bro! I'm ready." : activePersona === 'analyst' ? "Analytical matrix active." : "How can I help you navigate admissions?"}`);
+    }
+
+    function getRegionByCode(code) {
+      const clean = String(code).trim().replace(/^0+/, '');
+      if (!clean) return 'Other';
+      const char = clean.length === 5 ? clean.charAt(1) : clean.charAt(0);
+      const regions = { '1': 'Amravati', '2': 'Aurangabad', '3': 'Mumbai', '4': 'Nagpur', '5': 'Nashik', '6': 'Pune' };
+      return regions[char] || 'Other';
+    }
+
+    function toggleMobileSidebar() {
+      const sb = document.getElementById('profileSidebar');
+      const overlay = document.getElementById('mobileOverlay');
+      sb.classList.toggle('open');
+      overlay.classList.toggle('open');
+    }
+
+    // Chat logging
+    function addBotBubble(text, customHtml = '') {
+      lastBotText = text;
+      const log = document.getElementById('chatLog');
+      const p = PERSONAS[activePersona];
+      
+      const row = document.createElement('div');
+      row.className = 'message-row bot';
+      
+      row.innerHTML = `
+        <div class="message-avatar" style="border-color:${p.avatarColor}; color:${p.avatarColor}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+            <path d="M12 2v2M5 5l1.5 1.5M19 5l-1.5 1.5" />
+            <circle cx="8" cy="15" r="1" />
+            <circle cx="16" cy="15" r="1" />
+          </svg>
+        </div>
+        <div class="message-bubble">
+          <div class="message-text">${formatMarkdown(text)}${customHtml}</div>
+          <button class="tts-btn" onclick="speakText(this)">
+            <svg class="speaker-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+            </svg>
+            <span class="voice-wave">
+              <span></span><span></span><span></span>
+            </span>
+            <span class="tts-btn-text">Read Aloud</span>
+          </button>
+        </div>
+      `;
+      log.appendChild(row);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function addUserBubble(text) {
+      const log = document.getElementById('chatLog');
+      const row = document.createElement('div');
+      row.className = 'message-row user';
+      row.innerHTML = `
+        <div class="message-avatar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        </div>
+        <div class="message-bubble">
+          <div class="message-text">${escAuth(text)}</div>
+        </div>
+      `;
+      log.appendChild(row);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function formatMarkdown(text) {
+      return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/\n/g, '<br>');
+    }
+
+    // Parser engine
+    function parseUserInput(text) {
+      const lower = text.toLowerCase().trim();
+      let updated = [];
+
+      // 1. Percentile matches
+      // Matches: 95, 95%, 95.5%, 95 percentile, 95% tiles, at 95, got 95.4
+      const pctMatch = lower.match(/(\d{1,2}(?:\.\d{1,4})?)\s*(?:percentile|%|pct|percent|tiles?|%tile)/i) || lower.match(/(?:at|got|percentile|score of)\s*(\d{1,2}(?:\.\d{1,4})?)/i);
+      if (pctMatch) {
+        const val = parseFloat(pctMatch[1]);
+        if (val >= 0 && val <= 100) {
+          sessionState.percentile = val;
+          // Interpolate rank if possible
+          const r = getInterpolatedRank(val);
+          if (r) sessionState.rank = r;
+          updated.push(`Percentile: **${val}%**`);
+        }
+      }
+
+      // 2. Rank matches
+      const rankMatch = lower.match(/(rank|merit|state rank)\s*(\d+)/i) || lower.match(/(\d+)\s*(rank|merit)/i);
+      if (rankMatch) {
+        const val = parseInt(rankMatch[2] || rankMatch[1]);
+        if (val > 0) {
+          sessionState.rank = val;
+          updated.push(`Merit Rank: **${val}**`);
+        }
+      }
+
+      // 3. Marks matches
+      const marksMatch = lower.match(/(\d+)\s*marks/i) || lower.match(/score\s*(\d+)/i);
+      if (marksMatch) {
+        const val = parseInt(marksMatch[1]);
+        if (val >= 0 && val <= 200) {
+          sessionState.marks = val;
+          updated.push(`Raw Marks: **${val}**`);
+          // Try converting marks to percentile
+          const convertedPct = getPercentileFromMarks(val, sessionState.shiftDifficulty);
+          if (convertedPct) {
+            sessionState.percentile = convertedPct;
+            const r = getInterpolatedRank(convertedPct);
+            if (r) sessionState.rank = r;
+            updated.push(`Converted Percentile: **${convertedPct}%**`);
+          }
+        }
+      }
+
+      // 4. Shift matches
+      if (lower.includes('easy shift')) {
+        sessionState.shiftDifficulty = 'easy';
+        updated.push(`Shift Difficulty: **Easy**`);
+      } else if (lower.includes('moderate shift')) {
+        sessionState.shiftDifficulty = 'moderate';
+        updated.push(`Shift Difficulty: **Moderate**`);
+      } else if (lower.includes('hard shift') || lower.includes('difficult shift')) {
+        sessionState.shiftDifficulty = 'hard';
+        updated.push(`Shift Difficulty: **Hard**`);
+      }
+
+      // 5. Category matches
+      const categories = [
+        'defopen', 'defobc', 'defsc', 'defst', 'defsebc', 'defrobc', 'defrnt1', 'defrnt2', 'defrnt3', 'defrsc', 'defrsebc', 'defrst', 'defrvj',
+        'pwdopen', 'pwdobc', 'pwdsc', 'pwdst', 'pwdsebc', 'pwdrobc', 'pwdrnt1', 'pwdrnt2', 'pwdrnt3', 'pwdrsc', 'pwdrsebc', 'pwdrst', 'pwdrvj',
+        'open', 'obc', 'sc', 'st', 'ews', 'tfws', 'mi', 'orphan', 'sebc'
+      ];
+      for (const cat of categories) {
+        if (new RegExp('\\b' + cat + '\\b').test(lower)) {
+          sessionState.category = cat.toUpperCase();
+          updated.push(`Category: **${cat.toUpperCase()}**`);
+          break;
+        }
+      }
+
+      // 6. Gender matches
+      if (lower.includes('female') || lower.includes('girl') || lower.includes('ladies') || lower.includes('lady')) {
+        sessionState.gender = 'L';
+        updated.push(`Gender Type: **Ladies (L)**`);
+      } else if (lower.includes('male') || lower.includes('boy') || lower.includes('guy') || lower.includes('general')) {
+        sessionState.gender = 'G';
+        updated.push(`Gender Type: **General (G)**`);
+      }
+
+      // 7. Home University matches
+      const univKeys = Object.keys(HOME_UNIVERSITY_MAP);
+      for (const univ of univKeys) {
+        if (lower.includes(univ.toLowerCase()) || (univ === 'Pune' && lower.includes('sppu')) || (univ === 'Mumbai' && lower.includes('mu'))) {
+          sessionState.homeUniv = univ;
+          updated.push(`Home University: **${HOME_UNIVERSITY_MAP[univ].name}**`);
+          break;
+        }
+      }
+
+      // 8. Branch Preference keywords
+      const branchKws = {
+        'COMPUTER': ['computer', 'cse', 'cs', 'coep cs', 'vjti cs'],
+        'INFORMATION TECHNOLOGY': ['information technology', 'it'],
+        'ARTIFICIAL': ['ai', 'artificial', 'machine learning', 'ml', 'data science'],
+        'ELECTRONICS': ['electronics', 'entc', 'telecommunication', 'extc'],
+        'MECHANICAL': ['mechanical', 'mech'],
+        'CIVIL': ['civil'],
+        'ELECTRICAL': ['electrical']
+      };
+      let branchMatched = false;
+      if (lower.includes('core')) {
+        const coreBranches = ['MECHANICAL', 'CIVIL', 'ELECTRICAL'];
+        coreBranches.forEach(b => {
+          if (!sessionState.branches.includes(b)) {
+            sessionState.branches.push(b);
+            branchMatched = true;
+          }
+        });
+      }
+      for (const [branchKey, keywords] of Object.entries(branchKws)) {
+        if (keywords.some(kw => new RegExp('\\b' + kw + '\\b').test(lower))) {
+          if (!sessionState.branches.includes(branchKey)) {
+            sessionState.branches.push(branchKey);
+            branchMatched = true;
+          }
+        }
+      }
+      if (branchMatched) {
+        updated.push(`Preferred Branches: **${sessionState.branches.join(', ')}**`);
+      }
+
+      updateSidebarUI();
+      return updated;
+    }
+
+    function updateSidebarUI() {
+      if (sessionState.percentile !== null) {
+        document.getElementById('statePct').innerText = sessionState.percentile.toFixed(2) + '%';
+        markSet('statePct');
+      }
+      if (sessionState.rank !== null) {
+        document.getElementById('stateRank').innerText = sessionState.rank.toLocaleString('en-IN');
+        markSet('stateRank');
+      }
+      if (sessionState.marks !== null) {
+        document.getElementById('stateMarks').innerText = `${sessionState.marks} (${sessionState.shiftDifficulty})`;
+        markSet('stateMarks');
+      }
+      if (sessionState.category !== null) {
+        document.getElementById('stateCat').innerText = sessionState.category;
+        markSet('stateCat');
+      }
+      if (sessionState.gender !== null) {
+        document.getElementById('stateGender').innerText = sessionState.gender === 'G' ? 'General (G)' : 'Ladies (L)';
+        markSet('stateGender');
+      }
+      if (sessionState.homeUniv !== null) {
+        document.getElementById('stateUniv').innerText = sessionState.homeUniv;
+        markSet('stateUniv');
+      }
+      if (sessionState.branches.length > 0) {
+        document.getElementById('stateBranch').innerText = sessionState.branches.join(', ');
+        markSet('stateBranch');
+      }
+    }
+
+    function markSet(id) {
+      const el = document.getElementById(id);
+      el.classList.remove('unset');
+      el.classList.add('set');
+    }
+
+    function handleSend(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      addUserBubble(text);
+      input.value = '';
+
+      setTimeout(() => processResponse(text), 400);
+    }
+
+    // Core Conversational response engine
+    function processResponse(text) {
+      const lower = text.toLowerCase().trim();
+      const updates = parseUserInput(text);
+
+      const p = PERSONAS[activePersona];
+
+      // Check if spot round or ILS keywords are present
+      if (lower.includes('spot') || lower.includes('ils') || lower.includes('institutional') || lower.includes('round 4') || lower.includes('vacancy')) {
+        const warnHtml = `
+          <div class="spot-warning-box">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <div class="spot-warning-text">${p.spotDisclaimer}</div>
+          </div>
+        `;
+        return addBotBubble("Let's talk about Spot Rounds and Institutional Level Seats (ILS).", warnHtml);
+      }
+
+      // Check if user is checking a specific college's placements/intake details
+      const collFound = collegeList.find(c => lower.includes(c.name.toLowerCase()) || (c.code && lower.includes(String(c.code))));
+      if (collFound) {
+        return handleCollegeQuery(collFound);
+      }
+
+      // Marks vs Percentile specific query
+      if (lower.includes('marks') && (lower.includes('percentile') || lower.includes('percent') || lower.includes('shift'))) {
+        if (sessionState.marks) {
+          const convertedPct = getPercentileFromMarks(sessionState.marks, sessionState.shiftDifficulty);
+          return addBotBubble(`According to MHT-CET trends, **${sessionState.marks} marks** in a **${sessionState.shiftDifficulty} shift** converts to an estimated **${convertedPct}% percentile**.`);
+        } else {
+          // Ask for marks
+          return addBotBubble("Please enter your raw marks (0 to 200) and shift difficulty (easy, moderate, or hard) to estimate your percentile!");
+        }
+      }
+
+      // Percentile vs Rank specific query
+      if (lower.includes('rank') && (lower.includes('percentile') || lower.includes('%'))) {
+        if (sessionState.percentile) {
+          const rankRange = getInterpolatedRankRange(sessionState.percentile);
+          return addBotBubble(`Based on historical databases, a **${sessionState.percentile.toFixed(2)}% percentile** estimates a State Merit Rank of **${rankRange.min.toLocaleString('en-IN')} to ${rankRange.max.toLocaleString('en-IN')}**.`);
+        } else {
+          return addBotBubble("Please state your percentile score (e.g. 96.50) to estimate your state merit rank!");
+        }
+      }
+
+      // Check if user wants predictions
+      const isPredictQuery = lower.includes('predict') || lower.includes('suggest') || lower.includes('college') || lower.includes('get') || lower.includes('admission') || lower.includes('option');
+      if (isPredictQuery || updates.length > 0) {
+        // Evaluate if context is ready for predictions (only score is strictly required)
+        const score = sessionState.percentile || sessionState.rank;
+        if (!score) {
+          return addBotBubble(p.missingContext.score, getScoreQuickChips());
+        }
+
+        // Context is ready! Run predictor logic in memory
+        return executeChatPredictions(updates);
+      }
+
+      // Default fallback conversational guidance
+      let fallbackText = '';
+      if (activePersona === 'buddy') {
+        fallbackText = "I'm a virtual advisor focused purely on MHT-CET admissions, bro. You can ask me to:\n- Predict your colleges (e.g. *what colleges can I get at 98.5%*)\n- Check Marks vs Percentile\n- Check Percentile vs Rank\n- Get placements or intake details for any college in Maharashtra!";
+      } else if (activePersona === 'analyst') {
+        fallbackText = "Awaiting valid operational tokens. System supports: \n1. Predict College matches (*predict colleges*)\n2. Perform marks conversion (*140 marks hard shift*)\n3. Perform rank lookup (*rank for 99.2%*)\n4. Fetch detailed statistical cards for individual institutes.";
+      } else {
+        fallbackText = "I am ready to guide you. You can ask me to predict your colleges based on your scores, convert marks to percentile, estimate your merit rank, or search for intake and cutoff details for any engineering institute in Maharashtra under DTE.";
+      }
+      addBotBubble(fallbackText);
+    }
+
+    function handleCollegeQuery(college) {
+      // Find average package and tier
+      let avgPkg = '—';
+      let tierText = 'Private Institute';
+      if (college.status) {
+        tierText = college.status;
+      }
+      
+      const detailsHtml = `
+        <div style="margin-top: 8px; background: var(--bg); border: 1.5px solid var(--stroke); border-radius: 16px; padding: 16px; text-align: left; display:flex; flex-direction:column; gap:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+            <div style="font-weight: 800; font-size: 13.5px; color: var(--brand); font-family: monospace;">Code: ${String(college.code).padStart(4, '0')}</div>
+            <div style="font-size: 11px; font-weight:700; color:var(--blue); background: var(--blue-soft); padding: 2px 8px; border-radius:100px;">Region: ${college.region}</div>
+          </div>
+          <h4 style="font-family:'Lexend',sans-serif; font-size:14px; font-weight:800; margin:0;">${college.name}</h4>
+          <p style="font-size:12px; color:var(--muted); margin:0;">Status: <strong>${tierText}</strong></p>
+          
+          <a href="college_explorer.html?search=${college.code}" target="_blank" style="margin-top:4px; display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 14px; background:var(--brand); color:#fff; font-weight:800; font-size:12px; border-radius:10px; text-decoration:none; text-transform:uppercase; letter-spacing:0.5px;">
+            Open in College Explorer
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+              <polyline points="15 3 21 3 21 9"/>
+              <line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
+          </a>
+        </div>
+      `;
+      addBotBubble(`I found matching details for **${college.name}** in the database.`, detailsHtml);
+    }
+
+    // Prediction calculations
+    function executeChatPredictions(updates) {
+      const scoreVal = sessionState.percentile || getPercentileFromRank(sessionState.rank) || 0;
+      
+      const isDefaultCat = !sessionState.category;
+      const isDefaultGender = !sessionState.gender;
+      const isDefaultHU = !sessionState.homeUniv;
+
+      const cat = sessionState.category || 'OPEN';
+      const gender = sessionState.gender || 'G';
+      const studentHU = sessionState.homeUniv || '';
+
+      const isGenderNeutral = ['EWS', 'TFWS', 'MI', 'ORPHAN'].includes(cat) || (cat && (cat.startsWith('DEF') || cat.startsWith('PWD')));
+      const expectedBaseCat = isGenderNeutral ? cat : gender + cat;
+
+      let matches = allData.filter(r => {
+        // Score range filter
+        if (sessionState.percentile !== null) {
+          if (r.percentile === undefined || r.percentile === null || r.percentile > sessionState.percentile) return false;
+        } else if (sessionState.rank !== null) {
+          if (r.rank === undefined || r.rank === null || r.rank < sessionState.rank) return false;
+        }
+
+        // Category filter
+        const baseCat = getBaseCategory(r.category);
+        if (baseCat !== expectedBaseCat) return false;
+
+        // Home Univ suffix filter
+        if (studentHU && (r.category.endsWith('H') || r.category.endsWith('O') || r.category.endsWith('S'))) {
+          const meta = collegeMetadata.find(m => m.code === parseInt(r.code));
+          const status = meta ? meta.status : '';
+          const suffix = getSeatSuffix(r.name, status, studentHU);
+          return r.category.endsWith(suffix);
+        }
+
+        return true;
+      });
+
+      // Branch filter
+      if (sessionState.branches.length > 0) {
+        matches = matches.filter(r => {
+          const b = r.branch.toUpperCase();
+          return sessionState.branches.some(pref => b.includes(pref));
+        });
+      }
+
+      // Sort descending percentile
+      matches.sort((a, b) => b.percentile - a.percentile);
+
+      const topMatches = matches.slice(0, 5);
+
+      if (topMatches.length === 0) {
+        return addBotBubble("I couldn't find any direct matches in the cutoff database for your selected category/scores. Try selecting different preferences or broaden your branch choices.");
+      }
+
+      let resultsHtml = '<div class="college-suggestions">';
+      topMatches.forEach(item => {
+        resultsHtml += `
+          <a class="suggested-college-card" href="college_explorer.html?search=${item.code}" target="_blank">
+            <div class="suggested-college-info">
+              <span class="suggested-college-code">Code ${item.code}</span>
+              <span class="suggested-college-name">${item.name}</span>
+              <span class="suggested-college-branch">${item.branch}</span>
+            </div>
+            <div class="suggested-college-cutoff">
+              ${item.percentile.toFixed(2)}%<br>
+              <span style="font-size:10px; font-weight:500; color:var(--muted)">Rank: ${item.rank}</span>
+            </div>
+          </a>
+        `;
+      });
+      resultsHtml += '</div>';
+
+      const p = PERSONAS[activePersona];
+      let introText = '';
+      let prefix = '';
+      if (updates && updates.length > 0) {
+        const items = [];
+        if (sessionState.percentile !== null) items.push(`**${sessionState.percentile}% percentile**`);
+        else if (sessionState.rank !== null) items.push(`State Merit Rank **${sessionState.rank}**`);
+        else if (sessionState.marks !== null) items.push(`**${sessionState.marks} marks** (${sessionState.shiftDifficulty} shift)`);
+        
+        if (sessionState.category) items.push(`**${sessionState.category}** category`);
+        if (sessionState.gender) items.push(`**${sessionState.gender === 'L' ? 'Ladies' : 'General'}** seat quota`);
+        if (sessionState.homeUniv) items.push(`Home University **${sessionState.homeUniv}**`);
+        if (sessionState.branches.length > 0) items.push(`branch preference for **${sessionState.branches.join(', ')}**`);
+
+        if (items.length > 0) {
+          if (activePersona === 'buddy') {
+            prefix = `Alright, bro! Sourcing matching colleges with your ${items.join(', ')}. `;
+          } else if (activePersona === 'analyst') {
+            prefix = `Dataset query updated. Filtering criteria: ${items.join(', ')}. `;
+          } else {
+            prefix = `I've updated your preferences to search under ${items.join(', ')}. `;
+          }
+        }
+      }
+      
+      if (isDefaultCat || isDefaultGender) {
+        let assumptionLabel = 'General OPEN';
+        if (!isDefaultCat && isDefaultGender) {
+          assumptionLabel = 'General ' + cat;
+        } else if (isDefaultCat && !isDefaultGender) {
+          assumptionLabel = (gender === 'L' ? 'Ladies' : 'General') + ' OPEN';
+        }
+
+        if (activePersona === 'buddy') {
+          introText = prefix + `Here are the top matches assuming **${assumptionLabel}** category first, bro:`;
+        } else if (activePersona === 'analyst') {
+          introText = prefix + `Displaying default **${assumptionLabel}** category probabilities below:`;
+        } else {
+          introText = prefix + `Here are the top matches assuming the **${assumptionLabel}** category first:`;
+        }
+      } else {
+        if (activePersona === 'buddy') {
+          introText = prefix + "Check this out, bro! Here are the best college matches based on your score:";
+        } else if (activePersona === 'analyst') {
+          introText = prefix + `CAP database lookup completed successfully. Displaying top matching entries for ${expectedBaseCat}:`;
+        } else {
+          introText = prefix + "Here are the top colleges recommended for your profile based on last year's closing cutoffs:";
+        }
+      }
+
+      let refineHtml = '';
+      if (isDefaultCat || isDefaultGender || isDefaultHU) {
+        let promptText = '';
+        if (activePersona === 'buddy') {
+          promptText = "To refine these suggestions, tell me your <strong>Category</strong>, <strong>Gender</strong>, or <strong>Home University</strong> (or tap below), and I'll update it instantly, mate!";
+        } else if (activePersona === 'analyst') {
+          promptText = "To refine statistical matching, specify candidate parameters: <strong>Category</strong>, <strong>Gender</strong>, or <strong>Home University</strong> region:";
+        } else {
+          promptText = "To get more accurate predictions tailored to your profile, please specify your <strong>Category</strong>, <strong>Gender</strong>, or <strong>Home University</strong> region:";
+        }
+        
+        refineHtml += `
+          <div style="margin-top: 12px; padding: 12px; background: var(--bg); border: 1.5px solid var(--stroke); border-radius: 16px; display:flex; flex-direction:column; gap:8px; text-align:left;">
+            <p style="font-size:12.5px; font-weight:600; line-height:1.4; color:var(--ink2);">${promptText}</p>
+            <div class="quick-replies-container" style="margin-top: 4px;">
+        `;
+        
+        if (isDefaultCat) {
+          refineHtml += `
+            <span style="font-size:10px; font-weight:700; color:var(--muted); width:100%; display:block; margin-top:2px;">Category:</span>
+            <div class="quick-reply-chip" onclick="setInput('OBC category')">OBC</div>
+            <div class="quick-reply-chip" onclick="setInput('SC category')">SC</div>
+            <div class="quick-reply-chip" onclick="setInput('ST category')">ST</div>
+            <div class="quick-reply-chip" onclick="setInput('EWS category')">EWS</div>
+            <div class="quick-reply-chip" onclick="setInput('TFWS category')">TFWS</div>
+          `;
+        }
+        
+        if (isDefaultGender) {
+          refineHtml += `
+            <span style="font-size:10px; font-weight:700; color:var(--muted); width:100%; display:block; margin-top:4px;">Gender:</span>
+            <div class="quick-reply-chip" onclick="setInput('Male / General Seat')">Male / General</div>
+            <div class="quick-reply-chip" onclick="setInput('Female / Ladies Seat')">Female / Ladies</div>
+          `;
+        }
+
+        if (isDefaultHU) {
+          refineHtml += `
+            <span style="font-size:10px; font-weight:700; color:var(--muted); width:100%; display:block; margin-top:4px;">Home University:</span>
+            <div class="quick-reply-chip" onclick="setInput('Mumbai university')">Mumbai</div>
+            <div class="quick-reply-chip" onclick="setInput('Pune university')">Pune</div>
+            <div class="quick-reply-chip" onclick="setInput('Nagpur university')">Nagpur</div>
+            <div class="quick-reply-chip" onclick="setInput('Aurangabad university')">Aurangabad</div>
+          `;
+        }
+        
+        refineHtml += `
+            </div>
+          </div>
+        `;
+      }
+
+      addBotBubble(introText, resultsHtml + refineHtml);
+    }
+
+    // Quick chips templates
+    function getScoreQuickChips() {
+      return `
+        <div class="quick-replies-container">
+          <div class="quick-reply-chip" onclick="setInput('98.5 percentile')">98.5%</div>
+          <div class="quick-reply-chip" onclick="setInput('95.2 percentile')">95.2%</div>
+          <div class="quick-reply-chip" onclick="setInput('90 percentile')">90%</div>
+          <div class="quick-reply-chip" onclick="setInput('rank 12500')">Rank 12,500</div>
+          <div class="quick-reply-chip" onclick="setInput('140 marks moderate shift')">140 Marks (Moderate)</div>
+        </div>
+      `;
+    }
+
+    function getCategoryQuickChips() {
+      return `
+        <div class="quick-replies-container">
+          <div class="quick-reply-chip" onclick="setInput('OPEN category')">OPEN</div>
+          <div class="quick-reply-chip" onclick="setInput('OBC category')">OBC</div>
+          <div class="quick-reply-chip" onclick="setInput('SC category')">SC</div>
+          <div class="quick-reply-chip" onclick="setInput('ST category')">ST</div>
+          <div class="quick-reply-chip" onclick="setInput('EWS category')">EWS</div>
+          <div class="quick-reply-chip" onclick="setInput('TFWS category')">TFWS</div>
+        </div>
+      `;
+    }
+
+    function getGenderQuickChips() {
+      return `
+        <div class="quick-replies-container">
+          <div class="quick-reply-chip" onclick="setInput('Male / General Seat')">Male / General</div>
+          <div class="quick-reply-chip" onclick="setInput('Female / Ladies Seat')">Female / Ladies</div>
+        </div>
+      `;
+    }
+
+    function setInput(val) {
+      document.getElementById('chatInput').value = val;
+      handleSend();
+    }
+
+    // Math & Interpolation helpers
+    function getPercentileFromMarks(marks, diff) {
+      const shiftData = SHIFT_PERCENTILE_DATA[diff] || SHIFT_PERCENTILE_DATA.moderate;
+      if (marks < 60) return 40.0; // low unpredictable limit
+      const row = shiftData.find(r => marks >= r.min && marks <= r.max);
+      if (row) {
+        if (row.unpredictable) return 50.0;
+        const pct = row.lowPct + ((marks - row.min) / (row.max - row.min)) * (row.highPct - row.lowPct);
+        return parseFloat(pct.toFixed(4));
+      }
+      return 50.0;
+    }
+
+    function getInterpolatedRank(pct) {
+      if (!rankRangeData.length) return null;
+      if (pct >= rankRangeData[0].percentile) return rankRangeData[0].minRank;
+      if (pct <= rankRangeData[rankRangeData.length - 1].percentile) return rankRangeData[rankRangeData.length - 1].maxRank;
+
+      for (let i = 0; i < rankRangeData.length - 1; i++) {
+        const upper = rankRangeData[i];
+        const lower = rankRangeData[i + 1];
+        if (pct <= upper.percentile && pct >= lower.percentile) {
+          const range = upper.percentile - lower.percentile;
+          if (range === 0) return upper.minRank;
+          const factor = (upper.percentile - pct) / range;
+          return Math.round(upper.minRank + factor * (lower.minRank - upper.minRank));
+        }
+      }
+      return null;
+    }
+
+    function getInterpolatedRankRange(pct) {
+      if (!rankRangeData.length) return { min: 1, max: 1 };
+      if (pct >= rankRangeData[0].percentile) return { min: rankRangeData[0].minRank, max: rankRangeData[0].maxRank };
+      if (pct <= rankRangeData[rankRangeData.length - 1].percentile) return { min: rankRangeData[rankRangeData.length - 1].minRank, max: rankRangeData[rankRangeData.length - 1].maxRank };
+
+      for (let i = 0; i < rankRangeData.length - 1; i++) {
+        const upper = rankRangeData[i];
+        const lower = rankRangeData[i + 1];
+        if (pct <= upper.percentile && pct >= lower.percentile) {
+          const range = upper.percentile - lower.percentile;
+          if (range === 0) return { min: upper.minRank, max: upper.maxRank };
+          const factor = (upper.percentile - pct) / range;
+          return {
+            min: Math.round(upper.minRank + factor * (lower.minRank - upper.minRank)),
+            max: Math.round(upper.maxRank + factor * (lower.maxRank - upper.maxRank))
+          };
+        }
+      }
+      return { min: 1, max: 1 };
+    }
+
+    function getPercentileFromRank(rank) {
+      if (!rankRangeData.length) return null;
+      // find nearest rank
+      let closest = rankRangeData[0];
+      let minDiff = Math.abs(rankRangeData[0].minRank - rank);
+      for (const item of rankRangeData) {
+        const diff = Math.abs(item.minRank - rank);
+        if (diff < minDiff) {
+          minDiff = diff;
+          closest = item;
+        }
+      }
+      return closest.percentile;
+    }
+
+    function getBaseCategory(cat) {
+      if (['EWS', 'TFWS', 'MI', 'ORPHAN'].includes(cat)) return cat;
+      if (cat.endsWith('H') || cat.endsWith('O') || cat.endsWith('S')) {
+        return cat.slice(0, -1);
+      }
+      return cat;
+    }
+
+    function getSeatSuffix(collegeName, collegeStatus, studentHU) {
+      if (!studentHU) return null;
+      const statusLower = (collegeStatus || '').toLowerCase();
+      if (statusLower.includes('autonomous') || statusLower.includes('university department')) return 'S';
+      const collegeHU = getCollegeHU(collegeName);
+      if (!collegeHU) return 'S';
+      return collegeHU === studentHU ? 'H' : 'O';
+    }
+
+    function getCollegeHU(collegeName) {
+      const nameLower = (collegeName || '').toLowerCase();
+      for (const [huKey, huData] of Object.entries(HOME_UNIVERSITY_MAP)) {
+        for (const city of huData.cities) {
+          if (nameLower.includes(city)) return huKey;
+        }
+      }
+      return null;
+    }
+
+    // Reset Chat State
+    function resetChat() {
+      sessionState.percentile = null;
+      sessionState.rank = null;
+      sessionState.marks = null;
+      sessionState.shiftDifficulty = 'moderate';
+      sessionState.category = null;
+      sessionState.gender = null;
+      sessionState.homeUniv = null;
+      sessionState.branches = [];
+      
+      const elements = ['statePct', 'stateRank', 'stateMarks', 'stateCat', 'stateGender', 'stateUniv'];
+      elements.forEach(id => {
+        const el = document.getElementById(id);
+        el.innerText = 'Not set yet';
+        el.className = 'state-val unset';
+      });
+      document.getElementById('stateBranch').innerText = 'All Branches';
+      document.getElementById('stateBranch').className = 'state-val unset';
+
+      document.getElementById('chatLog').innerHTML = '';
+      const p = PERSONAS[activePersona];
+      const greetText = getRandomElem(p.greetings);
+      addBotBubble(greetText);
+    }
+
+    // Browser APIs: Speech Synthesis (TTS) & Recognition (STT)
+    let silenceTimer = null;
+    let initialInputVal = '';
+
+    function initSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = 'en-IN';
+
+        recognition.onstart = () => {
+          isListening = true;
+          initialInputVal = document.getElementById('chatInput').value;
+          const mic = document.getElementById('micBtn');
+          mic.classList.add('listening');
+          resetSilenceTimer();
+        };
+
+        recognition.onend = () => {
+          isListening = false;
+          const mic = document.getElementById('micBtn');
+          mic.classList.remove('listening');
+          if (silenceTimer) clearTimeout(silenceTimer);
+          
+          // Submit if speech input was captured and appended
+          const text = document.getElementById('chatInput').value.trim();
+          if (text && text !== initialInputVal.trim()) {
+            handleSend();
+          }
+        };
+
+        recognition.onresult = (event) => {
+          let finalTranscript = '';
+          let interimTranscript = '';
+          for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              finalTranscript += event.results[i][0].transcript;
+            } else {
+              interimTranscript += event.results[i][0].transcript;
+            }
+          }
+
+          const input = document.getElementById('chatInput');
+          const prefix = initialInputVal ? initialInputVal.trim() + ' ' : '';
+          
+          if (finalTranscript || interimTranscript) {
+            input.value = prefix + finalTranscript + interimTranscript;
+            resetSilenceTimer();
+          }
+        };
+
+        recognition.onerror = (e) => {
+          console.error("Speech Recognition Error", e);
+          isListening = false;
+          const mic = document.getElementById('micBtn');
+          mic.classList.remove('listening');
+          if (silenceTimer) clearTimeout(silenceTimer);
+        };
+      }
+    }
+
+    function resetSilenceTimer() {
+      if (silenceTimer) clearTimeout(silenceTimer);
+      silenceTimer = setTimeout(() => {
+        if (isListening) {
+          recognition.stop();
+        }
+      }, 2500); // 2.5 seconds of silence stops listening and auto-submits
+    }
+
+    function toggleVoiceInput() {
+      if (!recognition) {
+        alert("Speech Recognition API is not supported in this browser. Please use Google Chrome or Microsoft Edge.");
+        return;
+      }
+      if (isListening) {
+        recognition.stop();
+      } else {
+        recognition.start();
+      }
+    }
+
+    let currentUtterance = null;
+    let activeSpeakBtn = null;
+    let sysVoices = [];
+
+    function loadVoices() {
+      if ('speechSynthesis' in window) {
+        sysVoices = window.speechSynthesis.getVoices();
+      }
+    }
+    if ('speechSynthesis' in window) {
+      loadVoices();
+      if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+      }
+    }
+
+    function getBestVoiceForPersona(persona) {
+      if (!sysVoices || sysVoices.length === 0) {
+        loadVoices();
+      }
+      const engVoices = sysVoices.filter(v => v.lang.startsWith('en'));
+      if (engVoices.length === 0) return null;
+
+      let priorities = [];
+      if (persona === 'counsellor') {
+        priorities = [
+          /neerja/i, /heera/i, /google india/i, /india/i, /female/i, /zira/i, /aria/i, /susan/i, /hazel/i
+        ];
+      } else if (persona === 'analyst') {
+        priorities = [
+          /ravi/i, /google uk/i, /uk male/i, /david/i, /george/i, /male/i
+        ];
+      } else {
+        priorities = [
+          /guy/i, /google us/i, /us male/i, /natural/i, /en-US/i
+        ];
+      }
+
+      for (const regex of priorities) {
+        const match = engVoices.find(v => regex.test(v.name) || regex.test(v.lang));
+        if (match) return match;
+      }
+
+      const enInVoice = engVoices.find(v => v.lang.includes('IN') || v.name.includes('India'));
+      if (enInVoice) return enInVoice;
+
+      const enUsVoice = engVoices.find(v => v.lang.includes('US') || v.lang.includes('GB'));
+      if (enUsVoice) return enUsVoice;
+
+      return engVoices[0];
+    }
+
+    function cleanTextForSpeech(text) {
+      if (!text) return '';
+      let clean = text
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/\*(.*?)\*/g, '$1')
+        .replace(/-\s+/g, '')
+        .replace(/<br\s*\/?>/gi, '. ');
+
+      const acronyms = {
+        'VJTI': 'V J T I',
+        'COEP': 'C O E P',
+        'PICT': 'P I C T',
+        'SPIT': 'S P I T',
+        'VIT': 'V I T',
+        'MIT': 'M I T',
+        'ICT': 'I C T',
+        'PCCOE': 'P C C O E',
+        'MHT-CET': 'M H T C E T',
+        'MHT CET': 'M H T C E T',
+        'CAP': 'C A P',
+        'ILS': 'I L S',
+        'OBC': 'O B C',
+        'EWS': 'E W S',
+        'TFWS': 'T F W S',
+        'PWD': 'P W D',
+        'DEF': 'D E F',
+        'GOPEN': 'General Open',
+        'LOPEN': 'Ladies Open',
+        'GSCH': 'General Scheduled Caste Home University',
+        'LSCH': 'Ladies Scheduled Caste Home University'
+      };
+
+      for (const [abbr, expanded] of Object.entries(acronyms)) {
+        const regex = new RegExp('\\b' + abbr + '\\b', 'g');
+        clean = clean.replace(regex, expanded);
+      }
+
+      clean = clean.replace(/(\d+)\s*-\s*(\d+)/g, '$1 to $2');
+      clean = clean.replace(/%/g, ' percent');
+      clean = clean.replace(/\//g, ' or ');
+      clean = clean.replace(/\s+/g, ' ').trim();
+      return clean;
+    }
+
+    function stopActiveSpeech() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      if (activeSpeakBtn) {
+        activeSpeakBtn.classList.remove('speaking');
+        const txtSpan = activeSpeakBtn.querySelector('.tts-btn-text');
+        if (txtSpan) txtSpan.innerText = 'Read Aloud';
+        activeSpeakBtn = null;
+      }
+      currentUtterance = null;
+    }
+
+    function speakUtterance(speechText, btnElement) {
+      if ('speechSynthesis' in window) {
+        if (window.speechSynthesis.speaking && activeSpeakBtn === btnElement) {
+          stopActiveSpeech();
+          return;
+        }
+
+        stopActiveSpeech();
+
+        const cleanText = cleanTextForSpeech(speechText);
+        if (!cleanText) return;
+
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        currentUtterance = utterance;
+        activeSpeakBtn = btnElement;
+
+        const voice = getBestVoiceForPersona(activePersona);
+        if (voice) {
+          utterance.voice = voice;
+          utterance.lang = voice.lang;
+        } else {
+          utterance.lang = 'en-IN';
+        }
+
+        if (activePersona === 'counsellor') {
+          utterance.pitch = 1.05;
+          utterance.rate = 0.92;
+        } else if (activePersona === 'analyst') {
+          utterance.pitch = 0.94;
+          utterance.rate = 0.98;
+        } else {
+          utterance.pitch = 1.08;
+          utterance.rate = 1.03;
+        }
+
+        utterance.onstart = () => {
+          btnElement.classList.add('speaking');
+          const txtSpan = btnElement.querySelector('.tts-btn-text');
+          if (txtSpan) txtSpan.innerText = 'Stop';
+        };
+
+        utterance.onend = () => {
+          btnElement.classList.remove('speaking');
+          const txtSpan = btnElement.querySelector('.tts-btn-text');
+          if (txtSpan) txtSpan.innerText = 'Read Aloud';
+          if (activeSpeakBtn === btnElement) {
+            activeSpeakBtn = null;
+            currentUtterance = null;
+          }
+        };
+
+        utterance.onerror = (e) => {
+          console.error("Speech Synthesis error", e);
+          btnElement.classList.remove('speaking');
+          const txtSpan = btnElement.querySelector('.tts-btn-text');
+          if (txtSpan) txtSpan.innerText = 'Read Aloud';
+          if (activeSpeakBtn === btnElement) {
+            activeSpeakBtn = null;
+            currentUtterance = null;
+          }
+        };
+
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    function speakText(btn) {
+      if ('speechSynthesis' in window) {
+        const bubble = btn.closest('.message-bubble');
+        const textContainer = bubble.querySelector('.message-text');
+
+        const clone = textContainer.cloneNode(true);
+        const warning = clone.querySelector('.spot-warning-box');
+        if (warning) warning.remove();
+        const suggestions = clone.querySelector('.college-suggestions');
+        if (suggestions) suggestions.remove();
+
+        const speechText = clone.textContent.trim();
+        speakUtterance(speechText, btn);
+      } else {
+        alert("Text-to-speech not supported in this browser.");
+      }
+    }
+
+    function speakLastResponse() {
+      if ('speechSynthesis' in window && lastBotText) {
+        const headerBtn = document.getElementById('headerSpeakBtn');
+        speakUtterance(lastBotText, headerBtn);
+      } else if (!('speechSynthesis' in window)) {
+        alert("Text-to-speech not supported in this browser.");
+      }
+    }
+
+    function getRandomElem(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+    else boot();
+  </script>
+</body>
+</html>
