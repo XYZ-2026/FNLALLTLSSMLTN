@@ -770,18 +770,16 @@
 
             let filtered = allData;
 
-            // 1. Filter by Score
+            // 1. Filter by Score (1st Round Cutoff)
             if (scoreType === 'pct') {
                 filtered = filtered.filter(r => {
                     const r1Pct = r.rounds.R1 && r.rounds.R1.percentile;
-                    const r2Pct = r.rounds.R2 && r.rounds.R2.percentile;
-                    return (r1Pct !== null && r1Pct > 0 && r1Pct <= pct) || (r2Pct !== null && r2Pct > 0 && r2Pct <= pct);
+                    return r1Pct !== null && r1Pct > 0 && r1Pct <= pct;
                 });
             } else {
                 filtered = filtered.filter(r => {
                     const r1Rank = r.rounds.R1 && r.rounds.R1.rank;
-                    const r2Rank = r.rounds.R2 && r.rounds.R2.rank;
-                    return (r1Rank !== null && r1Rank >= rank) || (r2Rank !== null && r2Rank >= rank);
+                    return r1Rank !== null && r1Rank > 0 && r1Rank >= rank;
                 });
             }
 
@@ -816,10 +814,10 @@
                 });
             }
 
-            // Sort results (percentile descending based on the highest matched round percentile, best match first)
+            // Sort results (1st round cutoff percentile descending, best match first)
             filtered.sort((a, b) => {
-                const aPct = Math.max(a.rounds.R1?.percentile || 0, a.rounds.R2?.percentile || 0);
-                const bPct = Math.max(b.rounds.R1?.percentile || 0, b.rounds.R2?.percentile || 0);
+                const aPct = a.rounds.R1?.percentile || 0;
+                const bPct = b.rounds.R1?.percentile || 0;
                 return bPct - aPct;
             });
 
