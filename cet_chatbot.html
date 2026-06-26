@@ -243,6 +243,10 @@
           <span class="state-val unset" id="stateUniv">Not set yet</span>
         </div>
         <div class="state-item">
+          <span class="state-key">Pref Region</span>
+          <span class="state-val unset" id="stateRegion">Not set yet</span>
+        </div>
+        <div class="state-item">
           <span class="state-key">Branches</span>
           <span class="state-val unset" id="stateBranch" style="font-size: 11px;">All Branches</span>
         </div>
@@ -354,6 +358,7 @@
       category: null,
       gender: null,
       homeUniv: null,
+      preferredRegion: null,
       branches: []
     };
 
@@ -781,12 +786,48 @@
         updated.push(`Gender Type: **General (G)**`);
       }
 
-      // 7. Home University matches
-      const univKeys = Object.keys(HOME_UNIVERSITY_MAP);
-      for (const univ of univKeys) {
-        if (lower.includes(univ.toLowerCase()) || (univ === 'Pune' && lower.includes('sppu')) || (univ === 'Mumbai' && lower.includes('mu'))) {
-          sessionState.homeUniv = univ;
-          updated.push(`Home University: **${HOME_UNIVERSITY_MAP[univ].name}**`);
+      // 7. Region vs Home University matches
+      const isHomeUnivCtx = lower.includes('home university') || 
+                            lower.includes('home univ') || 
+                            lower.includes('my university') || 
+                            lower.includes('my univ') || 
+                            lower.includes('h.u.');
+
+      const regionMap = {
+        'mumbai': { name: 'Mumbai', univKey: 'Mumbai', alt: ['mu', 'bombay'] },
+        'pune': { name: 'Pune', univKey: 'Pune', alt: ['sppu', 'poona'] },
+        'nagpur': { name: 'Nagpur', univKey: 'Nagpur', alt: ['rtmnu'] },
+        'aurangabad': { name: 'Aurangabad', univKey: 'Aurangabad', alt: ['bamu'] },
+        'amravati': { name: 'Amravati', univKey: 'Amravati', alt: ['sgbau'] },
+        'nashik': { name: 'Nashik', univKey: 'Pune', alt: ['nasik'] }
+      };
+
+      for (const [key, info] of Object.entries(regionMap)) {
+        const matchesKey = lower.includes(key) || (info.alt && info.alt.some(a => {
+          if (a.length <= 3) {
+            return new RegExp('\\b' + a + '\\b').test(lower);
+          }
+          return lower.includes(a);
+        }));
+
+        if (matchesKey) {
+          const hasUnivCtx = isHomeUnivCtx || 
+                             lower.includes(`${key} university`) || 
+                             lower.includes('univ') || 
+                             (info.alt && info.alt.some(a => {
+                               if (['mu', 'sppu', 'rtmnu', 'bamu', 'sgbau'].includes(a)) {
+                                 return new RegExp('\\b' + a + '\\b').test(lower);
+                               }
+                               return false;
+                             }));
+
+          if (hasUnivCtx) {
+            sessionState.homeUniv = info.univKey;
+            updated.push(`Home University: **${HOME_UNIVERSITY_MAP[info.univKey].name}**`);
+          } else {
+            sessionState.preferredRegion = info.name;
+            updated.push(`Preferred Region: **${info.name}**`);
+          }
           break;
         }
       }
@@ -851,6 +892,10 @@
       if (sessionState.homeUniv !== null) {
         document.getElementById('stateUniv').innerText = sessionState.homeUniv;
         markSet('stateUniv');
+      }
+      if (sessionState.preferredRegion !== null) {
+        document.getElementById('stateRegion').innerText = sessionState.preferredRegion;
+        markSet('stateRegion');
       }
       if (sessionState.branches.length > 0) {
         document.getElementById('stateBranch').innerText = sessionState.branches.join(', ');
@@ -1007,6 +1052,12 @@
         const baseCat = getBaseCategory(r.category);
         if (baseCat !== expectedBaseCat) return false;
 
+        // Preferred Region filter
+        if (sessionState.preferredRegion) {
+          const collegeRegion = getRegionByCode(parseInt(r.code));
+          if (collegeRegion.toLowerCase() !== sessionState.preferredRegion.toLowerCase()) return false;
+        }
+
         // Home Univ suffix filter
         if (studentHU && (r.category.endsWith('H') || r.category.endsWith('O') || r.category.endsWith('S'))) {
           const meta = collegeMetadata.find(m => m.code === parseInt(r.code));
@@ -1065,6 +1116,7 @@
         if (sessionState.category) items.push(`**${sessionState.category}** category`);
         if (sessionState.gender) items.push(`**${sessionState.gender === 'L' ? 'Ladies' : 'General'}** seat quota`);
         if (sessionState.homeUniv) items.push(`Home University **${sessionState.homeUniv}**`);
+        if (sessionState.preferredRegion) items.push(`Preferred Region **${sessionState.preferredRegion}**`);
         if (sessionState.branches.length > 0) items.push(`branch preference for **${sessionState.branches.join(', ')}**`);
 
         if (items.length > 0) {
@@ -1104,14 +1156,14 @@
       }
 
       let refineHtml = '';
-      if (isDefaultCat || isDefaultGender || isDefaultHU) {
+      if (isDefaultCat || isDefaultGender || isDefaultHU || !sessionState.preferredRegion) {
         let promptText = '';
         if (activePersona === 'buddy') {
-          promptText = "To refine these suggestions, tell me your <strong>Category</strong>, <strong>Gender</strong>, or <strong>Home University</strong> (or tap below), and I'll update it instantly, mate!";
+          promptText = "To refine these suggestions, tell me your <strong>Category</strong>, <strong>Gender</strong>, <strong>Home University</strong>, or <strong>Preferred Region</strong> (or tap below), and I'll update it instantly, mate!";
         } else if (activePersona === 'analyst') {
-          promptText = "To refine statistical matching, specify candidate parameters: <strong>Category</strong>, <strong>Gender</strong>, or <strong>Home University</strong> region:";
+          promptText = "To refine statistical matching, specify candidate parameters: <strong>Category</strong>, <strong>Gender</strong>, <strong>Home University</strong>, or <strong>Preferred Region</strong>:";
         } else {
-          promptText = "To get more accurate predictions tailored to your profile, please specify your <strong>Category</strong>, <strong>Gender</strong>, or <strong>Home University</strong> region:";
+          promptText = "To get more accurate predictions tailored to your profile, please specify your <strong>Category</strong>, <strong>Gender</strong>, <strong>Home University</strong>, or <strong>Preferred Region</strong>:";
         }
         
         refineHtml += `
@@ -1146,6 +1198,16 @@
             <div class="quick-reply-chip" onclick="setInput('Pune university')">Pune</div>
             <div class="quick-reply-chip" onclick="setInput('Nagpur university')">Nagpur</div>
             <div class="quick-reply-chip" onclick="setInput('Aurangabad university')">Aurangabad</div>
+          `;
+        }
+
+        if (!sessionState.preferredRegion) {
+          refineHtml += `
+            <span style="font-size:10px; font-weight:700; color:var(--muted); width:100%; display:block; margin-top:4px;">Preferred Region:</span>
+            <div class="quick-reply-chip" onclick="setInput('mumbai colleges')">Mumbai</div>
+            <div class="quick-reply-chip" onclick="setInput('pune colleges')">Pune</div>
+            <div class="quick-reply-chip" onclick="setInput('nagpur colleges')">Nagpur</div>
+            <div class="quick-reply-chip" onclick="setInput('nashik colleges')">Nashik</div>
           `;
         }
         
@@ -1301,9 +1363,10 @@
       sessionState.category = null;
       sessionState.gender = null;
       sessionState.homeUniv = null;
+      sessionState.preferredRegion = null;
       sessionState.branches = [];
       
-      const elements = ['statePct', 'stateRank', 'stateMarks', 'stateCat', 'stateGender', 'stateUniv'];
+      const elements = ['statePct', 'stateRank', 'stateMarks', 'stateCat', 'stateGender', 'stateUniv', 'stateRegion'];
       elements.forEach(id => {
         const el = document.getElementById(id);
         el.innerText = 'Not set yet';
