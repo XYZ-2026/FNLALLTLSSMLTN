@@ -772,9 +772,17 @@
 
             // 1. Filter by Score
             if (scoreType === 'pct') {
-                filtered = filtered.filter(r => r.percentile <= pct);
+                filtered = filtered.filter(r => {
+                    const r1Pct = r.rounds.R1 && r.rounds.R1.percentile;
+                    const r2Pct = r.rounds.R2 && r.rounds.R2.percentile;
+                    return (r1Pct !== null && r1Pct > 0 && r1Pct <= pct) || (r2Pct !== null && r2Pct > 0 && r2Pct <= pct);
+                });
             } else {
-                filtered = filtered.filter(r => r.rank >= rank);
+                filtered = filtered.filter(r => {
+                    const r1Rank = r.rounds.R1 && r.rounds.R1.rank;
+                    const r2Rank = r.rounds.R2 && r.rounds.R2.rank;
+                    return (r1Rank !== null && r1Rank >= rank) || (r2Rank !== null && r2Rank >= rank);
+                });
             }
 
             // 2. Filter by Seat Type (Gender + Category)
@@ -808,8 +816,12 @@
                 });
             }
 
-            // Sort results (percentile descending, so best match first)
-            filtered.sort((a, b) => b.percentile - a.percentile);
+            // Sort results (percentile descending based on the highest matched round percentile, best match first)
+            filtered.sort((a, b) => {
+                const aPct = Math.max(a.rounds.R1?.percentile || 0, a.rounds.R2?.percentile || 0);
+                const bPct = Math.max(b.rounds.R1?.percentile || 0, b.rounds.R2?.percentile || 0);
+                return bPct - aPct;
+            });
 
             // Save results to localStorage
             localStorage.setItem("dse_results", JSON.stringify(filtered.slice(0, 150)));
@@ -942,11 +954,18 @@
             }
 
             try {
-                const res = await fetch('DSE/DSE_CUTOFFS.json');
-                const json = await res.json();
-                const raw = json["DSE_CUTOFFS"] || [];
+                const [r1Res, r2Res] = await Promise.all([
+                    fetch('DSE/DSE_CUTOFFS_R1.json').then(r => r.json()),
+                    fetch('DSE/DSE_CUTOFFS_R2.json').then(r => r.json())
+                ]);
+
+                const r1Raw = r1Res["DSE_CUTOFFS"] || r1Res || [];
+                const r2Raw = r2Res["DSE_CUTOFFS"] || r2Res || [];
+
+                const mergedMap = {};
                 const categoriesSet = new Set();
-                allData = raw.map(r => {
+
+                r1Raw.forEach(r => {
                     const st = r["Seat Type."] || '';
                     if (st === 'EWS') {
                         categoriesSet.add('EWS');
@@ -954,15 +973,82 @@
                         const cat = st.substring(1);
                         if (cat) categoriesSet.add(cat);
                     }
-                    return {
-                        code: r["Institute Code"],
-                        name: r["Institute"].replace(/^\d+\s*-\s*/, '').replace(/^\d+\s+/, '').trim(),
-                        branch: r["Course Name"],
-                        percentile: parseFloat(r["Percentile"] || 0),
-                        rank: parseInt(r["Rank"] || 999999),
-                        seatType: st
-                    };
+
+                    const code = String(r["Institute Code"] || '').trim();
+                    const name = (r["Institute"] || '').replace(/^\d+\s*-\s*/, '').replace(/^\d+\s+/, '').trim();
+                    const branch = (r["Course Name"] || '').trim();
+                    const percentile = parseFloat(r["Percentile"]) || 0;
+                    const rank = parseInt(r["Rank"]) || null;
+                    const stage = "Stage-I";
+
+                    const key = `${code}_${branch}_${st}_${stage}`;
+                    if (!mergedMap[key]) {
+                        mergedMap[key] = {
+                            code,
+                            name,
+                            branch,
+                            seatType: st,
+                            stage,
+                            percentile,
+                            rank: rank || 999999,
+                            rounds: {
+                                R1: { percentile, rank },
+                                R2: { percentile: null, rank: null },
+                                R3: { percentile: null, rank: null },
+                                R4: { percentile: null, rank: null }
+                            }
+                        };
+                    } else {
+                        mergedMap[key].rounds.R1 = { percentile, rank };
+                        mergedMap[key].percentile = percentile;
+                        mergedMap[key].rank = rank || 999999;
+                    }
                 });
+
+                r2Raw.forEach(r => {
+                    const st = r["Category"] || '';
+                    if (st === 'EWS') {
+                        categoriesSet.add('EWS');
+                    } else if (st.startsWith('G') || st.startsWith('L')) {
+                        const cat = st.substring(1);
+                        if (cat) categoriesSet.add(cat);
+                    }
+
+                    const choiceCode = String(r["Choice Code"] || '').trim();
+                    const code = choiceCode.substring(0, 4);
+                    const name = (r["College Name"] || '').replace(/^\d+\s*-\s*/, '').replace(/^\d+\s+/, '').trim();
+                    const branch = (r["Course Name"] || '').trim();
+                    const percentile = parseFloat(r["Percentage"]) || 0;
+                    const rank = parseInt(r["Rank"]) || null;
+                    const stage = (r["Stage"] || 'Stage-I').trim();
+
+                    const key = `${code}_${branch}_${st}_${stage}`;
+                    if (!mergedMap[key]) {
+                        mergedMap[key] = {
+                            code,
+                            name,
+                            branch,
+                            seatType: st,
+                            stage,
+                            percentile,
+                            rank: rank || 999999,
+                            rounds: {
+                                R1: { percentile: null, rank: null },
+                                R2: { percentile, rank },
+                                R3: { percentile: null, rank: null },
+                                R4: { percentile: null, rank: null }
+                            }
+                        };
+                    } else {
+                        mergedMap[key].rounds.R2 = { percentile, rank };
+                        if (mergedMap[key].percentile === 0) {
+                            mergedMap[key].percentile = percentile;
+                            mergedMap[key].rank = rank || 999999;
+                        }
+                    }
+                });
+
+                allData = Object.values(mergedMap);
 
                 // Populate categories dynamically
                 const categoriesArray = Array.from(categoriesSet);

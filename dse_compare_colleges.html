@@ -975,7 +975,7 @@
                 }
 
                 // 6. DSE data
-                const dseRes = await fetch('DSE/DSE_CUTOFFS.json');
+                const dseRes = await fetch('DSE/DSE_CUTOFFS_R1.json');
                 if (dseRes.ok) {
                     const json = await dseRes.json();
                     DSE_DATA = json.DSE_CUTOFFS || [];
@@ -1381,15 +1381,6 @@
                 tierB,
                 tierNumA > 0 && (tierNumB === 0 || tierNumA < tierNumB), // lower tier number (Tier 1) is better
                 tierNumB > 0 && (tierNumA === 0 || tierNumB < tierNumA)
-            );
-
-            // Row 6: Total Seat Intake
-            html += createComparisonRow(
-                "Total Seat Intake",
-                intakeA ? intakeA + " Seats" : "N/A",
-                intakeB ? intakeB + " Seats" : "N/A",
-                false,
-                false
             );
 
             // Row 7: Autonomy

@@ -686,6 +686,15 @@
             display: none !important;
         }
 
+        .trend-indicator {
+            display: inline-flex;
+            flex-direction: column;
+            line-height: 1.3;
+        }
+        .trend-up { color: #16a34a; }
+        .trend-down { color: #dc2626; }
+        .trend-neutral { color: var(--muted); }
+
         @media (max-width: 768px) {
             .master-filters {
                 display: grid;
@@ -830,7 +839,16 @@
           <div class="master-list-card">
             <div class="master-list-header">
               <h3 style="margin:0;">Branch Cutoffs Explorer</h3>
-              <div class="master-filters">
+              <div class="master-filters" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <select id="tblRound" onchange="applyTableFilters()" class="filter-select">
+                  <option value="R1">CAP Round 1</option>
+                  <option value="R2">CAP Round 2</option>
+                  <option value="R3">CAP Round 3</option>
+                  <option value="R4">CAP Round 4</option>
+                </select>
+                <select id="tblStage" onchange="applyTableFilters()" class="filter-select">
+                  <!-- Populated dynamically -->
+                </select>
                 <select id="tblCategory" onchange="applyTableFilters()" class="filter-select">
                   <!-- Populated dynamically -->
                 </select>
@@ -874,11 +892,17 @@
                   <select id="cCategory" onchange="renderCutoffDetails()" style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid var(--stroke); background: var(--card); color: var(--ink); outline: none;"></select>
                 </div>
               </div>
+              <div class="form-group">
+                <label for="cStage" class="form-label" style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Stage</label>
+                <div class="input-wrap">
+                  <select id="cStage" onchange="renderCutoffDetails()" style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid var(--stroke); background: var(--card); color: var(--ink); outline: none;"></select>
+                </div>
+              </div>
             </div>
 
             <!-- Prominent Visual Cutoff Stat Box -->
             <div class="visualization-card" style="min-height: auto; padding: 30px;">
-              <h3 style="font-family:'Lexend',sans-serif; font-size:16px; font-weight:700; color: var(--ink); margin-bottom: 20px;">DSE CAP Round 1 Cutoff Details</h3>
+              <h3 style="font-family:'Lexend',sans-serif; font-size:16px; font-weight:700; color: var(--ink); margin-bottom: 20px;">DSE Cutoff Details</h3>
               <div class="packages-grid" style="margin-top: 10px; gap: 24px;">
                 <div class="pkg-item" style="padding: 24px; background: var(--brand-soft); border-color: var(--brand-ring);">
                   <div class="val" id="lookupPercentile" style="font-size: 32px; color: var(--brand);">—%</div>
@@ -889,6 +913,27 @@
                   <div class="lbl" style="font-size: 12px; margin-top: 4px;">Closing Merit Rank</div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <!-- Round Summary Table Card -->
+          <div class="master-list-card" style="margin-bottom: 24px; margin-top: 24px;">
+            <div style="border-bottom: 1.5px solid var(--stroke); padding-bottom: 10px; margin-bottom: 14px;">
+              <h3 style="font-family:'Lexend',sans-serif; font-size:16px; font-weight:700; color: var(--ink);">Round-by-Round Trend Details</h3>
+            </div>
+            <div class="table-container">
+              <table class="cutoff-table" id="summaryTable">
+                <thead>
+                  <tr>
+                    <th>Round</th>
+                    <th>Cutoff Rank</th>
+                    <th>Cutoff Percentile</th>
+                    <th>Round Change (Closing Rank)</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="summaryTableBody"></tbody>
+              </table>
             </div>
           </div>
 
@@ -975,24 +1020,81 @@
 
       async function init() {
         try {
-          const [metaRes, placementText, dseJson] = await Promise.all([
+          const [metaRes, placementText, dseR1Json, dseR2Json] = await Promise.all([
             fetch('college-data.json').then(r => r.json()),
             fetch('mhtcet_colleges_with_codes.csv').then(r => r.text()),
-            fetch('DSE/DSE_CUTOFFS.json').then(r => r.json())
+            fetch('DSE/DSE_CUTOFFS_R1.json').then(r => r.json()),
+            fetch('DSE/DSE_CUTOFFS_R2.json').then(r => r.json())
           ]);
 
           const parsedPlacements = Papa.parse(placementText, { header: true, skipEmptyLines: true });
           allPlacementTiers = parsedPlacements.data || [];
 
-          const raw = dseJson["DSE_CUTOFFS"] || [];
-          dseData = raw.map(r => ({
-            code: String(r["Institute Code"] || '').trim(),
-            name: (r["Institute"] || '').replace(/^\d+\s*-\s*/, '').replace(/^\d+\s+/, '').trim(),
-            branch: (r["Course Name"] || '').trim(),
-            percentile: parseFloat(r["Percentile"]) || 0,
-            rank: parseInt(r["Rank"]) || 999999,
-            seatType: (r["Seat Type."] || '').trim()
-          }));
+          const r1Raw = dseR1Json["DSE_CUTOFFS"] || dseR1Json || [];
+          const r2Raw = dseR2Json["DSE_CUTOFFS"] || dseR2Json || [];
+
+          const mergedMap = {};
+
+          r1Raw.forEach(r => {
+            const code = String(r["Institute Code"] || '').trim();
+            const name = (r["Institute"] || '').replace(/^\d+\s*-\s*/, '').replace(/^\d+\s+/, '').trim();
+            const branch = (r["Course Name"] || '').trim();
+            const seatType = (r["Seat Type."] || '').trim();
+            const percentile = parseFloat(r["Percentile"]) || null;
+            const rank = parseInt(r["Rank"]) || null;
+            const stage = "Stage-I";
+
+            const key = `${code}_${branch}_${seatType}_${stage}`;
+            if (!mergedMap[key]) {
+              mergedMap[key] = {
+                code,
+                name,
+                branch,
+                seatType,
+                stage,
+                rounds: {
+                  R1: { percentile, rank },
+                  R2: { percentile: null, rank: null },
+                  R3: { percentile: null, rank: null },
+                  R4: { percentile: null, rank: null }
+                }
+              };
+            } else {
+              mergedMap[key].rounds.R1 = { percentile, rank };
+            }
+          });
+
+          r2Raw.forEach(r => {
+            const choiceCode = String(r["Choice Code"] || '').trim();
+            const code = choiceCode.substring(0, 4);
+            const name = (r["College Name"] || '').replace(/^\d+\s*-\s*/, '').replace(/^\d+\s+/, '').trim();
+            const branch = (r["Course Name"] || '').trim();
+            const seatType = (r["Category"] || '').trim();
+            const percentile = parseFloat(r["Percentage"]) || null;
+            const rank = parseInt(r["Rank"]) || null;
+            const stage = (r["Stage"] || 'Stage-I').trim();
+
+            const key = `${code}_${branch}_${seatType}_${stage}`;
+            if (!mergedMap[key]) {
+              mergedMap[key] = {
+                code,
+                name,
+                branch,
+                seatType,
+                stage,
+                rounds: {
+                  R1: { percentile: null, rank: null },
+                  R2: { percentile, rank },
+                  R3: { percentile: null, rank: null },
+                  R4: { percentile: null, rank: null }
+                }
+              };
+            } else {
+              mergedMap[key].rounds.R2 = { percentile, rank };
+            }
+          });
+
+          dseData = Object.values(mergedMap);
 
           const uniqueMap = {};
           (metaRes["college-data"] || []).forEach(c => {
@@ -1202,6 +1304,20 @@
         tblCategorySel.innerHTML = categoryArray.map(c => `<option value="${escAuth(c)}">${escAuth(c)}</option>`).join('');
         setSmartDropdownDefault(tblCategorySel, ['GOPEN', 'LOPEN', 'OBC']);
 
+        const uniqueStages = new Set();
+        curCollegeDse.forEach(r => {
+          if (r.stage) uniqueStages.add(r.stage.trim());
+        });
+        const stageArray = Array.from(uniqueStages).sort();
+        if (stageArray.length === 0) stageArray.push('Stage-I');
+
+        const tblStageSel = document.getElementById('tblStage');
+        tblStageSel.innerHTML = '<option value="all">All Stages</option>' + stageArray.map(s => `<option value="${escAuth(s)}">${escAuth(s)}</option>`).join('');
+
+        const cStageSel = document.getElementById('cStage');
+        cStageSel.innerHTML = stageArray.map(s => `<option value="${escAuth(s)}">${escAuth(s)}</option>`).join('');
+        setSmartDropdownDefault(cStageSel, ['Stage-I']);
+
         const cBranchSel = document.getElementById('cBranch');
         const cCategorySel = document.getElementById('cCategory');
         cBranchSel.innerHTML = branchArray.map(b => `<option value="${escAuth(b)}">${escAuth(b)}</option>`).join('');
@@ -1247,27 +1363,31 @@
         tableLimit = 30;
         const category = document.getElementById('tblCategory').value;
         const search = document.getElementById('tblSearch').value.toLowerCase().trim();
+        const roundKey = document.getElementById('tblRound').value;
+        const stage = document.getElementById('tblStage').value;
 
         tableFilteredRows = curCollegeDse.filter(row => {
           const matchesCategory = row.seatType === category;
           const matchesSearch = !search || (row.branch && row.branch.toLowerCase().includes(search));
-          return matchesCategory && matchesSearch;
+          const matchesStage = stage === 'all' || row.stage === stage;
+          const hasRoundData = row.rounds && row.rounds[roundKey] && row.rounds[roundKey].rank !== null;
+          return matchesCategory && matchesSearch && matchesStage && hasRoundData;
         });
 
-        renderMasterTable();
+        renderMasterTable(roundKey);
       };
 
-      function renderMasterTable() {
+      function renderMasterTable(roundKey) {
         const tbody = document.getElementById('masterCutoffTableBody');
         const paginated = tableFilteredRows.slice(0, tableLimit);
 
         if (!paginated.length) {
           tbody.innerHTML = `
             <tr>
-              <td colspan="4" class="empty-state" style="text-align:center; padding:40px; color:var(--muted)">
+              <td colspan="5" class="empty-state" style="text-align:center; padding:40px; color:var(--muted)">
                 <div style="font-size:32px; margin-bottom:10px;">🔍</div>
                 <h4>No Branch Cutoffs Matching Filters</h4>
-                <p>Try modifying your category or search filter.</p>
+                <p>Try modifying your category, CAP round, stage, or search filter.</p>
               </td>
             </tr>
           `;
@@ -1276,8 +1396,9 @@
         }
 
         tbody.innerHTML = paginated.map(row => {
-          const rankText = row.rank ? row.rank.toLocaleString('en-IN') : 'N/A';
-          const pctText = row.percentile ? parseFloat(row.percentile).toFixed(2) + '%' : 'N/A';
+          const roundData = row.rounds[roundKey] || {};
+          const rankText = roundData.rank ? roundData.rank.toLocaleString('en-IN') : 'N/A';
+          const pctText = roundData.percentile ? parseFloat(roundData.percentile).toFixed(2) + '%' : 'N/A';
           
           return `
             <tr>
@@ -1295,27 +1416,132 @@
 
       window.loadMoreTableRows = function() {
         tableLimit += 30;
-        renderMasterTable();
+        const roundKey = document.getElementById('tblRound').value;
+        renderMasterTable(roundKey);
       };
 
       window.renderCutoffDetails = function() {
         const branch = document.getElementById('cBranch').value;
         const category = document.getElementById('cCategory').value;
+        const stage = document.getElementById('cStage').value;
 
-        if (!branch || !category) return;
+        if (!branch || !category || !stage) return;
 
         const match = curCollegeDse.find(row => {
-          return row.branch && row.branch.trim() === branch.trim() && row.seatType && row.seatType.trim() === category.trim();
+          return row.branch && row.branch.trim() === branch.trim() && 
+                 row.seatType && row.seatType.trim() === category.trim() &&
+                 row.stage && row.stage.trim() === stage.trim();
         });
 
+        let displayPct = 'N/A';
+        let displayRank = 'N/A';
         if (match) {
-          document.getElementById('lookupPercentile').innerText = match.percentile ? match.percentile.toFixed(2) + '%' : 'N/A';
-          document.getElementById('lookupRank').innerText = match.rank ? match.rank.toLocaleString('en-IN') : 'N/A';
+          const r1Data = match.rounds && match.rounds.R1;
+          const r2Data = match.rounds && match.rounds.R2;
+          if (r1Data && r1Data.rank !== null) {
+            displayPct = r1Data.percentile ? r1Data.percentile.toFixed(2) + '%' : 'N/A';
+            displayRank = r1Data.rank ? r1Data.rank.toLocaleString('en-IN') : 'N/A';
+            document.querySelector(".visualization-card h3").innerText = `DSE CAP Round 1 Cutoff Details (${stage})`;
+          } else if (r2Data && r2Data.rank !== null) {
+            displayPct = r2Data.percentile ? r2Data.percentile.toFixed(2) + '%' : 'N/A';
+            displayRank = r2Data.rank ? r2Data.rank.toLocaleString('en-IN') : 'N/A';
+            document.querySelector(".visualization-card h3").innerText = `DSE CAP Round 2 Cutoff Details (${stage})`;
+          } else {
+            document.querySelector(".visualization-card h3").innerText = `DSE Cutoff Details (${stage})`;
+          }
         } else {
-          document.getElementById('lookupPercentile').innerText = 'N/A';
-          document.getElementById('lookupRank').innerText = 'N/A';
+          document.querySelector(".visualization-card h3").innerText = `DSE Cutoff Details (${stage})`;
         }
+        document.getElementById('lookupPercentile').innerText = displayPct;
+        document.getElementById('lookupRank').innerText = displayRank;
+
+        renderSummaryTable(match);
       };
+
+      function renderSummaryTable(match) {
+        const tbody = document.getElementById('summaryTableBody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+
+        let lastRank = null;
+        let lastPct = null;
+
+        const tableRows = [];
+        for (let r = 1; r <= 4; r++) {
+          const roundKey = 'R' + r;
+          if (match && match.rounds && match.rounds[roundKey] && match.rounds[roundKey].rank !== null) {
+            const roundData = match.rounds[roundKey];
+            tableRows.push({ round: r, rank: roundData.rank, percentile: roundData.percentile });
+          } else {
+            tableRows.push({ round: r, rank: null, percentile: null });
+          }
+        }
+
+        tableRows.forEach(row => {
+          let rankDiffText = '-';
+          let pctDiffText = '-';
+          let trendClass = 'trend-neutral';
+
+          let rankText = 'N/A';
+          let pctText = 'N/A';
+
+          if (row.rank !== null) {
+            rankText = row.rank.toLocaleString('en-IN');
+            if (lastRank !== null) {
+              const rDiff = row.rank - lastRank;
+              if (rDiff > 0) {
+                rankDiffText = '+' + rDiff.toLocaleString('en-IN') + ' (Closed later)';
+                trendClass = 'trend-up';
+              } else if (rDiff < 0) {
+                rankDiffText = rDiff.toLocaleString('en-IN') + ' (Closed sooner)';
+                trendClass = 'trend-down';
+              } else {
+                rankDiffText = 'No Change';
+                trendClass = 'trend-neutral';
+              }
+            }
+            lastRank = row.rank;
+          }
+
+          if (row.percentile !== null) {
+            pctText = row.percentile.toFixed(2) + '%';
+            if (lastPct !== null) {
+              const pDiff = row.percentile - lastPct;
+              if (pDiff > 0) {
+                pctDiffText = '+' + pDiff.toFixed(2) + '%';
+              } else if (pDiff < 0) {
+                pctDiffText = pDiff.toFixed(2) + '%';
+              } else {
+                pctDiffText = 'No Change';
+              }
+            }
+            lastPct = row.percentile;
+          }
+
+          const isFilled = row.rank === null;
+          const statusHtml = isFilled
+            ? '<span style="color:var(--muted); font-weight:700">Filled / Inactive</span>'
+            : '<span style="color:var(--green); font-weight:700">Open</span>';
+
+          let changeText = '-';
+          if (row.rank !== null && rankDiffText !== '-') {
+            changeText = '<span style="font-weight:600">' + rankDiffText + '</span>';
+            if (pctDiffText !== '-') {
+              changeText += '<br><span style="font-size:11px; color:var(--muted)">Percentile change: ' + pctDiffText + '</span>';
+            }
+          }
+
+          tbody.innerHTML += `
+            <tr>
+              <td style="font-weight:700">Round ${row.round}</td>
+              <td style="font-weight:600">${rankText}</td>
+              <td style="font-weight:800; color:var(--brand)">${pctText}</td>
+              <td><span class="${trendClass} trend-indicator">${changeText}</span></td>
+              <td>${statusHtml}</td>
+            </tr>
+          `;
+        });
+      }
 
       init();
     }

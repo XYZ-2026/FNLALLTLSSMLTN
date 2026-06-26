@@ -335,8 +335,10 @@
                                 <th>Institute Name</th>
                                 <th>Branch</th>
                                 <th>Category / Pool</th>
-                                <th>Diploma Cutoff %</th>
-                                <th>Merit Rank</th>
+                                <th>Round 1</th>
+                                <th>Round 2</th>
+                                <th>Round 3</th>
+                                <th>Round 4</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -364,6 +366,18 @@
             const countEl = document.getElementById('resultCount');
             if (countEl) countEl.textContent = results.length + ' colleges matching your profile';
 
+            const formatRound = (roundObj) => {
+                if (!roundObj || roundObj.rank === null) return '<span style="color:var(--muted)">—</span>';
+                const rankPart = roundObj.rank ? `Rank: ${Number(roundObj.rank).toLocaleString('en-IN')}` : 'Rank: —';
+                const pctPart = (roundObj.percentile !== undefined && roundObj.percentile !== null) ? `${Number(roundObj.percentile).toFixed(2)}%` : '—';
+                return `
+                  <div class="cutoff-cell" style="display:flex; flex-direction:column; gap:2px;">
+                    <span style="font-weight:700; color:var(--ink)">${pctPart}</span>
+                    <span style="font-size:11px; color:var(--muted); font-weight:500;">${rankPart}</span>
+                  </div>
+                `;
+            };
+
             const tbody = document.querySelector('#resultsTable tbody');
             const displayResults = isPremium ? results : results.slice(0, 13);
 
@@ -371,21 +385,35 @@
                 tbody.innerHTML = displayResults.map((r, i) => {
                 const isLocked = !isPremium && i >= 10;
                 if (isLocked) {
+                    const lockedCell = `
+                        <div class="cutoff-cell locked-cell" style="display:flex; flex-direction:column; gap:2px; filter: blur(3px); opacity: 0.5;">
+                            <span style="font-weight:700; color:var(--ink)">••.••%</span>
+                            <span style="font-size:11px; color:var(--muted); font-weight:500;">Rank: ••••</span>
+                        </div>
+                    `;
                     return `
                         <tr class="locked-row">
                             <td style="color:var(--muted)">${i + 1}</td>
                             <td><span class="college-code" style="filter: blur(2px); opacity: 0.5;">0000</span></td>
-                            <td><span style="filter: blur(4px); opacity: 0.5; font-weight:600;">••••••••••••••••••••••••••••••••••••</span></td>
+                            <td style="max-width:300px;"><span style="filter: blur(4px); opacity: 0.5; font-weight:600;">••••••••••••••••••••••••••••••••••••</span></td>
                             <td><span style="filter: blur(4px); opacity: 0.5; color:var(--muted)">••••••••••••••••••••</span></td>
                             <td><span style="filter: blur(4px); opacity: 0.5;">••••</span></td>
-                            <td style="font-weight:800; color:var(--brand); filter: blur(3px); opacity: 0.5;">••.••%</td>
-                            <td style="font-variant-numeric:tabular-nums; filter: blur(3px); opacity: 0.5;">••••</td>
+                            <td>${lockedCell}</td>
+                            <td>${lockedCell}</td>
+                            <td>${lockedCell}</td>
+                            <td>${lockedCell}</td>
                             <td>
                                 <span style="color:var(--muted); font-size:12px; font-weight:600; display:inline-flex; align-items:center; gap:4px;">Locked 🔒</span>
                             </td>
                         </tr>
                     `;
                 }
+
+                const r1 = r.rounds && r.rounds.R1 ? formatRound(r.rounds.R1) : '<span style="color:var(--muted)">—</span>';
+                const r2 = r.rounds && r.rounds.R2 ? formatRound(r.rounds.R2) : '<span style="color:var(--muted)">—</span>';
+                const r3 = '<span style="color:var(--muted)">—</span>';
+                const r4 = '<span style="color:var(--muted)">—</span>';
+
                 return `
                     <tr>
                         <td style="color:var(--muted)">${i + 1}</td>
@@ -393,8 +421,10 @@
                         <td style="font-weight:600; max-width:300px;">${r.name || '—'}</td>
                         <td style="color:var(--muted)">${r.branch || '—'}</td>
                         <td><span style="font-weight:600; text-transform:uppercase;">${r.seatType || '—'}</span></td>
-                        <td style="font-weight:800; color:var(--brand)">${r.percentile ? r.percentile.toFixed(2) + '%' : '—'}</td>
-                        <td style="font-variant-numeric:tabular-nums">${r.rank ? Number(r.rank).toLocaleString('en-IN') : '—'}</td>
+                        <td>${r1}</td>
+                        <td>${r2}</td>
+                        <td>${r3}</td>
+                        <td>${r4}</td>
                         <td>
                             <a href="https://fe2025.mahacet.org/StaticPages/frmInstituteSummary?InstituteCode=${String(r.code || '').padStart(5, '0')}" target="_blank" style="color:var(--brand); text-decoration:none; font-weight:700; font-size:12px;">Visit DTE Portal &rarr;</a>
                         </td>

@@ -241,7 +241,7 @@ async function loadData() {
     loader.innerHTML = '<div class="pb-spinner"></div><span>Loading DSE cutoff data...</span>';
     
     const [res1, res2] = await Promise.all([
-      fetch('DSE/DSE_CUTOFFS.json'),
+      fetch('DSE/DSE_CUTOFFS_R1.json'),
       fetch('college-data.json')
     ]);
     const j1 = await res1.json();

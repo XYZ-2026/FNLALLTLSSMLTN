@@ -36,9 +36,9 @@
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; padding-top: 80px; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; padding-top: 80px; height: 100vh; height: 100dvh; overflow: hidden; display: flex; flex-direction: column; }
     
-    .wrap { max-width: 1250px; width: 100%; margin: 0 auto; padding: 0 24px 24px; flex: 1; display: flex; gap: 24px; height: calc(100vh - 100px); overflow: hidden; }
+    .wrap { max-width: 1250px; width: 100%; margin: 0 auto; padding: 0 24px 24px; flex: 1; display: flex; gap: 24px; min-height: 0; overflow: hidden; }
 
     /* Left Pane - Active Candidate Profile */
     .profile-sidebar { width: 340px; background: var(--card); border: 1px solid var(--stroke); border-radius: 24px; padding: 24px; box-shadow: var(--shadow-lg); display: flex; flex-direction: column; gap: 20px; overflow-y: auto; transition: all 0.3s ease; }
@@ -167,10 +167,10 @@
     /* Mobile Responsive styling */
     @media (max-width: 900px) {
       body { padding-top: 64px; }
-      .wrap { padding: 8px 12px; height: calc(100vh - 64px); gap: 0; }
+      .wrap { padding: 8px 12px; min-height: 0; gap: 0; }
       
       /* Slide-out Sidebar Panel for Mobile */
-      .profile-sidebar { position: fixed; top: 64px; left: -340px; height: calc(100vh - 64px); z-index: 1000; border-radius: 0; border-top: none; border-bottom: none; width: 280px; box-shadow: 10px 0 25px rgba(0,0,0,0.15); }
+      .profile-sidebar { position: fixed; top: 64px; left: -340px; height: calc(100vh - 64px); height: calc(100dvh - 64px); z-index: 1000; border-radius: 0; border-top: none; border-bottom: none; width: 280px; box-shadow: 10px 0 25px rgba(0,0,0,0.15); }
       .profile-sidebar.open { left: 0; }
       .chat-btn.mobile-toggle { display: grid; }
 
@@ -511,20 +511,19 @@
       const session = initAuth({ requireLogin: true, toolContainerId: 'toolArea' });
       if (!session) return;
 
-      const isAdmin = session.role === 'admin';
-      if (!isAdmin) {
+      const isPremium = session.role === 'premium' || session.role === 'admin';
+      if (!isPremium) {
         document.getElementById('toolArea').innerHTML = `
           <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; text-align:center; padding:40px 20px; width:100%; min-height:60vh;">
             <div style="color:var(--brand);margin-bottom:24px;filter:drop-shadow(0 0 8px var(--brand-ring))">
               <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M5 22h14" />
-                <path d="M5 2h14" />
-                <path d="M17 22c0-5.5-4.5-10-5-10s-5 4.5-5 10" />
-                <path d="M17 2c0 5.5-4.5 10-5 10s-5-4.5-5-10" />
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
               </svg>
             </div>
-            <h2 style="font-family:Lexend,sans-serif;font-weight:800;font-size:28px;margin-bottom:12px;color:var(--ink)">Coming Soon!</h2>
-            <p style="color:var(--muted);max-width:480px;margin:0 auto 32px;line-height:1.6">The Chatbot Mentor tool is currently in private preview. Candidate access will open in the next release phase. Stay tuned!</p>
+            <h2 style="font-family:Lexend,sans-serif;font-weight:800;font-size:28px;margin-bottom:12px;color:var(--ink)">Premium Mentor Chatbot 🔒</h2>
+            <p style="color:var(--muted);max-width:480px;margin:0 auto 32px;line-height:1.6">The Chatbot Mentor tool is exclusive to premium users. Purchase any counselling package to unlock interactive AI assistance, placement insights, and smart cutoff guidance.</p>
+            <a href="https://www.conceptsimplified.in/courses" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; padding: 12px 32px; background: var(--brand); color: #fff !important; text-decoration: none; font-size: 14px; font-weight: 800; border-radius: 12px; transition: all 0.2s ease; box-shadow: 0 4px 14px var(--brand-ring); font-family: 'Inter', sans-serif;">Unlock Chatbot Access</a>
           </div>
         `;
         return;

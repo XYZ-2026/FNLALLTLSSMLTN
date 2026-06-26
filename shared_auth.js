@@ -618,18 +618,18 @@ function injectGlobalUI() {
           </button>
           <div class="dropdown-content" id="drop-cet">
             <a href="cet-landing.html" class="sidebar-sub-link">Hub Overview</a>
-            <a href="cet_chatbot.html" class="sidebar-sub-link">MHT CET Chatbot</a>
             <a href="cet_marks.html" class="sidebar-sub-link">Marks vs Percentile</a>
             <a href="cet_rank.html" class="sidebar-sub-link">Percentile vs Rank</a>
+            <a href="mht_cet_college_predictor.html" class="sidebar-sub-link">MHT CET College Predictor</a>
             <a href="college_explorer.html" class="sidebar-sub-link">College Explorer & Cutoffs</a>
             <a href="cet_colleges.html" class="sidebar-sub-link">Top Colleges</a>
             <a href="compare_colleges.html" class="sidebar-sub-link">Compare Colleges</a>
-            <a href="mht_cet_college_predictor.html" class="sidebar-sub-link">MHT CET College Predictor</a>
             <a href="Branch.html" class="sidebar-sub-link">Branch Prediction Test</a>
             <a href="career_library.html" class="sidebar-sub-link">Career Library</a>
+            <a href="cet_chatbot.html" class="sidebar-sub-link">MHT CET Chatbot</a>
+            <a href="preference-builder.html" class="sidebar-sub-link">CET Preference Builder</a>
             <a href="percentile_vs_college_predictor.html" class="sidebar-sub-link">JEE ALL INDIA Predictor</a>
             <a href="document_checklist.html" class="sidebar-sub-link">Document Checklist</a>
-            <a href="preference-builder.html" class="sidebar-sub-link">CET Preference Builder</a>
           </div>
         </div>
 
