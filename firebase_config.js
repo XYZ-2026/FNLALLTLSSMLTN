@@ -1039,6 +1039,90 @@ async function fireApi(action, payload) {
         return { ok: true, data: { formId: formRef.id, templateName: template.name } };
       }
 
+      case 'logUserActivity': {
+        const { userId, email, name, role, device, sessionId, action, details } = payload;
+        if (userId && userId !== 'guest') {
+          db.collection('users').doc(userId).update({
+            lastActiveAt: firebase.firestore.FieldValue.serverTimestamp()
+          }).catch(err => console.error('Error updating lastActiveAt:', err));
+        }
+        await db.collection('userActivityLogs').add({
+          userId: userId || 'guest',
+          email: email || 'guest',
+          name: name || 'Guest',
+          role: role || 'guest',
+          device: device || 'Desktop',
+          sessionId: sessionId || 'guest_session',
+          action: action || 'page_view',
+          details: details || '',
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        return { ok: true };
+      }
+
+      case 'getAdminAppUsage': {
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+        const logsSnap = await db.collection('userActivityLogs')
+          .where('timestamp', '>=', firebase.firestore.Timestamp.fromDate(sevenDaysAgo))
+          .get();
+        const logs = logsSnap.docs.map(doc => {
+          const d = doc.data();
+          return {
+            id: doc.id,
+            ...d,
+            timestamp: d.timestamp ? d.timestamp.toDate().toISOString() : new Date().toISOString()
+          };
+        });
+        return { ok: true, data: logs };
+      }
+
+      case 'getAdminBranchPredictions': {
+        const groupSnap = await db.collectionGroup('branchTestHistory').get();
+        const history = groupSnap.docs.map(doc => {
+          const d = doc.data();
+          const userRef = doc.ref.parent.parent;
+          let dateStr = '';
+          if (d.createdAt && typeof d.createdAt.toDate === 'function') {
+            dateStr = d.createdAt.toDate().toISOString();
+          } else if (d.createdAt) {
+            dateStr = new Date(d.createdAt).toISOString();
+          } else {
+            dateStr = new Date().toISOString();
+          }
+          return {
+            id: doc.id,
+            userId: userRef ? userRef.id : '',
+            type: 'history',
+            ...d,
+            createdAt: dateStr
+          };
+        });
+
+        const legacySnap = await db.collection('psychometricReports').get();
+        const legacy = legacySnap.docs.map(doc => {
+          const d = doc.data();
+          const ts = d.updatedAt || d.createdAt;
+          let dateStr = '';
+          if (ts && typeof ts.toDate === 'function') {
+            dateStr = ts.toDate().toISOString();
+          } else if (ts) {
+            dateStr = new Date(ts).toISOString();
+          } else {
+            dateStr = new Date(0).toISOString();
+          }
+          return {
+            id: doc.id,
+            userId: doc.id,
+            type: 'legacy',
+            ...d,
+            createdAt: dateStr
+          };
+        });
+
+        return { ok: true, data: { history, legacy } };
+      }
+
       default:
         return { ok: false, error: 'Unknown action: ' + action };
     }

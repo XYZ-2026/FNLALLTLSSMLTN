@@ -38,6 +38,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lexend:wght@400;600;700;800&display=swap"
     rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
       --brand: #dc2626;
@@ -1600,6 +1601,174 @@
               </div>
             </div>
           </div>
+
+          <!-- APP USAGE PANEL -->
+          <div class="panel" id="panel-appUsage">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:20px; margin-bottom:30px">
+              <div class="stat-card" style="background:var(--card); border:1px solid var(--stroke); padding:20px; border-radius:12px; display:flex; align-items:center; gap:16px">
+                <div style="width:48px; height:48px; border-radius:50%; background:var(--brand-soft); display:grid; place-items:center; color:var(--brand); flex-shrink:0">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px">Live Users (5m)</div>
+                  <div id="usage-live-count" style="font-size:28px; font-weight:800; color:var(--ink)">0</div>
+                </div>
+              </div>
+              <div class="stat-card" style="background:var(--card); border:1px solid var(--stroke); padding:20px; border-radius:12px; display:flex; align-items:center; gap:16px">
+                <div style="width:48px; height:48px; border-radius:50%; background:rgba(16, 185, 129, 0.1); display:grid; place-items:center; color:#10b981; flex-shrink:0">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px">Daily Unique Users</div>
+                  <div id="usage-daily-unique" style="font-size:28px; font-weight:800; color:var(--ink)">0</div>
+                </div>
+              </div>
+              <div class="stat-card" style="background:var(--card); border:1px solid var(--stroke); padding:20px; border-radius:12px; display:flex; align-items:center; gap:16px">
+                <div style="width:48px; height:48px; border-radius:50%; background:rgba(59, 130, 246, 0.1); display:grid; place-items:center; color:#3b82f6; flex-shrink:0">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px">Total Page Views (24h)</div>
+                  <div id="usage-total-views" style="font-size:28px; font-weight:800; color:var(--ink)">0</div>
+                </div>
+              </div>
+              <div class="stat-card" style="background:var(--card); border:1px solid var(--stroke); padding:20px; border-radius:12px; display:flex; align-items:center; gap:16px">
+                <div style="width:48px; height:48px; border-radius:50%; background:rgba(139, 92, 246, 0.1); display:grid; place-items:center; color:#8b5cf6; flex-shrink:0">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px">Avg Session Time</div>
+                  <div id="usage-avg-time" style="font-size:28px; font-weight:800; color:var(--ink)">0m</div>
+                </div>
+              </div>
+              <div class="stat-card" style="background:var(--card); border:1px solid var(--stroke); padding:20px; border-radius:12px; display:flex; align-items:center; gap:16px">
+                <div style="width:48px; height:48px; border-radius:50%; background:rgba(245, 158, 11, 0.1); display:grid; place-items:center; color:#f59e0b; flex-shrink:0">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px">Bounce Rate</div>
+                  <div id="usage-bounce-rate" style="font-size:28px; font-weight:800; color:var(--ink)">0%</div>
+                </div>
+              </div>
+              <div class="stat-card" style="background:var(--card); border:1px solid var(--stroke); padding:20px; border-radius:12px; display:flex; align-items:center; gap:16px">
+                <div style="width:48px; height:48px; border-radius:50%; background:rgba(236, 72, 153, 0.1); display:grid; place-items:center; color:#ec4899; flex-shrink:0">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px">Peak Traffic Hour</div>
+                  <div id="usage-peak-hour" style="font-size:28px; font-weight:800; color:var(--ink)">N/A</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Page Views Line Chart -->
+            <div style="background:var(--card); border:1px solid var(--stroke); padding:24px; border-radius:12px; margin-bottom:30px">
+              <h4 style="font-family:'Lexend',sans-serif; font-weight:700; font-size:15px; color:var(--ink); margin-bottom:16px">Daily Usage Trends (Last 7 Days)</h4>
+              <div style="position:relative; height:260px">
+                <canvas id="usageLineChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Doughnut Charts Row -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px; margin-bottom:30px">
+              <div style="background:var(--card); border:1px solid var(--stroke); padding:20px; border-radius:12px">
+                <h4 style="font-family:'Lexend',sans-serif; font-weight:700; font-size:14px; color:var(--ink); margin-bottom:12px; text-align:center">Most Used Tools</h4>
+                <div style="position:relative; height:180px">
+                  <canvas id="toolDoughnutChart"></canvas>
+                </div>
+              </div>
+              <div style="background:var(--card); border:1px solid var(--stroke); padding:20px; border-radius:12px">
+                <h4 style="font-family:'Lexend',sans-serif; font-weight:700; font-size:14px; color:var(--ink); margin-bottom:12px; text-align:center">User Type Distribution</h4>
+                <div style="position:relative; height:180px">
+                  <canvas id="userTypeDoughnutChart"></canvas>
+                </div>
+              </div>
+              <div style="background:var(--card); border:1px solid var(--stroke); padding:20px; border-radius:12px">
+                <h4 style="font-family:'Lexend',sans-serif; font-weight:700; font-size:14px; color:var(--ink); margin-bottom:12px; text-align:center">Device Breakdown</h4>
+                <div style="position:relative; height:180px">
+                  <canvas id="deviceDoughnutChart"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:24px">
+              <!-- Popular Pages -->
+              <div style="background:var(--card); border:1px solid var(--stroke); padding:20px; border-radius:12px">
+                <h4 style="font-family:'Lexend',sans-serif; font-weight:700; font-size:15px; color:var(--ink); margin-bottom:16px">Most Visited Pages</h4>
+                <div class="table-container">
+                  <table style="width:100%">
+                    <thead>
+                      <tr>
+                        <th>Page Path</th>
+                        <th style="text-align:right">Views</th>
+                      </tr>
+                    </thead>
+                    <tbody id="popularPagesTbody">
+                      <tr><td colspan="2" class="empty">No page view data.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- Recent Users Activity -->
+              <div style="background:var(--card); border:1px solid var(--stroke); padding:20px; border-radius:12px">
+                <h4 style="font-family:'Lexend',sans-serif; font-weight:700; font-size:15px; color:var(--ink); margin-bottom:16px">Recent User Session Logs</h4>
+                <div class="table-container">
+                  <table style="width:100%">
+                    <thead>
+                      <tr>
+                        <th>User</th>
+                        <th>Action/Page</th>
+                        <th style="text-align:right">Time</th>
+                      </tr>
+                    </thead>
+                    <tbody id="recentActivityTbody">
+                      <tr><td colspan="3" class="empty">No recent activity.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BRANCH PREDICTION REPORTS PANEL -->
+          <div class="panel" id="panel-branchPredictions">
+            <div class="panel-header" style="justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:20px">
+              <div style="display:flex; gap:12px; align-items:center">
+                <h3 style="font-family:'Lexend',sans-serif; font-weight:800; font-size:18px; color:var(--ink); margin:0">
+                  Students Branch Prediction Reports
+                </h3>
+                <span id="predictionsTotalCount" style="font-size:12px; font-weight:700; color:var(--brand); background:var(--brand-soft); padding:3px 10px; border-radius:100px">0 Total Reports</span>
+              </div>
+              <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap">
+                <input type="text" id="branchSearchInput" placeholder="Search by name, email, or branch..." style="padding:10px 14px; border:1px solid var(--stroke); border-radius:10px; font-size:13.5px; width:260px; outline:none; background:var(--card); color:var(--ink)" oninput="filterBranchPredictions()">
+                <button class="btn btn-secondary" onclick="exportBranchReportsCSV()" style="display:flex; align-items:center; gap:6px; font-weight:700">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Export CSV
+                </button>
+              </div>
+            </div>
+            <div class="table-container">
+              <div class="table-scroll">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Student</th>
+                      <th>DNA / Type</th>
+                      <th>Primary Recommendation</th>
+                      <th>Score</th>
+                      <th>Submitted At</th>
+                      <th style="text-align:right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="branchPredictionsTbody">
+                    <tr>
+                      <td colspan="6" class="empty">Loading branch prediction reports...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     </div>
@@ -1670,6 +1839,22 @@
     </div>
   </div>
 
+  <!-- BRANCH PREDICTION DETAILS MODAL -->
+  <div class="modal-overlay" id="predictionDetailsModal">
+    <div class="modal-card" style="max-width: 650px; max-height: 85vh; overflow-y: auto">
+      <h3 id="predictionDetailsTitle" style="font-family:'Lexend',sans-serif; font-weight:800; font-size:20px; color:var(--ink); margin-bottom:8px">Branch Report Details</h3>
+      <p id="predictionDetailsMeta" style="color:var(--muted); font-size:13px; border-bottom:1.5px solid var(--stroke); padding-bottom:12px; margin-bottom:20px">Student Info</p>
+      
+      <div id="predictionDetailsBody" style="display:flex; flex-direction:column; gap:20px">
+        <!-- Dynamic Content -->
+      </div>
+
+      <div class="modal-actions" style="display:flex; gap:12px; justify-content:flex-end; margin-top:32px; border-top:1.5px solid var(--stroke); padding-top:16px">
+        <button class="btn btn-outline" onclick="closePredictionDetailsModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
 
 
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -1724,6 +1909,8 @@
         <a href="#" class="sidebar-link admin-tab-btn" data-tab="nonCap" onclick="switchPanel('nonCap', this);closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Non-CAP Admissions</a>
         <a href="#" class="sidebar-link admin-tab-btn" data-tab="notices" onclick="switchPanel('notices', this);closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Latest Notices</a>
         <a href="#" class="sidebar-link admin-tab-btn" data-tab="calendar" onclick="switchPanel('calendar', this);closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Manage Events</a>
+        <a href="#" class="sidebar-link admin-tab-btn" data-tab="appUsage" onclick="switchPanel('appUsage', this);closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10M18 20V4M6 20v-4"/></svg> App Usage</a>
+        <a href="#" class="sidebar-link admin-tab-btn" data-tab="branchPredictions" onclick="switchPanel('branchPredictions', this);closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Branch Predictions</a>
       `;
       nav.insertAdjacentHTML('beforeend', html);
     }
@@ -1757,7 +1944,9 @@
         'calendar': 'Calendar Management',
         'requests': 'Edit Quota Requests',
         'notices': 'Manage Latest Notices',
-        'templates': 'Prebuilt Templates'
+        'templates': 'Prebuilt Templates',
+        'appUsage': 'App Usage Dashboard',
+        'branchPredictions': 'Branch Prediction Reports'
       };
       var headerTitle = document.getElementById('pageTitle');
       if (headerTitle) headerTitle.textContent = titles[panelId] || 'Admin Panel';
@@ -1770,6 +1959,8 @@
       if (panelId === 'requests') loadRequests();
       if (panelId === 'notices') loadAdminNotices();
       if (panelId === 'templates') loadTemplatesPanel();
+      if (panelId === 'appUsage') loadAppUsage();
+      if (panelId === 'branchPredictions') loadBranchPredictions();
     }
 
     // ── USERS ──
@@ -2978,9 +3169,578 @@
       }
     }
 
+    var usageChartInstance = null;
+    var toolChartInstance = null;
+    var userTypeChartInstance = null;
+    var deviceChartInstance = null;
+    var allBranchPredictions = [];
+    var filteredPredictions = [];
+
+    async function loadAppUsage() {
+      document.getElementById('usage-live-count').innerText = '...';
+      document.getElementById('usage-daily-unique').innerText = '...';
+      document.getElementById('usage-total-views').innerText = '...';
+      document.getElementById('usage-avg-time').innerText = '...';
+      document.getElementById('usage-bounce-rate').innerText = '...';
+      document.getElementById('usage-peak-hour').innerText = '...';
+      document.getElementById('popularPagesTbody').innerHTML = '<tr><td colspan="2" class="empty">Loading...</td></tr>';
+      document.getElementById('recentActivityTbody').innerHTML = '<tr><td colspan="3" class="empty">Loading...</td></tr>';
+
+      var res = await authApi('getAdminAppUsage', {});
+      if (!res.ok) {
+        toast('Failed to load app usage: ' + res.error, 'err');
+        return;
+      }
+      var logs = res.data || [];
+
+      var now = new Date();
+      var fiveMinsAgo = new Date(now.getTime() - 5 * 60 * 1000);
+      var startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+      // 1. Live Users (5m)
+      var liveSessions = new Set();
+      logs.forEach(function (log) {
+        if (new Date(log.timestamp) >= fiveMinsAgo) {
+          liveSessions.add(log.sessionId || log.userId);
+        }
+      });
+      document.getElementById('usage-live-count').innerText = liveSessions.size;
+
+      // 2. Daily Unique Users
+      var dailySessions = new Set();
+      logs.forEach(function (log) {
+        if (new Date(log.timestamp) >= startOfToday) {
+          dailySessions.add(log.sessionId || log.userId);
+        }
+      });
+      document.getElementById('usage-daily-unique').innerText = dailySessions.size;
+
+      // 3. Total Page Views (Today)
+      var todayViews = logs.filter(function (log) {
+        return new Date(log.timestamp) >= startOfToday;
+      }).length;
+      document.getElementById('usage-total-views').innerText = todayViews;
+
+      // ── SESSION DURATION, BOUNCE RATE, PEAK TRAFFIC HOUR ──
+      var sessionGroups = {};
+      logs.forEach(function(log) {
+        var sId = log.sessionId || log.userId;
+        if (!sessionGroups[sId]) {
+          sessionGroups[sId] = [];
+        }
+        sessionGroups[sId].push(log);
+      });
+
+      var totalSessions = Object.keys(sessionGroups).length;
+      var bounceSessions = 0;
+      var totalDurationSeconds = 0;
+      var activeSessionsCount = 0;
+
+      Object.values(sessionGroups).forEach(function(sLogs) {
+        sLogs.sort(function(a, b) {
+          return new Date(a.timestamp) - new Date(b.timestamp);
+        });
+
+        if (sLogs.length === 1) {
+          bounceSessions++;
+        } else {
+          var first = new Date(sLogs[0].timestamp);
+          var last = new Date(sLogs[sLogs.length - 1].timestamp);
+          var diffSec = (last - first) / 1000;
+          
+          if (diffSec > 0 && diffSec < 1800) {
+            totalDurationSeconds += diffSec;
+            activeSessionsCount++;
+          }
+        }
+      });
+
+      var bounceRate = totalSessions > 0 ? Math.round((bounceSessions / totalSessions) * 100) : 0;
+      document.getElementById('usage-bounce-rate').innerText = bounceRate + '%';
+
+      var avgSeconds = activeSessionsCount > 0 ? (totalDurationSeconds / activeSessionsCount) : 0;
+      var avgMin = Math.floor(avgSeconds / 60);
+      var avgSec = Math.round(avgSeconds % 60);
+      var avgTimeStr = activeSessionsCount > 0 ? (avgMin + 'm ' + avgSec + 's') : '0m';
+      document.getElementById('usage-avg-time').innerText = avgTimeStr;
+
+      var hourCounts = {};
+      logs.forEach(function(log) {
+        var hr = new Date(log.timestamp).getHours();
+        hourCounts[hr] = (hourCounts[hr] || 0) + 1;
+      });
+
+      var peakHour = -1;
+      var maxHourCount = 0;
+      for (var hr = 0; hr < 24; hr++) {
+        if ((hourCounts[hr] || 0) > maxHourCount) {
+          maxHourCount = hourCounts[hr];
+          peakHour = hr;
+        }
+      }
+      
+      var peakHourStr = 'N/A';
+      if (peakHour !== -1) {
+        var suffix = peakHour >= 12 ? 'PM' : 'AM';
+        var hr12 = peakHour % 12;
+        hr12 = hr12 ? hr12 : 12;
+        peakHourStr = hr12 + ' ' + suffix;
+      }
+      document.getElementById('usage-peak-hour').innerText = peakHourStr;
+
+      // 4. Most Visited Pages
+      var pageCounts = {};
+      logs.forEach(function (log) {
+        if (log.action === 'page_view') {
+          var p = log.details || 'index.html';
+          pageCounts[p] = (pageCounts[p] || 0) + 1;
+        }
+      });
+      var popularPages = Object.keys(pageCounts).map(function (path) {
+        return { path: path, count: pageCounts[path] };
+      });
+      popularPages.sort(function (a, b) { return b.count - a.count; });
+      popularPages = popularPages.slice(0, 5);
+
+      var popTbody = document.getElementById('popularPagesTbody');
+      if (popularPages.length === 0) {
+        popTbody.innerHTML = '<tr><td colspan="2" class="empty">No page view data.</td></tr>';
+      } else {
+        popTbody.innerHTML = popularPages.map(function (p) {
+          return '<tr><td style="font-weight:600">' + escAuth(p.path) + '</td><td style="text-align:right; font-weight:700; color:var(--brand)">' + p.count + '</td></tr>';
+        }).join('');
+      }
+
+      // 5. Recent Logs
+      var sortedLogs = [].concat(logs);
+      sortedLogs.sort(function (a, b) { return new Date(b.timestamp) - new Date(a.timestamp); });
+      sortedLogs = sortedLogs.slice(0, 15);
+
+      var recTbody = document.getElementById('recentActivityTbody');
+      if (sortedLogs.length === 0) {
+        recTbody.innerHTML = '<tr><td colspan="3" class="empty">No recent activity.</td></tr>';
+      } else {
+        recTbody.innerHTML = sortedLogs.map(function (log) {
+          var date = new Date(log.timestamp);
+          var timeStr = date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+          var actStr = log.action === 'page_view' ? 'Viewed <strong>' + escAuth(log.details) + '</strong>' : escAuth(log.action);
+          return '<tr><td><span style="font-weight:600; display:block">' + escAuth(log.name) + '</span><span style="font-size:11px; color:var(--muted)">' + escAuth(log.email) + '</span></td><td>' + actStr + '</td><td style="text-align:right; font-size:12px; color:var(--muted)">' + timeStr + '</td></tr>';
+        }).join('');
+      }
+
+      // 6. Charts rendering
+      renderAppUsageChart(logs);
+      renderAppUsageDoughnuts(logs);
+    }
+
+    function renderAppUsageChart(logs) {
+      var days = [];
+      var counts = [];
+      var uniqueCounts = [];
+
+      for (var i = 6; i >= 0; i--) {
+        var d = new Date();
+        d.setDate(d.getDate() - i);
+        var dateStr = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+        days.push(dateStr);
+
+        var start = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        var end = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
+
+        var dayLogs = logs.filter(function (log) {
+          var logDate = new Date(log.timestamp);
+          return logDate >= start && logDate < end;
+        });
+
+        counts.push(dayLogs.length);
+
+        var daySessions = new Set();
+        dayLogs.forEach(function (log) {
+          daySessions.add(log.sessionId || log.userId);
+        });
+        uniqueCounts.push(daySessions.size);
+      }
+
+      var canvas = document.getElementById('usageLineChart');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      if (usageChartInstance) {
+        usageChartInstance.destroy();
+      }
+
+      usageChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: days,
+          datasets: [
+            {
+              label: 'Total Page Views',
+              data: counts,
+              borderColor: '#dc2626',
+              backgroundColor: 'rgba(220, 38, 38, 0.05)',
+              borderWidth: 2.5,
+              tension: 0.3,
+              fill: true
+            },
+            {
+              label: 'Unique Users',
+              data: uniqueCounts,
+              borderColor: '#2563eb',
+              backgroundColor: 'rgba(37, 99, 235, 0.05)',
+              borderWidth: 2.5,
+              tension: 0.3,
+              fill: true
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: {
+                font: { family: 'Inter', weight: 600 }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false }
+            },
+            y: {
+              beginAtZero: true,
+              ticks: { stepSize: 1 }
+            }
+          }
+        }
+      });
+    }
+
+    function renderAppUsageDoughnuts(logs) {
+      // 1. Most Used Tools
+      var toolMapping = {
+        'mht_cet_college_predictor.html': 'MHT CET Predictor',
+        'josaa.html': 'JOSAA Predictor',
+        'comedk_predictor.html': 'COMEDK Predictor',
+        'dse_college_predictor.html': 'DSE Predictor',
+        'preference-builder.html': 'CET Pref Builder',
+        'josaa-preference-builder.html': 'JOSAA Pref Builder',
+        'dse-preference-builder.html': 'DSE Pref Builder',
+        'comedk-preference-builder.html': 'COMEDK Pref Builder',
+        'Branch.html': 'Branch Test',
+        'college_explorer.html': 'College Explorer',
+        'cet_chatbot.html': 'MHT CET Chatbot',
+        'index.html': 'Home Portal'
+      };
+
+      var toolCounts = {};
+      logs.forEach(function(log) {
+        if (log.action === 'page_view') {
+          var page = log.details || 'index.html';
+          var toolName = toolMapping[page] || page;
+          toolCounts[toolName] = (toolCounts[toolName] || 0) + 1;
+        }
+      });
+
+      var toolLabels = Object.keys(toolCounts);
+      var toolValues = Object.values(toolCounts);
+
+      var toolCanvas = document.getElementById('toolDoughnutChart');
+      if (toolCanvas) {
+        var toolCtx = toolCanvas.getContext('2d');
+        if (toolChartInstance) toolChartInstance.destroy();
+        toolChartInstance = new Chart(toolCtx, {
+          type: 'doughnut',
+          data: {
+            labels: toolLabels,
+            datasets: [{
+              data: toolValues,
+              backgroundColor: ['#dc2626', '#2563eb', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#6b7280', '#14b8a6', '#6366f1', '#a855f7', '#f43f5e']
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false }
+            }
+          }
+        });
+      }
+
+      // 2. User Type Distribution
+      var roleCounts = { 'Guest': 0, 'Free Registered': 0, 'Premium': 0, 'Admin': 0 };
+      logs.forEach(function(log) {
+        var role = log.role || 'guest';
+        if (role === 'admin') roleCounts['Admin']++;
+        else if (role === 'premium') roleCounts['Premium']++;
+        else if (role === 'user') roleCounts['Free Registered']++;
+        else roleCounts['Guest']++;
+      });
+
+      var roleLabels = Object.keys(roleCounts).filter(function(k) { return roleCounts[k] > 0; });
+      var roleValues = roleLabels.map(function(k) { return roleCounts[k]; });
+
+      var userTypeCanvas = document.getElementById('userTypeDoughnutChart');
+      if (userTypeCanvas) {
+        var userTypeCtx = userTypeCanvas.getContext('2d');
+        if (userTypeChartInstance) userTypeChartInstance.destroy();
+        userTypeChartInstance = new Chart(userTypeCtx, {
+          type: 'doughnut',
+          data: {
+            labels: roleLabels,
+            datasets: [{
+              data: roleValues,
+              backgroundColor: ['#6b7280', '#3b82f6', '#fbbf24', '#dc2626']
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { font: { family: 'Inter', size: 10 } }
+              }
+            }
+          }
+        });
+      }
+
+      // 3. Device Breakdown
+      var deviceCounts = { 'Desktop': 0, 'Mobile': 0 };
+      logs.forEach(function(log) {
+        var dev = log.device || 'Desktop';
+        deviceCounts[dev] = (deviceCounts[dev] || 0) + 1;
+      });
+
+      var deviceLabels = Object.keys(deviceCounts);
+      var deviceValues = Object.values(deviceCounts);
+
+      var deviceCanvas = document.getElementById('deviceDoughnutChart');
+      if (deviceCanvas) {
+        var deviceCtx = deviceCanvas.getContext('2d');
+        if (deviceChartInstance) deviceChartInstance.destroy();
+        deviceChartInstance = new Chart(deviceCtx, {
+          type: 'doughnut',
+          data: {
+            labels: deviceLabels,
+            datasets: [{
+              data: deviceValues,
+              backgroundColor: ['#4f46e5', '#f43f5e']
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { font: { family: 'Inter', size: 10 } }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    async function loadBranchPredictions() {
+      var tbody = document.getElementById('branchPredictionsTbody');
+      tbody.innerHTML = '<tr><td colspan="6" class="empty">Loading predictions...</td></tr>';
+      
+      var res = await authApi('getAdminBranchPredictions', {});
+      if (!res.ok) {
+        toast('Failed to load predictions: ' + res.error, 'err');
+        return;
+      }
+
+      var data = res.data || { history: [], legacy: [] };
+      var history = data.history || [];
+      var legacy = data.legacy || [];
+
+      var userMap = {};
+      allUsers.forEach(function (u) {
+        userMap[u.id] = u;
+      });
+
+      allBranchPredictions = [];
+
+      history.forEach(function (h) {
+        var uProfile = userMap[h.userId] || {};
+        var userName = uProfile.name || h.studentInfo?.name || 'Student';
+        var userEmail = uProfile.email || h.studentInfo?.email || '';
+        var topBranch = h.topBranches?.[0] || { name: 'Engineering', matchScore: 0 };
+        var dna = h.dnaType?.name || 'Assessment';
+        
+        allBranchPredictions.push({
+          id: h.id,
+          userId: h.userId,
+          name: userName,
+          email: userEmail,
+          dna: dna,
+          primaryBranch: topBranch.name,
+          score: (topBranch.matchScore || topBranch.match || 0) + '%',
+          date: h.createdAt,
+          type: 'Standard Test',
+          rawData: h
+        });
+      });
+
+      legacy.forEach(function (l) {
+        var uProfile = userMap[l.userId] || {};
+        var userName = uProfile.name || 'Student';
+        var userEmail = uProfile.email || '';
+        var topBranchName = l.topBranches && l.topBranches.length > 0 ? (l.topBranches[0].name || l.topBranches[0]) : 'Engineering';
+        var dna = l.dnaType?.name || 'Legacy Test';
+        
+        allBranchPredictions.push({
+          id: l.id,
+          userId: l.userId,
+          name: userName,
+          email: userEmail,
+          dna: dna,
+          primaryBranch: topBranchName,
+          score: l.topBranches && l.topBranches[0] ? (l.topBranches[0].matchScore || l.topBranches[0].match || 'N/A') + '%' : 'N/A',
+          date: l.createdAt,
+          type: 'Legacy Test',
+          rawData: l
+        });
+      });
+
+      allBranchPredictions.sort(function (a, b) {
+        return new Date(b.date) - new Date(a.date);
+      });
+      filteredPredictions = [].concat(allBranchPredictions);
+
+      renderBranchPredictionsTable();
+    }
+
+    function renderBranchPredictionsTable() {
+      var tbody = document.getElementById('branchPredictionsTbody');
+      document.getElementById('predictionsTotalCount').innerText = filteredPredictions.length + ' Total Reports';
+
+      if (filteredPredictions.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty">No reports found matching your criteria.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = filteredPredictions.map(function (p, idx) {
+        var dateObj = new Date(p.date);
+        var dateStr = dateObj.toLocaleDateString('en-IN', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        return '<tr><td><span style="font-weight:600; display:block">' + escAuth(p.name) + '</span><span style="font-size:11px; color:var(--muted)">' + escAuth(p.email) + '</span></td><td><span class="badge" style="background:var(--brand-soft); color:var(--brand); border-radius:100px; padding:2px 8px; font-size:11.5px">' + escAuth(p.dna) + '</span></td><td style="font-weight:600">' + escAuth(p.primaryBranch) + '</td><td style="font-weight:700; color:var(--brand)">' + p.score + '</td><td style="font-size:12px; color:var(--muted)">' + dateStr + '</td><td style="text-align:right"><button class="btn btn-outline btn-sm" onclick="viewPredictionReportDetails(' + idx + ')">View Report</button></td></tr>';
+      }).join('');
+    }
+
+    function filterBranchPredictions() {
+      var query = document.getElementById('branchSearchInput').value.toLowerCase();
+      filteredPredictions = allBranchPredictions.filter(function (p) {
+        return p.name.toLowerCase().includes(query) ||
+               p.email.toLowerCase().includes(query) ||
+               p.primaryBranch.toLowerCase().includes(query) ||
+               p.dna.toLowerCase().includes(query);
+      });
+      renderBranchPredictionsTable();
+    }
+
+    function viewPredictionReportDetails(idx) {
+      var report = filteredPredictions[idx];
+      if (!report) return;
+
+      document.getElementById('predictionDetailsTitle').innerText = report.name + "'s Prediction Report";
+      
+      var dateObj = new Date(report.date);
+      var dateStr = dateObj.toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      document.getElementById('predictionDetailsMeta').innerHTML = '<strong>Email:</strong> ' + escAuth(report.email) + ' | <strong>Test Type:</strong> ' + escAuth(report.type) + ' (' + escAuth(report.dna) + ') | <strong>Date:</strong> ' + dateStr;
+
+      var bodyHtml = '';
+      var raw = report.rawData;
+
+      // Trait Scores
+      if (raw.traitScores) {
+        bodyHtml += '<div><h4 style="font-family:\'Lexend\',sans-serif; font-weight:700; font-size:14px; margin-bottom:10px">Trait Evaluation Scores:</h4><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; background:var(--bg); padding:12px; border-radius:8px">';
+        bodyHtml += Object.keys(raw.traitScores).map(function (trait) {
+          return '<div style="display:flex; justify-content:space-between; font-size:12.5px"><span style="text-transform:capitalize; font-weight:600">' + escAuth(trait) + ':</span><span style="font-weight:700; color:var(--brand)">' + raw.traitScores[trait] + '</span></div>';
+        }).join('');
+        bodyHtml += '</div></div>';
+      }
+
+      // Top Matched Branches
+      if (raw.topBranches && raw.topBranches.length > 0) {
+        bodyHtml += '<div><h4 style="font-family:\'Lexend\',sans-serif; font-weight:700; font-size:14px; margin-bottom:10px">Recommended Engineering Branches:</h4><div style="display:flex; flex-direction:column; gap:8px">';
+        bodyHtml += raw.topBranches.map(function (b, bIdx) {
+          var bName = b.name || b;
+          var bScore = b.matchScore || b.match || 'N/A';
+          var bDesc = b.desc || '';
+          return '<div style="background:var(--bg); border:1.5px solid var(--stroke); padding:12px; border-radius:8px"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px"><span style="font-weight:700; font-family:\'Lexend\'; font-size:13.5px">' + (bIdx + 1) + '. ' + escAuth(bName) + '</span><span style="font-weight:800; color:var(--brand); font-size:12.5px">' + bScore + '% Match</span></div>' + (bDesc ? '<p style="font-size:12px; color:var(--muted); margin:0; line-height:1.4">' + escAuth(bDesc) + '</p>' : '') + '</div>';
+        }).join('');
+        bodyHtml += '</div></div>';
+      }
+
+      // DNA Description
+      if (raw.dnaType) {
+        bodyHtml += '<div style="background:var(--brand-soft); border:1.5px solid var(--brand-ring); border-radius:8px; padding:12px; display:flex; gap:12px; align-items:flex-start"><span style="font-size:24px">' + escAuth(raw.dnaType.icon || '🧬') + '</span><div><div style="font-weight:700; font-family:\'Lexend\'; color:var(--brand); font-size:14px">Engineering DNA Type: ' + escAuth(raw.dnaType.name) + '</div><p style="font-size:12px; color:var(--muted); margin:0; line-height:1.4; margin-top:4px">' + escAuth(raw.dnaType.desc) + '</p></div></div>';
+      }
+
+      document.getElementById('predictionDetailsBody').innerHTML = bodyHtml;
+      document.getElementById('predictionDetailsModal').classList.add('show');
+    }
+
+    function closePredictionDetailsModal() {
+      document.getElementById('predictionDetailsModal').classList.remove('show');
+    }
+
+    function exportBranchReportsCSV() {
+      if (filteredPredictions.length === 0) {
+        alert('No data available to export.');
+        return;
+      }
+
+      var csv = 'Student Name,Student Email,DNA Profile Type,Primary Recommended Branch,Match Score,Date Submitted\n';
+      filteredPredictions.forEach(function (p) {
+        var row = [
+          '"' + p.name.replace(/"/g, '""') + '"',
+          '"' + p.email.replace(/"/g, '""') + '"',
+          '"' + p.dna.replace(/"/g, '""') + '"',
+          '"' + p.primaryBranch.replace(/"/g, '""') + '"',
+          '"' + p.score + '"',
+          '"' + p.date + '"'
+        ];
+        csv += row.join(',') + '\n';
+      });
+
+      var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      var link = document.createElement('a');
+      var url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'branch_predictions_export_' + new Date().toISOString().slice(0, 10) + '.csv');
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
     window.loadTemplatesPanel = loadTemplatesPanel;
     window.adminSeedDefaultTemplates = adminSeedDefaultTemplates;
     window.deleteTemplateFromList = deleteTemplateFromList;
+    window.loadAppUsage = loadAppUsage;
+    window.loadBranchPredictions = loadBranchPredictions;
+    window.filterBranchPredictions = filterBranchPredictions;
+    window.viewPredictionReportDetails = viewPredictionReportDetails;
+    window.closePredictionDetailsModal = closePredictionDetailsModal;
+    window.exportBranchReportsCSV = exportBranchReportsCSV;
   </script>
 </body>
 

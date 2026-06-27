@@ -1181,6 +1181,21 @@ function initAuth(opts) {
 
   startUpgradeButtonObserver();
   initAdPopup();
+
+  // Trace page view in background
+  try {
+    var pName = window.location.pathname.split('/').pop() || 'index.html';
+    if (pName !== 'admin.html' && pName !== 'auth.html') {
+      setTimeout(function() {
+        if (typeof logUserPortalActivity === 'function') {
+          logUserPortalActivity('page_view', pName);
+        }
+      }, 1000);
+    }
+  } catch(e) {
+    console.error('Page view logging failed:', e);
+  }
+
   return session || { guest: true };
 }
 
@@ -1965,4 +1980,37 @@ window.submitClaimPremium = async function(event) {
     submitBtn.querySelector('.btn-text').innerText = 'Validate & Activate Premium';
     submitBtn.querySelector('.cs-btn-spinner').style.display = 'none';
   }
+};
+
+window.getOrCreateSessionId = function(session) {
+  if (session && session.id) return session.id;
+  var gId = sessionStorage.getItem('cs_guest_session_id');
+  if (!gId) {
+    gId = 'guest_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    sessionStorage.setItem('cs_guest_session_id', gId);
+  }
+  return gId;
+};
+
+window.logUserPortalActivity = async function(action, details) {
+  var session = getSession();
+  var sessId = getOrCreateSessionId(session);
+  var uId = session ? session.id : 'guest';
+  var email = session ? session.email : 'guest';
+  var name = session ? session.name : 'Guest';
+  var role = session ? (session.role || 'user') : 'guest';
+  var device = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop';
+
+  authApi('logUserActivity', {
+    userId: uId,
+    email: email,
+    name: name,
+    role: role,
+    device: device,
+    sessionId: sessId,
+    action: action,
+    details: details
+  }).catch(function(err) {
+    console.error('Activity logging API failed:', err);
+  });
 };

@@ -2376,7 +2376,8 @@
         const cCategorySel = document.getElementById('cCategory');
 
         cBranchSel.innerHTML = branchArray.map(b => `<option value="${escAuth(b)}">${escAuth(b)}</option>`).join('');
-        cCategorySel.innerHTML = categoryArray.map(c => `<option value="${escAuth(c)}">${escAuth(c)}</option>`).join('');
+        const chartCategoryArray = categoryArray.filter(c => c !== 'AI');
+        cCategorySel.innerHTML = chartCategoryArray.map(c => `<option value="${escAuth(c)}">${escAuth(c)}</option>`).join('');
 
         setSmartDropdownDefault(cBranchSel, ['Computer Science', 'Computer Engineering', 'Information Technology', 'Electronics']);
         setSmartDropdownDefault(cCategorySel, ['GOPENS', 'GOPEN', 'GSCS', 'GOBCS']);
