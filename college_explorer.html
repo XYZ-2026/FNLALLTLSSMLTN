@@ -1,1173 +1,1243 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
+
 <head>
-    <!-- SEO Optimization Meta Tags -->
-    <title>College Explorer & Cutoffs — College Simplified</title>
-    <meta name="keywords" content="College Explorer, seat matrix, MHT CET seats, placement packages, engineering college details, branch intake, category allocation, autonomous, minority quota, cutoff checker, mhtcet rounds, jee mains AI cutoff">
-    <meta name="description" content="Explore detailed college statistics, seat matrices, placement packages, and historical MHT-CET / JEE Mains cutoff ranks for engineering colleges in Maharashtra.">
-    <link rel="icon" type="image/png" href="favicon.png">
-    
-    <!-- Open Graph / Facebook Meta Tags -->
-    <meta property="og:title" content="College Explorer & Cutoffs — College Simplified">
-    <meta property="og:description" content="Explore detailed college statistics, seat matrices, placement packages, and historical MHT-CET / JEE Mains cutoff ranks for engineering colleges in Maharashtra.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://counselling.collegesimplified.in/college_explorer.html">
-    <meta property="og:site_name" content="College Simplified">
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Fonts and Libraries -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=Lexend:wght@600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Chart.js & PapaParse CDNs -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-
-    <style>
-        :root {
-            --brand: #dc2626; 
-            --brand-soft: #fef2f2; 
-            --brand-ring: rgba(220, 38, 38, 0.15);
-            --ink: #111827; 
-            --ink2: #374151;
-            --muted: #6b7280; 
-            --bg: #f4f6fb; 
-            --card: #ffffff; 
-            --stroke: #e5e7eb;
-            --blue: #2563eb;
-            --blue-soft: #eff6ff;
-            --green: #16a34a;
-            --green-soft: #f0fdf4;
-            --orange: #d97706;
-            --orange-soft: #fffbeb;
-            --shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
-        }
-
-        [data-theme="dark"] {
-            --brand: #ff6b74;
-            --brand-soft: #2a1215;
-            --brand-ring: rgba(255, 107, 116, 0.15);
-            --ink: #f0f1f6;
-            --ink2: #c8cad8;
-            --muted: #8b90a8;
-            --bg: #0b0d14;
-            --card: #131620;
-            --stroke: #222636;
-            --blue: #60a5fa;
-            --blue-soft: #0e1a38;
-            --green: #4ade80;
-            --green-soft: #0a1f10;
-            --orange: #fb923c;
-            --orange-soft: #1f1208;
-            --shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
-            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.4);
-        }
-
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html, body {
-            overflow-x: hidden;
-            width: 100%;
-            position: relative;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--ink);
-            padding-top: 64px;
-        }
-
-        .wrap {
-            max-width: 1250px;
-            margin: 0 auto;
-            padding: 40px 20px 80px;
-        }
-
-        /* Page Header */
-        .page-hdr {
-            margin-bottom: 32px;
-            border-bottom: 2px solid var(--stroke);
-            padding-bottom: 16px;
-        }
-
-        .page-hdr h1 {
-            font-family: 'Poppins', sans-serif;
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--ink);
-        }
-
-        .page-hdr p {
-            color: var(--muted);
-            font-size: 14px;
-            margin-top: 4px;
-            line-height: 1.6;
-        }
-
-        /* Search & Filters Section */
-        .search-card {
-            background: var(--card);
-            border: 1px solid var(--stroke);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
-            margin-bottom: 32px;
-        }
-
-        .filters-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .form-label {
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--muted);
-        }
-
-        .input-wrap {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .input-wrap select, .input-wrap input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1.5px solid var(--stroke);
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--ink);
-            background: var(--card);
-            outline: none;
-            transition: 0.2s;
-        }
-
-        .input-wrap select:focus, .input-wrap input:focus {
-            border-color: var(--brand);
-            box-shadow: 0 0 0 4px var(--brand-ring);
-        }
-
-        /* Autocomplete Suggestions */
-        .autocomplete-suggestions {
-            position: absolute;
-            top: calc(100% + 4px);
-            left: 0;
-            width: 100%;
-            background: var(--card);
-            border: 1px solid var(--stroke);
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            max-height: 250px;
-            overflow-y: auto;
-            z-index: 1000;
-            display: none;
-        }
-
-        .autocomplete-suggestion {
-            padding: 12px 16px;
-            cursor: pointer;
-            font-size: 13.5px;
-            font-weight: 500;
-            transition: 0.15s;
-            border-bottom: 1px solid rgba(0,0,0,0.02);
-        }
-
-        .autocomplete-suggestion:last-child {
-            border-bottom: none;
-        }
-
-        .autocomplete-suggestion:hover {
-            background: var(--brand-soft);
-            color: var(--brand);
-        }
-
-        .autocomplete-suggestion strong {
-            color: var(--brand);
-            font-family: monospace;
-            background: var(--brand-soft);
-            padding: 1px 4px;
-            border-radius: 4px;
-            margin-right: 6px;
-        }
-
-        /* College Dashboard Styles */
-        .college-dashboard {
-            display: none;
-            animation: fadeIn 0.4s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .college-info-header {
-            background: var(--card);
-            border: 1px solid var(--stroke);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 24px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
-        }
-
-        .college-info-header h2 {
-            font-family: 'Poppins', sans-serif;
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--ink);
-            line-height: 1.3;
-        }
-
-        .college-meta-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .meta-tag {
-            font-size: 11px;
-            font-weight: 700;
-            padding: 4px 12px;
-            border-radius: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .meta-tag.code { background: var(--brand-soft); color: var(--brand); border: 1px solid var(--brand-ring); }
-        .meta-tag.type { background: var(--blue-soft); color: var(--blue); border: 1px solid rgba(37, 99, 235, 0.1); }
-        .meta-tag.region { background: var(--green-soft); color: var(--green); border: 1px solid rgba(22, 163, 74, 0.1); }
-
-        /* KPI Layout Grid */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 24px;
-            margin-bottom: 24px;
-        }
-
-        @media (min-width: 992px) {
-            .dashboard-grid {
-                grid-template-columns: 280px 1fr 1fr;
-            }
-        }
-
-        /* Stat Cards Column */
-        .stats-col {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .stat-card {
-            background: var(--card);
-            border: 1px solid var(--stroke);
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-            text-align: center;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .stat-card .val {
-            font-family: 'Lexend', sans-serif;
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--blue);
-            margin-bottom: 4px;
-        }
-
-        .stat-card.brand-stat .val { color: var(--brand); }
-        .stat-card.orange-stat .val { color: var(--orange); }
-
-        .stat-card .label {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--muted);
-            letter-spacing: 1px;
-        }
-
-        /* Chart Cards */
-        .chart-card {
-            background: var(--card);
-            border: 1px solid var(--stroke);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            min-width: 0; /* Prevents overflow in grid items */
-            overflow: hidden;
-        }
-
-        .chart-card h3 {
-            font-family: 'Lexend', sans-serif;
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--ink);
-            margin-bottom: 20px;
-            align-self: flex-start;
-            border-left: 3px solid var(--brand);
-            padding-left: 8px;
-            line-height: 1.1;
-        }
-
-        .chart-container {
-            width: 100%;
-            height: 220px; /* Reliable height definition for responsive canvas */
-            position: relative;
-            min-width: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .gauge-center-text {
-            position: absolute;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-        }
-
-        .gauge-center-text .num {
-            font-family: 'Lexend', sans-serif;
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--ink);
-        }
-
-        .gauge-center-text .lbl {
-            font-size: 10px;
-            font-weight: 700;
-            color: var(--muted);
-            text-transform: uppercase;
-        }
-
-        .matrix-helper-text {
-            font-size: 13.5px;
-            color: var(--muted);
-            margin: 0 24px 16px 34px;
-            font-weight: 500;
-            line-height: 1.4;
-        }
-
-        /* Placement Packages Card */
-        .placement-card {
-            background: var(--card);
-            border: 1px solid var(--stroke);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 24px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
-        }
-
-        .placement-card h3 {
-            font-family: 'Lexend', sans-serif;
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--ink);
-            margin-bottom: 16px;
-            border-left: 3.5px solid var(--brand);
-            padding-left: 10px;
-            line-height: 1.2;
-        }
-
-        .packages-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 16px;
-        }
-
-        .pkg-item {
-            padding: 16px;
-            background: var(--bg);
-            border-radius: 14px;
-            border: 1px solid var(--stroke);
-            text-align: center;
-        }
-
-        .pkg-item .val {
-            font-family: 'Lexend', sans-serif;
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--ink);
-            margin-bottom: 2px;
-        }
-
-        .pkg-item .val span {
-            font-size: 13px;
-            color: var(--muted);
-            font-weight: 600;
-        }
-
-        .pkg-item .lbl {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--muted);
-            letter-spacing: 0.5px;
-        }
-
-        .pkg-item.tier-item {
-            background: var(--brand-soft);
-            border-color: var(--brand-ring);
-        }
-
-        .pkg-item.tier-item .val {
-            color: var(--brand);
-        }
-
-        /* Seat Matrix Table Cards */
-        .seat-matrix-card {
-            background: var(--card);
-            border: 1px solid var(--stroke);
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
-            overflow: hidden;
-        }
-
-        .seat-matrix-card h3 {
-            font-family: 'Lexend', sans-serif;
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--ink);
-            padding: 24px 24px 12px;
-            border-left: 3.5px solid var(--brand);
-            margin-left: 24px;
-            padding-left: 10px;
-            line-height: 1.2;
-            margin-top: 12px;
-        }
-
-        .table-scroll {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 900px;
-        }
-
-        th {
-            background: #f9fafb;
-            padding: 14px 16px;
-            text-align: left;
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 1.5px solid var(--stroke);
-        }
-
-        td {
-            padding: 14px 16px;
-            font-size: 13.5px;
-            color: var(--ink);
-            border-bottom: 1px solid var(--stroke);
-            vertical-align: middle;
-        }
-
-        tbody tr {
-            cursor: pointer;
-            transition: background-color 0.15s ease;
-        }
-
-        tbody tr:hover {
-            background: #f9fafb;
-        }
-
-        .chevron-icon {
-            transition: transform 0.2s;
-        }
-
-        .expanded-row-tr {
-            background: #fcfdfe;
-        }
-
-        .expanded-row-tr:hover {
-            background: #fcfdfe;
-        }
-
-        /* Expanded Category seats matrix layout */
-        .category-matrix-container {
-            padding: 16px 24px;
-            border-left: 3px solid var(--brand);
-            background: #ffffff;
-            margin: 8px 16px;
-            border-radius: 12px;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.02), 0 2px 10px rgba(0,0,0,0.03);
-            border: 1px solid var(--stroke);
-        }
-
-        .category-matrix-title {
-            font-size: 12.5px;
-            font-weight: 700;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .category-matrix-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 12px;
-        }
-
-        .cat-box {
-            padding: 10px 12px;
-            background: var(--bg);
-            border: 1px solid var(--stroke);
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-        }
-
-        .cat-box .cat-label {
-            font-weight: 700;
-            color: var(--ink);
-        }
-
-        .cat-box .cat-vals {
-            display: flex;
-            gap: 6px;
-        }
-
-        .cat-box .cat-vals span {
-            background: #ffffff;
-            border: 1.5px solid var(--stroke);
-            border-radius: 6px;
-            font-weight: 800;
-            min-width: 24px;
-            height: 24px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            color: var(--ink);
-        }
-
-        .cat-box .cat-vals span.g-seat {
-            border-color: rgba(37, 99, 235, 0.2);
-            color: var(--blue);
-            background: var(--blue-soft);
-        }
-
-        .cat-box .cat-vals span.l-seat {
-            border-color: rgba(220, 38, 38, 0.2);
-            color: var(--brand);
-            background: var(--brand-soft);
-        }
-
-        /* Loader */
-        .loader-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 80px 20px;
-        }
-
-        .loader-spinner {
-            width: 48px;
-            height: 48px;
-            border: 4px solid var(--stroke);
-            border-top-color: var(--brand);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 16px;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .loader-container p {
-            font-size: 14px;
-            color: var(--muted);
-            font-weight: 600;
-        }
-
-        /* Master List View Styles */
-        .list-view-panel {
-            margin-top: 24px;
-            animation: fadeUp 0.5s ease both;
-        }
-
-        .list-view-header {
-            margin-bottom: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .count-badge {
-            font-size: 13px;
-            font-weight: 700;
-            background: var(--brand-soft);
-            color: var(--brand);
-            padding: 6px 14px;
-            border-radius: 100px;
-            border: 1px solid var(--brand-ring);
-        }
-
-        .colleges-list-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .college-item-card {
-            background: var(--card);
-            border: 1px solid var(--stroke);
-            border-radius: 20px;
-            padding: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            gap: 16px;
-        }
-
-        .college-item-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--brand);
-        }
-
-        .clg-card-top {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .clg-card-code {
-            align-self: flex-start;
-            font-size: 10px;
-            font-weight: 800;
-            background: var(--brand-soft);
-            color: var(--brand);
-            padding: 3px 8px;
-            border-radius: 6px;
-            border: 1px solid var(--brand-ring);
-        }
-
-        .clg-card-name {
-            font-family: 'Lexend', sans-serif;
-            font-weight: 700;
-            font-size: 15px;
-            color: var(--ink);
-            line-height: 1.4;
-        }
-
-        .clg-card-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            font-size: 11px;
-            color: var(--muted);
-            font-weight: 600;
-        }
-
-        .clg-card-action {
-            font-size: 12.5px;
-            font-weight: 700;
-            color: var(--brand);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            margin-top: 4px;
-        }
-
-        /* Back Button Style */
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--card);
-            border: 1.5px solid var(--stroke);
-            padding: 10px 20px;
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 13.5px;
-            font-weight: 700;
-            color: var(--ink2);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-        }
-
-        .back-btn:hover {
-            border-color: var(--brand);
-            color: var(--brand);
-            background: var(--brand-soft);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px var(--brand-ring);
-        }
-
-        /* Responsive Mobile Styling for Seat Matrix Card-Based View */
-        @media (max-width: 767px) {
-            /* Hide the default table headers */
-            #seatsMatrixTable thead {
-                display: none;
-            }
-
-            #seatsMatrixTable, 
-            #seatsMatrixTable tbody, 
-            #seatsMatrixTable tr, 
-            #seatsMatrixTable td {
-                display: block;
-                width: 100% !important;
-                min-width: 0 !important;
-            }
-
-            /* Style the main branch row as a card */
-            #seatsMatrixTable tbody > tr:nth-child(2n+1) {
-                background: var(--card);
-                border: 1px solid var(--stroke);
-                border-radius: 16px;
-                padding: 16px;
-                margin-bottom: 12px;
-                position: relative;
-                cursor: pointer;
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.01);
-            }
-
-            /* The first cell (chevron) can be positioned at the top right */
-            #seatsMatrixTable tbody > tr:nth-child(2n+1) td:first-child {
-                position: absolute;
-                top: 16px;
-                right: 16px;
-                width: auto !important;
-                padding: 0;
-                border: none;
-            }
-
-            /* Choice code cell */
-            #seatsMatrixTable tbody > tr:nth-child(2n+1) td:nth-child(2) {
-                padding: 0;
-                border: none;
-            }
-
-            /* Course Name cell */
-            #seatsMatrixTable tbody > tr:nth-child(2n+1) td:nth-child(3) {
-                font-size: 15px;
-                padding: 0;
-                border: none;
-                margin-top: 4px;
-                margin-bottom: 8px;
-                padding-right: 24px; /* avoid chevron overlap */
-            }
-
-            /* The remaining seat count cells (SI, CAP, MS, AI, ILS) can be arranged in a grid or row */
-            #seatsMatrixTable tbody > tr:nth-child(2n+1) td:nth-child(n+4) {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 6px 0;
-                border: none;
-                border-bottom: 1px dashed var(--stroke);
-                font-size: 12.5px;
-            }
-
-            #seatsMatrixTable tbody > tr:nth-child(2n+1) td:nth-child(n+4)::before {
-                content: attr(data-label);
-                font-weight: 700;
-                color: var(--muted);
-                text-transform: uppercase;
-                font-size: 10px;
-                letter-spacing: 0.5px;
-            }
-
-            /* Hide dashed border on the last seat count cell */
-            #seatsMatrixTable tbody > tr:nth-child(2n+1) td:nth-child(9) {
-                border-bottom: none;
-            }
-
-            /* Style the expanded breakdown row card */
-            #seatsMatrixTable tbody > tr.expanded-row-tr {
-                margin-top: -12px;
-                margin-bottom: 16px;
-                border: 1px solid var(--stroke);
-                border-top: none;
-                border-radius: 0 0 16px 16px;
-                background: #fafbfc;
-                padding: 0;
-            }
-
-            #seatsMatrixTable tbody > tr.expanded-row-tr td {
-                padding: 0;
-                border: none;
-            }
-
-            .category-matrix-container {
-                margin: 12px !important;
-                padding: 12px !important;
-            }
-
-            .category-matrix-grid {
-                grid-template-columns: 1fr 1fr !important;
-                gap: 8px !important;
-            }
-
-            /* Responsive Chart Adjustments */
-            .chart-card {
-                padding: 16px;
-            }
-            .gauge-container {
-                height: 180px;
-            }
-            .pie-container {
-                height: 280px; /* Extra height to accommodate pie circle + bottom wrapped legends */
-            }
-            .gauge-center-text {
-                bottom: 10px;
-            }
-            .matrix-helper-text {
-                margin: 0 16px 12px 16px;
-                font-size: 12px;
-            }
-            .college-item-card {
-                padding: 16px;
-            }
-            .college-info-header {
-                padding: 16px;
-            }
-            .search-card {
-                padding: 16px;
-            }
-            .wrap {
-                padding: 20px 12px 60px;
-            }
-        }
-
-        /* ── DETAILED COLLEGE VIEW & ANALYTICS ── */
-        .college-tabs-header {
-            display: flex;
-            gap: 8px;
-            border-bottom: 1.5px solid var(--stroke);
-            padding-bottom: 12px;
-            margin-bottom: 24px;
-            margin-top: 24px;
-        }
-
-        .college-tab-btn {
-            background: transparent;
-            border: none;
-            padding: 8px 16px;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--muted);
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-
-        .college-tab-btn:hover {
-            color: var(--ink);
-            background: var(--stroke);
-        }
-
-        .college-tab-btn.active {
-            color: var(--brand);
-            background: var(--brand-soft);
-            box-shadow: 0 2px 8px var(--brand-ring);
-        }
-
-        /* Trend grid */
-        .trend-analysis-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 24px;
-            margin-bottom: 32px;
-        }
-
-        .trend-analysis-grid > * {
-            min-width: 0;
-        }
-
-        @media (min-width: 1024px) {
-            .trend-analysis-grid {
-                grid-template-columns: 320px 1fr;
-            }
-        }
-
-        .filters-card {
-            background: var(--card);
-            border: 1px solid var(--stroke);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: var(--shadow);
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            height: fit-content;
-        }
-
-        .filters-card h3 {
-            font-family: 'Lexend', sans-serif;
-            font-size: 16px;
-            font-weight: 700;
-            border-bottom: 1.5px solid var(--stroke);
-            padding-bottom: 10px;
-            margin-bottom: 4px;
-            color: var(--ink);
-        }
-
-        .visualization-card {
-            background: var(--card);
-            border: 1px solid var(--stroke);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: var(--shadow);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            min-height: 400px;
-        }
-
-        /* Master Explorer Table */
-        .master-list-card {
-            background: var(--card);
-            border: 1px solid var(--stroke);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: var(--shadow);
-            margin-bottom: 32px;
-        }
-
-        .master-list-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1.5px solid var(--stroke);
-            padding-bottom: 14px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .master-list-header h3 {
-            font-family: 'Lexend', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--ink);
-        }
-
-        .master-filters {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            align-items: center;
-            width: 100%;
-        }
-
-        @media (min-width: 768px) {
-            .master-filters {
-                width: auto;
-            }
-        }
-
-        .filter-select, .filter-search-input {
-            padding: 8px 12px;
-            border: 1.5px solid var(--stroke);
-            border-radius: 8px;
-            font-size: 13px;
-            outline: none;
-            background: var(--card);
-            color: var(--ink);
-            transition: all 0.2s;
-            max-width: 100%;
-        }
-
-        .filter-select:focus, .filter-search-input:focus {
-            border-color: var(--brand);
-        }
-
-        .table-container {
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        .cutoff-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13.5px;
-            text-align: left;
-        }
-
-        .cutoff-table th {
-            background: var(--bg);
-            color: var(--ink2);
-            font-weight: 700;
-            padding: 12px 16px;
-            border-bottom: 1.5px solid var(--stroke);
-        }
-
-        .cutoff-table td {
-            padding: 14px 16px;
-            border-bottom: 1px solid var(--stroke);
-            color: var(--ink);
-        }
-
-        .cutoff-table tr:hover {
-            background: var(--bg);
-        }
-
-        /* Trend badges */
-        .trend-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            font-weight: 700;
-            font-size: 12px;
-        }
-
-        .trend-up { color: #16a34a; }
-        .trend-down { color: #dc2626; }
-        .trend-neutral { color: var(--muted); }
-
-        .load-more-container {
-            text-align: center;
-            margin-top: 24px;
-        }
-
-        .btn-load-more {
-            background: var(--card);
-            border: 1.5px solid var(--stroke);
-            color: var(--ink2);
-            padding: 12px 28px;
-            font-size: 14px;
-            font-weight: 600;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-load-more:hover {
-            border-color: var(--brand);
-            color: var(--brand);
-            background: var(--brand-soft);
-        }
-
-        /* Toggle button group for chart metric */
-        .toggle-group {
-            display: flex;
-            background: var(--bg);
-            padding: 3px;
-            border-radius: 8px;
-            border: 1px solid var(--stroke);
-        }
-
-        .toggle-btn {
-            border: none;
-            background: transparent;
-            padding: 6px 12px;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--muted);
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-
-        .toggle-btn.active {
-            background: var(--card);
-            color: var(--brand);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        @media (max-width: 768px) {
-            .master-filters {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 8px;
-                width: 100%;
-            }
-            .master-filters .filter-search-input {
-                grid-column: span 2;
-            }
-            .trend-indicator {
-                font-size: 11px;
-            }
-        }
-
-        .web-link-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            border-radius: 10px;
-            background: var(--brand-soft);
-            border: 1px solid var(--brand);
-            color: var(--brand);
-            font-size: 13px;
-            font-weight: 700;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            box-shadow: 0 1px 2px var(--brand-ring);
-        }
-        .web-link-btn:hover {
-            background: var(--brand);
-            color: var(--card);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px var(--brand-ring);
-        }
-        .web-link-btn svg {
-            transition: stroke 0.2s ease;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-    </style>
+  <!-- SEO Optimization Meta Tags -->
+  <title>College Explorer & Cutoffs — College Simplified</title>
+  <meta name="keywords"
+    content="College Explorer, seat matrix, MHT CET seats, placement packages, engineering college details, branch intake, category allocation, autonomous, minority quota, cutoff checker, mhtcet rounds, jee mains AI cutoff">
+  <meta name="description"
+    content="Explore detailed college statistics, seat matrices, placement packages, and historical MHT-CET / JEE Mains cutoff ranks for engineering colleges in Maharashtra.">
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- Open Graph / Facebook Meta Tags -->
+  <meta property="og:title" content="College Explorer & Cutoffs — College Simplified">
+  <meta property="og:description"
+    content="Explore detailed college statistics, seat matrices, placement packages, and historical MHT-CET / JEE Mains cutoff ranks for engineering colleges in Maharashtra.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://counselling.collegesimplified.in/college_explorer.html">
+  <meta property="og:site_name" content="College Simplified">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Fonts and Libraries -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=Lexend:wght@600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Chart.js & PapaParse CDNs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+  <style>
+    :root {
+      --brand: #dc2626;
+      --brand-soft: #fef2f2;
+      --brand-ring: rgba(220, 38, 38, 0.15);
+      --ink: #111827;
+      --ink2: #374151;
+      --muted: #6b7280;
+      --bg: #f4f6fb;
+      --card: #ffffff;
+      --stroke: #e5e7eb;
+      --blue: #2563eb;
+      --blue-soft: #eff6ff;
+      --green: #16a34a;
+      --green-soft: #f0fdf4;
+      --orange: #d97706;
+      --orange-soft: #fffbeb;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    [data-theme="dark"] {
+      --brand: #ff6b74;
+      --brand-soft: #2a1215;
+      --brand-ring: rgba(255, 107, 116, 0.15);
+      --ink: #f0f1f6;
+      --ink2: #c8cad8;
+      --muted: #8b90a8;
+      --bg: #0b0d14;
+      --card: #131620;
+      --stroke: #222636;
+      --blue: #60a5fa;
+      --blue-soft: #0e1a38;
+      --green: #4ade80;
+      --green-soft: #0a1f10;
+      --orange: #fb923c;
+      --orange-soft: #1f1208;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      overflow-x: hidden;
+      width: 100%;
+      position: relative;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      padding-top: 64px;
+    }
+
+    .wrap {
+      max-width: 1250px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    /* Page Header */
+    .page-hdr {
+      margin-bottom: 32px;
+      border-bottom: 2px solid var(--stroke);
+      padding-bottom: 16px;
+    }
+
+    .page-hdr h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .page-hdr p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 4px;
+      line-height: 1.6;
+    }
+
+    /* Search & Filters Section */
+    .search-card {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+      margin-bottom: 32px;
+    }
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+    }
+
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrap select,
+    .input-wrap input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--stroke);
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+      background: var(--card);
+      outline: none;
+      transition: 0.2s;
+    }
+
+    .input-wrap select:focus,
+    .input-wrap input:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 4px var(--brand-ring);
+    }
+
+    /* Autocomplete Suggestions */
+    .autocomplete-suggestions {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      max-height: 250px;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none;
+    }
+
+    .autocomplete-suggestion {
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: 0.15s;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.02);
+    }
+
+    .autocomplete-suggestion:last-child {
+      border-bottom: none;
+    }
+
+    .autocomplete-suggestion:hover {
+      background: var(--brand-soft);
+      color: var(--brand);
+    }
+
+    .autocomplete-suggestion strong {
+      color: var(--brand);
+      font-family: monospace;
+      background: var(--brand-soft);
+      padding: 1px 4px;
+      border-radius: 4px;
+      margin-right: 6px;
+    }
+
+    /* College Dashboard Styles */
+    .college-dashboard {
+      display: none;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .college-info-header {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    }
+
+    .college-info-header h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--ink);
+      line-height: 1.3;
+    }
+
+    .college-meta-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .meta-tag {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .meta-tag.code {
+      background: var(--brand-soft);
+      color: var(--brand);
+      border: 1px solid var(--brand-ring);
+    }
+
+    .meta-tag.type {
+      background: var(--blue-soft);
+      color: var(--blue);
+      border: 1px solid rgba(37, 99, 235, 0.1);
+    }
+
+    .meta-tag.region {
+      background: var(--green-soft);
+      color: var(--green);
+      border: 1px solid rgba(22, 163, 74, 0.1);
+    }
+
+    /* KPI Layout Grid */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    @media (min-width: 992px) {
+      .dashboard-grid {
+        grid-template-columns: 280px 1fr 1fr;
+      }
+    }
+
+    /* Stat Cards Column */
+    .stats-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+      text-align: center;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .stat-card .val {
+      font-family: 'Lexend', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--blue);
+      margin-bottom: 4px;
+    }
+
+    .stat-card.brand-stat .val {
+      color: var(--brand);
+    }
+
+    .stat-card.orange-stat .val {
+      color: var(--orange);
+    }
+
+    .stat-card .label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+
+    /* Chart Cards */
+    .chart-card {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      min-width: 0;
+      /* Prevents overflow in grid items */
+      overflow: hidden;
+    }
+
+    .chart-card h3 {
+      font-family: 'Lexend', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 20px;
+      align-self: flex-start;
+      border-left: 3px solid var(--brand);
+      padding-left: 8px;
+      line-height: 1.1;
+    }
+
+    .chart-container {
+      width: 100%;
+      height: 220px;
+      /* Reliable height definition for responsive canvas */
+      position: relative;
+      min-width: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .gauge-center-text {
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+    }
+
+    .gauge-center-text .num {
+      font-family: 'Lexend', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .gauge-center-text .lbl {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .matrix-helper-text {
+      font-size: 13.5px;
+      color: var(--muted);
+      margin: 0 24px 16px 34px;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    /* Placement Packages Card */
+    .placement-card {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    }
+
+    .placement-card h3 {
+      font-family: 'Lexend', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 16px;
+      border-left: 3.5px solid var(--brand);
+      padding-left: 10px;
+      line-height: 1.2;
+    }
+
+    .packages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+
+    .pkg-item {
+      padding: 16px;
+      background: var(--bg);
+      border-radius: 14px;
+      border: 1px solid var(--stroke);
+      text-align: center;
+    }
+
+    .pkg-item .val {
+      font-family: 'Lexend', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+
+    .pkg-item .val span {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .pkg-item .lbl {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .pkg-item.tier-item {
+      background: var(--brand-soft);
+      border-color: var(--brand-ring);
+    }
+
+    .pkg-item.tier-item .val {
+      color: var(--brand);
+    }
+
+    /* Seat Matrix Table Cards */
+    .seat-matrix-card {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+      overflow: hidden;
+    }
+
+    .seat-matrix-card h3 {
+      font-family: 'Lexend', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--ink);
+      padding: 24px 24px 12px;
+      border-left: 3.5px solid var(--brand);
+      margin-left: 24px;
+      padding-left: 10px;
+      line-height: 1.2;
+      margin-top: 12px;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 900px;
+    }
+
+    th {
+      background: #f9fafb;
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 1.5px solid var(--stroke);
+    }
+
+    td {
+      padding: 14px 16px;
+      font-size: 13.5px;
+      color: var(--ink);
+      border-bottom: 1px solid var(--stroke);
+      vertical-align: middle;
+    }
+
+    tbody tr {
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    tbody tr:hover {
+      background: #f9fafb;
+    }
+
+    .chevron-icon {
+      transition: transform 0.2s;
+    }
+
+    .expanded-row-tr {
+      background: #fcfdfe;
+    }
+
+    .expanded-row-tr:hover {
+      background: #fcfdfe;
+    }
+
+    /* Expanded Category seats matrix layout */
+    .category-matrix-container {
+      padding: 16px 24px;
+      border-left: 3px solid var(--brand);
+      background: #ffffff;
+      margin: 8px 16px;
+      border-radius: 12px;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.02), 0 2px 10px rgba(0, 0, 0, 0.03);
+      border: 1px solid var(--stroke);
+    }
+
+    .category-matrix-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .category-matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .cat-box {
+      padding: 10px 12px;
+      background: var(--bg);
+      border: 1px solid var(--stroke);
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .cat-box .cat-label {
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .cat-box .cat-vals {
+      display: flex;
+      gap: 6px;
+    }
+
+    .cat-box .cat-vals span {
+      background: #ffffff;
+      border: 1.5px solid var(--stroke);
+      border-radius: 6px;
+      font-weight: 800;
+      min-width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--ink);
+    }
+
+    .cat-box .cat-vals span.g-seat {
+      border-color: rgba(37, 99, 235, 0.2);
+      color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .cat-box .cat-vals span.l-seat {
+      border-color: rgba(220, 38, 38, 0.2);
+      color: var(--brand);
+      background: var(--brand-soft);
+    }
+
+    /* Loader */
+    .loader-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px;
+    }
+
+    .loader-spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid var(--stroke);
+      border-top-color: var(--brand);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 16px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loader-container p {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    /* Master List View Styles */
+    .list-view-panel {
+      margin-top: 24px;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .list-view-header {
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .count-badge {
+      font-size: 13px;
+      font-weight: 700;
+      background: var(--brand-soft);
+      color: var(--brand);
+      padding: 6px 14px;
+      border-radius: 100px;
+      border: 1px solid var(--brand-ring);
+    }
+
+    .colleges-list-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .college-item-card {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 20px;
+      padding: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .college-item-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--brand);
+    }
+
+    .clg-card-top {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .clg-card-code {
+      align-self: flex-start;
+      font-size: 10px;
+      font-weight: 800;
+      background: var(--brand-soft);
+      color: var(--brand);
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--brand-ring);
+    }
+
+    .clg-card-name {
+      font-family: 'Lexend', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+
+    .clg-card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .clg-card-action {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--brand);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    /* Back Button Style */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--card);
+      border: 1.5px solid var(--stroke);
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--ink2);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    }
+
+    .back-btn:hover {
+      border-color: var(--brand);
+      color: var(--brand);
+      background: var(--brand-soft);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px var(--brand-ring);
+    }
+
+    /* Responsive Mobile Styling for Seat Matrix Card-Based View */
+    @media (max-width: 767px) {
+
+      /* Hide the default table headers */
+      #seatsMatrixTable thead {
+        display: none;
+      }
+
+      #seatsMatrixTable,
+      #seatsMatrixTable tbody,
+      #seatsMatrixTable tr,
+      #seatsMatrixTable td {
+        display: block;
+        width: 100% !important;
+        min-width: 0 !important;
+      }
+
+      /* Style the main branch row as a card */
+      #seatsMatrixTable tbody>tr:nth-child(2n+1) {
+        background: var(--card);
+        border: 1px solid var(--stroke);
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 12px;
+        position: relative;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01);
+      }
+
+      /* The first cell (chevron) can be positioned at the top right */
+      #seatsMatrixTable tbody>tr:nth-child(2n+1) td:first-child {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: auto !important;
+        padding: 0;
+        border: none;
+      }
+
+      /* Choice code cell */
+      #seatsMatrixTable tbody>tr:nth-child(2n+1) td:nth-child(2) {
+        padding: 0;
+        border: none;
+      }
+
+      /* Course Name cell */
+      #seatsMatrixTable tbody>tr:nth-child(2n+1) td:nth-child(3) {
+        font-size: 15px;
+        padding: 0;
+        border: none;
+        margin-top: 4px;
+        margin-bottom: 8px;
+        padding-right: 24px;
+        /* avoid chevron overlap */
+      }
+
+      /* The remaining seat count cells (SI, CAP, MS, AI, ILS) can be arranged in a grid or row */
+      #seatsMatrixTable tbody>tr:nth-child(2n+1) td:nth-child(n+4) {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 0;
+        border: none;
+        border-bottom: 1px dashed var(--stroke);
+        font-size: 12.5px;
+      }
+
+      #seatsMatrixTable tbody>tr:nth-child(2n+1) td:nth-child(n+4)::before {
+        content: attr(data-label);
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-size: 10px;
+        letter-spacing: 0.5px;
+      }
+
+      /* Hide dashed border on the last seat count cell */
+      #seatsMatrixTable tbody>tr:nth-child(2n+1) td:nth-child(9) {
+        border-bottom: none;
+      }
+
+      /* Style the expanded breakdown row card */
+      #seatsMatrixTable tbody>tr.expanded-row-tr {
+        margin-top: -12px;
+        margin-bottom: 16px;
+        border: 1px solid var(--stroke);
+        border-top: none;
+        border-radius: 0 0 16px 16px;
+        background: #fafbfc;
+        padding: 0;
+      }
+
+      #seatsMatrixTable tbody>tr.expanded-row-tr td {
+        padding: 0;
+        border: none;
+      }
+
+      .category-matrix-container {
+        margin: 12px !important;
+        padding: 12px !important;
+      }
+
+      .category-matrix-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8px !important;
+      }
+
+      /* Responsive Chart Adjustments */
+      .chart-card {
+        padding: 16px;
+      }
+
+      .gauge-container {
+        height: 180px;
+      }
+
+      .pie-container {
+        height: 280px;
+        /* Extra height to accommodate pie circle + bottom wrapped legends */
+      }
+
+      .gauge-center-text {
+        bottom: 10px;
+      }
+
+      .matrix-helper-text {
+        margin: 0 16px 12px 16px;
+        font-size: 12px;
+      }
+
+      .college-item-card {
+        padding: 16px;
+      }
+
+      .college-info-header {
+        padding: 16px;
+      }
+
+      .search-card {
+        padding: 16px;
+      }
+
+      .wrap {
+        padding: 20px 12px 60px;
+      }
+    }
+
+    /* ── DETAILED COLLEGE VIEW & ANALYTICS ── */
+    .college-tabs-header {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1.5px solid var(--stroke);
+      padding-bottom: 12px;
+      margin-bottom: 24px;
+      margin-top: 24px;
+    }
+
+    .college-tab-btn {
+      background: transparent;
+      border: none;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .college-tab-btn:hover {
+      color: var(--ink);
+      background: var(--stroke);
+    }
+
+    .college-tab-btn.active {
+      color: var(--brand);
+      background: var(--brand-soft);
+      box-shadow: 0 2px 8px var(--brand-ring);
+    }
+
+    /* Trend grid */
+    .trend-analysis-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .trend-analysis-grid>* {
+      min-width: 0;
+    }
+
+    @media (min-width: 1024px) {
+      .trend-analysis-grid {
+        grid-template-columns: 320px 1fr;
+      }
+    }
+
+    .filters-card {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      height: fit-content;
+    }
+
+    .filters-card h3 {
+      font-family: 'Lexend', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      border-bottom: 1.5px solid var(--stroke);
+      padding-bottom: 10px;
+      margin-bottom: 4px;
+      color: var(--ink);
+    }
+
+    .visualization-card {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      min-height: 400px;
+    }
+
+    /* Master Explorer Table */
+    .master-list-card {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 32px;
+    }
+
+    .master-list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1.5px solid var(--stroke);
+      padding-bottom: 14px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .master-list-header h3 {
+      font-family: 'Lexend', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .master-filters {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      width: 100%;
+    }
+
+    @media (min-width: 768px) {
+      .master-filters {
+        width: auto;
+      }
+    }
+
+    .filter-select,
+    .filter-search-input {
+      padding: 8px 12px;
+      border: 1.5px solid var(--stroke);
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+      background: var(--card);
+      color: var(--ink);
+      transition: all 0.2s;
+      max-width: 100%;
+    }
+
+    .filter-select:focus,
+    .filter-search-input:focus {
+      border-color: var(--brand);
+    }
+
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .cutoff-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+      text-align: left;
+    }
+
+    .cutoff-table th {
+      background: var(--bg);
+      color: var(--ink2);
+      font-weight: 700;
+      padding: 12px 16px;
+      border-bottom: 1.5px solid var(--stroke);
+    }
+
+    .cutoff-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--stroke);
+      color: var(--ink);
+    }
+
+    .cutoff-table tr:hover {
+      background: var(--bg);
+    }
+
+    /* Trend badges */
+    .trend-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .trend-up {
+      color: #16a34a;
+    }
+
+    .trend-down {
+      color: #dc2626;
+    }
+
+    .trend-neutral {
+      color: var(--muted);
+    }
+
+    .load-more-container {
+      text-align: center;
+      margin-top: 24px;
+    }
+
+    .btn-load-more {
+      background: var(--card);
+      border: 1.5px solid var(--stroke);
+      color: var(--ink2);
+      padding: 12px 28px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-load-more:hover {
+      border-color: var(--brand);
+      color: var(--brand);
+      background: var(--brand-soft);
+    }
+
+    /* Toggle button group for chart metric */
+    .toggle-group {
+      display: flex;
+      background: var(--bg);
+      padding: 3px;
+      border-radius: 8px;
+      border: 1px solid var(--stroke);
+    }
+
+    .toggle-btn {
+      border: none;
+      background: transparent;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .toggle-btn.active {
+      background: var(--card);
+      color: var(--brand);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    @media (max-width: 768px) {
+      .master-filters {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        width: 100%;
+      }
+
+      .master-filters .filter-search-input {
+        grid-column: span 2;
+      }
+
+      .trend-indicator {
+        font-size: 11px;
+      }
+    }
+
+    .web-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      background: var(--brand-soft);
+      border: 1px solid var(--brand);
+      color: var(--brand);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      box-shadow: 0 1px 2px var(--brand-ring);
+    }
+
+    .web-link-btn:hover {
+      background: var(--brand);
+      color: var(--card);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px var(--brand-ring);
+    }
+
+    .web-link-btn svg {
+      transition: stroke 0.2s ease;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
 </head>
+
 <body>
   <div class="wrap" id="toolArea">
     <div class="page-hdr">
       <h1>College Explorer & Cutoffs</h1>
-      <p>Analyze intake distributions, package placements, and historical admission cutoffs for engineering colleges in Maharashtra.</p>
+      <p>Analyze intake distributions, package placements, and historical admission cutoffs for engineering colleges in
+        Maharashtra.</p>
     </div>
 
     <!-- Data loading state spinner -->
@@ -1183,7 +1253,8 @@
           <div class="form-group">
             <label class="form-label" for="searchColleges">Search College</label>
             <div class="input-wrap">
-              <input type="text" id="searchColleges" placeholder="Enter college name or code..." autocomplete="off" oninput="renderListView()">
+              <input type="text" id="searchColleges" placeholder="Enter college name or code..." autocomplete="off"
+                oninput="renderListView()">
             </div>
           </div>
 
@@ -1201,7 +1272,7 @@
               </select>
             </div>
           </div>
-          
+
           <div class="form-group">
             <label class="form-label" for="filterMinority">Filter Minority</label>
             <div class="input-wrap">
@@ -1240,11 +1311,16 @@
       <!-- Dashboard Panel -->
       <div id="collegeDashboard" class="college-dashboard" style="display: none;">
         <button onclick="showListView()" class="back-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+          </svg>
           Back to College List
         </button>
         <!-- Overview Banner -->
-        <div class="college-info-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div class="college-info-header"
+          style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
           <div style="flex: 1; min-width: 250px;">
             <h2 id="dbCollegeName">Government College of Engineering, Amravati</h2>
             <div class="college-meta-tags">
@@ -1255,7 +1331,12 @@
           </div>
           <div>
             <a id="dbCollegeWebsiteBtn" href="#" target="_blank" class="web-link-btn" style="display: none;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
               Visit Official Site
             </a>
           </div>
@@ -1269,7 +1350,8 @@
               <div class="label">Total Branches</div>
             </div>
             <div class="stat-card brand-stat">
-              <div class="val" id="statMinority" style="font-size: 16px; font-weight: 800; max-width: 240px; word-break: break-word;">None</div>
+              <div class="val" id="statMinority"
+                style="font-size: 16px; font-weight: 800; max-width: 240px; word-break: break-word;">None</div>
               <div class="label">Minority Status</div>
             </div>
             <div class="stat-card orange-stat">
@@ -1316,7 +1398,8 @@
 
         <!-- Seats matrix table -->
         <div class="seat-matrix-card" style="margin-bottom: 40px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
+          <div
+            style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
             <div style="display:flex; flex-direction:column; gap:4px">
               <h3 style="margin:0;">Branch-Wise Seats Matrix Details</h3>
               <p class="matrix-helper-text" style="margin:0;">
@@ -1346,27 +1429,33 @@
         </div>
 
         <!-- Section Header for Cutoffs -->
-        <div class="section-hdr" style="margin-top: 48px; margin-bottom: 24px; border-bottom: 2px solid var(--stroke); padding-bottom: 12px;">
-          <h2 style="font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 800; color: var(--ink);">Admission Cutoffs Dashboard</h2>
-          <p style="color: var(--muted); font-size: 13.5px; margin-top: 4px;">Explore historical CAP rounds closing ranks, percentile trends, and JEE Mains All India cutoffs for this college.</p>
+        <div class="section-hdr"
+          style="margin-top: 48px; margin-bottom: 24px; border-bottom: 2px solid var(--stroke); padding-bottom: 12px;">
+          <h2 style="font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 800; color: var(--ink);">
+            Admission Cutoffs Dashboard</h2>
+          <p style="color: var(--muted); font-size: 13.5px; margin-top: 4px;">Explore historical CAP rounds closing
+            ranks, percentile trends, and JEE Mains All India cutoffs for this college.</p>
         </div>
 
         <!-- Cutoff Checker Section Wrapper -->
         <div id="cutoffSectionWrapper" style="display: none; margin-bottom: 40px;">
           <!-- Tabs for MHT-CET vs JEE Mains -->
           <div class="college-tabs-header">
-            <button class="college-tab-btn active" id="tabMhtcetBtn" onclick="setCollegeTab('mhtcet')">MHT-CET (CAP Rounds 1-4)</button>
-            <button class="college-tab-btn" id="tabJeeBtn" onclick="setCollegeTab('jee')">JEE Mains (All India Quota)</button>
+            <button class="college-tab-btn active" id="tabMhtcetBtn" onclick="setCollegeTab('mhtcet')">MHT-CET (CAP
+              Rounds 1-4)</button>
+            <button class="college-tab-btn" id="tabJeeBtn" onclick="setCollegeTab('jee')">JEE Mains (All India
+              Quota)</button>
           </div>
 
           <!-- Detailed Analytics Content -->
           <div id="collegeDetailsContent">
-            
+
             <!-- MHT-CET Tab Content -->
             <div id="mhtcetTabContent">
               <!-- All Branch Cutoffs Explorer (Master Table) -->
               <div class="master-list-card">
-                <div class="master-list-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+                <div class="master-list-header"
+                  style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
                   <h3 style="margin:0;">All Branch Cutoffs Explorer</h3>
                   <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                     <div class="master-filters">
@@ -1379,7 +1468,8 @@
                       <select id="tblCategory" onchange="applyTableFilters()" class="filter-select">
                         <!-- Populated dynamically -->
                       </select>
-                      <input type="text" id="tblSearch" placeholder="Search branch or choice code..." oninput="applyTableFilters()" class="filter-search-input">
+                      <input type="text" id="tblSearch" placeholder="Search branch or choice code..."
+                        oninput="applyTableFilters()" class="filter-search-input">
                     </div>
                     <div class="export-btn-group" id="mhtcetExportGroup"></div>
                   </div>
@@ -1411,25 +1501,33 @@
                 <div class="filters-card">
                   <h3>Chart Filters</h3>
                   <div class="form-group">
-                    <label for="cBranch" class="form-label" style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Academic Program</label>
+                    <label for="cBranch" class="form-label"
+                      style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Academic
+                      Program</label>
                     <div class="input-wrap">
-                      <select id="cBranch" onchange="renderChartAndSummary()" style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid var(--stroke); background: var(--card); color: var(--ink); outline: none;"></select>
+                      <select id="cBranch" onchange="renderChartAndSummary()"
+                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid var(--stroke); background: var(--card); color: var(--ink); outline: none;"></select>
                     </div>
                   </div>
                   <div class="form-group">
-                    <label for="cCategory" class="form-label" style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Category</label>
+                    <label for="cCategory" class="form-label"
+                      style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Category</label>
                     <div class="input-wrap">
-                      <select id="cCategory" onchange="renderChartAndSummary()" style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid var(--stroke); background: var(--card); color: var(--ink); outline: none;"></select>
+                      <select id="cCategory" onchange="renderChartAndSummary()"
+                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid var(--stroke); background: var(--card); color: var(--ink); outline: none;"></select>
                     </div>
                   </div>
                 </div>
 
                 <!-- Visualization Chart Card -->
                 <div class="visualization-card">
-                  <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1.5px solid var(--stroke); padding-bottom:10px;">
-                    <h3 style="font-family:'Lexend',sans-serif; font-size:16px; font-weight:700; color: var(--ink);">Cutoff Movement Trends</h3>
+                  <div
+                    style="display:flex; justify-content:space-between; align-items:center; border-bottom:1.5px solid var(--stroke); padding-bottom:10px;">
+                    <h3 style="font-family:'Lexend',sans-serif; font-size:16px; font-weight:700; color: var(--ink);">
+                      Cutoff Movement Trends</h3>
                     <div class="toggle-group" id="chartMetricToggle">
-                      <button class="toggle-btn active" id="btnMetricPct" onclick="setChartMetric('percentile')">Percentile</button>
+                      <button class="toggle-btn active" id="btnMetricPct"
+                        onclick="setChartMetric('percentile')">Percentile</button>
                       <button class="toggle-btn" id="btnMetricRank" onclick="setChartMetric('rank')">Rank</button>
                     </div>
                   </div>
@@ -1442,7 +1540,8 @@
               <!-- Round Summary Table Card -->
               <div class="master-list-card" style="margin-bottom: 24px;">
                 <div style="border-bottom: 1.5px solid var(--stroke); padding-bottom: 10px; margin-bottom: 14px;">
-                  <h3 style="font-family:'Lexend',sans-serif; font-size:16px; font-weight:700; color: var(--ink);">Round-by-Round Trend Details</h3>
+                  <h3 style="font-family:'Lexend',sans-serif; font-size:16px; font-weight:700; color: var(--ink);">
+                    Round-by-Round Trend Details</h3>
                 </div>
                 <div class="table-container">
                   <table class="cutoff-table" id="summaryTable">
@@ -1464,12 +1563,26 @@
             <!-- JEE Mains Tab Content -->
             <div id="jeeTabContent" class="hidden">
               <div class="master-list-card">
-                <div class="master-list-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+                <div class="master-list-header"
+                  style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
                   <div>
                     <h3 style="margin:0;">JEE Mains All India Cutoffs</h3>
-                    <span style="font-size: 12px; color: var(--muted); font-weight: 500;">Direct admission cutoff via JEE Mains score</span>
+                    <span style="font-size: 12px; color: var(--muted); font-weight: 500;">Direct admission cutoff via
+                      JEE Mains score</span>
                   </div>
-                  <div class="export-btn-group" id="jeeExportGroup"></div>
+                  <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                    <div class="master-filters">
+                      <select id="tblJeeRound" onchange="applyJeeTableFilters()" class="filter-select">
+                        <option value="R1">Round 1</option>
+                        <option value="R2">Round 2</option>
+                        <option value="R3">Round 3</option>
+                        <option value="R4">Round 4</option>
+                      </select>
+                      <input type="text" id="tblJeeSearch" placeholder="Search branch or choice code..."
+                        oninput="applyJeeTableFilters()" class="filter-search-input">
+                    </div>
+                    <div class="export-btn-group" id="jeeExportGroup"></div>
+                  </div>
                 </div>
                 <div class="table-container">
                   <table class="cutoff-table" id="jeeCutoffTable">
@@ -1485,6 +1598,65 @@
                       </tr>
                     </thead>
                     <tbody id="jeeCutoffTableBody"></tbody>
+                  </table>
+                </div>
+                <div id="jeeLoadMore" class="load-more-container hidden">
+                  <button class="btn-load-more" onclick="loadMoreJeeRows()">Load More Rows</button>
+                </div>
+              </div>
+
+              <!-- Filter & Line Chart Grid for JEE -->
+              <div class="trend-analysis-grid">
+                <!-- Filters sidebar -->
+                <div class="filters-card">
+                  <h3>JEE Chart Filters</h3>
+                  <div class="form-group">
+                    <label for="cJeeBranch" class="form-label"
+                      style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Academic
+                      Program</label>
+                    <div class="input-wrap">
+                      <select id="cJeeBranch" onchange="renderJeeChartAndSummary()"
+                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid var(--stroke); background: var(--card); color: var(--ink); outline: none;"></select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Visualization Chart Card -->
+                <div class="visualization-card">
+                  <div
+                    style="display:flex; justify-content:space-between; align-items:center; border-bottom:1.5px solid var(--stroke); padding-bottom:10px;">
+                    <h3 style="font-family:'Lexend',sans-serif; font-size:16px; font-weight:700; color: var(--ink);">
+                      JEE Cutoff Movement Trends</h3>
+                    <div class="toggle-group" id="jeeChartMetricToggle">
+                      <button class="toggle-btn active" id="btnJeeMetricPct"
+                        onclick="setJeeChartMetric('percentile')">Percentile</button>
+                      <button class="toggle-btn" id="btnJeeMetricRank" onclick="setJeeChartMetric('rank')">Rank</button>
+                    </div>
+                  </div>
+                  <div class="chart-container" style="height: 320px;">
+                    <canvas id="jeeTrendChart"></canvas>
+                  </div>
+                </div>
+              </div>
+
+              <!-- JEE Round Summary Table Card -->
+              <div class="master-list-card" style="margin-top: 24px; margin-bottom: 24px;">
+                <div style="border-bottom: 1.5px solid var(--stroke); padding-bottom: 10px; margin-bottom: 14px;">
+                  <h3 style="font-family:'Lexend',sans-serif; font-size:16px; font-weight:700; color: var(--ink);">
+                    JEE Round-by-Round Trend Details</h3>
+                </div>
+                <div class="table-container">
+                  <table class="cutoff-table" id="jeeSummaryTable">
+                    <thead>
+                      <tr>
+                        <th>Round</th>
+                        <th>Cutoff Rank</th>
+                        <th>Cutoff Percentile</th>
+                        <th>Round Change (Closing Rank)</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="jeeSummaryTableBody"></tbody>
                   </table>
                 </div>
               </div>
@@ -1522,279 +1694,284 @@
         `;
       } else {
         let collegeList = [];
-      let seatsData = [];
-      let allPlacementTiers = [];
-      let mhtData = [];
-      let jeeData = [];
+        let seatsData = [];
+        let allPlacementTiers = [];
+        let mhtData = [];
+        let jeeData = [];
 
-      let gaugeChartInstance = null;
-      let pieChartInstance = null;
+        let gaugeChartInstance = null;
+        let pieChartInstance = null;
 
-      let curMht = [];
-      let curJee = [];
-      let mhtTableLimit = 30;
-      let mhtTableFilteredRows = [];
-      let trendChartInstance = null;
-      let trendMetric = 'percentile';
+        let curMht = [];
+        let curJee = [];
+        let mhtTableLimit = 30;
+        let mhtTableFilteredRows = [];
+        let trendChartInstance = null;
+        let trendMetric = 'percentile';
 
-      // Close autocomplete list when clicking outside
-      document.addEventListener('click', function(e) {
-        const box = document.getElementById('suggestionsBox');
-        const searchInput = document.getElementById('searchColleges');
-        if (box && e.target !== searchInput && !box.contains(e.target)) {
-          box.style.display = 'none';
-        }
-      });
+        let jeeTableLimit = 30;
+        let jeeTableFilteredRows = [];
+        let jeeTrendChartInstance = null;
+        let jeeTrendMetric = 'percentile';
 
-      // Normalization for placement fuzzy name matching using mhtcet_colleges_with_codes.csv
-      function findPlacementData(collegeName, collegeCode) {
-        const cleanTargetCode = collegeCode ? String(collegeCode).trim().replace(/^0+/, '') : "";
-        
-        let match = null;
-        
-        // 1. Match by Code
-        if (cleanTargetCode) {
-          match = allPlacementTiers.find(p => {
-            const csvCode = p["College Code"] ? String(p["College Code"]).trim().replace(/^0+/, '') : "";
-            return csvCode === cleanTargetCode;
-          });
-        }
-        
-        // 2. Fallback to name matching
-        if (!match && collegeName) {
-          const cleanName = (name) => {
-            return String(name || '')
-              .toLowerCase()
-              .replace(/government college of engineering/gi, 'gcoe')
-              .replace(/college of engineering/gi, 'coe')
-              .replace(/institute of technology/gi, 'it')
-              .replace(/[^a-z0-9]/g, '');
-          };
-          const targetClean = cleanName(collegeName);
-          match = allPlacementTiers.find(p => {
-            const pName = p["College Name"] ? p["College Name"].toLowerCase().trim() : "";
-            return cleanName(pName) === targetClean;
-          });
-          
-          if (!match) {
-            match = allPlacementTiers.find(p => {
-              const pName = p["College Name"] ? p["College Name"].toLowerCase().trim() : "";
-              const cleanP = cleanName(pName);
-              return cleanP.includes(targetClean) || targetClean.includes(cleanP);
-            });
+        // Close autocomplete list when clicking outside
+        document.addEventListener('click', function (e) {
+          const box = document.getElementById('suggestionsBox');
+          const searchInput = document.getElementById('searchColleges');
+          if (box && e.target !== searchInput && !box.contains(e.target)) {
+            box.style.display = 'none';
           }
-        }
-        
-        let website = '';
-        if (match) {
-          const webKey = Object.keys(match).find(k => k.trim() === 'Official Sites');
-          website = webKey ? (match[webKey] || '').trim() : '';
-        }
-        
-        return {
-          average: match ? match["Avg Package (LPA)"] : '—',
-          tier: match ? match["Tier"] : '—',
-          website: website
-        };
-      }
-
-      // Region code helper
-      function getRegionByCode(codeStr) {
-        const clean = String(codeStr).trim().replace(/^0+/, '');
-        if (!clean) return 'Other';
-        const char = clean.length === 5 ? clean.charAt(1) : clean.charAt(0);
-        const regions = {
-          '1': 'Amravati',
-          '2': 'Aurangabad',
-          '3': 'Mumbai',
-          '4': 'Nagpur',
-          '5': 'Nashik',
-          '6': 'Pune'
-        };
-        return regions[char] || 'Other';
-      }
-
-      // Bootstrapping
-      async function init() {
-        try {
-          const [metaRes, seatsText, placementText, cetJson, jeeJson] = await Promise.all([
-            fetch('college-data.json').then(r => r.json()),
-            fetch('MHT_CET_Seats.csv').then(r => r.text()),
-            fetch('mhtcet_colleges_with_codes.csv').then(r => r.text()),
-            fetch('cleaned_cet_data.json').then(r => r.json()),
-            fetch('jee_data.json').then(r => r.json())
-          ]);
-
-          // Parse seats matrix
-          const parsed = Papa.parse(seatsText, { header: true, skipEmptyLines: true });
-          seatsData = parsed.data || [];
-
-          // Save placement tables
-          const parsedPlacements = Papa.parse(placementText, { header: true, skipEmptyLines: true });
-          allPlacementTiers = parsedPlacements.data || [];
-
-          // Normalize MHT CET rounds data
-          cetJson.forEach(row => {
-            row.branch = (row.branch || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-            row.category = (row.category || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-            row.choiceCode = String(row.choiceCode || '');
-            row.instituteCode = String(row.instituteCode || '');
-          });
-          mhtData = cetJson;
-
-          // Normalize JEE Mains data
-          const jeeArr = Array.isArray(jeeJson) ? jeeJson : (jeeJson[Object.keys(jeeJson)[0]] || []);
-          jeeArr.forEach(row => {
-            row._branchName = (row['Branch Name'] || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-            row._pct = parseFloat(row['JEE Percentile']) || 0;
-            row._air = row['All India Merit'] || '';
-          });
-          jeeData = jeeArr;
-
-          // Map list of unique colleges
-          const uniqueMap = {};
-          (metaRes["college-data"] || []).forEach(c => {
-            const code = parseInt(c["Institute Code"]);
-            if (code) {
-              uniqueMap[code] = {
-                code: code,
-                name: c["Institute Name"] || "Unknown College",
-                status: c["Status"] || "",
-                region: getRegionByCode(code)
-              };
-            }
-          });
-
-          // Fallback backfill from CSV
-          seatsData.forEach(row => {
-            const code = parseInt(row.College_Code);
-            if (code && !uniqueMap[code]) {
-              uniqueMap[code] = {
-                code: code,
-                name: row.College_Name || "Unknown College",
-                status: row.Institute_Type || "",
-                region: getRegionByCode(code)
-              };
-            }
-          });
-
-          collegeList = Object.values(uniqueMap).sort((a, b) => a.code - b.code);
-
-          // Populate minority filter select dropdown dynamically
-          const minoritySet = new Set();
-          collegeList.forEach(c => {
-            if (c.status) {
-              const parts = c.status.split(',');
-              for (let part of parts) {
-                let trimmed = part.trim();
-                if (trimmed.toLowerCase().includes('minority')) {
-                  // Combine Gujarathi and Gujarathi(Jain)
-                  if (trimmed.includes('Linguistic Minority - Gujarathi')) {
-                    trimmed = 'Linguistic Minority - Gujarathi';
-                  }
-                  minoritySet.add(trimmed);
-                }
-              }
-            }
-          });
-          const sortedMinorities = Array.from(minoritySet).sort((a, b) => a.localeCompare(b));
-          const filterMinoritySelect = document.getElementById('filterMinority');
-          sortedMinorities.forEach(min => {
-            const opt = document.createElement('option');
-            opt.value = min;
-            opt.textContent = min === 'Linguistic Minority - Gujarathi' ? 'Linguistic Minority - Gujarathi (including Jain)' : min;
-            filterMinoritySelect.appendChild(opt);
-          });
-
-          // Hide Loader
-          document.getElementById('dataLoader').style.display = 'none';
-          document.getElementById('explorerContent').style.display = 'block';
-
-          // Show list of all colleges first
-          renderListView();
-
-          // Auto-select college if search query param is present
-          const params = new URLSearchParams(window.location.search);
-          const q = params.get('search');
-          if (q) {
-            const lower = q.toLowerCase().trim();
-            const found = collegeList.find(c => {
-              return c.name.toLowerCase().includes(lower) || String(c.code).includes(lower);
-            });
-            if (found) {
-              selectCollege(found.code);
-            }
-          }
-
-        } catch(e) {
-          console.error("Bootstrapping failed: ", e);
-          document.getElementById('dataLoader').innerHTML = `<p style="color:var(--brand)">Failed to load explorer database. Please refresh.</p>`;
-        }
-      }
-
-      window.renderListView = function() {
-        const region = document.getElementById('filterRegion').value;
-        const minority = document.getElementById('filterMinority').value;
-        const autonomy = document.getElementById('filterAutonomy').value;
-        const searchInput = document.getElementById('searchColleges').value.toLowerCase().trim();
-
-        const filtered = collegeList.filter(c => {
-          // Region Filter
-          if (region !== 'all') {
-            const cleanCode = String(c.code).trim().replace(/^0+/, '');
-            const char = cleanCode.length === 5 ? cleanCode.charAt(1) : cleanCode.charAt(0);
-            if (char !== region) return false;
-          }
-
-          // Minority Filter
-          if (minority !== 'all') {
-            const isMin = c.status.toLowerCase().includes('minority');
-            if (minority === 'non-minority') {
-              if (isMin) return false;
-            } else if (minority === 'any-minority') {
-              if (!isMin) return false;
-            } else {
-              // Combine Gujarathi and Gujarathi(Jain)
-              if (minority === 'Linguistic Minority - Gujarathi') {
-                if (!c.status.includes('Linguistic Minority - Gujarathi') && !c.status.includes('Linguistic Minority - Gujarathi(Jain)')) {
-                  return false;
-                }
-              } else {
-                if (!c.status.includes(minority)) return false;
-              }
-            }
-          }
-
-          // Autonomy Filter
-          if (autonomy !== 'all') {
-            const isAuto = c.status.toLowerCase().includes('autonomous');
-            if (autonomy === 'autonomous' && !isAuto) return false;
-            if (autonomy === 'non-autonomous' && isAuto) return false;
-          }
-
-          // Search Query
-          if (searchInput) {
-            const nameMatch = c.name.toLowerCase().includes(searchInput);
-            const codeMatch = String(c.code).includes(searchInput);
-            if (!nameMatch && !codeMatch) return false;
-          }
-
-          return true;
         });
 
-        document.getElementById('collegesCountBadge').innerText = `${filtered.length} Colleges Found`;
+        // Normalization for placement fuzzy name matching using mhtcet_colleges_with_codes.csv
+        function findPlacementData(collegeName, collegeCode) {
+          const cleanTargetCode = collegeCode ? String(collegeCode).trim().replace(/^0+/, '') : "";
 
-        const grid = document.getElementById('collegesListGrid');
-        if (filtered.length === 0) {
-          grid.innerHTML = `<div style="grid-column: 1/-1; padding: 40px; text-align: center; color: var(--muted); font-weight: 600;">No colleges match your search filters.</div>`;
-          return;
+          let match = null;
+
+          // 1. Match by Code
+          if (cleanTargetCode) {
+            match = allPlacementTiers.find(p => {
+              const csvCode = p["College Code"] ? String(p["College Code"]).trim().replace(/^0+/, '') : "";
+              return csvCode === cleanTargetCode;
+            });
+          }
+
+          // 2. Fallback to name matching
+          if (!match && collegeName) {
+            const cleanName = (name) => {
+              return String(name || '')
+                .toLowerCase()
+                .replace(/government college of engineering/gi, 'gcoe')
+                .replace(/college of engineering/gi, 'coe')
+                .replace(/institute of technology/gi, 'it')
+                .replace(/[^a-z0-9]/g, '');
+            };
+            const targetClean = cleanName(collegeName);
+            match = allPlacementTiers.find(p => {
+              const pName = p["College Name"] ? p["College Name"].toLowerCase().trim() : "";
+              return cleanName(pName) === targetClean;
+            });
+
+            if (!match) {
+              match = allPlacementTiers.find(p => {
+                const pName = p["College Name"] ? p["College Name"].toLowerCase().trim() : "";
+                const cleanP = cleanName(pName);
+                return cleanP.includes(targetClean) || targetClean.includes(cleanP);
+              });
+            }
+          }
+
+          let website = '';
+          if (match) {
+            const webKey = Object.keys(match).find(k => k.trim() === 'Official Sites');
+            website = webKey ? (match[webKey] || '').trim() : '';
+          }
+
+          return {
+            average: match ? match["Avg Package (LPA)"] : '—',
+            tier: match ? match["Tier"] : '—',
+            website: website
+          };
         }
 
-        grid.innerHTML = filtered.map(c => {
-          const placement = findPlacementData(c.name, c.code);
-          const avgPkg = placement.average && placement.average !== '—' ? `${placement.average} LPA` : '—';
-          
-          return `
+        // Region code helper
+        function getRegionByCode(codeStr) {
+          const clean = String(codeStr).trim().replace(/^0+/, '');
+          if (!clean) return 'Other';
+          const char = clean.length === 5 ? clean.charAt(1) : clean.charAt(0);
+          const regions = {
+            '1': 'Amravati',
+            '2': 'Aurangabad',
+            '3': 'Mumbai',
+            '4': 'Nagpur',
+            '5': 'Nashik',
+            '6': 'Pune'
+          };
+          return regions[char] || 'Other';
+        }
+
+        // Bootstrapping
+        async function init() {
+          try {
+            const [metaRes, seatsText, placementText, cetJson, jeeJson] = await Promise.all([
+              fetch('college-data.json').then(r => r.json()),
+              fetch('MHT_CET_Seats.csv').then(r => r.text()),
+              fetch('mhtcet_colleges_with_codes.csv').then(r => r.text()),
+              fetch('cleaned_cet_data.json').then(r => r.json()),
+              fetch('cleaned_jee_data.json').then(r => r.json())
+            ]);
+
+            // Parse seats matrix
+            const parsed = Papa.parse(seatsText, { header: true, skipEmptyLines: true });
+            seatsData = parsed.data || [];
+
+            // Save placement tables
+            const parsedPlacements = Papa.parse(placementText, { header: true, skipEmptyLines: true });
+            allPlacementTiers = parsedPlacements.data || [];
+
+            // Normalize MHT CET rounds data
+            cetJson.forEach(row => {
+              row.branch = (row.branch || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+              row.category = (row.category || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+              row.choiceCode = String(row.choiceCode || '');
+              row.instituteCode = String(row.instituteCode || '');
+            });
+            mhtData = cetJson;
+
+            // Normalize JEE Mains data
+            jeeJson.forEach(row => {
+              row.branch = (row.branch || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+              row.category = (row.category || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+              row.choiceCode = String(row.choiceCode || '');
+              row.instituteCode = String(row.instituteCode || '');
+            });
+            jeeData = jeeJson;
+
+            // Map list of unique colleges
+            const uniqueMap = {};
+            (metaRes["college-data"] || []).forEach(c => {
+              const code = parseInt(c["Institute Code"]);
+              if (code) {
+                uniqueMap[code] = {
+                  code: code,
+                  name: c["Institute Name"] || "Unknown College",
+                  status: c["Status"] || "",
+                  region: getRegionByCode(code)
+                };
+              }
+            });
+
+            // Fallback backfill from CSV
+            seatsData.forEach(row => {
+              const code = parseInt(row.College_Code);
+              if (code && !uniqueMap[code]) {
+                uniqueMap[code] = {
+                  code: code,
+                  name: row.College_Name || "Unknown College",
+                  status: row.Institute_Type || "",
+                  region: getRegionByCode(code)
+                };
+              }
+            });
+
+            collegeList = Object.values(uniqueMap).sort((a, b) => a.code - b.code);
+
+            // Populate minority filter select dropdown dynamically
+            const minoritySet = new Set();
+            collegeList.forEach(c => {
+              if (c.status) {
+                const parts = c.status.split(',');
+                for (let part of parts) {
+                  let trimmed = part.trim();
+                  if (trimmed.toLowerCase().includes('minority')) {
+                    // Combine Gujarathi and Gujarathi(Jain)
+                    if (trimmed.includes('Linguistic Minority - Gujarathi')) {
+                      trimmed = 'Linguistic Minority - Gujarathi';
+                    }
+                    minoritySet.add(trimmed);
+                  }
+                }
+              }
+            });
+            const sortedMinorities = Array.from(minoritySet).sort((a, b) => a.localeCompare(b));
+            const filterMinoritySelect = document.getElementById('filterMinority');
+            sortedMinorities.forEach(min => {
+              const opt = document.createElement('option');
+              opt.value = min;
+              opt.textContent = min === 'Linguistic Minority - Gujarathi' ? 'Linguistic Minority - Gujarathi (including Jain)' : min;
+              filterMinoritySelect.appendChild(opt);
+            });
+
+            // Hide Loader
+            document.getElementById('dataLoader').style.display = 'none';
+            document.getElementById('explorerContent').style.display = 'block';
+
+            // Show list of all colleges first
+            renderListView();
+
+            // Auto-select college if search query param is present
+            const params = new URLSearchParams(window.location.search);
+            const q = params.get('search');
+            if (q) {
+              const lower = q.toLowerCase().trim();
+              const found = collegeList.find(c => {
+                return c.name.toLowerCase().includes(lower) || String(c.code).includes(lower);
+              });
+              if (found) {
+                selectCollege(found.code);
+              }
+            }
+
+          } catch (e) {
+            console.error("Bootstrapping failed: ", e);
+            document.getElementById('dataLoader').innerHTML = `<p style="color:var(--brand)">Failed to load explorer database. Please refresh.</p>`;
+          }
+        }
+
+        window.renderListView = function () {
+          const region = document.getElementById('filterRegion').value;
+          const minority = document.getElementById('filterMinority').value;
+          const autonomy = document.getElementById('filterAutonomy').value;
+          const searchInput = document.getElementById('searchColleges').value.toLowerCase().trim();
+
+          const filtered = collegeList.filter(c => {
+            // Region Filter
+            if (region !== 'all') {
+              const cleanCode = String(c.code).trim().replace(/^0+/, '');
+              const char = cleanCode.length === 5 ? cleanCode.charAt(1) : cleanCode.charAt(0);
+              if (char !== region) return false;
+            }
+
+            // Minority Filter
+            if (minority !== 'all') {
+              const isMin = c.status.toLowerCase().includes('minority');
+              if (minority === 'non-minority') {
+                if (isMin) return false;
+              } else if (minority === 'any-minority') {
+                if (!isMin) return false;
+              } else {
+                // Combine Gujarathi and Gujarathi(Jain)
+                if (minority === 'Linguistic Minority - Gujarathi') {
+                  if (!c.status.includes('Linguistic Minority - Gujarathi') && !c.status.includes('Linguistic Minority - Gujarathi(Jain)')) {
+                    return false;
+                  }
+                } else {
+                  if (!c.status.includes(minority)) return false;
+                }
+              }
+            }
+
+            // Autonomy Filter
+            if (autonomy !== 'all') {
+              const isAuto = c.status.toLowerCase().includes('autonomous');
+              if (autonomy === 'autonomous' && !isAuto) return false;
+              if (autonomy === 'non-autonomous' && isAuto) return false;
+            }
+
+            // Search Query
+            if (searchInput) {
+              const nameMatch = c.name.toLowerCase().includes(searchInput);
+              const codeMatch = String(c.code).includes(searchInput);
+              if (!nameMatch && !codeMatch) return false;
+            }
+
+            return true;
+          });
+
+          document.getElementById('collegesCountBadge').innerText = `${filtered.length} Colleges Found`;
+
+          const grid = document.getElementById('collegesListGrid');
+          if (filtered.length === 0) {
+            grid.innerHTML = `<div style="grid-column: 1/-1; padding: 40px; text-align: center; color: var(--muted); font-weight: 600;">No colleges match your search filters.</div>`;
+            return;
+          }
+
+          grid.innerHTML = filtered.map(c => {
+            const placement = findPlacementData(c.name, c.code);
+            const avgPkg = placement.average && placement.average !== '—' ? `${placement.average} LPA` : '—';
+
+            return `
             <div class="college-item-card" onclick="selectCollege(${c.code})">
               <div class="clg-card-top">
                 <span class="clg-card-code">Code: ${String(c.code).padStart(4, '0')}</span>
@@ -1819,65 +1996,65 @@
               </div>
             </div>
           `;
-        }).join('');
-      };
+          }).join('');
+        };
 
-      window.selectCollege = function(code) {
-        const college = collegeList.find(c => c.code === code);
-        if (!college) return;
+        window.selectCollege = function (code) {
+          const college = collegeList.find(c => c.code === code);
+          if (!college) return;
 
-        // Populate search input
-        document.getElementById('searchColleges').value = college.name;
+          // Populate search input
+          document.getElementById('searchColleges').value = college.name;
 
-        // Render overview headers
-        document.getElementById('dbCollegeName').innerText = college.name;
-        document.getElementById('dbCollegeCode').innerText = `Code: ${String(college.code).padStart(4, '0')}`;
-        document.getElementById('dbCollegeType').innerText = college.status || 'Standard Private Institute';
-        document.getElementById('dbCollegeRegion').innerText = `Region: ${college.region}`;
+          // Render overview headers
+          document.getElementById('dbCollegeName').innerText = college.name;
+          document.getElementById('dbCollegeCode').innerText = `Code: ${String(college.code).padStart(4, '0')}`;
+          document.getElementById('dbCollegeType').innerText = college.status || 'Standard Private Institute';
+          document.getElementById('dbCollegeRegion').innerText = `Region: ${college.region}`;
 
-        // Update URL and SEO titles
-        document.title = college.name + " (" + String(college.code).padStart(4, '0') + ") Explorer & Cutoffs — College Simplified";
-        const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?search=' + encodeURIComponent(college.name);
-        window.history.replaceState({ path: newUrl }, '', newUrl);
+          // Update URL and SEO titles
+          document.title = college.name + " (" + String(college.code).padStart(4, '0') + ") Explorer & Cutoffs — College Simplified";
+          const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?search=' + encodeURIComponent(college.name);
+          window.history.replaceState({ path: newUrl }, '', newUrl);
 
-        // Get placement statistics
-        const placement = findPlacementData(college.name, college.code);
-        document.getElementById('pkgAverage').innerHTML = placement.average && placement.average !== '—' ? `${placement.average} <span>LPA</span>` : '—';
-        document.getElementById('pkgTier').innerText = placement.tier || '—';
+          // Get placement statistics
+          const placement = findPlacementData(college.name, college.code);
+          document.getElementById('pkgAverage').innerHTML = placement.average && placement.average !== '—' ? `${placement.average} <span>LPA</span>` : '—';
+          document.getElementById('pkgTier').innerText = placement.tier || '—';
 
-        // Update Official Website button visibility & link
-        const webBtn = document.getElementById('dbCollegeWebsiteBtn');
-        if (webBtn) {
-          if (placement.website) {
-            webBtn.href = placement.website;
-            webBtn.style.display = 'inline-flex';
-          } else {
-            webBtn.style.display = 'none';
+          // Update Official Website button visibility & link
+          const webBtn = document.getElementById('dbCollegeWebsiteBtn');
+          if (webBtn) {
+            if (placement.website) {
+              webBtn.href = placement.website;
+              webBtn.style.display = 'inline-flex';
+            } else {
+              webBtn.style.display = 'none';
+            }
           }
-        }
 
-        // Render seats matrix
-        const collegeSeats = seatsData.filter(row => parseInt(row.College_Code) === code);
-        renderSeatsDashboard(college, collegeSeats);
+          // Render seats matrix
+          const collegeSeats = seatsData.filter(row => parseInt(row.College_Code) === code);
+          renderSeatsDashboard(college, collegeSeats);
 
-        // Filter records for cutoff checker section
-        const cleanTargetCode = String(code).trim().replace(/^0+/, '');
-        const collegeMht = mhtData.filter(row => {
-          const mhtCode = row.instituteCode ? String(row.instituteCode).trim().replace(/^0+/, '') : '';
-          return mhtCode === cleanTargetCode;
-        });
-        const collegeJee = jeeData.filter(row => {
-          const jeeCode = row['College Code'] ? String(row['College Code']).trim().replace(/^0+/, '') : '';
-          return jeeCode === cleanTargetCode;
-        });
+          // Filter records for cutoff checker section
+          const cleanTargetCode = String(code).trim().replace(/^0+/, '');
+          const collegeMht = mhtData.filter(row => {
+            const mhtCode = row.instituteCode ? String(row.instituteCode).trim().replace(/^0+/, '') : '';
+            return mhtCode === cleanTargetCode;
+          });
+          const collegeJee = jeeData.filter(row => {
+            const jeeCode = row.instituteCode ? String(row.instituteCode).trim().replace(/^0+/, '') : '';
+            return jeeCode === cleanTargetCode;
+          });
 
-        // Initialize college analytics for cutoff checker section
-        initCutoffCheckerSection(college, collegeMht, collegeJee);
+          // Initialize college analytics for cutoff checker section
+          initCutoffCheckerSection(college, collegeMht, collegeJee);
 
-        // Render export buttons for premium/admin users
-        const isPremiumUser = session && (session.role === 'premium' || session.role === 'admin');
-        if (isPremiumUser) {
-          const exportHtml = (tableId, fileName) => `
+          // Render export buttons for premium/admin users
+          const isPremiumUser = session && (session.role === 'premium' || session.role === 'admin');
+          if (isPremiumUser) {
+            const exportHtml = (tableId, fileName) => `
             <button class="export-csv-btn" onclick="exportTableToCSV('${tableId}', '${fileName}.csv')" style="padding:8px 16px; font-size:12px; border-radius:10px;">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:12px; height:12px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Export CSV
@@ -1887,104 +2064,104 @@
               Export PDF
             </button>
           `;
-          
-          const cleanName = college.name.toLowerCase().replace(/[^a-z0-9]/g, '_').substring(0, 30);
-          const seatsGrp = document.getElementById('seatsExportGroup');
-          const mhtcetGrp = document.getElementById('mhtcetExportGroup');
-          const jeeGrp = document.getElementById('jeeExportGroup');
-          
-          if (seatsGrp) seatsGrp.innerHTML = exportHtml('seatsMatrixTable', `seats_matrix_${cleanName}_${code}`);
-          if (mhtcetGrp) mhtcetGrp.innerHTML = exportHtml('mhtcetCutoffTable', `mhtcet_cutoffs_${cleanName}_${code}`);
-          if (jeeGrp) jeeGrp.innerHTML = exportHtml('jeeCutoffTable', `jee_cutoffs_${cleanName}_${code}`);
-        }
 
-        // Hide Search Panel and List Panel
-        document.querySelector('.search-card').style.display = 'none';
-        document.getElementById('listViewPanel').style.display = 'none';
+            const cleanName = college.name.toLowerCase().replace(/[^a-z0-9]/g, '_').substring(0, 30);
+            const seatsGrp = document.getElementById('seatsExportGroup');
+            const mhtcetGrp = document.getElementById('mhtcetExportGroup');
+            const jeeGrp = document.getElementById('jeeExportGroup');
 
-        // Display dashboard container
-        document.getElementById('collegeDashboard').style.display = 'block';
-        
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      };
-
-      window.showListView = function() {
-        // Reset Search Input
-        document.getElementById('searchColleges').value = '';
-
-        // Reset page titles and URL search param
-        document.title = "College Explorer & Cutoffs — College Simplified";
-        const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-        window.history.replaceState({ path: newUrl }, '', newUrl);
-
-        // Show Search Panel and List Panel
-        document.querySelector('.search-card').style.display = 'block';
-        document.getElementById('listViewPanel').style.display = 'block';
-
-        // Hide dashboard container
-        document.getElementById('collegeDashboard').style.display = 'none';
-
-        // Redraw list view
-        renderListView();
-      };
-
-      function renderSeatsDashboard(college, seats) {
-        // Group rows by Course Code (Choice_Code)
-        const groups = {};
-        seats.forEach(row => {
-          const key = row.Choice_Code;
-          if (!key) return;
-          if (!groups[key]) groups[key] = [];
-          groups[key].push(row);
-        });
-
-        const branches = Object.values(groups).map(rows => {
-          // Get the primary metadata row (State Level, HU, OHU or any row with core values)
-          const primary = rows.find(r => r.Row_Type === 'State Level') || 
-                          rows.find(r => r.Row_Type === 'HU') || 
-                          rows.find(r => r.Row_Type === 'OHU') || 
-                          rows[0];
-          
-          const ms = parseInt(primary.MS_Seats) || 0;
-          const allIndia = parseInt(primary.All_India) || 0;
-          const minority = parseInt(primary.Minority_Seats) || 0;
-          const cap = ms + allIndia;
-          
-          return {
-            choiceCode: primary.Choice_Code,
-            courseName: primary.Course_Name,
-            si: parseInt(primary.SI) || 0,
-            cap: cap,
-            ms: ms,
-            allIndia: allIndia,
-            minority: minority,
-            institute: parseInt(primary.Institute_Seats) || 0,
-            rows: rows
-          };
-        }).sort((a, b) => b.si - a.si); // Sort by largest branch intake
-
-        // Populate basic stats badges
-        const totalIntake = branches.reduce((sum, b) => sum + b.si, 0);
-        document.getElementById('statBranches').innerText = branches.length;
-        document.getElementById('statTotalSeats').innerText = totalIntake;
-
-        // Parse minority status details
-        let minorityText = 'None (General Open)';
-        const statusLower = college.status.toLowerCase();
-        if (statusLower.includes('minority')) {
-          const match = college.status.match(/(Linguistic|Religious)\s+Minority\s*-\s*([a-zA-Z\s\(\)]+)/i);
-          if (match) {
-            minorityText = `${match[2]} (${match[1]})`;
-          } else {
-            minorityText = 'Minority Quota Active';
+            if (seatsGrp) seatsGrp.innerHTML = exportHtml('seatsMatrixTable', `seats_matrix_${cleanName}_${code}`);
+            if (mhtcetGrp) mhtcetGrp.innerHTML = exportHtml('mhtcetCutoffTable', `mhtcet_cutoffs_${cleanName}_${code}`);
+            if (jeeGrp) jeeGrp.innerHTML = exportHtml('jeeCutoffTable', `jee_cutoffs_${cleanName}_${code}`);
           }
-        }
-        document.getElementById('statMinority').innerText = minorityText;
 
-        // Render Seats Table
-        const tbody = document.querySelector('#seatsMatrixTable tbody');
-        tbody.innerHTML = branches.map((b, i) => `
+          // Hide Search Panel and List Panel
+          document.querySelector('.search-card').style.display = 'none';
+          document.getElementById('listViewPanel').style.display = 'none';
+
+          // Display dashboard container
+          document.getElementById('collegeDashboard').style.display = 'block';
+
+          // Scroll to top
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.showListView = function () {
+          // Reset Search Input
+          document.getElementById('searchColleges').value = '';
+
+          // Reset page titles and URL search param
+          document.title = "College Explorer & Cutoffs — College Simplified";
+          const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+          window.history.replaceState({ path: newUrl }, '', newUrl);
+
+          // Show Search Panel and List Panel
+          document.querySelector('.search-card').style.display = 'block';
+          document.getElementById('listViewPanel').style.display = 'block';
+
+          // Hide dashboard container
+          document.getElementById('collegeDashboard').style.display = 'none';
+
+          // Redraw list view
+          renderListView();
+        };
+
+        function renderSeatsDashboard(college, seats) {
+          // Group rows by Course Code (Choice_Code)
+          const groups = {};
+          seats.forEach(row => {
+            const key = row.Choice_Code;
+            if (!key) return;
+            if (!groups[key]) groups[key] = [];
+            groups[key].push(row);
+          });
+
+          const branches = Object.values(groups).map(rows => {
+            // Get the primary metadata row (State Level, HU, OHU or any row with core values)
+            const primary = rows.find(r => r.Row_Type === 'State Level') ||
+              rows.find(r => r.Row_Type === 'HU') ||
+              rows.find(r => r.Row_Type === 'OHU') ||
+              rows[0];
+
+            const ms = parseInt(primary.MS_Seats) || 0;
+            const allIndia = parseInt(primary.All_India) || 0;
+            const minority = parseInt(primary.Minority_Seats) || 0;
+            const cap = ms + allIndia;
+
+            return {
+              choiceCode: primary.Choice_Code,
+              courseName: primary.Course_Name,
+              si: parseInt(primary.SI) || 0,
+              cap: cap,
+              ms: ms,
+              allIndia: allIndia,
+              minority: minority,
+              institute: parseInt(primary.Institute_Seats) || 0,
+              rows: rows
+            };
+          }).sort((a, b) => b.si - a.si); // Sort by largest branch intake
+
+          // Populate basic stats badges
+          const totalIntake = branches.reduce((sum, b) => sum + b.si, 0);
+          document.getElementById('statBranches').innerText = branches.length;
+          document.getElementById('statTotalSeats').innerText = totalIntake;
+
+          // Parse minority status details
+          let minorityText = 'None (General Open)';
+          const statusLower = college.status.toLowerCase();
+          if (statusLower.includes('minority')) {
+            const match = college.status.match(/(Linguistic|Religious)\s+Minority\s*-\s*([a-zA-Z\s\(\)]+)/i);
+            if (match) {
+              minorityText = `${match[2]} (${match[1]})`;
+            } else {
+              minorityText = 'Minority Quota Active';
+            }
+          }
+          document.getElementById('statMinority').innerText = minorityText;
+
+          // Render Seats Table
+          const tbody = document.querySelector('#seatsMatrixTable tbody');
+          tbody.innerHTML = branches.map((b, i) => `
           <tr onclick="toggleRowBreakdown(${i})">
             <td style="text-align: center;">
               <svg class="chevron-icon" id="chev-${i}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
@@ -2016,24 +2193,24 @@
           </tr>
         `).join('');
 
-        // Render Chart Gauges
-        renderCharts(totalIntake, branches);
-      }
+          // Render Chart Gauges
+          renderCharts(totalIntake, branches);
+        }
 
-      function getCategoryGridHtml(rows) {
-        // Find rows
-        const stateRow = rows.find(r => r.Row_Type === 'State Level');
-        const huRow = rows.find(r => r.Row_Type === 'HU');
-        const ohuRow = rows.find(r => r.Row_Type === 'OHU');
-        const ewsRow = rows.find(r => r.Row_Type === 'EWS');
-        const primary = stateRow || huRow || ohuRow || rows[0];
+        function getCategoryGridHtml(rows) {
+          // Find rows
+          const stateRow = rows.find(r => r.Row_Type === 'State Level');
+          const huRow = rows.find(r => r.Row_Type === 'HU');
+          const ohuRow = rows.find(r => r.Row_Type === 'OHU');
+          const ewsRow = rows.find(r => r.Row_Type === 'EWS');
+          const primary = stateRow || huRow || ohuRow || rows[0];
 
-        const msSeats = parseInt(primary.MS_Seats) || 0;
-        const minoritySeats = parseInt(primary.Minority_Seats) || 0;
-        const allIndia = parseInt(primary.All_India) || 0;
-        const instSeats = parseInt(primary.Institute_Seats) || 0;
+          const msSeats = parseInt(primary.MS_Seats) || 0;
+          const minoritySeats = parseInt(primary.Minority_Seats) || 0;
+          const allIndia = parseInt(primary.All_India) || 0;
+          const instSeats = parseInt(primary.Institute_Seats) || 0;
 
-        let quotaHtml = `
+          let quotaHtml = `
           <div class="quota-summary-row" style="grid-column: 1/-1; display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1.5px dashed var(--stroke);">
             <div style="background: var(--blue-soft); border: 1px solid rgba(37, 99, 235, 0.15); color: var(--blue); padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 12.5px;">
               MH State Seats: ${msSeats}
@@ -2052,27 +2229,27 @@
           </div>
         `;
 
-        const catData = [
-          { label: 'OPEN', g: 'OPEN_G', l: 'OPEN_L' },
-          { label: 'SC', g: 'SC_G', l: 'SC_L' },
-          { label: 'ST', g: 'ST_G', l: 'ST_L' },
-          { label: 'VJ / DT', g: 'VJ/DT_G', l: 'VJ/DT_L' },
-          { label: 'NT-B', g: 'NTB_G', l: 'NTB_L' },
-          { label: 'NT-C', g: 'NTC_G', l: 'NTC_L' },
-          { label: 'NT-D', g: 'NTD_G', l: 'NTD_L' },
-          { label: 'OBC', g: 'OBC_G', l: 'OBC_L' },
-          { label: 'SEBC', g: 'SEBC_G', l: 'SEBC_L' }
-        ];
+          const catData = [
+            { label: 'OPEN', g: 'OPEN_G', l: 'OPEN_L' },
+            { label: 'SC', g: 'SC_G', l: 'SC_L' },
+            { label: 'ST', g: 'ST_G', l: 'ST_L' },
+            { label: 'VJ / DT', g: 'VJ/DT_G', l: 'VJ/DT_L' },
+            { label: 'NT-B', g: 'NTB_G', l: 'NTB_L' },
+            { label: 'NT-C', g: 'NTC_G', l: 'NTC_L' },
+            { label: 'NT-D', g: 'NTD_G', l: 'NTD_L' },
+            { label: 'OBC', g: 'OBC_G', l: 'OBC_L' },
+            { label: 'SEBC', g: 'SEBC_G', l: 'SEBC_L' }
+          ];
 
-        let sectionsHtml = '';
+          let sectionsHtml = '';
 
-        if (stateRow) {
-          let stateBoxes = '';
-          catData.forEach(c => {
-            const gCount = parseInt(stateRow[c.g]) || 0;
-            const lCount = parseInt(stateRow[c.l]) || 0;
-            if (gCount > 0 || lCount > 0) {
-              stateBoxes += `
+          if (stateRow) {
+            let stateBoxes = '';
+            catData.forEach(c => {
+              const gCount = parseInt(stateRow[c.g]) || 0;
+              const lCount = parseInt(stateRow[c.l]) || 0;
+              if (gCount > 0 || lCount > 0) {
+                stateBoxes += `
                 <div class="cat-box">
                   <span class="cat-label">${c.label}</span>
                   <div class="cat-vals">
@@ -2081,10 +2258,10 @@
                   </div>
                 </div>
               `;
-            }
-          });
-          if (stateBoxes) {
-            sectionsHtml += `
+              }
+            });
+            if (stateBoxes) {
+              sectionsHtml += `
               <div style="grid-column: 1/-1; margin-bottom: 16px;">
                 <h4 style="margin: 0 0 10px 0; font-size: 13px; font-weight: 700; color: var(--blue); display: flex; align-items: center; gap: 6px;">
                   <span style="display:inline-block; width:6px; height:6px; background:var(--blue); border-radius:50%;"></span>
@@ -2095,16 +2272,16 @@
                 </div>
               </div>
             `;
+            }
           }
-        }
 
-        if (huRow) {
-          let huBoxes = '';
-          catData.forEach(c => {
-            const gCount = parseInt(huRow[c.g]) || 0;
-            const lCount = parseInt(huRow[c.l]) || 0;
-            if (gCount > 0 || lCount > 0) {
-              huBoxes += `
+          if (huRow) {
+            let huBoxes = '';
+            catData.forEach(c => {
+              const gCount = parseInt(huRow[c.g]) || 0;
+              const lCount = parseInt(huRow[c.l]) || 0;
+              if (gCount > 0 || lCount > 0) {
+                huBoxes += `
                 <div class="cat-box">
                   <span class="cat-label">${c.label}</span>
                   <div class="cat-vals">
@@ -2113,10 +2290,10 @@
                   </div>
                 </div>
               `;
-            }
-          });
-          if (huBoxes) {
-            sectionsHtml += `
+              }
+            });
+            if (huBoxes) {
+              sectionsHtml += `
               <div style="grid-column: 1/-1; margin-bottom: 16px;">
                 <h4 style="margin: 0 0 10px 0; font-size: 13px; font-weight: 700; color: var(--blue); display: flex; align-items: center; gap: 6px;">
                   <span style="display:inline-block; width:6px; height:6px; background:var(--blue); border-radius:50%;"></span>
@@ -2127,16 +2304,16 @@
                 </div>
               </div>
             `;
+            }
           }
-        }
 
-        if (ohuRow) {
-          let ohuBoxes = '';
-          catData.forEach(c => {
-            const gCount = parseInt(ohuRow[c.g]) || 0;
-            const lCount = parseInt(ohuRow[c.l]) || 0;
-            if (gCount > 0 || lCount > 0) {
-              ohuBoxes += `
+          if (ohuRow) {
+            let ohuBoxes = '';
+            catData.forEach(c => {
+              const gCount = parseInt(ohuRow[c.g]) || 0;
+              const lCount = parseInt(ohuRow[c.l]) || 0;
+              if (gCount > 0 || lCount > 0) {
+                ohuBoxes += `
                 <div class="cat-box">
                   <span class="cat-label">${c.label}</span>
                   <div class="cat-vals">
@@ -2145,10 +2322,10 @@
                   </div>
                 </div>
               `;
-            }
-          });
-          if (ohuBoxes) {
-            sectionsHtml += `
+              }
+            });
+            if (ohuBoxes) {
+              sectionsHtml += `
               <div style="grid-column: 1/-1; margin-bottom: 16px;">
                 <h4 style="margin: 0 0 10px 0; font-size: 13px; font-weight: 700; color: var(--brand); display: flex; align-items: center; gap: 6px;">
                   <span style="display:inline-block; width:6px; height:6px; background:var(--brand); border-radius:50%;"></span>
@@ -2159,16 +2336,16 @@
                 </div>
               </div>
             `;
+            }
           }
-        }
 
-        // Gather Special Quotas (EWS, PWD, DEF, Orphan)
-        let specialBoxes = '';
+          // Gather Special Quotas (EWS, PWD, DEF, Orphan)
+          let specialBoxes = '';
 
-        if (ewsRow) {
-          const ewsCount = parseInt(ewsRow['Total_G+L']) || 0;
-          if (ewsCount > 0) {
-            specialBoxes += `
+          if (ewsRow) {
+            const ewsCount = parseInt(ewsRow['Total_G+L']) || 0;
+            if (ewsCount > 0) {
+              specialBoxes += `
               <div class="cat-box" style="border-color: rgba(217, 119, 6, 0.2); background: var(--orange-soft);">
                 <span class="cat-label" style="color: var(--orange)">EWS</span>
                 <div class="cat-vals">
@@ -2176,20 +2353,20 @@
                 </div>
               </div>
             `;
-          }
-        }
-
-        let pwdTotal = 0;
-        const pwdRow = rows.find(r => r.Row_Type === 'PWD');
-        if (pwdRow) {
-          Object.keys(pwdRow).forEach(k => {
-            if (k.endsWith('_G') || k.endsWith('_L')) {
-              pwdTotal += parseInt(pwdRow[k]) || 0;
             }
-          });
-        }
-        if (pwdTotal > 0) {
-          specialBoxes += `
+          }
+
+          let pwdTotal = 0;
+          const pwdRow = rows.find(r => r.Row_Type === 'PWD');
+          if (pwdRow) {
+            Object.keys(pwdRow).forEach(k => {
+              if (k.endsWith('_G') || k.endsWith('_L')) {
+                pwdTotal += parseInt(pwdRow[k]) || 0;
+              }
+            });
+          }
+          if (pwdTotal > 0) {
+            specialBoxes += `
             <div class="cat-box" style="border-color: rgba(37, 99, 235, 0.2); background: var(--blue-soft);">
               <span class="cat-label" style="color: var(--blue)">PWD Quota</span>
               <div class="cat-vals">
@@ -2197,19 +2374,19 @@
               </div>
             </div>
           `;
-        }
+          }
 
-        let defTotal = 0;
-        const defRow = rows.find(r => r.Row_Type === 'DEF');
-        if (defRow) {
-          Object.keys(defRow).forEach(k => {
-            if (k.endsWith('_G') || k.endsWith('_L')) {
-              defTotal += parseInt(defRow[k]) || 0;
-            }
-          });
-        }
-        if (defTotal > 0) {
-          specialBoxes += `
+          let defTotal = 0;
+          const defRow = rows.find(r => r.Row_Type === 'DEF');
+          if (defRow) {
+            Object.keys(defRow).forEach(k => {
+              if (k.endsWith('_G') || k.endsWith('_L')) {
+                defTotal += parseInt(defRow[k]) || 0;
+              }
+            });
+          }
+          if (defTotal > 0) {
+            specialBoxes += `
             <div class="cat-box" style="border-color: rgba(22, 163, 74, 0.2); background: var(--green-soft);">
               <span class="cat-label" style="color: var(--green)">DEF Quota</span>
               <div class="cat-vals">
@@ -2217,15 +2394,15 @@
               </div>
             </div>
           `;
-        }
+          }
 
-        let orphanTotal = 0;
-        const stateRowOrphan = stateRow || huRow || ohuRow;
-        if (stateRowOrphan && stateRowOrphan.Orphan) {
-          orphanTotal = parseInt(stateRowOrphan.Orphan) || 0;
-        }
-        if (orphanTotal > 0) {
-          specialBoxes += `
+          let orphanTotal = 0;
+          const stateRowOrphan = stateRow || huRow || ohuRow;
+          if (stateRowOrphan && stateRowOrphan.Orphan) {
+            orphanTotal = parseInt(stateRowOrphan.Orphan) || 0;
+          }
+          if (orphanTotal > 0) {
+            specialBoxes += `
             <div class="cat-box" style="border-color: rgba(124, 58, 237, 0.2); background: #f5f3ff;">
               <span class="cat-label" style="color: #7c3aed">Orphan Quota</span>
               <div class="cat-vals">
@@ -2233,10 +2410,10 @@
               </div>
             </div>
           `;
-        }
+          }
 
-        if (specialBoxes) {
-          sectionsHtml += `
+          if (specialBoxes) {
+            sectionsHtml += `
             <div style="grid-column: 1/-1; margin-top: 6px;">
               <h4 style="margin: 0 0 10px 0; font-size: 13px; font-weight: 700; color: var(--green); display: flex; align-items: center; gap: 6px;">
                 <span style="display:inline-block; width:6px; height:6px; background:var(--green); border-radius:50%;"></span>
@@ -2247,381 +2424,393 @@
               </div>
             </div>
           `;
-        }
+          }
 
-        return quotaHtml + (sectionsHtml || `
+          return quotaHtml + (sectionsHtml || `
           <div style="grid-column: 1/-1; padding: 12px; background: var(--brand-soft); border: 1.5px dashed var(--brand-ring); border-radius: 10px; color: var(--brand); font-size: 13px; font-weight: 600; text-align: center;">
             No category-wise reservations (SC/ST/OBC) apply to this minority quota branch.
           </div>
         `);
-      }
-
-      window.toggleRowBreakdown = function(index) {
-        const tr = document.getElementById(`breakdown-${index}`);
-        const chev = document.getElementById(`chev-${index}`);
-        
-        if (tr.style.display === 'none') {
-          tr.style.display = 'table-row';
-          chev.style.transform = 'rotate(180deg)';
-        } else {
-          tr.style.display = 'none';
-          chev.style.transform = 'rotate(0deg)';
-        }
-      };
-
-      function renderCharts(totalIntake, branches) {
-        // Destroy old Chart instances
-        if (gaugeChartInstance) gaugeChartInstance.destroy();
-        if (pieChartInstance) pieChartInstance.destroy();
-
-        // 1. Intake Gauge Chart
-        const gaugeCtx = document.getElementById('gaugeCanvas').getContext('2d');
-        document.getElementById('gaugeVal').innerText = totalIntake;
-        
-        gaugeChartInstance = new Chart(gaugeCtx, {
-          type: 'doughnut',
-          data: {
-            labels: ['Sanctioned Intake', 'Available Target'],
-            datasets: [{
-              data: [totalIntake, Math.max(0, 1200 - totalIntake)],
-              backgroundColor: ['#dc2626', '#e5e7eb'],
-              borderWidth: 0,
-              hoverBackgroundColor: ['#b91c1c', '#e5e7eb']
-            }]
-          },
-          options: {
-            circumference: 180,
-            rotation: 270,
-            cutout: '75%',
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { display: false },
-              tooltip: { enabled: false }
-            }
-          }
-        });
-
-        // 2. Branch Seats Distribution Pie Chart
-        const pieCtx = document.getElementById('pieCanvas').getContext('2d');
-        const labels = branches.map(b => b.courseName);
-        const data = branches.map(b => b.si);
-
-        pieChartInstance = new Chart(pieCtx, {
-          type: 'pie',
-          data: {
-            labels: labels,
-            datasets: [{
-              data: data,
-              backgroundColor: [
-                '#dc2626', '#2563eb', '#16a34a', '#d97706', '#7c3aed', '#0891b2', '#db2777', '#4b5563'
-              ],
-              borderWidth: 1.5
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                position: window.innerWidth < 768 ? 'bottom' : 'right',
-                labels: {
-                  boxWidth: 12,
-                  font: { family: 'Inter', size: 10, weight: 600 }
-                }
-              }
-            }
-          }
-        });
-      }
-
-      function initCutoffCheckerSection(college, collegeMht, collegeJee) {
-        curMht = collegeMht;
-        curJee = collegeJee;
-
-        const mhtTabBtn = document.getElementById('tabMhtcetBtn');
-        const jeeTabBtn = document.getElementById('tabJeeBtn');
-        const cutoffSection = document.getElementById('cutoffSectionWrapper');
-        
-        if (collegeMht.length === 0 && collegeJee.length === 0) {
-          cutoffSection.style.display = 'none';
-          return;
-        }
-        cutoffSection.style.display = 'block';
-
-        if (collegeMht.length > 0) mhtTabBtn.classList.remove('hidden');
-        else mhtTabBtn.classList.add('hidden');
-
-        if (collegeJee.length > 0) jeeTabBtn.classList.remove('hidden');
-        else jeeTabBtn.classList.add('hidden');
-
-        if (collegeMht.length > 0) {
-          setCollegeTab('mhtcet');
-        } else {
-          setCollegeTab('jee');
         }
 
-        const branches = new Set();
-        const categories = new Set();
+        window.toggleRowBreakdown = function (index) {
+          const tr = document.getElementById(`breakdown-${index}`);
+          const chev = document.getElementById(`chev-${index}`);
 
-        collegeMht.forEach(row => {
-          if (row.branch) branches.add(row.branch.trim());
-          if (row.category) categories.add(row.category.trim());
-        });
-
-        const branchArray = Array.from(branches).sort();
-        const categoryArray = Array.from(categories).sort();
-
-        const cBranchSel = document.getElementById('cBranch');
-        const cCategorySel = document.getElementById('cCategory');
-
-        cBranchSel.innerHTML = branchArray.map(b => `<option value="${escAuth(b)}">${escAuth(b)}</option>`).join('');
-        const chartCategoryArray = categoryArray.filter(c => c !== 'AI');
-        cCategorySel.innerHTML = chartCategoryArray.map(c => `<option value="${escAuth(c)}">${escAuth(c)}</option>`).join('');
-
-        setSmartDropdownDefault(cBranchSel, ['Computer Science', 'Computer Engineering', 'Information Technology', 'Electronics']);
-        setSmartDropdownDefault(cCategorySel, ['GOPENS', 'GOPEN', 'GSCS', 'GOBCS']);
-
-        const tblCategorySel = document.getElementById('tblCategory');
-        tblCategorySel.innerHTML = categoryArray.map(c => `<option value="${escAuth(c)}">${escAuth(c)}</option>`).join('');
-        setSmartDropdownDefault(tblCategorySel, ['GOPENS', 'GOPEN']);
-
-        renderChartAndSummary();
-        applyTableFilters();
-        renderJeeMainsTable();
-      }
-
-      window.setCollegeTab = function(tab) {
-        document.getElementById('tabMhtcetBtn').classList.toggle('active', tab === 'mhtcet');
-        document.getElementById('tabJeeBtn').classList.toggle('active', tab === 'jee');
-
-        if (tab === 'mhtcet') {
-          document.getElementById('mhtcetTabContent').classList.remove('hidden');
-          document.getElementById('jeeTabContent').classList.add('hidden');
-        } else {
-          document.getElementById('mhtcetTabContent').classList.add('hidden');
-          document.getElementById('jeeTabContent').classList.remove('hidden');
-        }
-      };
-
-      function setSmartDropdownDefault(selectEl, preferences) {
-        const options = Array.from(selectEl.options).map(o => o.value);
-        for (let pref of preferences) {
-          const found = options.find(opt => opt.toLowerCase().includes(pref.toLowerCase()));
-          if (found) {
-            selectEl.value = found;
-            return;
-          }
-        }
-        if (selectEl.options.length > 0) {
-          selectEl.selectedIndex = 0;
-        }
-      }
-
-      window.setChartMetric = function(metric) {
-        trendMetric = metric;
-        document.getElementById('btnMetricPct').classList.toggle('active', metric === 'percentile');
-        document.getElementById('btnMetricRank').classList.toggle('active', metric === 'rank');
-        renderChartAndSummary();
-      };
-
-      window.renderChartAndSummary = function() {
-        const branch = document.getElementById('cBranch').value;
-        const category = document.getElementById('cCategory').value;
-
-        if (!branch || !category) return;
-
-        const labels = ['Round 1', 'Round 2', 'Round 3', 'Round 4'];
-        const percentiles = [];
-        const ranks = [];
-        const tableRows = [];
-
-        const match = curMht.find(row => {
-          return row.branch && row.branch.trim() === branch.trim() && row.category && row.category.trim() === category.trim();
-        });
-
-        for (let r = 1; r <= 4; r++) {
-          const roundKey = 'R' + r;
-          if (match && match.rounds && match.rounds[roundKey]) {
-            const roundData = match.rounds[roundKey];
-            const pVal = parseFloat(roundData.percentile);
-            const rVal = parseInt(roundData.rank);
-            percentiles.push(isNaN(pVal) ? null : pVal);
-            ranks.push(isNaN(rVal) ? null : rVal);
-            tableRows.push({ round: r, rank: rVal, percentile: pVal });
+          if (tr.style.display === 'none') {
+            tr.style.display = 'table-row';
+            chev.style.transform = 'rotate(180deg)';
           } else {
-            percentiles.push(null);
-            ranks.push(null);
-            tableRows.push({ round: r, rank: null, percentile: null });
+            tr.style.display = 'none';
+            chev.style.transform = 'rotate(0deg)';
           }
-        }
+        };
 
-        drawTrendChart(labels, percentiles, ranks);
-        renderSummaryTable(tableRows);
-      };
+        function renderCharts(totalIntake, branches) {
+          // Destroy old Chart instances
+          if (gaugeChartInstance) gaugeChartInstance.destroy();
+          if (pieChartInstance) pieChartInstance.destroy();
 
-      function drawTrendChart(labels, percentiles, ranks) {
-        const canvas = document.getElementById('trendChart');
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        
-        if (trendChartInstance) {
-          trendChartInstance.destroy();
-        }
+          // 1. Intake Gauge Chart
+          const gaugeCtx = document.getElementById('gaugeCanvas').getContext('2d');
+          document.getElementById('gaugeVal').innerText = totalIntake;
 
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        const gridColor = isDark ? '#222636' : '#e4e6ef';
-        const textColor = isDark ? '#c8cad8' : '#2d3240';
-        const isMobile = window.innerWidth < 768;
-
-        let chartData = [];
-        let labelString = '';
-        let yAxisReverse = false;
-
-        if (trendMetric === 'percentile') {
-          chartData = percentiles;
-          labelString = 'Cutoff Percentile';
-          yAxisReverse = false;
-        } else {
-          chartData = ranks;
-          labelString = 'Cutoff Rank';
-          yAxisReverse = true;
-        }
-
-        trendChartInstance = new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: labels,
-            datasets: [
-              {
-                label: labelString,
-                data: chartData,
-                borderColor: trendMetric === 'percentile' ? '#dc2626' : '#2563eb',
-                backgroundColor: trendMetric === 'percentile' ? 'rgba(220, 38, 38, 0.05)' : 'rgba(37, 99, 235, 0.05)',
-                borderWidth: isMobile ? 2.5 : 3,
-                pointBackgroundColor: trendMetric === 'percentile' ? '#dc2626' : '#2563eb',
-                pointBorderColor: isDark ? '#131620' : '#ffffff',
-                pointBorderWidth: 1.5,
-                pointRadius: isMobile ? 4 : 5,
-                pointHoverRadius: isMobile ? 6 : 7,
-                tension: 0.2,
-                spanGaps: true
+          gaugeChartInstance = new Chart(gaugeCtx, {
+            type: 'doughnut',
+            data: {
+              labels: ['Sanctioned Intake', 'Available Target'],
+              datasets: [{
+                data: [totalIntake, Math.max(0, 1200 - totalIntake)],
+                backgroundColor: ['#dc2626', '#e5e7eb'],
+                borderWidth: 0,
+                hoverBackgroundColor: ['#b91c1c', '#e5e7eb']
+              }]
+            },
+            options: {
+              circumference: 180,
+              rotation: 270,
+              cutout: '75%',
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: { enabled: false }
               }
-            ]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { display: false },
-              tooltip: {
-                padding: 12,
-                bodyFont: { family: 'Inter', size: 13 },
-                titleFont: { family: 'Lexend', size: 13, weight: '700' },
-                backgroundColor: isDark ? '#131620' : '#0f1117',
-                titleColor: '#ffffff',
-                bodyColor: '#ffffff',
-                borderColor: isDark ? '#222636' : '#e4e6ef',
-                borderWidth: 1,
-                callbacks: {
-                  label: function(context) {
-                    const val = context.raw;
-                    if (val === null) return 'N/A';
-                    return labelString + ': ' + (trendMetric === 'percentile' ? val.toFixed(4) + '%' : val.toLocaleString('en-IN'));
+            }
+          });
+
+          // 2. Branch Seats Distribution Pie Chart
+          const pieCtx = document.getElementById('pieCanvas').getContext('2d');
+          const labels = branches.map(b => b.courseName);
+          const data = branches.map(b => b.si);
+
+          pieChartInstance = new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+              labels: labels,
+              datasets: [{
+                data: data,
+                backgroundColor: [
+                  '#dc2626', '#2563eb', '#16a34a', '#d97706', '#7c3aed', '#0891b2', '#db2777', '#4b5563'
+                ],
+                borderWidth: 1.5
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: window.innerWidth < 768 ? 'bottom' : 'right',
+                  labels: {
+                    boxWidth: 12,
+                    font: { family: 'Inter', size: 10, weight: 600 }
                   }
                 }
               }
+            }
+          });
+        }
+
+        function initCutoffCheckerSection(college, collegeMht, collegeJee) {
+          curMht = collegeMht;
+          curJee = collegeJee;
+
+          const mhtTabBtn = document.getElementById('tabMhtcetBtn');
+          const jeeTabBtn = document.getElementById('tabJeeBtn');
+          const cutoffSection = document.getElementById('cutoffSectionWrapper');
+
+          if (collegeMht.length === 0 && collegeJee.length === 0) {
+            cutoffSection.style.display = 'none';
+            return;
+          }
+          cutoffSection.style.display = 'block';
+
+          if (collegeMht.length > 0) mhtTabBtn.classList.remove('hidden');
+          else mhtTabBtn.classList.add('hidden');
+
+          if (collegeJee.length > 0) jeeTabBtn.classList.remove('hidden');
+          else jeeTabBtn.classList.add('hidden');
+
+          if (collegeMht.length > 0) {
+            setCollegeTab('mhtcet');
+          } else {
+            setCollegeTab('jee');
+          }
+
+          const branches = new Set();
+          const categories = new Set();
+
+          collegeMht.forEach(row => {
+            if (row.branch) branches.add(row.branch.trim());
+            if (row.category) categories.add(row.category.trim());
+          });
+
+          const branchArray = Array.from(branches).sort();
+          const categoryArray = Array.from(categories).sort();
+
+          const cBranchSel = document.getElementById('cBranch');
+          const cCategorySel = document.getElementById('cCategory');
+
+          cBranchSel.innerHTML = branchArray.map(b => `<option value="${escAuth(b)}">${escAuth(b)}</option>`).join('');
+          cCategorySel.innerHTML = categoryArray.map(c => `<option value="${escAuth(c)}">${escAuth(c)}</option>`).join('');
+
+          setSmartDropdownDefault(cBranchSel, ['Computer Science', 'Computer Engineering', 'Information Technology', 'Electronics']);
+          setSmartDropdownDefault(cCategorySel, ['GOPENS', 'GOPEN', 'GSCS', 'GOBCS']);
+
+          const tblCategorySel = document.getElementById('tblCategory');
+          tblCategorySel.innerHTML = categoryArray.map(c => `<option value="${escAuth(c)}">${escAuth(c)}</option>`).join('');
+          setSmartDropdownDefault(tblCategorySel, ['GOPENS', 'GOPEN']);
+
+          // Populate JEE branches dropdown
+          const jeeBranches = new Set();
+          collegeJee.forEach(row => {
+            if (row.branch) jeeBranches.add(row.branch.trim());
+          });
+          const jeeBranchArray = Array.from(jeeBranches).sort();
+          const cJeeBranchSel = document.getElementById('cJeeBranch');
+          if (cJeeBranchSel) {
+            cJeeBranchSel.innerHTML = jeeBranchArray.map(b => `<option value="${escAuth(b)}">${escAuth(b)}</option>`).join('');
+            setSmartDropdownDefault(cJeeBranchSel, ['Computer Science', 'Computer Engineering', 'Information Technology', 'Electronics']);
+          }
+
+          renderChartAndSummary();
+          applyTableFilters();
+          applyJeeTableFilters();
+          renderJeeChartAndSummary();
+        }
+
+        window.setCollegeTab = function (tab) {
+          document.getElementById('tabMhtcetBtn').classList.toggle('active', tab === 'mhtcet');
+          document.getElementById('tabJeeBtn').classList.toggle('active', tab === 'jee');
+
+          if (tab === 'mhtcet') {
+            document.getElementById('mhtcetTabContent').classList.remove('hidden');
+            document.getElementById('jeeTabContent').classList.add('hidden');
+          } else {
+            document.getElementById('mhtcetTabContent').classList.add('hidden');
+            document.getElementById('jeeTabContent').classList.remove('hidden');
+          }
+        };
+
+        function setSmartDropdownDefault(selectEl, preferences) {
+          const options = Array.from(selectEl.options).map(o => o.value);
+          for (let pref of preferences) {
+            const found = options.find(opt => opt.toLowerCase().includes(pref.toLowerCase()));
+            if (found) {
+              selectEl.value = found;
+              return;
+            }
+          }
+          if (selectEl.options.length > 0) {
+            selectEl.selectedIndex = 0;
+          }
+        }
+
+        window.setChartMetric = function (metric) {
+          trendMetric = metric;
+          document.getElementById('btnMetricPct').classList.toggle('active', metric === 'percentile');
+          document.getElementById('btnMetricRank').classList.toggle('active', metric === 'rank');
+          renderChartAndSummary();
+        };
+
+        window.renderChartAndSummary = function () {
+          const branch = document.getElementById('cBranch').value;
+          const category = document.getElementById('cCategory').value;
+
+          if (!branch || !category) return;
+
+          const labels = ['Round 1', 'Round 2', 'Round 3', 'Round 4'];
+          const percentiles = [];
+          const ranks = [];
+          const tableRows = [];
+
+          const match = curMht.find(row => {
+            return row.branch && row.branch.trim() === branch.trim() && row.category && row.category.trim() === category.trim();
+          });
+
+          for (let r = 1; r <= 4; r++) {
+            const roundKey = 'R' + r;
+            if (match && match.rounds && match.rounds[roundKey]) {
+              const roundData = match.rounds[roundKey];
+              const pVal = parseFloat(roundData.percentile);
+              const rVal = parseInt(roundData.rank);
+              percentiles.push(isNaN(pVal) ? null : pVal);
+              ranks.push(isNaN(rVal) ? null : rVal);
+              tableRows.push({ round: r, rank: rVal, percentile: pVal });
+            } else {
+              percentiles.push(null);
+              ranks.push(null);
+              tableRows.push({ round: r, rank: null, percentile: null });
+            }
+          }
+
+          drawTrendChart(labels, percentiles, ranks);
+          renderSummaryTable(tableRows);
+        };
+
+        function drawTrendChart(labels, percentiles, ranks) {
+          const canvas = document.getElementById('trendChart');
+          if (!canvas) return;
+          const ctx = canvas.getContext('2d');
+
+          if (trendChartInstance) {
+            trendChartInstance.destroy();
+          }
+
+          const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+          const gridColor = isDark ? '#222636' : '#e4e6ef';
+          const textColor = isDark ? '#c8cad8' : '#2d3240';
+          const isMobile = window.innerWidth < 768;
+
+          let chartData = [];
+          let labelString = '';
+          let yAxisReverse = false;
+
+          if (trendMetric === 'percentile') {
+            chartData = percentiles;
+            labelString = 'Cutoff Percentile';
+            yAxisReverse = false;
+          } else {
+            chartData = ranks;
+            labelString = 'Cutoff Rank';
+            yAxisReverse = true;
+          }
+
+          trendChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: labels,
+              datasets: [
+                {
+                  label: labelString,
+                  data: chartData,
+                  borderColor: trendMetric === 'percentile' ? '#dc2626' : '#2563eb',
+                  backgroundColor: trendMetric === 'percentile' ? 'rgba(220, 38, 38, 0.05)' : 'rgba(37, 99, 235, 0.05)',
+                  borderWidth: isMobile ? 2.5 : 3,
+                  pointBackgroundColor: trendMetric === 'percentile' ? '#dc2626' : '#2563eb',
+                  pointBorderColor: isDark ? '#131620' : '#ffffff',
+                  pointBorderWidth: 1.5,
+                  pointRadius: isMobile ? 4 : 5,
+                  pointHoverRadius: isMobile ? 6 : 7,
+                  tension: 0.2,
+                  spanGaps: true
+                }
+              ]
             },
-            scales: {
-              x: {
-                grid: { color: gridColor },
-                ticks: {
-                  font: { family: 'Inter', size: isMobile ? 10 : 12, weight: '600' },
-                  color: textColor
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  padding: 12,
+                  bodyFont: { family: 'Inter', size: 13 },
+                  titleFont: { family: 'Lexend', size: 13, weight: '700' },
+                  backgroundColor: isDark ? '#131620' : '#0f1117',
+                  titleColor: '#ffffff',
+                  bodyColor: '#ffffff',
+                  borderColor: isDark ? '#222636' : '#e4e6ef',
+                  borderWidth: 1,
+                  callbacks: {
+                    label: function (context) {
+                      const val = context.raw;
+                      if (val === null) return 'N/A';
+                      return labelString + ': ' + (trendMetric === 'percentile' ? val.toFixed(4) + '%' : val.toLocaleString('en-IN'));
+                    }
+                  }
                 }
               },
-              y: {
-                reverse: yAxisReverse,
-                grid: { color: gridColor },
-                ticks: {
-                  font: { family: 'Inter', size: isMobile ? 10 : 12 },
-                  color: textColor,
-                  callback: function(value) {
-                    if (trendMetric === 'percentile') {
-                      return value.toFixed(2) + '%';
-                    } else {
-                      return value.toLocaleString('en-IN');
+              scales: {
+                x: {
+                  grid: { color: gridColor },
+                  ticks: {
+                    font: { family: 'Inter', size: isMobile ? 10 : 12, weight: '600' },
+                    color: textColor
+                  }
+                },
+                y: {
+                  reverse: yAxisReverse,
+                  grid: { color: gridColor },
+                  ticks: {
+                    font: { family: 'Inter', size: isMobile ? 10 : 12 },
+                    color: textColor,
+                    callback: function (value) {
+                      if (trendMetric === 'percentile') {
+                        return value.toFixed(2) + '%';
+                      } else {
+                        return value.toLocaleString('en-IN');
+                      }
                     }
                   }
                 }
               }
             }
-          }
-        });
-      }
+          });
+        }
 
-      function renderSummaryTable(rows) {
-        const tbody = document.getElementById('summaryTableBody');
-        tbody.innerHTML = '';
+        function renderSummaryTable(rows) {
+          const tbody = document.getElementById('summaryTableBody');
+          tbody.innerHTML = '';
 
-        let lastRank = null;
-        let lastPct = null;
+          let lastRank = null;
+          let lastPct = null;
 
-        rows.forEach(row => {
-          let rankDiffText = '-';
-          let pctDiffText = '-';
-          let trendClass = 'trend-neutral';
+          rows.forEach(row => {
+            let rankDiffText = '-';
+            let pctDiffText = '-';
+            let trendClass = 'trend-neutral';
 
-          let rankText = 'N/A';
-          let pctText = 'N/A';
+            let rankText = 'N/A';
+            let pctText = 'N/A';
 
-          if (row.rank !== null) {
-            rankText = row.rank.toLocaleString('en-IN');
-            if (lastRank !== null) {
-              const rDiff = row.rank - lastRank;
-              if (rDiff > 0) {
-                rankDiffText = '+' + rDiff.toLocaleString('en-IN') + ' (Closed later)';
-                trendClass = 'trend-up';
-              } else if (rDiff < 0) {
-                rankDiffText = rDiff.toLocaleString('en-IN') + ' (Closed sooner)';
-                trendClass = 'trend-down';
-              } else {
-                rankDiffText = 'No Change';
-                trendClass = 'trend-neutral';
+            if (row.rank !== null) {
+              rankText = row.rank.toLocaleString('en-IN');
+              if (lastRank !== null) {
+                const rDiff = row.rank - lastRank;
+                if (rDiff > 0) {
+                  rankDiffText = '+' + rDiff.toLocaleString('en-IN') + ' (Closed later)';
+                  trendClass = 'trend-up';
+                } else if (rDiff < 0) {
+                  rankDiffText = rDiff.toLocaleString('en-IN') + ' (Closed sooner)';
+                  trendClass = 'trend-down';
+                } else {
+                  rankDiffText = 'No Change';
+                  trendClass = 'trend-neutral';
+                }
+              }
+              lastRank = row.rank;
+            }
+
+            if (row.percentile !== null) {
+              pctText = row.percentile.toFixed(4) + '%';
+              if (lastPct !== null) {
+                const pDiff = row.percentile - lastPct;
+                if (pDiff > 0) {
+                  pctDiffText = '+' + pDiff.toFixed(4) + '%';
+                } else if (pDiff < 0) {
+                  pctDiffText = pDiff.toFixed(4) + '%';
+                } else {
+                  pctDiffText = 'No Change';
+                }
+              }
+              lastPct = row.percentile;
+            }
+
+            const isFilled = row.rank === null;
+            const statusHtml = isFilled
+              ? '<span style="color:var(--muted); font-weight:700">Filled / Inactive</span>'
+              : '<span style="color:var(--green); font-weight:700">Open</span>';
+
+            let changeText = '-';
+            if (row.rank !== null && rankDiffText !== '-') {
+              changeText = '<span style="font-weight:600">' + rankDiffText + '</span>';
+              if (pctDiffText !== '-') {
+                changeText += '<br><span style="font-size:11px; color:var(--muted)">Percentile change: ' + pctDiffText + '</span>';
               }
             }
-            lastRank = row.rank;
-          }
 
-          if (row.percentile !== null) {
-            pctText = row.percentile.toFixed(4) + '%';
-            if (lastPct !== null) {
-              const pDiff = row.percentile - lastPct;
-              if (pDiff > 0) {
-                pctDiffText = '+' + pDiff.toFixed(4) + '%';
-              } else if (pDiff < 0) {
-                pctDiffText = pDiff.toFixed(4) + '%';
-              } else {
-                pctDiffText = 'No Change';
-              }
-            }
-            lastPct = row.percentile;
-          }
-
-          const isFilled = row.rank === null;
-          const statusHtml = isFilled
-            ? '<span style="color:var(--muted); font-weight:700">Filled / Inactive</span>'
-            : '<span style="color:var(--green); font-weight:700">Open</span>';
-
-          let changeText = '-';
-          if (row.rank !== null && rankDiffText !== '-') {
-            changeText = '<span style="font-weight:600">' + rankDiffText + '</span>';
-            if (pctDiffText !== '-') {
-              changeText += '<br><span style="font-size:11px; color:var(--muted)">Percentile change: ' + pctDiffText + '</span>';
-            }
-          }
-
-          tbody.innerHTML += `
+            tbody.innerHTML += `
             <tr>
               <td style="font-weight:700">Round ${row.round}</td>
               <td style="font-weight:600">${rankText}</td>
@@ -2630,32 +2819,32 @@
               <td>${statusHtml}</td>
             </tr>
           `;
-        });
-      }
+          });
+        }
 
-      window.applyTableFilters = function() {
-        mhtTableLimit = 30;
-        const roundKey = document.getElementById('tblRound').value;
-        const category = document.getElementById('tblCategory').value;
-        const search = document.getElementById('tblSearch').value.toLowerCase().trim();
+        window.applyTableFilters = function () {
+          mhtTableLimit = 30;
+          const roundKey = document.getElementById('tblRound').value;
+          const category = document.getElementById('tblCategory').value;
+          const search = document.getElementById('tblSearch').value.toLowerCase().trim();
 
-        mhtTableFilteredRows = curMht.filter(row => {
-          const matchesCategory = row.category === category;
-          const matchesSearch = !search || (row.branch && row.branch.toLowerCase().includes(search)) || (row.choiceCode && row.choiceCode.includes(search));
-          const hasRoundData = row.rounds && row.rounds[roundKey] && row.rounds[roundKey].rank !== null;
-          
-          return matchesCategory && matchesSearch && hasRoundData;
-        });
+          mhtTableFilteredRows = curMht.filter(row => {
+            const matchesCategory = row.category === category;
+            const matchesSearch = !search || (row.branch && row.branch.toLowerCase().includes(search)) || (row.choiceCode && row.choiceCode.includes(search));
+            const hasRoundData = row.rounds && row.rounds[roundKey] && row.rounds[roundKey].rank !== null;
 
-        renderMasterTable(roundKey);
-      };
+            return matchesCategory && matchesSearch && hasRoundData;
+          });
 
-      function renderMasterTable(roundKey) {
-        const tbody = document.getElementById('masterCutoffTableBody');
-        const paginated = mhtTableFilteredRows.slice(0, mhtTableLimit);
+          renderMasterTable(roundKey);
+        };
 
-        if (!paginated.length) {
-          tbody.innerHTML = `
+        function renderMasterTable(roundKey) {
+          const tbody = document.getElementById('masterCutoffTableBody');
+          const paginated = mhtTableFilteredRows.slice(0, mhtTableLimit);
+
+          if (!paginated.length) {
+            tbody.innerHTML = `
             <tr>
               <td colspan="5" class="empty-state" style="text-align:center; padding:40px; color:var(--muted)">
                 <div style="font-size:32px; margin-bottom:10px;">🔍</div>
@@ -2664,16 +2853,16 @@
               </td>
             </tr>
           `;
-          document.getElementById('masterLoadMore').classList.add('hidden');
-          return;
-        }
+            document.getElementById('masterLoadMore').classList.add('hidden');
+            return;
+          }
 
-        tbody.innerHTML = paginated.map(row => {
-          const roundData = row.rounds[roundKey] || {};
-          const rankText = roundData.rank ? roundData.rank.toLocaleString('en-IN') : 'N/A';
-          const pctText = roundData.percentile ? parseFloat(roundData.percentile).toFixed(4) + '%' : 'N/A';
-          
-          return `
+          tbody.innerHTML = paginated.map(row => {
+            const roundData = row.rounds[roundKey] || {};
+            const rankText = roundData.rank ? roundData.rank.toLocaleString('en-IN') : 'N/A';
+            const pctText = roundData.percentile ? parseFloat(roundData.percentile).toFixed(4) + '%' : 'N/A';
+
+            return `
             <tr>
               <td style="font-weight:700">${escAuth(row.branch)}</td>
               <td style="font-weight:600; color:var(--muted)">${escAuth(row.choiceCode || 'N/A')}</td>
@@ -2682,42 +2871,63 @@
               <td style="font-weight:800; color:var(--brand)">${pctText}</td>
             </tr>
           `;
-        }).join('');
+          }).join('');
 
-        const hasMore = mhtTableFilteredRows.length > mhtTableLimit;
-        document.getElementById('masterLoadMore').classList.toggle('hidden', !hasMore);
-      }
+          const hasMore = mhtTableFilteredRows.length > mhtTableLimit;
+          document.getElementById('masterLoadMore').classList.toggle('hidden', !hasMore);
+        }
 
-      window.loadMoreTableRows = function() {
-        mhtTableLimit += 30;
-        const roundKey = document.getElementById('tblRound').value;
-        renderMasterTable(roundKey);
-      };
+        window.loadMoreTableRows = function () {
+          mhtTableLimit += 30;
+          const roundKey = document.getElementById('tblRound').value;
+          renderMasterTable(roundKey);
+        };
 
-      function renderJeeMainsTable() {
-        const tbody = document.getElementById('jeeCutoffTableBody');
-        if (!tbody) return;
+        window.applyJeeTableFilters = function () {
+          jeeTableLimit = 30;
+          const roundKey = document.getElementById('tblJeeRound').value;
+          const search = document.getElementById('tblJeeSearch').value.toLowerCase().trim();
 
-        if (!curJee.length) {
-          tbody.innerHTML = `
+          jeeTableFilteredRows = curJee.filter(row => {
+            const matchesSearch = !search || (row.branch && row.branch.toLowerCase().includes(search)) || (row.choiceCode && row.choiceCode.includes(search));
+            const hasRoundData = row.rounds && row.rounds[roundKey] && row.rounds[roundKey].rank !== null;
+
+            return matchesSearch && hasRoundData;
+          });
+
+          renderJeeMasterTable(roundKey);
+        };
+
+        function renderJeeMasterTable(roundKey) {
+          const tbody = document.getElementById('jeeCutoffTableBody');
+          if (!tbody) return;
+          
+          const paginated = jeeTableFilteredRows.slice(0, jeeTableLimit);
+
+          if (!paginated.length) {
+            tbody.innerHTML = `
             <tr>
               <td colspan="7" class="empty-state" style="text-align:center; padding:40px; color:var(--muted)">
-                <h4>No JEE Mains All India Seats Data</h4>
-                <p>This college might not have All India Quota seats through JEE Mains.</p>
+                <div style="font-size:32px; margin-bottom:10px;">🔍</div>
+                <h4>No JEE Mains All India Cutoffs Matching Filters</h4>
+                <p>Try modifying your CAP round or search filter.</p>
               </td>
             </tr>
           `;
-          return;
-        }
+            document.getElementById('jeeLoadMore').classList.add('hidden');
+            return;
+          }
 
-        tbody.innerHTML = curJee.map(row => {
-          const airText = row._air || 'N/A';
-          const pctText = row._pct ? row._pct.toFixed(4) + '%' : 'N/A';
-          
-          let linkHtml = '-';
-          if (row['College Url']) {
-            linkHtml = `
-              <a class="card-link" href="${escAuth(row['College Url'])}" target="_blank" rel="noopener" style="color:var(--blue); text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
+          tbody.innerHTML = paginated.map(row => {
+            const roundData = row.rounds[roundKey] || {};
+            const rankText = roundData.rank ? roundData.rank.toLocaleString('en-IN') : 'N/A';
+            const pctText = roundData.percentile ? parseFloat(roundData.percentile).toFixed(4) + '%' : 'N/A';
+            
+            const instCode = row.instituteCode || row.choiceCode.substring(0, 4);
+            const linkUrl = `https://fe2025.mahacet.org/StaticPages/frmInstituteSummary?InstituteCode=${String(instCode).padStart(5, '0')}`;
+            
+            const linkHtml = `
+              <a class="card-link" href="${linkUrl}" target="_blank" rel="noopener" style="color:var(--blue); text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-top:2px">
                   <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
                   <polyline points="15 3 21 3 21 9"/>
@@ -2725,44 +2935,278 @@
                 </svg> Portal
               </a>
             `;
-          }
 
-          return `
+            return `
             <tr>
-              <td style="font-weight:600; color:var(--muted)">${escAuth(row['Choice Code'] || 'N/A')}</td>
-              <td style="font-weight:700">${escAuth(row._branchName)}</td>
-              <td><span class="chip chip-blue" style="font-size:11px">${escAuth(row['Seat Type'] || 'AI')}</span></td>
-              <td style="font-size:12px">${escAuth(row['Type'] || 'AI to AI')}</td>
-              <td style="font-weight:600">${airText}</td>
+              <td style="font-weight:600; color:var(--muted)">${escAuth(row.choiceCode || 'N/A')}</td>
+              <td style="font-weight:700">${escAuth(row.branch)}</td>
+              <td><span class="chip chip-blue" style="font-size:11px">${escAuth(roundData.seatType || row.seatType || 'AI')}</span></td>
+              <td style="font-size:12px">${escAuth(roundData.type || row.type || 'AI to AI')}</td>
+              <td style="font-weight:600">${rankText}</td>
               <td style="font-weight:800; color:var(--blue)">${pctText}</td>
               <td>${linkHtml}</td>
             </tr>
           `;
-        }).join('');
-      }
+          }).join('');
 
-      // Redraw trend charts if theme changes
-      const themeObserver = new MutationObserver(mutations => {
-        mutations.forEach(mutation => {
-          if (mutation.attributeName === 'data-theme' && trendChartInstance) {
-            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-            const gridColor = isDark ? '#222636' : '#e4e6ef';
-            const textColor = isDark ? '#c8cad8' : '#2d3240';
-            trendChartInstance.options.scales.x.grid.color = gridColor;
-            trendChartInstance.options.scales.x.ticks.color = textColor;
-            trendChartInstance.options.scales.y.grid.color = gridColor;
-            trendChartInstance.options.scales.y.ticks.color = textColor;
-            trendChartInstance.data.datasets[0].pointBorderColor = isDark ? '#131620' : '#ffffff';
-            trendChartInstance.update();
+          const hasMore = jeeTableFilteredRows.length > jeeTableLimit;
+          document.getElementById('jeeLoadMore').classList.toggle('hidden', !hasMore);
+        }
+
+        window.loadMoreJeeRows = function () {
+          jeeTableLimit += 30;
+          const roundKey = document.getElementById('tblJeeRound').value;
+          renderJeeMasterTable(roundKey);
+        };
+
+        window.setJeeChartMetric = function (metric) {
+          jeeTrendMetric = metric;
+          document.getElementById('btnJeeMetricPct').classList.toggle('active', metric === 'percentile');
+          document.getElementById('btnJeeMetricRank').classList.toggle('active', metric === 'rank');
+          renderJeeChartAndSummary();
+        };
+
+        window.renderJeeChartAndSummary = function () {
+          const branch = document.getElementById('cJeeBranch').value;
+
+          if (!branch) return;
+
+          const labels = ['Round 1', 'Round 2', 'Round 3', 'Round 4'];
+          const percentiles = [];
+          const ranks = [];
+          const tableRows = [];
+
+          const match = curJee.find(row => {
+            return row.branch && row.branch.trim() === branch.trim();
+          });
+
+          for (let r = 1; r <= 4; r++) {
+            const roundKey = 'R' + r;
+            if (match && match.rounds && match.rounds[roundKey]) {
+              const roundData = match.rounds[roundKey];
+              const pVal = parseFloat(roundData.percentile);
+              const rVal = parseInt(roundData.rank);
+              percentiles.push(isNaN(pVal) ? null : pVal);
+              ranks.push(isNaN(rVal) ? null : rVal);
+              tableRows.push({ round: r, rank: rVal, percentile: pVal });
+            } else {
+              percentiles.push(null);
+              ranks.push(null);
+              tableRows.push({ round: r, rank: null, percentile: null });
+            }
           }
-        });
-      });
-      themeObserver.observe(document.documentElement, { attributes: true });
 
-      // Run
-      init();
+          drawJeeTrendChart(labels, percentiles, ranks);
+          renderJeeSummaryTable(tableRows);
+        };
+
+        function drawJeeTrendChart(labels, percentiles, ranks) {
+          const canvas = document.getElementById('jeeTrendChart');
+          if (!canvas) return;
+          const ctx = canvas.getContext('2d');
+
+          if (jeeTrendChartInstance) {
+            jeeTrendChartInstance.destroy();
+          }
+
+          const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+          const gridColor = isDark ? '#222636' : '#e4e6ef';
+          const textColor = isDark ? '#c8cad8' : '#2d3240';
+          const isMobile = window.innerWidth < 768;
+
+          let chartData = [];
+          let labelString = '';
+          let yAxisReverse = false;
+
+          if (jeeTrendMetric === 'percentile') {
+            chartData = percentiles;
+            labelString = 'Cutoff Percentile';
+            yAxisReverse = false;
+          } else {
+            chartData = ranks;
+            labelString = 'Cutoff Rank';
+            yAxisReverse = true;
+          }
+
+          jeeTrendChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: labels,
+              datasets: [
+                {
+                  label: labelString,
+                  data: chartData,
+                  borderColor: jeeTrendMetric === 'percentile' ? '#dc2626' : '#2563eb',
+                  backgroundColor: jeeTrendMetric === 'percentile' ? 'rgba(220, 38, 38, 0.05)' : 'rgba(37, 99, 235, 0.05)',
+                  borderWidth: isMobile ? 2.5 : 3,
+                  pointBackgroundColor: jeeTrendMetric === 'percentile' ? '#dc2626' : '#2563eb',
+                  pointBorderColor: isDark ? '#131620' : '#ffffff',
+                  pointBorderWidth: 1.5,
+                  pointRadius: isMobile ? 4 : 5,
+                  pointHoverRadius: isMobile ? 6 : 7,
+                  tension: 0.2,
+                  spanGaps: true
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  padding: 12,
+                  bodyFont: { family: 'Inter', size: 13 },
+                  titleFont: { family: 'Lexend', size: 13, weight: '700' },
+                  backgroundColor: isDark ? '#131620' : '#0f1117',
+                  titleColor: '#ffffff',
+                  bodyColor: '#ffffff',
+                  borderColor: isDark ? '#222636' : '#e4e6ef',
+                  borderWidth: 1,
+                  callbacks: {
+                    label: function (context) {
+                      const val = context.raw;
+                      if (val === null) return 'N/A';
+                      return labelString + ': ' + (jeeTrendMetric === 'percentile' ? val.toFixed(4) + '%' : val.toLocaleString('en-IN'));
+                    }
+                  }
+                }
+              },
+              scales: {
+                x: {
+                  grid: { color: gridColor },
+                  ticks: {
+                    font: { family: 'Inter', size: isMobile ? 10 : 12, weight: '600' },
+                    color: textColor
+                  }
+                },
+                y: {
+                  reverse: yAxisReverse,
+                  grid: { color: gridColor },
+                  ticks: {
+                    font: { family: 'Inter', size: isMobile ? 10 : 12 },
+                    color: textColor,
+                    callback: function (value) {
+                      if (jeeTrendMetric === 'percentile') {
+                        return value.toFixed(2) + '%';
+                      } else {
+                        return value.toLocaleString('en-IN');
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          });
+        }
+
+        function renderJeeSummaryTable(rows) {
+          const tbody = document.getElementById('jeeSummaryTableBody');
+          if (!tbody) return;
+          tbody.innerHTML = '';
+
+          let lastRank = null;
+          let lastPct = null;
+
+          rows.forEach(row => {
+            let rankDiffText = '-';
+            let pctDiffText = '-';
+            let trendClass = 'trend-neutral';
+
+            let rankText = 'N/A';
+            let pctText = 'N/A';
+
+            if (row.rank !== null) {
+              rankText = row.rank.toLocaleString('en-IN');
+              if (lastRank !== null) {
+                const rDiff = row.rank - lastRank;
+                if (rDiff > 0) {
+                  rankDiffText = '+' + rDiff.toLocaleString('en-IN') + ' (Closed later)';
+                  trendClass = 'trend-up';
+                } else if (rDiff < 0) {
+                  rankDiffText = rDiff.toLocaleString('en-IN') + ' (Closed sooner)';
+                  trendClass = 'trend-down';
+                } else {
+                  rankDiffText = 'No Change';
+                  trendClass = 'trend-neutral';
+                }
+              }
+              lastRank = row.rank;
+            }
+
+            if (row.percentile !== null) {
+              pctText = row.percentile.toFixed(4) + '%';
+              if (lastPct !== null) {
+                const pDiff = row.percentile - lastPct;
+                if (pDiff > 0) {
+                  pctDiffText = '+' + pDiff.toFixed(4) + '%';
+                } else if (pDiff < 0) {
+                  pctDiffText = pDiff.toFixed(4) + '%';
+                } else {
+                  pctDiffText = 'No Change';
+                }
+              }
+              lastPct = row.percentile;
+            }
+
+            const isFilled = row.rank === null;
+            const statusHtml = isFilled
+              ? '<span style="color:var(--muted); font-weight:700">Filled / Inactive</span>'
+              : '<span style="color:var(--green); font-weight:700">Open</span>';
+
+            let changeText = '-';
+            if (row.rank !== null && rankDiffText !== '-') {
+              changeText = '<span style="font-weight:600">' + rankDiffText + '</span>';
+              if (pctDiffText !== '-') {
+                changeText += '<br><span style="font-size:11px; color:var(--muted)">Percentile change: ' + pctDiffText + '</span>';
+              }
+            }
+
+            tbody.innerHTML += `
+            <tr>
+              <td style="font-weight:700">Round ${row.round}</td>
+              <td style="font-weight:600">${rankText}</td>
+              <td style="font-weight:800; color:var(--brand)">${pctText}</td>
+              <td><span class="${trendClass} trend-indicator">${changeText}</span></td>
+              <td>${statusHtml}</td>
+            </tr>
+          `;
+          });
+        }
+
+        // Redraw trend charts if theme changes
+        const themeObserver = new MutationObserver(mutations => {
+          mutations.forEach(mutation => {
+            if (mutation.attributeName === 'data-theme') {
+              const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+              const gridColor = isDark ? '#222636' : '#e4e6ef';
+              const textColor = isDark ? '#c8cad8' : '#2d3240';
+              if (trendChartInstance) {
+                trendChartInstance.options.scales.x.grid.color = gridColor;
+                trendChartInstance.options.scales.x.ticks.color = textColor;
+                trendChartInstance.options.scales.y.grid.color = gridColor;
+                trendChartInstance.options.scales.y.ticks.color = textColor;
+                trendChartInstance.data.datasets[0].pointBorderColor = isDark ? '#131620' : '#ffffff';
+                trendChartInstance.update();
+              }
+              if (jeeTrendChartInstance) {
+                jeeTrendChartInstance.options.scales.x.grid.color = gridColor;
+                jeeTrendChartInstance.options.scales.x.ticks.color = textColor;
+                jeeTrendChartInstance.options.scales.y.grid.color = gridColor;
+                jeeTrendChartInstance.options.scales.y.ticks.color = textColor;
+                jeeTrendChartInstance.data.datasets[0].pointBorderColor = isDark ? '#131620' : '#ffffff';
+                jeeTrendChartInstance.update();
+              }
+            }
+          });
+        });
+        themeObserver.observe(document.documentElement, { attributes: true });
+
+        // Run
+        init();
       }
     }
   </script>
 </body>
+
 </html>

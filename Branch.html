@@ -1375,6 +1375,21 @@ function calculateResults(){
     }
   }
 
+  // Ensure at least one of the top 2 is from computer-it or ai-data cluster if there's any interest
+  const hasCompOrAiInTop2 = top.slice(0, 2).some(b => b.cluster === 'computer-it' || b.cluster === 'ai-data');
+  if (!hasCompOrAiInTop2) {
+    const compBranch = matches.find(m => m.cluster === 'computer-it' || m.cluster === 'ai-data');
+    if (compBranch && compBranch.matchScore >= 30) {
+      const existingIdx = top.findIndex(b => b.id === compBranch.id);
+      if (existingIdx !== -1) {
+        top.splice(existingIdx, 1);
+      } else {
+        top.pop();
+      }
+      top.splice(1, 0, compBranch);
+    }
+  }
+
   // Determine DNA type
   const dnaType=determineDNAType(traitScores);
   // Calculate section scores cleanly by averaging the normalized trait scores of their core traits
@@ -1935,8 +1950,8 @@ async function generatePDF(isSample = false, customDate = null) {
       <h3 style="color:var(--red);margin:15px 0 10px;font-size:16px;">All 32 Evaluated Traits</h3>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px 16px;">
         ${sortedTraits.map(([t,v]) => `
-          <div style="display:flex;align-items:center;gap:8px;font-size:11px;line-height:1.2;">
-            <span style="min-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.replace(/([A-Z])/g, ' $1').trim()}</span>
+          <div style="display:flex;align-items:center;gap:8px;font-size:11px;line-height:1.5;padding:2px 0;">
+            <span style="display:inline-block;width:145px;vertical-align:middle;line-height:1.2;white-space:nowrap;">${t.replace(/([A-Z])/g, ' $1').trim()}</span>
             <div style="flex:1;height:6px;background:#eee;border-radius:3px;overflow:hidden;">
               <div style="height:100%;width:${v}%;background:var(--grad);border-radius:3px;"></div>
             </div>

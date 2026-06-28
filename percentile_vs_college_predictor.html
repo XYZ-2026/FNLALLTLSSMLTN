@@ -677,6 +677,7 @@
       localStorage.setItem("results", JSON.stringify(filtered.slice(0, 150)));
       localStorage.setItem("searchMeta", JSON.stringify({
         percentile: pct,
+        scoreType: 'pct',
         exam: 'JEE Mains',
         category: 'All India',
         minority: minorityPref || 'None'
@@ -828,18 +829,42 @@
 
       try {
         loaderTxt.textContent = "Loading JEE All India data...";
-        const r2 = await fetch('jee_data.json');
+        const r2 = await fetch('cleaned_jee_data.json');
         const j2 = await r2.json();
-        const raw2 = Array.isArray(j2) ? j2 : (j2[Object.keys(j2)[0]] || []);
-        jeeData = raw2.map(r => ({
-          exam: 'JEE',
-          code: r["College Code"] || r["Institute Code"],
-          name: (r["Institute Name"] || r["Institute"] || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
-          branch: (r["Branch Name"] || r["Branch"] || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
-          percentile: parseFloat(r["JEE Percentile"] || r["Percentile"] || 0),
-          seatType: 'AI',
-          url: r["College Url"] || '#'
-        }));
+        
+        // Helper to get easiest/minimum percentile cutoff
+        function getEasiestRoundCutoff(rounds) {
+          let easiest = null;
+          let minPct = Infinity;
+          for (let r of ['R1', 'R2', 'R3', 'R4']) {
+            if (rounds[r] && rounds[r].percentile !== null) {
+              const p = parseFloat(rounds[r].percentile);
+              if (!isNaN(p) && p < minPct) {
+                minPct = p;
+                easiest = rounds[r];
+              }
+            }
+          }
+          return easiest;
+        }
+
+        // Map cleaned_jee_data.json records to the structure expected by predictor logic
+        jeeData = j2.map(r => {
+          const easiest = getEasiestRoundCutoff(r.rounds || {});
+          
+          return {
+            exam: 'JEE',
+            code: r.instituteCode || r.choiceCode.substring(0, 4),
+            name: (r.instituteName || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
+            branch: (r.branch || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
+            percentile: easiest ? parseFloat(easiest.percentile) : 0,
+            rank: easiest ? parseInt(easiest.rank) : 999999,
+            seatType: 'AI',
+            category: 'All India',
+            url: `https://fe2025.mahacet.org/StaticPages/frmInstituteSummary?InstituteCode=${String(r.instituteCode || '').padStart(5, '0')}`,
+            choiceCode: r.choiceCode
+          };
+        });
         console.log("JEE Loaded:", jeeData.length);
       } catch (e) { console.error("JEE Load Fail:", e); }
 

@@ -1713,18 +1713,20 @@
               <div style="background:var(--card); border:1px solid var(--stroke); padding:20px; border-radius:12px">
                 <h4 style="font-family:'Lexend',sans-serif; font-weight:700; font-size:15px; color:var(--ink); margin-bottom:16px">Recent User Session Logs</h4>
                 <div class="table-container">
-                  <table style="width:100%">
-                    <thead>
-                      <tr>
-                        <th>User</th>
-                        <th>Action/Page</th>
-                        <th style="text-align:right">Time</th>
-                      </tr>
-                    </thead>
-                    <tbody id="recentActivityTbody">
-                      <tr><td colspan="3" class="empty">No recent activity.</td></tr>
-                    </tbody>
-                  </table>
+                  <div class="table-scroll">
+                    <table style="width:100%; min-width:550px">
+                      <thead>
+                        <tr>
+                          <th style="width:35%">User</th>
+                          <th style="width:45%">Action/Page</th>
+                          <th style="text-align:right; width:20%">Time</th>
+                        </tr>
+                      </thead>
+                      <tbody id="recentActivityTbody">
+                        <tr><td colspan="3" class="empty">No recent activity.</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -3176,6 +3178,100 @@
     var allBranchPredictions = [];
     var filteredPredictions = [];
 
+    function getToolName(path) {
+      if (!path) return 'Home Page';
+      var cleanPath = path.split('/').pop().split('?')[0].toLowerCase().trim();
+      
+      switch(cleanPath) {
+        case 'index.html':
+        case '':
+          return 'Home Page';
+        case 'admin.html':
+          return 'Admin Panel';
+        case 'auth.html':
+          return 'Authentication Portal';
+        case 'preference-builder.html':
+          return 'MHT-CET Preference Builder';
+        case 'josaa-preference-builder.html':
+          return 'JoSAA Preference Builder';
+        case 'dse-preference-builder.html':
+          return 'DSE Preference Builder';
+        case 'comedk-preference-builder.html':
+          return 'COMEDK Preference Builder';
+        case 'percentile_vs_college_predictor.html':
+          return 'JEE Mains Predictor';
+        case 'mht_cet_college_predictor.html':
+          return 'MHT-CET College Predictor';
+        case 'dse_college_predictor.html':
+          return 'DSE College Predictor';
+        case 'comedk_predictor.html':
+          return 'COMEDK Predictor';
+        case 'college_explorer.html':
+          return 'College Explorer & Cutoffs';
+        case 'cet_chatbot.html':
+          return 'AI Counseling Chatbot';
+        case 'engineering-psychometric-test.html':
+          return 'Psychometric Branch Test';
+        case 'compare_colleges.html':
+          return 'Compare Colleges';
+        case 'dse_compare_colleges.html':
+          return 'DSE Compare Colleges';
+        case 'document_checklist.html':
+          return 'Document Checklist';
+        case 'non-cap-admissions.html':
+          return 'Non-CAP Admissions Guide';
+        case 'career_library.html':
+          return 'Career Library';
+        case 'josaa_cutoff.html':
+          return 'JoSAA Cutoff Checker';
+        case 'comedk_cutoff.html':
+          return 'COMEDK Cutoff Checker';
+        case 'dse_cutoff_checker.html':
+          return 'DSE Cutoff Checker';
+        case 'manipal_cutoff.html':
+          return 'Manipal Cutoff Checker';
+        case 'results.html':
+          return 'Predictor Results';
+        case 'dse_results.html':
+          return 'DSE Predictor Results';
+        case 'calendar.html':
+          return 'Counseling Calendar';
+        case 'cet_colleges.html':
+          return 'MHT-CET Colleges Info';
+        case 'cet-landing.html':
+          return 'MHT-CET Counseling Info';
+        case 'josaa-landing.html':
+          return 'JoSAA Counseling Info';
+        case 'dse-landing.html':
+          return 'DSE Counseling Info';
+        case 'comedk-landing.html':
+          return 'COMEDK Counseling Info';
+        case 'csab-landing.html':
+          return 'CSAB Counseling Info';
+        case 'josaa.html':
+          return 'JoSAA Seat Matrix';
+        case 'csab.html':
+          return 'CSAB Tool';
+        case 'josaa_iit.html':
+          return 'JoSAA IIT Info';
+        case 'cet_marks.html':
+          return 'MHT-CET Marks vs Percentile';
+        case 'cet_rank.html':
+          return 'MHT-CET Percentile vs Rank';
+        case 'josaa_marks.html':
+          return 'JoSAA Marks vs Rank';
+        case 'josaa_rank.html':
+          return 'JoSAA Percentile vs Rank';
+        case 'air.html':
+          return 'JEE Mains Rank vs Percentile';
+        default:
+          var name = cleanPath.replace('.html', '').replace(/[_-]/g, ' ');
+          return name.split(' ').map(function(word) {
+            return word.charAt(0).toUpperCase() + word.slice(1);
+          }).join(' ');
+      }
+    }
+
     async function loadAppUsage() {
       document.getElementById('usage-live-count').innerText = '...';
       document.getElementById('usage-daily-unique').innerText = '...';
@@ -3288,16 +3384,17 @@
       }
       document.getElementById('usage-peak-hour').innerText = peakHourStr;
 
-      // 4. Most Visited Pages
+      // 4. Most Visited Pages (aggregated by clean tool name)
       var pageCounts = {};
       logs.forEach(function (log) {
         if (log.action === 'page_view') {
           var p = log.details || 'index.html';
-          pageCounts[p] = (pageCounts[p] || 0) + 1;
+          var tool = getToolName(p);
+          pageCounts[tool] = (pageCounts[tool] || 0) + 1;
         }
       });
-      var popularPages = Object.keys(pageCounts).map(function (path) {
-        return { path: path, count: pageCounts[path] };
+      var popularPages = Object.keys(pageCounts).map(function (tool) {
+        return { tool: tool, count: pageCounts[tool] };
       });
       popularPages.sort(function (a, b) { return b.count - a.count; });
       popularPages = popularPages.slice(0, 5);
@@ -3307,7 +3404,7 @@
         popTbody.innerHTML = '<tr><td colspan="2" class="empty">No page view data.</td></tr>';
       } else {
         popTbody.innerHTML = popularPages.map(function (p) {
-          return '<tr><td style="font-weight:600">' + escAuth(p.path) + '</td><td style="text-align:right; font-weight:700; color:var(--brand)">' + p.count + '</td></tr>';
+          return '<tr><td style="font-weight:600">' + escAuth(p.tool) + '</td><td style="text-align:right; font-weight:700; color:var(--brand)">' + p.count + '</td></tr>';
         }).join('');
       }
 
@@ -3323,8 +3420,8 @@
         recTbody.innerHTML = sortedLogs.map(function (log) {
           var date = new Date(log.timestamp);
           var timeStr = date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-          var actStr = log.action === 'page_view' ? 'Viewed <strong>' + escAuth(log.details) + '</strong>' : escAuth(log.action);
-          return '<tr><td><span style="font-weight:600; display:block">' + escAuth(log.name) + '</span><span style="font-size:11px; color:var(--muted)">' + escAuth(log.email) + '</span></td><td>' + actStr + '</td><td style="text-align:right; font-size:12px; color:var(--muted)">' + timeStr + '</td></tr>';
+          var actStr = log.action === 'page_view' ? 'Viewed <strong>' + escAuth(getToolName(log.details)) + '</strong>' : escAuth(log.action);
+          return '<tr><td style="white-space:normal;"><span style="font-weight:600; display:block; word-break:break-all;">' + escAuth(log.name) + '</span><span style="font-size:11px; color:var(--muted); display:block; word-break:break-all;">' + escAuth(log.email) + '</span></td><td style="white-space:normal; word-break:break-word;">' + actStr + '</td><td style="text-align:right; font-size:12px; color:var(--muted)">' + timeStr + '</td></tr>';
         }).join('');
       }
 
@@ -3419,26 +3516,11 @@
 
     function renderAppUsageDoughnuts(logs) {
       // 1. Most Used Tools
-      var toolMapping = {
-        'mht_cet_college_predictor.html': 'MHT CET Predictor',
-        'josaa.html': 'JOSAA Predictor',
-        'comedk_predictor.html': 'COMEDK Predictor',
-        'dse_college_predictor.html': 'DSE Predictor',
-        'preference-builder.html': 'CET Pref Builder',
-        'josaa-preference-builder.html': 'JOSAA Pref Builder',
-        'dse-preference-builder.html': 'DSE Pref Builder',
-        'comedk-preference-builder.html': 'COMEDK Pref Builder',
-        'Branch.html': 'Branch Test',
-        'college_explorer.html': 'College Explorer',
-        'cet_chatbot.html': 'MHT CET Chatbot',
-        'index.html': 'Home Portal'
-      };
-
       var toolCounts = {};
       logs.forEach(function(log) {
         if (log.action === 'page_view') {
           var page = log.details || 'index.html';
-          var toolName = toolMapping[page] || page;
+          var toolName = getToolName(page);
           toolCounts[toolName] = (toolCounts[toolName] || 0) + 1;
         }
       });

@@ -293,10 +293,21 @@
       let results = [];
       try { if (raw) results = JSON.parse(raw); } catch(e) { results = []; }
 
-      // Fetch cleaned_cet_data.json and index it
+      // Check if it is JEE Mains predictor results
+      const topMetaRaw = localStorage.getItem("searchMeta");
+      let isJee = false;
+      if (topMetaRaw) {
+        try {
+          const meta = JSON.parse(topMetaRaw);
+          isJee = (meta.exam === 'JEE Mains');
+        } catch(e) {}
+      }
+
+      // Fetch appropriate data and index it
       const cetMap = new Map();
+      const dataUrl = isJee ? 'cleaned_jee_data.json' : 'cleaned_cet_data.json';
       try {
-        const res = await fetch('cleaned_cet_data.json');
+        const res = await fetch(dataUrl);
         if (!res.ok) throw new Error('Network response not ok');
         const cetData = await res.json();
         (cetData || []).forEach(item => {
@@ -307,7 +318,7 @@
           cetMap.set(key, item.rounds || {});
         });
       } catch (e) {
-        console.error("Error loading cleaned CET data:", e);
+        console.error("Error loading cleaned data:", e);
       }
 
       // Render search metadata banner
@@ -317,21 +328,32 @@
         try {
           const meta = JSON.parse(metaRaw);
           const scoreStr = meta.scoreType === 'pct' ? `Percentile: <b>${meta.percentile}</b>` : `Rank: <b>${meta.rank}</b>`;
-          const isGenderNeutral = ['EWS', 'TFWS', 'MI', 'ORPHAN'].includes(meta.category) || (meta.category && (meta.category.startsWith('DEF') || meta.category.startsWith('PWD')));
-          const genderStr = isGenderNeutral ? '' : ` (${meta.gender || 'G'})`;
-          let minTypeStr = meta.minorityType || '';
-          if (minTypeStr === 'Linguistic Minority - Gujarathi') {
-            minTypeStr = 'Linguistic Minority - Gujarathi (including Jain)';
+          
+          if (meta.exam === 'JEE Mains') {
+            const minorityStr = (meta.minority && meta.minority !== 'None') ? ` • Minority: <b>${meta.minority}</b>` : '';
+            document.getElementById('resultCount').innerHTML = `
+              ${results.length} colleges matching your profile • 
+              ${scoreStr} • 
+              Category: <b>All India</b>${minorityStr}
+            `;
+            filePrefix = `jee_all_india_predictions`;
+          } else {
+            const isGenderNeutral = ['EWS', 'TFWS', 'MI', 'ORPHAN'].includes(meta.category) || (meta.category && (meta.category.startsWith('DEF') || meta.category.startsWith('PWD')));
+            const genderStr = isGenderNeutral ? '' : ` (${meta.gender || 'G'})`;
+            let minTypeStr = meta.minorityType || '';
+            if (minTypeStr === 'Linguistic Minority - Gujarathi') {
+              minTypeStr = 'Linguistic Minority - Gujarathi (including Jain)';
+            }
+            const minorityStr = (meta.category === 'MI' && minTypeStr && minTypeStr !== 'None' && minTypeStr !== 'all') ? ` • Minority: <b>${minTypeStr}</b>` : '';
+            document.getElementById('resultCount').innerHTML = `
+              ${results.length} colleges matching your profile • 
+              ${scoreStr} • 
+              Category: <b>${meta.category}${genderStr}</b>${minorityStr} • 
+              Home Univ: <b>${meta.homeUniv || 'None'}</b> • 
+              Region: <b>${meta.region}</b>
+            `;
+            filePrefix = `mhtcet_${meta.category.toLowerCase()}_predictions`;
           }
-          const minorityStr = (meta.category === 'MI' && minTypeStr && minTypeStr !== 'None' && minTypeStr !== 'all') ? ` • Minority: <b>${minTypeStr}</b>` : '';
-          document.getElementById('resultCount').innerHTML = `
-            ${results.length} colleges matching your profile • 
-            ${scoreStr} • 
-            Category: <b>${meta.category}${genderStr}</b>${minorityStr} • 
-            Home Univ: <b>${meta.homeUniv || 'None'}</b> • 
-            Region: <b>${meta.region}</b>
-          `;
-          filePrefix = `mhtcet_${meta.category.toLowerCase()}_predictions`;
         } catch(e) {
           document.getElementById('resultCount').textContent = `${results.length} colleges matching your profile`;
         }
