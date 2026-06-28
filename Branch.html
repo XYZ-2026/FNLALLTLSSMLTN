@@ -570,6 +570,24 @@ background:var(--bg-alt);font-family:inherit;font-size:.82rem;cursor:pointer;tra
 <script src="branches_data.js"></script>
 
 <script>
+let allowedBranches = null;
+const allowedBranchesPromise = fetch('unique_branches.txt')
+  .then(r => r.ok ? r.text() : '')
+  .then(txt => {
+    const set = new Set();
+    txt.split('\n').forEach(line => {
+      const match = line.trim().match(/^\d+\.\s*(.+)$/);
+      if (match) {
+        set.add(match[1].trim().toLowerCase());
+      }
+    });
+    allowedBranches = set;
+  })
+  .catch(err => {
+    console.error("Error loading unique_branches.txt:", err);
+    allowedBranches = new Set();
+  });
+
 /* ========== THEME & UI ========== */
 function toggleTheme(){
   const t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
@@ -1337,9 +1355,15 @@ function cosineSimilarity(a,b){
 }
 
 function calculateResults(){
+  if (allowedBranches === null) {
+    allowedBranchesPromise.then(calculateResults);
+    return;
+  }
   const traitScores=calculateTraitScores();
   // Calculate branch matches
-  let matches=BRANCHES.map(branch=>{
+  let matches=BRANCHES.filter(branch => {
+    return allowedBranches.size === 0 || allowedBranches.has(branch.name.trim().toLowerCase());
+  }).map(branch=>{
     const sim=cosineSimilarity(traitScores,
       Object.fromEntries(TRAITS.map(t=>[t,(branch.traitVector[t]||0)*100])));
     return{...branch,matchScore:Math.round(sim*100)};
