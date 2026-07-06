@@ -30,7 +30,6 @@ Total Unique Branches: 97
 33. Computer Technology
 34. Cyber Security
 35. Data Science
-36. Dyestuff Technology
 37. Electrical Engineering
 38. Electrical Engineering [Electronics and Power]
 39. Electrical and Computer Engineering
@@ -44,44 +43,18 @@ Total Unique Branches: 97
 47. Electronics and Communication Engineering
 49. Electronics and Computer Science
 50. Electronics and Telecommunication Engineering
-51. Fashion Technology
-52. Fibres and Textile Processing Technology
-53. Food Engineering
-55. Food Technology
-56. Food Technology And Management
 57. Industrial IoT
 58. Information Technology
 59. Instrumentation Engineering
 60. Instrumentation and Control Engineering
 61. Internet of Things (IoT)
-62. Man Made Textile Technology
 63. Manufacturing Science and Engineering
 64. Mechanical And Rail Engineering
 65. Mechanical Engineering
 68. Mechanical and Automation Engineering
 70. Mechatronics Engineering
 71. Metallurgy and Material Technology
-72. Mining Engineering
-74. Oil Technology
-75. Oil and Paints Technology
-76. Oil,Oleochemicals and Surfactants Technology
-77. Paints Technology
-78. Paper and Pulp Technology
-79. Petro Chemical Engineering
-80. Pharmaceutical and Fine Chemical Technology
-81. Pharmaceuticals Chemistry and Technology
-82. Plastic Technology
-83. Plastic and Polymer Engineering
-84. Polymer Engineering and Technology
-85. Printing and Packing Technology
 86. Production Engineering
 87. Production Engineering [Sandwich]
 88. Robotics and Artificial Intelligence
 89. Robotics and Automation
-90. Safety and Fire Engineering
-91. Structural Engineering
-92. Surface Coating Technology
-93. Technical Textiles
-94. Textile Chemistry
-96. Textile Technology
-97. VLSI

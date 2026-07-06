@@ -345,6 +345,217 @@
         gap: 60px
       }
     }
+
+    /* ── Promotional Banners Grid Wrapper ── */
+    .promotional-banners-wrapper {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto 40px;
+    }
+
+    .scaler-whatsapp-section, .community-section {
+      width: 100%;
+      margin: 0;
+    }
+
+    .scaler-container, .community-container {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      height: 100%;
+      background: linear-gradient(135deg, #dc2626 0%, #be123c 50%, #9f1239 100%);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 20px 40px -15px rgba(220, 38, 38, 0.3);
+      position: relative;
+      overflow: hidden;
+      color: #ffffff;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .scaler-container:hover, .community-container:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 25px 50px -12px rgba(220, 38, 38, 0.45);
+    }
+
+    .scaler-container::before, .community-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -150%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+      transform: skewX(-25deg);
+      transition: 0.8s;
+    }
+
+    .scaler-container:hover::before, .community-container:hover::before {
+      left: 150%;
+    }
+
+    .scaler-image-wrapper, .community-image-wrapper {
+      width: 100%;
+      aspect-ratio: 1.65; /* Enforces identical heights to level the text below them */
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: #be123c; /* Red background to blend seamlessly with banner graphics */
+      line-height: 0;
+      margin-bottom: 24px;
+    }
+
+    .scaler-img, .community-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Covers container fully to eliminate white margins */
+      object-position: center;
+      display: block;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .scaler-container:hover .scaler-img, .community-container:hover .community-img {
+      transform: scale(1.02);
+    }
+
+    .scaler-content, .community-content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      text-align: left;
+      z-index: 2;
+      flex: 1;
+      justify-content: space-between;
+    }
+
+    .scaler-text-group, .community-text-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .scaler-badge, .community-badge {
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: 100px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .scaler-content h2, .community-content h2 {
+      font-family: 'Lexend', sans-serif;
+      font-weight: 800;
+      font-size: clamp(1.4rem, 2.5vw, 1.85rem);
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: #ffffff;
+      margin: 0;
+    }
+
+    .scaler-content p, .community-content p {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .scaler-buttons, .community-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: auto;
+    }
+
+    .scaler-btn, .community-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13.5px;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+      width: auto; /* Natural width to avoid uneven stretching */
+    }
+
+    .scaler-btn-whatsapp, .community-btn-primary {
+      background: #ffffff;
+      color: #be123c;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .scaler-btn-whatsapp:hover, .community-btn-primary:hover {
+      background: #fef2f2;
+      color: #9f1239;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .scaler-btn-form {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+    }
+
+    .scaler-btn-form:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 991px) {
+      .promotional-banners-wrapper {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .scaler-container, .community-container {
+        padding: 28px;
+      }
+
+      .scaler-image-wrapper, .community-image-wrapper {
+        max-width: 480px;
+        margin: 0 auto 20px;
+      }
+
+      .scaler-content, .community-content {
+        align-items: center;
+        text-align: center;
+      }
+
+      .scaler-text-group, .community-text-group {
+        align-items: center;
+        text-align: center;
+      }
+
+      .scaler-badge, .community-badge {
+        align-self: center;
+      }
+
+      .scaler-buttons, .community-buttons {
+        justify-content: center;
+        width: 100%;
+      }
+
+      .scaler-btn, .community-btn {
+        width: 100%;
+        max-width: 320px;
+        white-space: normal; /* Allow text wrapping on mobile */
+        text-align: center;
+      }
+    }
   </style>
 </head>
 
@@ -569,6 +780,66 @@
         </a>
       </div>
     </section>
+
+    <!-- Promotional Banners Grid Wrapper -->
+    <div class="promotional-banners-wrapper">
+      <!-- Scaler School of Technology Promotion Section -->
+      <section class="scaler-whatsapp-section">
+        <div class="scaler-container">
+          <div class="scaler-image-wrapper">
+            <img src="SCHOOLS/schools.png" alt="School of Technologies" class="scaler-img">
+          </div>
+          <div class="scaler-content">
+            <div class="scaler-text-group">
+              <span class="scaler-badge">Admissions 2026</span>
+              <h2>Confused about School of Technologies?</h2>
+              <p>Get a free 1:1 counselling session with our expert mentors to clarify your doubts and map out your path to a successful engineering career.</p>
+            </div>
+            <div class="scaler-buttons">
+              <a href="https://forms.gle/1iN7rrBbrASDJWVH8" target="_blank" class="scaler-btn scaler-btn-whatsapp">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+                Get free 1:1 counselling
+              </a>
+              <a href="https://chat.whatsapp.com/EwG2jSAFAySKYqXOitNkwC?s=cl&p=a&mlu=0" target="_blank" class="scaler-btn scaler-btn-form">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.005 5.234 5.24.002 11.693.002c3.127.001 6.068 1.219 8.28 3.43 2.21 2.21 3.427 5.15 3.425 8.277-.005 6.458-5.24 11.69-11.696 11.69-2.003 0-3.97-.514-5.702-1.492L0 24zm6.59-4.777c1.65.981 3.266 1.49 4.96 1.493 5.485.002 9.948-4.46 9.95-9.947.002-2.658-1.03-5.157-2.906-7.034C16.82 1.859 14.322.827 11.69.827c-5.49 0-9.953 4.462-9.956 9.95-.001 1.83.486 3.62 1.411 5.2l-.995 3.633 3.722-.976zm12.112-7.398c-.287-.143-1.696-.837-1.958-.933-.262-.096-.453-.143-.644.143-.191.287-.738.933-.905 1.124-.167.191-.334.215-.62.072-.287-.143-1.21-.446-2.305-1.424-.853-.761-1.43-1.7-1.597-1.986-.167-.287-.018-.442.125-.583.13-.127.287-.334.43-.501.142-.167.19-.286.285-.477.096-.191.048-.358-.024-.501-.072-.143-.644-1.551-.882-2.123-.233-.559-.469-.482-.644-.491-.167-.008-.358-.01-.55-.01s-.502.072-.764.358c-.262.287-1.002.979-1.002 2.387 0 1.408 1.026 2.769 1.17 2.96.143.191 2.019 3.082 4.89 4.32.683.294 1.218.469 1.634.6.685.218 1.31.187 1.802.114.549-.081 1.696-.692 1.934-1.36.238-.668.238-1.24.167-1.36-.072-.12-.262-.215-.55-.358z"/>
+                </svg>
+                Join WhatsApp Group
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Community Discussion Section -->
+      <section class="community-section">
+        <div class="community-container">
+          <div class="community-image-wrapper">
+            <img src="COMMUNITY/community.png" alt="Community Discussion" class="community-img">
+          </div>
+          <div class="community-content">
+            <div class="community-text-group">
+              <span class="community-badge">Community Groups</span>
+              <h2>Worried about spot rounds? Discuss in the community</h2>
+              <p>Join our active community group to discuss vacancy seats, cutoff trends, and spot round allotment updates with fellow engineering aspirants.</p>
+            </div>
+            <div class="community-buttons">
+              <a href="https://www.collegesimplified.in/groups" target="_blank" class="community-btn community-btn-primary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                Join Community Discussion
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
 
     <!-- COMEDK TOOLS SECTION -->
     <section class="section">
