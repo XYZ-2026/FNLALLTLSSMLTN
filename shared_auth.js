@@ -32,7 +32,7 @@ function injectGlobalUI() {
       --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
       --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1);
     }
-    header { background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--stroke); padding: 0 20px; position: fixed; width: 100%; top: 0; z-index: 500; height: 64px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    header { background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--stroke); padding: 0 20px; position: fixed; width: 100%; top: 0 !important; z-index: 500; height: 64px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 100%; gap: 12px; }
     .header-left { display: flex; align-items: center; gap: 16px; }
     .logo { font-family: 'Lexend', sans-serif; font-weight: 800; font-size: 1.25rem; color: var(--brand); text-decoration: none; display: flex; align-items: center; gap: 4px; flex-shrink: 0; line-height: 1; }
@@ -801,6 +801,8 @@ function injectGlobalUI() {
   `;
 
   document.body.insertAdjacentHTML('afterbegin', headerHtml + sidebarHtml + claimModalHtml + termsModalHtml);
+
+  // 3. Inject Banner removed
 
   // Dynamic Sidebar Link Activation based on current page pathname
   try {
