@@ -361,7 +361,7 @@
             try { if (raw) results = JSON.parse(raw); } catch (e) { results = []; }
 
             const session = getSession();
-            const isPremium = session && (session.role === 'premium' || session.role === 'admin');
+            const isPremium = true; // DSE College Predictor is completely free
 
             const countEl = document.getElementById('resultCount');
             if (countEl) countEl.textContent = results.length + ' colleges matching your profile';
@@ -457,8 +457,8 @@
             }
 
 
-            // Add admin or premium export buttons matching shared_auth roles (session already declared above)
-            if (session && (session.role === 'admin' || session.role === 'premium') && results.length > 0) {
+            // Add export buttons (free for all logged in users)
+            if (session && results.length > 0) {
                 const adminControls = document.getElementById('adminControls');
                 if (adminControls) {
                     let filePrefix = 'dse_predictions';
