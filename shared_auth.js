@@ -691,7 +691,7 @@ function injectGlobalUI() {
           <div class="dropdown-content" id="drop-comedk">
             <a href="comedk-landing.html" class="sidebar-sub-link">Hub Overview</a>
             <a href="comedk_predictor.html" class="sidebar-sub-link">COMEDK Predictor</a>
-            <a href="comedk_cutoff.html" class="sidebar-sub-link">COMEDK Cutoff Checker</a>
+            <a href="comedk_cutoff.html" class="sidebar-sub-link">Cutoff Checker & Explorer</a>
             <a href="Branch.html" class="sidebar-sub-link">Branch Prediction Test</a>
             <a href="career_library.html" class="sidebar-sub-link">Career Library</a>
             <a href="comedk-preference-builder.html" class="sidebar-sub-link">COMEDK Preference Builder</a>

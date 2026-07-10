@@ -2,14 +2,14 @@
 <html lang="en" data-theme="light">
 <head>
     <!-- SEO Optimization Meta Tags -->
-    <title>COMEDK UGET College Cutoff Checker — College Simplified</title>
-    <meta name="keywords" content="Counselling, mhtcet, josaa counselling, college simplified, mhtcet counselling, concept simplified, mhtcet counseling, josaa counseling, counseling, college predictor, college predictors, engineering college predictor, college admission predictor, comedk cutoff checker, karnataka cutoff ranks, gm kkr categories, comedk rounds">
-    <meta name="description" content="Check official COMEDK cutoff ranks from rounds 1 to 4. Search by college, branch, and category (GM and KKR seat types).">
+    <title>COMEDK UGET Cutoff Checker & College Explorer — College Simplified</title>
+    <meta name="keywords" content="Counselling, mhtcet, josaa counselling, college simplified, mhtcet counselling, concept simplified, mhtcet counseling, josaa counseling, counseling, college predictor, college predictors, engineering college predictor, college admission predictor, comedk cutoff checker, karnataka cutoff ranks, gm kkr categories, comedk rounds, college explorer, seat matrix, fees">
+    <meta name="description" content="Check official COMEDK UGET cutoff ranks from rounds 1 to 4 and explore college seat matrix, category seat allocation (GM & KKR), and tuition and other fee structures.">
     <link rel="icon" type="image/png" href="favicon.png">
     
     <!-- Open Graph / Facebook Meta Tags -->
-    <meta property="og:title" content="COMEDK UGET College Cutoff Checker — College Simplified">
-    <meta property="og:description" content="Check official COMEDK cutoff ranks from rounds 1 to 4. Search by college, branch, and category (GM and KKR seat types).">
+    <meta property="og:title" content="COMEDK UGET Cutoff Checker & College Explorer — College Simplified">
+    <meta property="og:description" content="Check official COMEDK UGET cutoff ranks from rounds 1 to 4 and explore college seat matrix, category seat allocation (GM & KKR), and tuition and other fee structures.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://counselling.collegesimplified.in/comedk_cutoff.html">
     <meta property="og:site_name" content="College Simplified">
@@ -48,6 +48,10 @@
       --bg: #f8fafc;
       --card: #ffffff;
       --stroke: #e2e8f0;
+      --blue: #2563eb;
+      --blue-soft: #eff6ff;
+      --green: #16a34a;
+      --green-soft: #f0fdf4;
       --shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
       --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
     }
@@ -59,6 +63,10 @@
       --bg: #0f172a;
       --card: #1e293b;
       --stroke: #334155;
+      --blue: #60a5fa;
+      --blue-soft: #0e1a38;
+      --green: #4ade80;
+      --green-soft: #0a1f10;
       --shadow: 0 4px 6px -1px rgba(0,0,0,0.2), 0 2px 4px -1px rgba(0,0,0,0.1);
       --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.3), 0 8px 10px -6px rgba(0,0,0,0.2);
       --brand-soft: rgba(220, 38, 38, 0.1);
@@ -633,6 +641,75 @@
       color: var(--ink2);
       font-size: 15px;
     }
+
+    /* Tabs Navigation */
+    .tabs-navigation {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--stroke);
+      padding-bottom: 8px;
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      font-family: 'Lexend', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 10px 18px;
+      border-radius: 10px;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      color: var(--brand) !important;
+      background: var(--brand-soft) !important;
+    }
+    .tab-btn:hover:not(.active) {
+      color: var(--ink);
+      background: var(--stroke);
+    }
+    
+    /* Seat matrix stat cards & explorer */
+    .explorer-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .explorer-stat-card {
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+    }
+    .explorer-stat-card .val {
+      font-family: 'Lexend', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--brand);
+    }
+    .explorer-stat-card.blue-stat .val {
+      color: var(--blue);
+    }
+    .explorer-stat-card.green-stat .val {
+      color: var(--green);
+    }
+    .explorer-stat-card .lbl {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
     
     /* Utility class */
     .hidden {
@@ -882,8 +959,8 @@
       <!-- MAIN LANDING / SEARCH PANEL -->
       <div id="landingSection" class="hidden">
         <div class="page-hero">
-          <h1>COMEDK Cutoff Explorer</h1>
-          <p>Analyze official category cutoff trends across counseling rounds 1 to 4. Click on any institute to view detailed graphs showing cutoff movements across all rounds.</p>
+          <h1>COMEDK Cutoff & College Explorer</h1>
+          <p>Analyze official category cutoff trends across rounds 1 to 4, and explore seat matrix allocations (GM & KKR) and detailed fee structures. Click on any institute to get started.</p>
           
           <div class="search-box-container">
             <div class="search-input-wrap">
@@ -923,6 +1000,7 @@
           </div>
         </div>
         
+        
         <!-- COLLEGE PAGE DATA FETCH LOADER -->
         <div id="collegePageLoader" class="loader-container hidden" style="margin-bottom: 32px;">
           <div class="spinner"></div>
@@ -933,7 +1011,72 @@
         <!-- ACTUAL COLLEGE ANALYTICS PAGE CONTENT -->
         <div id="collegeDetailsContent" class="hidden">
           
-          <div class="stats-row" id="statsRow"></div>
+          <!-- COLLEGE EXPLORER / SEAT MATRIX & FEES CONTENT -->
+          <div id="explorerTabContent" class="hidden" style="margin-bottom: 32px;">
+            <!-- Overall Stats Cards Grid -->
+            <div class="explorer-stats-grid">
+              <div class="explorer-stat-card">
+                <div class="val" id="expCode">—</div>
+                <div class="lbl">College Code</div>
+              </div>
+              <div class="explorer-stats-grid-inner" style="display: contents;">
+                <div class="explorer-stat-card blue-stat">
+                  <div class="val" id="expTotalSeats">0</div>
+                  <div class="lbl">Total Seats Intake</div>
+                </div>
+                <div class="explorer-stat-card">
+                  <div class="val" id="expCategorySeats">GM: 0 | KKR: 0</div>
+                  <div class="lbl">Seat Distribution</div>
+                </div>
+                <div class="explorer-stat-card green-stat">
+                  <div class="val" id="expFeeRange" style="font-size: 18px; font-weight: 800;">—</div>
+                  <div class="lbl">Total Fee Range</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Seat Matrix & Fees Table Explorer Card -->
+            <div class="master-list-card" style="margin-bottom: 24px;">
+              <div class="master-list-header">
+                <h3>Seat Matrix & Fee Details</h3>
+                <div class="master-filters">
+                  <input type="text" id="expSearch" placeholder="Search branch name..." oninput="applyExplorerFilters()" class="filter-search-input">
+                  <select id="expSort" onchange="applyExplorerFilters()" class="filter-select" style="width: 180px;">
+                    <option value="name_asc">Branch Name (A-Z)</option>
+                    <option value="seats_desc">Seats (High to Low)</option>
+                    <option value="fee_asc">Total Fee (Low to High)</option>
+                    <option value="fee_desc">Total Fee (High to Low)</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="table-container">
+                <table class="cutoff-table">
+                  <thead>
+                    <tr>
+                      <th>Branch / Course</th>
+                      <th style="text-align: center; white-space: nowrap;">Total Seats</th>
+                      <th style="text-align: center; white-space: nowrap;">GM Seats</th>
+                      <th style="text-align: center; white-space: nowrap;">KKR Seats</th>
+                      <th style="text-align: right; white-space: nowrap;">Tuition Fee</th>
+                      <th style="text-align: right; white-space: nowrap;">Other Fee</th>
+                      <th style="text-align: right; white-space: nowrap;">Total Fee</th>
+                    </tr>
+                  </thead>
+                  <tbody id="explorerTableBody"></tbody>
+                </table>
+              </div>
+              
+              <div id="explorerNoData" class="empty-state hidden">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <h4>No Branches Found</h4>
+                <p>Try modifying your search filter.</p>
+              </div>
+            </div>
+          </div>
+
+          <div id="cutoffTabContent">
+            <div class="stats-row" id="statsRow"></div>
 
           <!-- Master Cutoffs Explorer Card -->
           <div class="master-list-card" style="margin-bottom: 32px;">
@@ -1047,9 +1190,37 @@
     let browseLimit = 24;
     let browseFilteredList = [];
     
+    // Details Explorer Data
+    let DETAILS_BY_NORM_NAME = new Map();
+    const COLLEGE_NAME_MAP = {
+      "Karavali Institute of Technology-Kottara, Mangaluru": "Karavali Institute of Technology, Mangaluru",
+      "KLE Technological University Formerly called as KLE Dr. M.S. Sheshgiri College of Engineering and Technology-Udyambag, Belagavi": "KLE Technological University, Belagavi Campus. Formerly known as KLE Dr. M.S. Sheshgiri College of Engineering and Technology-Udyambag, Belagavi",
+      "Seshadripuram Institute of Technology - Jaipura Hobli, Mysuru": "Seshadripuram Institute of Technology - Kadakola Industrial Area, Mysuru",
+      "Yenepoya Institute of Technology formerly known as Dr. M V Shetty Institute of Technology-Moodbidri, Mangaluru": "Yenepoya Institute of Technology, NH-13, Thodar, Moodbidri, Mangaluru",
+      "Amruta Institute of Engineering and Management Science-Bidadi, Ramnagar Taluk, Bengaluru Rural": "Amruta Institute of Engineering and Management Science-Bidadi,",
+      "New Ebenezer Institute of Technology - Kothanur, Bangalore": "Vijaya Vittala Institution of Technology-Kothanur, Bengaluru"
+    };
+
+    function normalizeCollegeName(name) {
+      if (!name) return '';
+      let clean = name.split('\n')[0].replace(/\s+/g, ' ').trim().toLowerCase();
+      clean = clean.replace(/^(dr\.|sri|shri|smt\.|the)\s+/g, '');
+      return clean.replace(/[^a-z0-9]/g, '');
+    }
+
+    function getDetailsForCollege(collegeName) {
+      let targetName = collegeName;
+      if (COLLEGE_NAME_MAP[collegeName]) {
+        targetName = COLLEGE_NAME_MAP[collegeName];
+      }
+      const norm = normalizeCollegeName(targetName);
+      return DETAILS_BY_NORM_NAME.get(norm) || null;
+    }
+
     // Selection state
     let selectedCollegeName = '';
     let selectedCollegeData = {}; // round -> array of rows for this college
+    let activeTab = 'cutoffs'; // 'cutoffs' or 'explorer'
     
     // Table explorer state
     let tableLimit = 30;
@@ -1083,6 +1254,11 @@
     function boot() {
       if (!initAuth({ requireLogin: true, toolContainerId: 'toolArea' })) return;
 
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('tab') === 'explorer') {
+        activeTab = 'explorer';
+      }
+
       loadDataFiles();
 
       // Listen to theme changes to redraw the chart with correct styles
@@ -1098,30 +1274,70 @@
 
     async function loadDataFiles() {
       ALL_DATA = [];
+      DETAILS_BY_NORM_NAME = new Map();
 
       try {
-        await Promise.all(DATA_FILES.map(async (df) => {
-          const res = await fetch(df.file);
-          if (!res.ok) throw new Error(`Failed to load ${df.file}`);
-          const json = await res.json();
-          const rows = json[df.key] || [];
+        const [gmRes, kkrRes, detailsRes] = await Promise.all([
+          fetch('COMEDK/COMEDK_GM_CUTOFF.json'),
+          fetch('COMEDK/COMEDK_KKR_CUTOFF.json'),
+          fetch('COMEDK/COMDEK_CLG_DETAILS.json')
+        ]);
 
-          rows.forEach(row => {
-            const rawCollege = row['College'] || '';
-            const college = cleanCollegeName(rawCollege);
-            const branch = (row['Branch'] || '').trim();
-            if (!college || !branch) return;
+        if (!gmRes.ok || !kkrRes.ok || !detailsRes.ok) {
+          throw new Error("Failed to load official COMEDK data files.");
+        }
 
-            const rounds = ROUND_FIELDS.map(field => parseRank(row[field]));
+        const [gmJson, kkrJson, detailsJson] = await Promise.all([
+          gmRes.json(),
+          kkrRes.json(),
+          detailsRes.json()
+        ]);
 
-            ALL_DATA.push({
-              college,
-              branch,
-              category: df.category,
-              rounds
+        const gmRows = gmJson['COMEDK_GM_CUTOFF'] || [];
+        gmRows.forEach(row => {
+          const rawCollege = row['College'] || '';
+          const college = cleanCollegeName(rawCollege);
+          const branch = (row['Branch'] || '').trim();
+          if (!college || !branch) return;
+          const rounds = ROUND_FIELDS.map(field => parseRank(row[field]));
+          ALL_DATA.push({ college, branch, category: 'GM', rounds });
+        });
+
+        const kkrRows = kkrJson['COMEDK_KKR_CUTOFF'] || [];
+        kkrRows.forEach(row => {
+          const rawCollege = row['College'] || '';
+          const college = cleanCollegeName(rawCollege);
+          const branch = (row['Branch'] || '').trim();
+          if (!college || !branch) return;
+          const rounds = ROUND_FIELDS.map(field => parseRank(row[field]));
+          ALL_DATA.push({ college, branch, category: 'KKR', rounds });
+        });
+
+        const detailsRows = detailsJson['COMDEK_CLG_DETAILS'] || [];
+        detailsRows.forEach(row => {
+          let rawName = row['College Name'] || '';
+          if (!rawName) return;
+          rawName = rawName.replace(/\r?\n|\r/g, ' ').replace(/\s+/g, ' ').trim();
+          const normName = normalizeCollegeName(rawName);
+          
+          if (!DETAILS_BY_NORM_NAME.has(normName)) {
+            DETAILS_BY_NORM_NAME.set(normName, {
+              code: row['College Code'] || '',
+              name: rawName,
+              branches: []
             });
+          }
+
+          DETAILS_BY_NORM_NAME.get(normName).branches.push({
+            courseCodeName: row['Course Code & Course Name'] || '',
+            totalSeats: parseInt((row['Total Seats'] || '0').replace(/,/g, ''), 10) || 0,
+            gmSeats: parseInt((row['GM\nSeats'] || '0').replace(/,/g, ''), 10) || 0,
+            kkrSeats: parseInt((row['KKR\nSeats'] || '0').replace(/,/g, ''), 10) || 0,
+            tuitionFee: row['Tuition Fee\n₹'] || '—',
+            otherFee: row['Other Fee\n₹'] || '—',
+            totalFee: row['Total Fee\n₹'] || '—'
           });
-        }));
+        });
 
         buildCollegeList();
         
@@ -1183,18 +1399,26 @@
         return;
       }
 
-      grid.innerHTML = paginated.map(inst => `
-        <div class="college-card" onclick="selectCollege('${inst.name.replace(/'/g, "\\'")}')">
-          <div class="college-card-title">${inst.name}</div>
-          <div class="college-card-footer">
-            <span class="tag tag-comedk">COMEDK</span>
-            <span style="font-size:12px; font-weight:700; color:var(--brand); display:flex; align-items:center; gap:4px">
-              View Cutoffs 
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </span>
+      grid.innerHTML = paginated.map(inst => {
+        const details = getDetailsForCollege(inst.name);
+        const codeHtml = details ? `<span class="clg-card-code" style="font-size:10px; font-weight:800; background:var(--brand-soft); color:var(--brand); padding:2px 6px; border-radius:4px; border:1px solid var(--brand-ring); align-self:flex-start">${details.code}</span>` : '';
+        
+        return `
+          <div class="college-card" onclick="selectCollege('${inst.name.replace(/'/g, "\\'")}')">
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              ${codeHtml}
+              <div class="college-card-title">${inst.name}</div>
+            </div>
+            <div class="college-card-footer">
+              <span class="tag tag-comedk">COMEDK</span>
+              <span style="font-size:12px; font-weight:700; color:var(--brand); display:flex; align-items:center; gap:4px">
+                Explore College 
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </span>
+            </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
 
       const hasMore = browseFilteredList.length > browseLimit;
       document.getElementById('browseLoadMore').classList.toggle('hidden', !hasMore);
@@ -1296,7 +1520,126 @@
         }
       });
 
+      // Load seat matrix and fee details
+      const details = getDetailsForCollege(collegeName);
+      const explorerContent = document.getElementById('explorerTabContent');
+      const cutoffContent = document.getElementById('cutoffTabContent');
+      
+      cutoffContent.classList.remove('hidden');
+
+      if (details) {
+        explorerContent.classList.remove('hidden');
+        renderCollegeExplorer(details);
+        applyExplorerFilters();
+      } else {
+        explorerContent.classList.add('hidden');
+      }
+
       initializeCollegeAnalytics();
+    }
+
+    let currentExplorerBranches = [];
+
+    // Render explorer cards
+    function renderCollegeExplorer(details) {
+      document.getElementById('expCode').textContent = details.code || '—';
+      
+      let totalSeats = 0;
+      let totalGM = 0;
+      let totalKKR = 0;
+      let minFee = Infinity;
+      let maxFee = -Infinity;
+      
+      details.branches.forEach(b => {
+        totalSeats += b.totalSeats;
+        totalGM += b.gmSeats;
+        totalKKR += b.kkrSeats;
+        
+        const feeStr = b.totalFee || '';
+        const parsed = parseInt(feeStr.replace(/,/g, '').trim(), 10);
+        if (!isNaN(parsed) && parsed > 0) {
+          if (parsed < minFee) minFee = parsed;
+          if (parsed > maxFee) maxFee = parsed;
+        }
+      });
+      
+      document.getElementById('expTotalSeats').textContent = totalSeats.toLocaleString('en-IN');
+      document.getElementById('expCategorySeats').innerHTML = `<span style="color:var(--blue)">GM: ${totalGM}</span> &nbsp;|&nbsp; <span style="color:var(--orange)">KKR: ${totalKKR}</span>`;
+      
+      let feeRangeStr = '—';
+      if (minFee !== Infinity && maxFee !== -Infinity) {
+        if (minFee === maxFee) {
+          feeRangeStr = `₹${minFee.toLocaleString('en-IN')}`;
+        } else {
+          feeRangeStr = `₹${minFee.toLocaleString('en-IN')} - ₹${maxFee.toLocaleString('en-IN')}`;
+        }
+      }
+      document.getElementById('expFeeRange').textContent = feeRangeStr;
+      
+      currentExplorerBranches = details.branches || [];
+      
+      // Reset filter values
+      document.getElementById('expSearch').value = '';
+      document.getElementById('expSort').value = 'name_asc';
+    }
+
+    function applyExplorerFilters() {
+      const q = document.getElementById('expSearch').value.toLowerCase().trim();
+      const sortVal = document.getElementById('expSort').value;
+      
+      let filtered = currentExplorerBranches.filter(b => {
+        return !q || b.courseCodeName.toLowerCase().includes(q);
+      });
+      
+      filtered.sort((a, b) => {
+        if (sortVal === 'name_asc') {
+          return a.courseCodeName.localeCompare(b.courseCodeName);
+        } else if (sortVal === 'seats_desc') {
+          return b.totalSeats - a.totalSeats;
+        } else if (sortVal === 'fee_asc') {
+          const feeA = parseInt((a.totalFee || '0').replace(/,/g, '').trim(), 10) || 0;
+          const feeB = parseInt((b.totalFee || '0').replace(/,/g, '').trim(), 10) || 0;
+          return feeA - feeB;
+        } else if (sortVal === 'fee_desc') {
+          const feeA = parseInt((a.totalFee || '0').replace(/,/g, '').trim(), 10) || 0;
+          const feeB = parseInt((b.totalFee || '0').replace(/,/g, '').trim(), 10) || 0;
+          return feeB - feeA;
+        }
+        return 0;
+      });
+      
+      renderExplorerTable(filtered);
+    }
+
+    function renderExplorerTable(branches) {
+      const tbody = document.getElementById('explorerTableBody');
+      const noData = document.getElementById('explorerNoData');
+      
+      if (!branches.length) {
+        tbody.innerHTML = '';
+        noData.classList.remove('hidden');
+        return;
+      }
+      
+      noData.classList.add('hidden');
+      
+      tbody.innerHTML = branches.map(b => {
+        const displayTuition = b.tuitionFee !== '—' && b.tuitionFee !== '-' ? `₹${b.tuitionFee}` : '—';
+        const displayOther = b.otherFee !== '—' && b.otherFee !== '-' ? `₹${b.otherFee}` : '—';
+        const displayTotal = b.totalFee !== '—' && b.totalFee !== '-' ? `₹${b.totalFee}` : '—';
+        
+        return `
+          <tr>
+            <td style="font-weight:700">${b.courseCodeName}</td>
+            <td style="text-align:center; font-weight:600">${b.totalSeats}</td>
+            <td style="text-align:center; color:var(--blue); font-weight:600">${b.gmSeats}</td>
+            <td style="text-align:center; color:var(--green); font-weight:600">${b.kkrSeats}</td>
+            <td style="text-align:right; font-family:monospace">${displayTuition}</td>
+            <td style="text-align:right; font-family:monospace">${displayOther}</td>
+            <td style="text-align:right; font-family:monospace; font-weight:800; color:var(--brand)">${displayTotal}</td>
+          </tr>
+        `;
+      }).join('');
     }
 
     // Set up filter select dropdowns
@@ -1630,6 +1973,7 @@
     window.renderChartAndSummary = renderChartAndSummary;
     window.applyTableFilters = applyTableFilters;
     window.loadMoreTableRows = loadMoreTableRows;
+    window.applyExplorerFilters = applyExplorerFilters;
 
     // Listen for suggestions clickout
     document.addEventListener('click', function(e) {
