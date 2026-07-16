@@ -17,3 +17,4 @@ node_modules/
 *.njsproj
 *.sln
 *.swp
+scratch/firebase_private_key.json
