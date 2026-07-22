@@ -1,6 +1,7 @@
 'use strict';
 
 /* ══════ STATE ══════ */
+let selectedYear = '2026';
 let josaaData = [], selectedBranches = new Set(), matchedColleges = [], selectedColleges = [], prefList = [], allBranchNames = [];
 let prefEditCount = 0;
 let prefLocked = false;
@@ -221,14 +222,23 @@ function validateStep1(isLocking = false) {
 }
 
 /* ══════ DATA LOADING ══════ */
-async function loadData() {
+function getClosingRankKey() {
+  const maxR = selectedYear === '2026' ? 5 : 6;
+  return `Round ${maxR} - Closing Rank `;
+}
+
+async function loadData(year = selectedYear) {
   const loader = document.getElementById('dataLoader');
   try {
+    loader.style.display = 'flex';
     loader.innerHTML = '<div class="pb-spinner"></div><span>Loading JOSAA cutoff data (~5MB)...</span>';
-    const res = await fetch('JOSAA/JOSAA_CUTOFF_CONSOLIDATED.json');
+    const is26 = year === '2026';
+    const file = is26 ? 'JOSAA/JOSAA_CUTOFF_CONSOLIDATED_2026.json' : 'JOSAA/JOSAA_CUTOFF_CONSOLIDATED.json';
+    const key = is26 ? 'JOSAA_CUTOFF_CONSOLIDATED_2026' : 'JOSAA_CUTOFF_CONSOLIDATED';
+    const res = await fetch(file);
     if (!res.ok) throw new Error('Failed to load JOSAA data');
     const json = await res.json();
-    josaaData = json.JOSAA_CUTOFF_CONSOLIDATED || [];
+    josaaData = json[key] || [];
 
     // Extract unique branches (Academic Program Names)
     const bSet = new Set();
@@ -244,6 +254,32 @@ async function loadData() {
     loader.innerHTML = '<span style="color:var(--brand)">Failed to load data. Please refresh.</span>';
   }
 }
+
+function switchCutoffYear(year) {
+  if (selectedYear === year) return;
+  selectedYear = year;
+  const pill26 = document.getElementById('year-pill-2026');
+  const pill25 = document.getElementById('year-pill-2025');
+  if (pill26 && pill25) {
+    if (year === '2026') {
+      pill26.style.background = 'var(--brand-soft)';
+      pill26.style.borderColor = 'var(--brand)';
+      pill26.style.color = 'var(--brand)';
+      pill25.style.background = 'transparent';
+      pill25.style.borderColor = 'var(--stroke)';
+      pill25.style.color = 'var(--muted)';
+    } else {
+      pill25.style.background = 'var(--brand-soft)';
+      pill25.style.borderColor = 'var(--brand)';
+      pill25.style.color = 'var(--brand)';
+      pill26.style.background = 'transparent';
+      pill26.style.borderColor = 'var(--stroke)';
+      pill26.style.color = 'var(--muted)';
+    }
+  }
+  loadData(selectedYear);
+}
+window.switchCutoffYear = switchCutoffYear;
 
 /* ══════ BRANCH RENDERING ══════ */
 function categorizeBranch(b) {
@@ -339,15 +375,17 @@ function generateMatches() {
   const homeState = document.getElementById('inState').value;
   const selectedTypes = Array.from(document.querySelectorAll('input[name="instType"]:checked')).map(i => i.value);
 
+  const closingKey = getClosingRankKey();
+
   // Filter JOSAA data
   let filtered = josaaData.filter(r => {
     if (r["Seat Type"] !== cat) return false;
     if (r.Gender !== gen) return false;
     // Branch filter
     if (!selectedBranches.has(r["Academic Program Name"])) return false;
-    // Must have a Round 6 closing rank
-    const r6 = parseInt(r["Round 6 - Closing Rank "]);
-    if (isNaN(r6)) return false;
+    // Must have last round closing rank
+    const rLast = parseInt(r[closingKey]);
+    if (isNaN(rLast)) return false;
     return true;
   });
 
@@ -376,8 +414,9 @@ function generateMatches() {
   }
 
   // Build enriched result objects
+  const maxR = selectedYear === '2026' ? 5 : 6;
   let results = filtered.map(r => {
-    const r6 = parseInt(r["Round 6 - Closing Rank "]);
+    const rLast = parseInt(r[closingKey]);
     const instType = getInstituteType(r.Institute);
     return {
       institute: r.Institute,
@@ -386,18 +425,18 @@ function generateMatches() {
       quota: r.Quota || '',
       seatType: r["Seat Type"] || '',
       gender: r.Gender || '',
-      closingRank: r6,
+      closingRank: rLast,
       r1: r["Round 1 - Closing Rank "] || '-',
       r2: r["Round 2 - Closing Rank "] || '-',
       r3: r["Round 3 - Closing Rank "] || '-',
       r4: r["Round 4 - Closing Rank "] || '-',
       r5: r["Round 5 - Closing Rank "] || '-',
-      r6: String(r6),
+      r6: maxR >= 6 ? (r["Round 6 - Closing Rank "] || '-') : (r["Round 5 - Closing Rank "] || '-'),
       instType: instType,
       isNIT: instType === 'NIT',
       isIIIT: instType === 'IIIT',
       isGFTI: instType === 'GFTI',
-      diff: r6 - rank
+      diff: rLast - rank
     };
   });
 
@@ -566,11 +605,12 @@ function searchManualColleges() {
     const cat = document.getElementById('inCategory').value;
     const gen = document.getElementById('inGender').value;
     
+    const closingKey = getClosingRankKey();
     const results = josaaData.filter(r => {
       if (r["Seat Type"] !== cat || r.Gender !== gen) return false;
       if (!selectedBranches.has(r["Academic Program Name"])) return false;
-      const r6 = parseInt(r["Round 6 - Closing Rank "]);
-      if (isNaN(r6)) return false;
+      const rLast = parseInt(r[closingKey]);
+      if (isNaN(rLast)) return false;
       return (r.Institute || '').toLowerCase().includes(query) || (r["Academic Program Name"] || '').toLowerCase().includes(query);
     }).slice(0, 15);
     
@@ -579,7 +619,8 @@ function searchManualColleges() {
     const inPref = new Set(prefList.map(p => p.institute + '|' + p.branch));
     resDiv.innerHTML = results.map(r => {
       const instType = getInstituteType(r.Institute);
-      const r6 = parseInt(r["Round 6 - Closing Rank "]);
+      const rLast = parseInt(r[closingKey]);
+      const maxR = selectedYear === '2026' ? 5 : 6;
       const isSel = inPref.has(r.Institute + '|' + r["Academic Program Name"]);
       const tagClass = instType === 'NIT' ? 'gov' : instType === 'IIIT' ? 'auto' : '';
       return `<div class="col-card ${isSel ? 'selected' : ''}" style="margin-bottom:12px; cursor: default">
@@ -588,7 +629,7 @@ function searchManualColleges() {
           <span class="col-tag ${tagClass}">${instType}</span>
           <span class="col-tag branch-tag">${escH((r["Academic Program Name"] || '').split('(')[0].trim())}</span>
         </div>
-        <div class="col-pct"><strong>Rank: ${r6.toLocaleString()}</strong> <small>R6 Closing | ${r.Quota || ''} | ${r["Seat Type"] || ''}</small></div>
+        <div class="col-pct"><strong>Rank: ${rLast.toLocaleString()}</strong> <small>R${maxR} Closing | ${r.Quota || ''} | ${r["Seat Type"] || ''}</small></div>
         <button class="pb-btn pb-btn-primary" onclick="handleAddSuggestion('${escAttr(r.Institute)}','${escAttr(r["Academic Program Name"])}')" style="position:absolute; right:12px; top:12px; width:34px; height:34px; padding:0; border-radius:10px; display:flex; align-items:center; justify-content:center; box-shadow: none">
           ${isSel ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>'}
         </button>
@@ -609,11 +650,12 @@ function searchManualCollegesList() {
     const cat = document.getElementById('inCategory').value;
     const gen = document.getElementById('inGender').value;
     
+    const closingKey = getClosingRankKey();
     const results = josaaData.filter(r => {
       if (r["Seat Type"] !== cat || r.Gender !== gen) return false;
       if (!selectedBranches.has(r["Academic Program Name"])) return false;
-      const r6 = parseInt(r["Round 6 - Closing Rank "]);
-      if (isNaN(r6)) return false;
+      const rLast = parseInt(r[closingKey]);
+      if (isNaN(rLast)) return false;
       return (r.Institute || '').toLowerCase().includes(query) || (r["Academic Program Name"] || '').toLowerCase().includes(query);
     }).slice(0, 15);
     
@@ -622,7 +664,8 @@ function searchManualCollegesList() {
     const inPref = new Set(prefList.map(p => p.institute + '|' + p.branch));
     resDiv.innerHTML = results.map(r => {
       const instType = getInstituteType(r.Institute);
-      const r6 = parseInt(r["Round 6 - Closing Rank "]);
+      const rLast = parseInt(r[closingKey]);
+      const maxR = selectedYear === '2026' ? 5 : 6;
       const isSel = inPref.has(r.Institute + '|' + r["Academic Program Name"]);
       const tagClass = instType === 'NIT' ? 'gov' : instType === 'IIIT' ? 'auto' : '';
       return `<div class="col-card ${isSel ? 'selected' : ''}" style="margin-bottom:12px; cursor: default">
@@ -631,7 +674,7 @@ function searchManualCollegesList() {
           <span class="col-tag ${tagClass}">${instType}</span>
           <span class="col-tag branch-tag">${escH((r["Academic Program Name"] || '').split('(')[0].trim())}</span>
         </div>
-        <div class="col-pct"><strong>Rank: ${r6.toLocaleString()}</strong> <small>R6 Closing | ${r.Quota || ''} | ${r["Seat Type"] || ''}</small></div>
+        <div class="col-pct"><strong>Rank: ${rLast.toLocaleString()}</strong> <small>R${maxR} Closing | ${r.Quota || ''} | ${r["Seat Type"] || ''}</small></div>
         <button class="pb-btn pb-btn-primary" onclick="handleAddSuggestion('${escAttr(r.Institute)}','${escAttr(r["Academic Program Name"])}')" style="position:absolute; right:12px; top:12px; width:34px; height:34px; padding:0; border-radius:10px; display:flex; align-items:center; justify-content:center; box-shadow: none">
           ${isSel ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>'}
         </button>

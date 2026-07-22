@@ -883,8 +883,8 @@
       <div id="landingSection" class="hidden">
         <div class="page-hero">
           <h1>JoSAA Cutoff Explorer</h1>
-          <p>Analyze official opening and closing rank cutoff trends from Round 1 to Round 6. Click on any institute to view detailed graphs showing cutoff movements across all counseling rounds.</p>
-          
+          <p>Analyze official opening and closing rank cutoff trends round by round. Click on any institute to view detailed graphs showing cutoff movements across all counseling rounds.</p>
+
           <div class="search-box-container">
             <div class="search-input-wrap">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -923,9 +923,18 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
             Back to Search
           </button>
-          <div class="college-info-header">
-            <h2 id="colName">Institute Name</h2>
-            <span id="colTypeTag" class="tag tag-nit">NIT</span>
+          <div class="college-info-header" style="flex-wrap:wrap; gap:16px;">
+            <div>
+              <h2 id="colName">Institute Name</h2>
+              <span id="colTypeTag" class="tag tag-nit">NIT</span>
+            </div>
+            <div style="display:flex; gap:10px; margin-left:auto; align-items:center;">
+              <span style="font-size:12px; font-weight:700; color:var(--muted);">Cutoff Year:</span>
+              <div class="year-segmented-control" style="display:inline-flex; padding:3px; border-radius:18px; background:var(--card); border:1.5px solid var(--stroke);">
+                <button type="button" class="year-seg-btn active" id="year-pill-2026" onclick="switchCutoffYear('2026')" style="padding:6px 14px; font-size:12px; border-radius:14px;">2026 Data (R1–5)</button>
+                <button type="button" class="year-seg-btn" id="year-pill-2025" onclick="switchCutoffYear('2025')" style="padding:6px 14px; font-size:12px; border-radius:14px;">2025 Data (R1–6)</button>
+              </div>
+            </div>
           </div>
         </div>
         
@@ -1069,9 +1078,9 @@
     'use strict';
     
     // Caching variables
-    window.josaaCachedData = { IIT: null, NIT: null, IIIT: null, GFTI: null };
-    window.josaaRound6Cached = { IIT: null, NIT: null, IIIT: null, GFTI: null };
+    window.josaaCachedData = {};
     
+    let selectedYear = '2026';
     let collegeTypeMap = {}; // collegeName -> 'IIT' | 'NIT' | 'IIIT' | 'GFTI'
     let uniqueInstList = []; // list of objects { name, type }
     let activeTab = 'ALL';
@@ -1090,46 +1099,94 @@
     // Chart details
     let trendChart = null;
 
-    // Bootstrapping the application
-    function boot() {
-      if (!initAuth({ requireLogin: true, toolContainerId: 'toolArea' })) return;
+    function getInstituteType(instName) {
+      const u = (instName || '').toUpperCase();
+      if (u.includes('INDIAN INSTITUTE OF TECHNOLOGY') || u.match(/\bIIT\b/)) return 'IIT';
+      if (u.includes('NATIONAL INSTITUTE OF TECHNOLOGY') || u.match(/\bNIT\b/)) return 'NIT';
+      if (u.includes('INDIAN INSTITUTE OF INFORMATION TECHNOLOGY') || u.match(/\bIIIT\b/)) return 'IIIT';
+      return 'GFTI';
+    }
 
-      // Fetch the Round 6 files for IIT, NIT, IIIT, and GFTI on page load
-      const files = [
-        { url: 'JOSAA/IIT_ROUND_6.json', key: 'IIT_ROUND_6', type: 'IIT' },
-        { url: 'JOSAA/NIT_ROUND_6.json', key: 'NIT_ROUND_6', type: 'NIT' },
-        { url: 'JOSAA/IIIT_ROUND_6.json', key: 'IIIT_ROUND_6', type: 'IIIT' },
-        { url: 'JOSAA/GFTI_ROUND_6.json', key: 'GFTI_ROUND_6', type: 'GFTI' }
-      ];
+    function switchCutoffYear(year) {
+      if (selectedYear === year) return;
+      selectedYear = year;
+      const p26 = document.getElementById('year-pill-2026');
+      const p25 = document.getElementById('year-pill-2025');
+      if (p26 && p25) {
+        p26.classList.toggle('active', year === '2026');
+        p25.classList.toggle('active', year === '2025');
+      }
+      
+      if (selectedCollegeName) {
+        selectCollege(selectedCollegeName);
+      }
+    }
+    window.switchCutoffYear = switchCutoffYear;
 
-      Promise.all(
-        files.map(f =>
-          fetch(f.url)
-            .then(res => {
-              if (!res.ok) throw new Error(`Failed to load ${f.url}`);
-              return res.json();
-            })
-            .then(json => {
-              const arr = json[f.key] || [];
-              window.josaaRound6Cached[f.type] = arr;
-              return { type: f.type, arr: arr };
-            })
-        )
-      )
-      .then(results => {
-        const instSet = new Set();
-        
-        results.forEach(res => {
-          res.arr.forEach(row => {
-            if (row.Institute) {
-              const instName = row.Institute.trim();
-              instSet.add(instName);
-              collegeTypeMap[instName] = res.type;
+    function loadInitialData() {
+      collegeTypeMap = {};
+      uniqueInstList = [];
+
+      let fetchPromise;
+      if (selectedYear === '2026') {
+        const files = [
+          { url: 'JOSAA/IIT_ROUND_5_2026.json', key: 'IIT_ROUND_5_2026', type: 'IIT' },
+          { url: 'JOSAA/JOSAA_CUTOFF_CONSOLIDATED_2026.json', key: 'JOSAA_CUTOFF_CONSOLIDATED_2026', type: 'CONSOLIDATED' }
+        ];
+        fetchPromise = Promise.all(
+          files.map(f =>
+            fetch(f.url).then(r => r.ok ? r.json() : {}).then(json => ({ key: f.key, type: f.type, arr: json[f.key] || [] }))
+          )
+        ).then(results => {
+          const instSet = new Set();
+          results.forEach(res => {
+            if (res.type === 'IIT') {
+              res.arr.forEach(row => {
+                if (row.Institute) {
+                  const name = row.Institute.trim();
+                  instSet.add(name);
+                  collegeTypeMap[name] = 'IIT';
+                }
+              });
+            } else {
+              res.arr.forEach(row => {
+                if (row.Institute) {
+                  const name = row.Institute.trim();
+                  instSet.add(name);
+                  collegeTypeMap[name] = getInstituteType(name);
+                }
+              });
             }
           });
+          return instSet;
         });
+      } else {
+        const files = [
+          { url: 'JOSAA/IIT_ROUND_6.json', key: 'IIT_ROUND_6', type: 'IIT' },
+          { url: 'JOSAA/NIT_ROUND_6.json', key: 'NIT_ROUND_6', type: 'NIT' },
+          { url: 'JOSAA/IIIT_ROUND_6.json', key: 'IIIT_ROUND_6', type: 'IIIT' },
+          { url: 'JOSAA/GFTI_ROUND_6.json', key: 'GFTI_ROUND_6', type: 'GFTI' }
+        ];
+        fetchPromise = Promise.all(
+          files.map(f =>
+            fetch(f.url).then(r => r.ok ? r.json() : {}).then(json => ({ key: f.key, type: f.type, arr: json[f.key] || [] }))
+          )
+        ).then(results => {
+          const instSet = new Set();
+          results.forEach(res => {
+            res.arr.forEach(row => {
+              if (row.Institute) {
+                const name = row.Institute.trim();
+                instSet.add(name);
+                collegeTypeMap[name] = res.type;
+              }
+            });
+          });
+          return instSet;
+        });
+      }
 
-        // Convert set to sorted list of objects
+      fetchPromise.then(instSet => {
         uniqueInstList = Array.from(instSet).map(name => ({
           name: name,
           type: collegeTypeMap[name]
@@ -1139,17 +1196,21 @@
         document.getElementById('landingSection').classList.remove('hidden');
         
         resetBrowseList();
-      })
-      .catch(err => {
-        console.error("Data load fail:", err);
+      }).catch(err => {
+        console.error("Bootstrapping failed:", err);
         document.getElementById('bootLoader').innerHTML = `
           <div style="color:var(--brand); text-align:center; padding: 20px;">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             <h3 style="margin-top:12px; font-weight:700">Bootstrapping Failed</h3>
-            <p style="color:var(--muted); font-size:13px; margin-top:8px">Please check your internet connection or refresh the page.</p>
+            <p style="color:var(--muted); font-size:13px; margin-top:8px">Please check your connection or refresh the page.</p>
           </div>
         `;
       });
+    }
+
+    // Bootstrapping the application
+    function boot() {
+      if (!initAuth({ requireLogin: true, toolContainerId: 'toolArea' })) return;
+      loadInitialData();
 
       // Listen to theme changes to redraw the chart with correct styles
       const observer = new MutationObserver((mutations) => {
@@ -1259,39 +1320,72 @@
       panel.classList.add('open');
     }
 
-    // Fetch all 6 rounds for a given institute type, with in-memory caching
+    // Fetch all rounds for a given institute type, with in-memory caching
     async function loadAllRoundsForType(type) {
-      // Return from cache if already loaded
-      if (window.josaaCachedData[type]) {
-        return window.josaaCachedData[type];
+      const cacheKey = `${selectedYear}_${type}`;
+      if (window.josaaCachedData[cacheKey]) {
+        return window.josaaCachedData[cacheKey];
       }
 
-      const prefixes = { IIT: 'IIT', NIT: 'NIT', IIIT: 'IIIT', GFTI: 'GFTI' };
-      const prefix = prefixes[type];
-      if (!prefix) throw new Error('Unknown type: ' + type);
-
-      const roundPromises = [];
-      for (let r = 1; r <= 6; r++) {
-        const url = `JOSAA/${prefix}_ROUND_${r}.json`;
-        const key = `${prefix}_ROUND_${r}`;
-        roundPromises.push(
-          fetch(url)
-            .then(res => {
-              if (!res.ok) throw new Error(`Failed to load ${url}`);
-              return res.json();
-            })
-            .then(json => ({ round: r, data: json[key] || [] }))
-        );
-      }
-
-      const results = await Promise.all(roundPromises);
       const typeData = {};
-      results.forEach(res => {
-        typeData[res.round] = res.data;
-      });
+      if (selectedYear === '2026') {
+        if (type === 'IIT') {
+          const roundPromises = [];
+          for (let r = 1; r <= 5; r++) {
+            roundPromises.push(
+              fetch(`JOSAA/IIT_ROUND_${r}_2026.json`)
+                .then(res => res.json())
+                .then(json => ({ round: r, data: json[`IIT_ROUND_${r}_2026`] || [] }))
+            );
+          }
+          const results = await Promise.all(roundPromises);
+          results.forEach(res => { typeData[res.round] = res.data; });
+        } else {
+          // NIT / IIIT / GFTI in 2026
+          const res = await fetch('JOSAA/JOSAA_CUTOFF_CONSOLIDATED_2026.json');
+          const json = await res.json();
+          const allRows = json.JOSAA_CUTOFF_CONSOLIDATED_2026 || [];
+          const typeRows = allRows.filter(r => getInstituteType(r.Institute) === type);
+          
+          for (let r = 1; r <= 5; r++) {
+            const rKey = `Round ${r} - Closing Rank `;
+            typeData[r] = typeRows.map(row => ({
+              Institute: row.Institute,
+              "Academic Program Name": row["Academic Program Name"],
+              Quota: row.Quota,
+              "Seat Type": row["Seat Type"],
+              Gender: row.Gender,
+              "Opening Rank": "-",
+              "Closing Rank": row[rKey] || "-"
+            }));
+          }
+        }
+      } else {
+        const prefixes = { IIT: 'IIT', NIT: 'NIT', IIIT: 'IIIT', GFTI: 'GFTI' };
+        const prefix = prefixes[type];
+        if (!prefix) throw new Error('Unknown type: ' + type);
 
-      // Cache it
-      window.josaaCachedData[type] = typeData;
+        const roundPromises = [];
+        for (let r = 1; r <= 6; r++) {
+          const url = `JOSAA/${prefix}_ROUND_${r}.json`;
+          const key = `${prefix}_ROUND_${r}`;
+          roundPromises.push(
+            fetch(url)
+              .then(res => {
+                if (!res.ok) throw new Error(`Failed to load ${url}`);
+                return res.json();
+              })
+              .then(json => ({ round: r, data: json[key] || [] }))
+          );
+        }
+
+        const results = await Promise.all(roundPromises);
+        results.forEach(res => {
+          typeData[res.round] = res.data;
+        });
+      }
+
+      window.josaaCachedData[cacheKey] = typeData;
       return typeData;
     }
 
@@ -1314,12 +1408,15 @@
       typeTag.textContent = selectedCollegeType;
       typeTag.className = `tag tag-${selectedCollegeType.toLowerCase()}`;
 
-      // Fetch rounds 1-6 for the college type
+      const maxR = selectedYear === '2026' ? 5 : 6;
+      const loaderSubtitle = document.getElementById('collegePageLoader').querySelector('div:last-child');
+      if (loaderSubtitle) loaderSubtitle.textContent = `Fetching cutoffs from Round 1 to ${maxR}`;
+
+      // Fetch rounds for the college type
       loadAllRoundsForType(selectedCollegeType)
         .then(typeData => {
-          // Filter data for this specific college across all rounds
           selectedCollegeData = {};
-          for (let r = 1; r <= 6; r++) {
+          for (let r = 1; r <= maxR; r++) {
             selectedCollegeData[r] = (typeData[r] || []).filter(row => row.Institute.trim() === collegeName.trim());
           }
 
@@ -1369,6 +1466,16 @@
       setSmartDropdownDefault(quotaSel, ['AI', 'OS', 'HS']);
       setSmartDropdownDefault(catSel, ['OPEN']);
       setSmartDropdownDefault(genSel, ['Gender-Neutral']);
+
+      // Populate tblRound select dynamically based on selectedYear
+      const tblRound = document.getElementById('tblRound');
+      const maxR = selectedYear === '2026' ? 5 : 6;
+      let roundOptions = '';
+      for (let r = maxR; r >= 1; r--) {
+        roundOptions += `<option value="${r}">Round ${r}</option>`;
+      }
+      tblRound.innerHTML = roundOptions;
+      tblRound.value = String(maxR);
 
       // Setup table explorer filter options
       const tblCat = document.getElementById('tblCategory');
@@ -1424,13 +1531,15 @@
       const category = document.getElementById('cCategory').value;
       const gender = document.getElementById('cGender').value;
 
-      // Extract trend data
-      const labels = ['Round 1', 'Round 2', 'Round 3', 'Round 4', 'Round 5', 'Round 6'];
+      const maxR = selectedYear === '2026' ? 5 : 6;
+      const labels = [];
+      for (let r = 1; r <= maxR; r++) { labels.push(`Round ${r}`); }
+      
       const openingRanks = [];
       const closingRanks = [];
       const tableRows = [];
 
-      for (let r = 1; r <= 6; r++) {
+      for (let r = 1; r <= maxR; r++) {
         const match = (selectedCollegeData[r] || []).find(row => 
           row["Academic Program Name"].trim() === branch.trim() &&
           row.Quota.trim() === quota.trim() &&
@@ -1443,7 +1552,7 @@
           const cl = parseInt(match["Closing Rank"]);
           openingRanks.push(isNaN(op) ? null : op);
           closingRanks.push(isNaN(cl) ? null : cl);
-          tableRows.push({ round: r, opening: match["Opening Rank"], closing: match["Closing Rank"] });
+          tableRows.push({ round: r, opening: match["Opening Rank"] || 'N/A', closing: match["Closing Rank"] || 'N/A' });
         } else {
           openingRanks.push(null);
           closingRanks.push(null);
@@ -1453,6 +1562,15 @@
 
       // Draw Chart
       drawTrendChart(labels, openingRanks, closingRanks);
+
+      // Update Summary Table Header
+      const sumHeadTr = document.querySelector('#summaryTable thead tr');
+      const hideOpening = (selectedYear === '2025' || selectedYear === '2026');
+      if (sumHeadTr) {
+        sumHeadTr.innerHTML = hideOpening
+          ? `<th>Round</th><th>Closing Rank</th><th>Round Change (Closing)</th><th>Status</th>`
+          : `<th>Round</th><th>Opening Rank</th><th>Closing Rank</th><th>Round Change (Closing)</th><th>Status</th>`;
+      }
 
       // Draw Summary Table
       const tbody = document.getElementById('summaryTableBody');
@@ -1487,15 +1605,26 @@
           ? '<span style="color:var(--muted); font-weight:700">Filled / Inactive</span>'
           : '<span style="color:#16a34a; font-weight:700">Open</span>';
 
-        tbody.innerHTML += `
-          <tr>
-            <td style="font-weight:700">Round ${row.round}</td>
-            <td style="font-weight:600">${row.opening}</td>
-            <td style="font-weight:800; color:var(--brand)">${row.closing}</td>
-            <td><span class="${diffClass} trend-indicator">${diffText}</span></td>
-            <td>${statusHtml}</td>
-          </tr>
-        `;
+        if (hideOpening) {
+          tbody.innerHTML += `
+            <tr>
+              <td style="font-weight:700">Round ${row.round}</td>
+              <td style="font-weight:800; color:var(--brand)">${row.closing}</td>
+              <td><span class="${diffClass} trend-indicator">${diffText}</span></td>
+              <td>${statusHtml}</td>
+            </tr>
+          `;
+        } else {
+          tbody.innerHTML += `
+            <tr>
+              <td style="font-weight:700">Round ${row.round}</td>
+              <td style="font-weight:600">${row.opening}</td>
+              <td style="font-weight:800; color:var(--brand)">${row.closing}</td>
+              <td><span class="${diffClass} trend-indicator">${diffText}</span></td>
+              <td>${statusHtml}</td>
+            </tr>
+          `;
+        }
       });
     }
 
@@ -1511,41 +1640,48 @@
       const textColor = isDark ? '#cbd5e1' : '#475569';
       const isMobile = window.innerWidth < 768;
 
+      const hideOpening = (selectedYear === '2025' || selectedYear === '2026');
+
+      const datasets = [
+        {
+          label: isMobile ? 'Closing Rank' : 'Closing Rank (Required to get in)',
+          data: closingRanks,
+          borderColor: '#dc2626', // Brand red
+          backgroundColor: 'rgba(220, 38, 38, 0.05)',
+          borderWidth: isMobile ? 2.5 : 3,
+          pointBackgroundColor: '#dc2626',
+          pointBorderColor: isDark ? '#1e293b' : '#ffffff',
+          pointBorderWidth: 1.5,
+          pointRadius: isMobile ? 4 : 5,
+          pointHoverRadius: isMobile ? 6 : 7,
+          tension: 0.25,
+          spanGaps: true
+        }
+      ];
+
+      if (!hideOpening) {
+        datasets.push({
+          label: isMobile ? 'Opening Rank' : 'Opening Rank (First admitted)',
+          data: openingRanks,
+          borderColor: '#2563eb', // Blue
+          backgroundColor: 'transparent',
+          borderWidth: isMobile ? 1.5 : 2,
+          borderDash: [6, 4],
+          pointBackgroundColor: '#2563eb',
+          pointBorderColor: isDark ? '#1e293b' : '#ffffff',
+          pointBorderWidth: 1.5,
+          pointRadius: isMobile ? 3 : 4,
+          pointHoverRadius: isMobile ? 5 : 6,
+          tension: 0.25,
+          spanGaps: true
+        });
+      }
+
       trendChart = new Chart(ctx, {
         type: 'line',
         data: {
           labels: labels,
-          datasets: [
-            {
-              label: isMobile ? 'Closing Rank' : 'Closing Rank (Required to get in)',
-              data: closingRanks,
-              borderColor: '#dc2626', // Brand red
-              backgroundColor: 'rgba(220, 38, 38, 0.05)',
-              borderWidth: isMobile ? 2.5 : 3,
-              pointBackgroundColor: '#dc2626',
-              pointBorderColor: isDark ? '#1e293b' : '#ffffff',
-              pointBorderWidth: 1.5,
-              pointRadius: isMobile ? 4 : 5,
-              pointHoverRadius: isMobile ? 6 : 7,
-              tension: 0.25,
-              spanGaps: true
-            },
-            {
-              label: isMobile ? 'Opening Rank' : 'Opening Rank (First admitted)',
-              data: openingRanks,
-              borderColor: '#2563eb', // Blue
-              backgroundColor: 'transparent',
-              borderWidth: isMobile ? 1.5 : 2,
-              borderDash: [6, 4],
-              pointBackgroundColor: '#2563eb',
-              pointBorderColor: isDark ? '#1e293b' : '#ffffff',
-              pointBorderWidth: 1.5,
-              pointRadius: isMobile ? 3 : 4,
-              pointHoverRadius: isMobile ? 5 : 6,
-              tension: 0.25,
-              spanGaps: true
-            }
-          ]
+          datasets: datasets
         },
         options: {
           responsive: true,
@@ -1645,10 +1781,19 @@
       const tbody = document.getElementById('masterCutoffTableBody');
       const paginated = tableFilteredRows.slice(0, tableLimit);
 
+      // Update Master Table Header
+      const masterHeadTr = document.querySelector('.master-list-card table thead tr');
+      const hideOpening = (selectedYear === '2025' || selectedYear === '2026');
+      if (masterHeadTr) {
+        masterHeadTr.innerHTML = hideOpening
+          ? `<th>Branch Program</th><th>Quota</th><th>Category</th><th>Gender Pool</th><th>Closing Rank</th>`
+          : `<th>Branch Program</th><th>Quota</th><th>Category</th><th>Gender Pool</th><th>Opening Rank</th><th>Closing Rank</th>`;
+      }
+
       if (!paginated.length) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="6" class="empty-state">
+            <td colspan="${hideOpening ? 5 : 6}" class="empty-state">
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               <h4>No Branch Cutoffs Matching Filters</h4>
               <p>Try modifying your category, quota, gender pool, or search filter.</p>
@@ -1659,16 +1804,28 @@
         return;
       }
 
-      tbody.innerHTML = paginated.map(row => `
-        <tr>
-          <td style="font-weight:700">${row["Academic Program Name"]}</td>
-          <td style="font-weight:600">${row.Quota}</td>
-          <td><span class="chip" style="font-size:11px">${row["Seat Type"]}</span></td>
-          <td style="font-size:12px; color:var(--ink2)">${row.Gender}</td>
-          <td style="font-weight:600; color:var(--muted)">${row["Opening Rank"]}</td>
-          <td style="font-weight:800; color:var(--brand)">${row["Closing Rank"]}</td>
-        </tr>
-      `).join('');
+      if (hideOpening) {
+        tbody.innerHTML = paginated.map(row => `
+          <tr>
+            <td style="font-weight:700">${row["Academic Program Name"]}</td>
+            <td style="font-weight:600">${row.Quota}</td>
+            <td><span class="chip" style="font-size:11px">${row["Seat Type"]}</span></td>
+            <td style="font-size:12px; color:var(--ink2)">${row.Gender}</td>
+            <td style="font-weight:800; color:var(--brand)">${row["Closing Rank"]}</td>
+          </tr>
+        `).join('');
+      } else {
+        tbody.innerHTML = paginated.map(row => `
+          <tr>
+            <td style="font-weight:700">${row["Academic Program Name"]}</td>
+            <td style="font-weight:600">${row.Quota}</td>
+            <td><span class="chip" style="font-size:11px">${row["Seat Type"]}</span></td>
+            <td style="font-size:12px; color:var(--ink2)">${row.Gender}</td>
+            <td style="font-weight:600; color:var(--muted)">${row["Opening Rank"]}</td>
+            <td style="font-weight:800; color:var(--brand)">${row["Closing Rank"]}</td>
+          </tr>
+        `).join('');
+      }
 
       const hasMore = tableFilteredRows.length > tableLimit;
       document.getElementById('masterLoadMore').classList.toggle('hidden', !hasMore);

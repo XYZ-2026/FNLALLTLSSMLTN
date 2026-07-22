@@ -127,6 +127,19 @@
         <div class="panel-title">Your JEE Profile</div>
         <div class="panel-desc">Enter your JEE Mains details to find the best matching NITs, IIITs & GFTIs.</div>
 
+        <!-- Cutoff Data Year Selector -->
+        <div class="fg" style="margin-bottom:20px">
+          <label class="fg-label">Cutoff Data Year *</label>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:8px">
+            <label style="padding:12px; border:2px solid var(--brand); border-radius:14px; font-size:13px; font-weight:700; text-align:center; cursor:pointer; background:var(--brand-soft); color:var(--brand); display:flex; align-items:center; justify-content:center; gap:8px" id="year-pill-2026">
+              <input type="radio" name="cutoffYear" value="2026" checked onchange="switchCutoffYear('2026')" style="display:none"> 2026 Cutoffs (Rounds 1–5)
+            </label>
+            <label style="padding:12px; border:2px solid var(--stroke); border-radius:14px; font-size:13px; font-weight:700; text-align:center; cursor:pointer; background:transparent; color:var(--muted); display:flex; align-items:center; justify-content:center; gap:8px" id="year-pill-2025">
+              <input type="radio" name="cutoffYear" value="2025" onchange="switchCutoffYear('2025')" style="display:none"> 2025 Cutoffs (Rounds 1–6)
+            </label>
+          </div>
+        </div>
+
         <!-- Locked Section: Percentile & Rank -->
         <div id="editStatusWrap" style="margin-bottom:20px"></div>
         

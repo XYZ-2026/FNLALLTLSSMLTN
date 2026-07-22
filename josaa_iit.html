@@ -767,10 +767,94 @@
       box-shadow: 0 4px 14px var(--brand-ring);
       font-family: 'Inter', sans-serif;
     }
-    .lock-paywall-card .unlock-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px var(--brand-ring);
-      background: #b91c1c;
+    /* Mobile Optimization for Results Header & Year Switcher */
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .year-badge {
+      display: inline-block;
+      background: #fef2f2;
+      color: var(--brand);
+      border: 1px solid rgba(220, 38, 38, 0.25);
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 12px;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+    .year-switcher-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .year-switcher-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+    .year-segmented-control {
+      display: inline-flex;
+      background: var(--bg2, #f1f5f9);
+      border: 1.5px solid var(--stroke, #e2e8f0);
+      border-radius: 20px;
+      padding: 3px;
+      gap: 2px;
+    }
+    .year-seg-btn {
+      padding: 6px 14px;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 12px;
+      border: none;
+      cursor: pointer;
+      background: transparent;
+      color: var(--muted, #64748b);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .year-seg-btn.active {
+      background: var(--brand, #dc2626);
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25);
+    }
+
+    @media (max-width: 640px) {
+      .results-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+      .year-switcher-wrap {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .year-segmented-control {
+        flex: 1;
+        display: flex;
+      }
+      .year-seg-btn {
+        flex: 1;
+        text-align: center;
+        padding: 7px 8px;
+        font-size: 11px;
+      }
+      .export-btn-group {
+        width: 100%;
+        margin-left: 0 !important;
+        margin-top: 8px;
+        display: flex;
+        gap: 8px;
+      }
+      .export-btn-group button {
+        flex: 1;
+        justify-content: center;
+      }
     }
   </style>
 </head>
@@ -781,7 +865,7 @@
       <div class="page-hero">
         <h1>JoSAA IIT Predictor</h1>
         <p>Predict your college admissions for Indian Institutes of Technology (IITs) based on your JEE Advanced category rank using round-by-round cutoff data.</p>
-        <div class="data-badge">Based on IIT Round 1 to 6 Cutoffs</div>
+        <div class="data-badge" id="heroBadge">Based on IIT 2026 Cutoffs — All 5 Rounds</div>
       </div>
 
       <div class="card">
@@ -798,6 +882,13 @@
 
         <!-- STEP 1: PROFILE -->
         <div class="panel active" id="panel1">
+          <div class="form-group" style="margin-bottom:20px;">
+            <label class="form-label"><strong>Cutoff Data Year</strong></label>
+            <div class="year-segmented-control" style="width:100%; display:flex; padding:4px; border-radius:16px;">
+              <button type="button" class="year-seg-btn active" id="year-pill-2026" onclick="switchCutoffYear('2026')" style="flex:1; padding:10px; font-size:13px; border-radius:12px;">2026 Cutoffs (Rounds 1–5)</button>
+              <button type="button" class="year-seg-btn" id="year-pill-2025" onclick="switchCutoffYear('2025')" style="flex:1; padding:10px; font-size:13px; border-radius:12px;">2025 Cutoffs (Rounds 1–6)</button>
+            </div>
+          </div>
           <!-- Rank Info Callout -->
           <div style="background: #fff7ed; border: 1px solid #ffedd5; border-radius: 16px; padding: 16px; margin-bottom: 24px; display: flex; gap: 12px; align-items: flex-start;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c2410c" stroke-width="2.5" style="flex-shrink:0; margin-top:2px">
@@ -898,8 +989,20 @@
 
       <div id="resultsSection" class="results-section" style="display:none">
         <div class="results-header">
-          <h2>Predicted IIT Allotments</h2>
-          <span class="results-count" id="resultsCount"></span>
+          <div>
+            <h2 style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
+              Predicted IIT Allotments
+              <span class="year-badge" id="resultsYearBadge">2026 Cutoffs (5 Rounds)</span>
+            </h2>
+            <span class="results-count" id="resultsCount"></span>
+          </div>
+          <div class="year-switcher-wrap">
+            <span class="year-switcher-label">Cutoff Year:</span>
+            <div class="year-segmented-control">
+              <button type="button" class="year-seg-btn active" id="btn-year-2026" onclick="switchCutoffYear('2026')">2026 Data (R1–5)</button>
+              <button type="button" class="year-seg-btn" id="btn-year-2025" onclick="switchCutoffYear('2025')">2025 Data (R1–6)</button>
+            </div>
+          </div>
         </div>
         <div class="table-scroll-wrap">
           <table class="results-table">
@@ -932,7 +1035,8 @@
   <script>
     'use strict';
 
-    // Data consolidated in memory
+    // Data state
+    let selectedYear = '2026';
     let josaaData = [];
     let selectedBranches = new Set();
     let allBranchNames = [];
@@ -954,6 +1058,53 @@
       }
       return 'Other Branches';
     }
+
+    /* Switch Cutoff Data Year */
+    function switchCutoffYear(year) {
+      selectedYear = year;
+      const b26 = document.getElementById('btn-year-2026');
+      const b25 = document.getElementById('btn-year-2025');
+      if (b26 && b25) {
+        b26.classList.toggle('active', year === '2026');
+        b25.classList.toggle('active', year === '2025');
+      }
+      const p26 = document.getElementById('year-pill-2026');
+      const p25 = document.getElementById('year-pill-2025');
+      if (p26 && p25) {
+        p26.classList.toggle('active', year === '2026');
+        p25.classList.toggle('active', year === '2025');
+      }
+      const badge = document.getElementById('heroBadge');
+      if (badge) {
+        badge.textContent = year === '2026' ? 'Based on IIT 2026 Cutoffs — All 5 Rounds' : 'Based on IIT 2025 Cutoffs — All 6 Rounds';
+      }
+      const resBadge = document.getElementById('resultsYearBadge');
+      if (resBadge) {
+        resBadge.textContent = year === '2026' ? '2026 Cutoffs (5 Rounds)' : '2025 Cutoffs (6 Rounds)';
+      }
+      
+      document.getElementById('dataLoader').style.display = 'flex';
+      document.getElementById('predictBtn').disabled = true;
+      loadAllData(selectedYear).then(() => {
+        const bSet = new Set();
+        josaaData.forEach(r => {
+          if (r["Academic Program Name"]) bSet.add(r["Academic Program Name"].trim());
+        });
+        allBranchNames = Array.from(bSet).sort();
+        renderBranchPanel();
+        
+        document.getElementById('predictBtn').disabled = false;
+        document.getElementById('dataLoader').style.display = 'none';
+
+        if (document.getElementById('resultsSection').style.display !== 'none') {
+          handlePredict();
+        }
+      }).catch(err => {
+        console.error("Data load fail:", err);
+        document.getElementById('dataLoader').innerHTML = '<span style="color:var(--brand)">Failed to load IIT cutoff database. Please refresh the page.</span>';
+      });
+    }
+    window.switchCutoffYear = switchCutoffYear;
 
     function renderBranchPanel() {
       const panel = document.getElementById('branchPanel');
@@ -1067,11 +1218,14 @@
 
       if (!josaaData.length) return alert("Data is still loading...");
 
+      const maxR = selectedYear === '2026' ? 5 : 6;
+      const closingKey = `Round ${maxR} - Closing Rank `;
+
       // Filter by category, gender and rank eligibility
       let filtered = josaaData.filter(r => {
         if (r["Seat Type"] !== cat) return false;
         if (r.Gender !== gen) return false;
-        const closingRank = parseInt(r["Round 6 - Closing Rank "]);
+        const closingRank = parseInt(r[closingKey]);
         if (isNaN(closingRank)) return false;
         return rank <= closingRank;
       });
@@ -1081,9 +1235,9 @@
         filtered = filtered.filter(r => selectedBranches.has(r["Academic Program Name"]));
       }
 
-      // Sort by Round 6 closing rank
+      // Sort by last round closing rank
       filtered = filtered.map(r => {
-        const closingRank = parseInt(r["Round 6 - Closing Rank "]);
+        const closingRank = parseInt(r[closingKey]);
         return { ...r, _closingNum: isNaN(closingRank) ? 999999 : closingRank };
       });
       filtered.sort((a, b) => a._closingNum - b._closingNum);
@@ -1091,12 +1245,23 @@
       const session = getSession();
       const isPremium = session && (session.role === 'premium' || session.role === 'admin');
 
+      // Update Table Headers dynamically
+      const tableHeadTr = document.querySelector('.results-table thead tr');
+      if (tableHeadTr) {
+        let ths = `<th>Institute</th><th>Program</th><th>Quota</th><th>Category</th><th>Gender</th>`;
+        for (let r = 1; r <= maxR; r++) {
+          const isLast = r === maxR;
+          ths += `<th class="col-round">Round ${r}<br>Closing${isLast ? ` (${selectedYear})` : ''}</th>`;
+        }
+        tableHeadTr.innerHTML = ths;
+      }
+
       const tbody = document.getElementById('resultsTableBody');
       const displayLimit = 200;
       const displayData = isPremium ? filtered.slice(0, displayLimit) : filtered.slice(0, 13);
 
       if (!filtered.length) {
-        tbody.innerHTML = `<tr><td colspan="11">
+        tbody.innerHTML = `<tr><td colspan="${5 + maxR}">
           <div class="empty-state">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <h3>No Matches Found</h3>
@@ -1107,6 +1272,11 @@
         tbody.innerHTML = displayData.map((r, i) => {
           const isLocked = !isPremium && i >= 10;
           if (isLocked) {
+            let roundTds = '';
+            for (let rNum = 1; rNum <= maxR; rNum++) {
+              const style = rNum === maxR ? 'font-weight:800; color:var(--brand);' : 'font-weight:600; color:var(--muted);';
+              roundTds += `<td class="col-round" style="${style} filter: blur(3px); opacity: 0.5;">••••</td>`;
+            }
             return `<tr class="locked-row">
               <td style="min-width:200px">
                 <div style="font-weight:700; filter: blur(4px); opacity: 0.5;">••••••••••••••••••••••••••••••••••••</div>
@@ -1116,21 +1286,17 @@
               <td style="font-weight:600; filter: blur(3px); opacity: 0.5;">••</td>
               <td style="font-weight:600; filter: blur(3px); opacity: 0.5;">••••</td>
               <td style="font-size:12px; filter: blur(2px); opacity: 0.5;">••••</td>
-              <td class="col-round" style="font-weight:600; color:var(--muted); filter: blur(3px); opacity: 0.5;">••••</td>
-              <td class="col-round" style="font-weight:600; color:var(--muted); filter: blur(3px); opacity: 0.5;">••••</td>
-              <td class="col-round" style="font-weight:600; color:var(--muted); filter: blur(3px); opacity: 0.5;">••••</td>
-              <td class="col-round" style="font-weight:600; color:var(--muted); filter: blur(3px); opacity: 0.5;">••••</td>
-              <td class="col-round" style="font-weight:700; color:var(--ink2); filter: blur(3px); opacity: 0.5;">••••</td>
-              <td class="col-round" style="font-weight:800; color:var(--brand); filter: blur(3px); opacity: 0.5;">••••</td>
+              ${roundTds}
             </tr>`;
           }
 
-          const r1 = r["Round 1 - Closing Rank "] || '-';
-          const r2 = r["Round 2 - Closing Rank "] || '-';
-          const r3 = r["Round 3 - Closing Rank "] || '-';
-          const r4 = r["Round 4 - Closing Rank "] || '-';
-          const r5 = r["Round 5 - Closing Rank "] || '-';
-          const r6 = r["Round 6 - Closing Rank "] || '-';
+          let roundTds = '';
+          for (let rNum = 1; rNum <= maxR; rNum++) {
+            const val = r[`Round ${rNum} - Closing Rank `] || '-';
+            const isLast = rNum === maxR;
+            const style = isLast ? 'font-weight:800; color:var(--brand);' : 'font-weight:600; color:var(--muted);';
+            roundTds += `<td class="col-round" style="${style} white-space:nowrap;">${val}</td>`;
+          }
 
           return `<tr>
             <td style="min-width:200px">
@@ -1141,12 +1307,7 @@
             <td style="font-weight:600">${r.Quota}</td>
             <td style="font-weight:600">${r["Seat Type"]}</td>
             <td style="font-size:12px">${r.Gender}</td>
-            <td class="col-round" style="font-weight:600; color:var(--muted); white-space:nowrap;">${r1}</td>
-            <td class="col-round" style="font-weight:600; color:var(--muted); white-space:nowrap;">${r2}</td>
-            <td class="col-round" style="font-weight:600; color:var(--muted); white-space:nowrap;">${r3}</td>
-            <td class="col-round" style="font-weight:600; color:var(--muted); white-space:nowrap;">${r4}</td>
-            <td class="col-round" style="font-weight:700; color:var(--ink2); white-space:nowrap;">${r5}</td>
-            <td class="col-round" style="font-weight:800; color:var(--brand); white-space:nowrap;">${r6}</td>
+            ${roundTds}
           </tr>`;
         }).join('');
       }
@@ -1187,16 +1348,19 @@
       window.scrollTo({ top: document.getElementById('resultsSection').offsetTop - 60, behavior: 'smooth' });
     }
 
-    async function loadAllData() {
+    async function loadAllData(year = selectedYear) {
+      const maxR = year === '2026' ? 5 : 6;
       const roundPromises = [];
-      for (let r = 1; r <= 6; r++) {
+      for (let r = 1; r <= maxR; r++) {
+        const url = year === '2026' ? `JOSAA/IIT_ROUND_${r}_2026.json` : `JOSAA/IIT_ROUND_${r}.json`;
+        const key = year === '2026' ? `IIT_ROUND_${r}_2026` : `IIT_ROUND_${r}`;
         roundPromises.push(
-          fetch(`JOSAA/IIT_ROUND_${r}.json`)
+          fetch(url)
             .then(res => {
-              if (!res.ok) throw new Error(`Failed to load IIT Round ${r}`);
+              if (!res.ok) throw new Error(`Failed to load IIT Round ${r} (${year})`);
               return res.json();
             })
-            .then(json => ({ round: r, data: json[`IIT_ROUND_${r}`] || [] }))
+            .then(json => ({ round: r, data: json[key] || [] }))
         );
       }
       
@@ -1215,19 +1379,17 @@
           const key = `${inst}|${prog}|${quota}|${seatType}|${gender}`;
           
           if (!mergedMap[key]) {
-            mergedMap[key] = {
+            const item = {
               Institute: inst,
               "Academic Program Name": prog,
               Quota: quota,
               "Seat Type": seatType,
-              Gender: gender,
-              "Round 1 - Closing Rank ": "-",
-              "Round 2 - Closing Rank ": "-",
-              "Round 3 - Closing Rank ": "-",
-              "Round 4 - Closing Rank ": "-",
-              "Round 5 - Closing Rank ": "-",
-              "Round 6 - Closing Rank ": "-"
+              Gender: gender
             };
+            for (let i = 1; i <= maxR; i++) {
+              item[`Round ${i} - Closing Rank `] = "-";
+            }
+            mergedMap[key] = item;
           }
           
           mergedMap[key][`Round ${roundNum} - Closing Rank `] = row["Closing Rank"] ? row["Closing Rank"].trim() : "-";
