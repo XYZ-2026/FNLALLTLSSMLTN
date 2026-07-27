@@ -451,17 +451,23 @@ function generateMatches() {
   results = Object.values(groups);
 
   // Split: reachable (user rank <= closing rank) vs aspirational (user rank > closing rank)
-  const reachable = results.filter(r => rank <= r.closingRank).sort((a, b) => a.closingRank - b.closingRank).slice(0, 40);
+  // Cap to top 150 colleges total to keep the preference list manageable
+  const MAX_TOTAL_COLLEGES = 150;
+  const MAX_ASPIRATIONAL = 6;
+
+  const reachable = results.filter(r => rank <= r.closingRank).sort((a, b) => a.closingRank - b.closingRank);
   
   // Dynamically load aspirational colleges from user's selected Home State first
-  let aspirational = results.filter(r => rank > r.closingRank && r.state === homeState).sort((a, b) => a.closingRank - b.closingRank).slice(0, 6);
+  let aspirational = results.filter(r => rank > r.closingRank && r.state === homeState).sort((a, b) => a.closingRank - b.closingRank).slice(0, MAX_ASPIRATIONAL);
   if (aspirational.length === 0) {
     // Fallback to general/national aspirational colleges if none exist in home state
-    aspirational = results.filter(r => rank > r.closingRank).sort((a, b) => b.closingRank - a.closingRank).slice(0, 6);
+    aspirational = results.filter(r => rank > r.closingRank).sort((a, b) => b.closingRank - a.closingRank).slice(0, MAX_ASPIRATIONAL);
   }
 
   aspirational.forEach(r => r.isAspirational = true);
-  matchedColleges = [...aspirational, ...reachable];
+  // Cap reachable so total (aspirational + reachable) does not exceed 150
+  const reachableCap = Math.max(0, MAX_TOTAL_COLLEGES - aspirational.length);
+  matchedColleges = [...aspirational, ...reachable.slice(0, reachableCap)];
 
   // Build suggestion pool (remaining colleges not in matched)
   suggestionPool = results.filter(r => {
