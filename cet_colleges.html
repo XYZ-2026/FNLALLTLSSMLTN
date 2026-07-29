@@ -1302,6 +1302,70 @@
               <div class="college-sub-info">Region Rank: #${row["Sr No"]}${code ? ` &nbsp;·&nbsp; Code: ${code}` : ''}</div>
             </td>
             <td>${packageBadge}</td>
+            <td>${tierBadge}</td>
+            <td>${webButton}</td>
+          </tr>`;
+      }).join('');
+    }
+
+    function exportTableToCSV(tableId, filename) {
+      const table = document.getElementById(tableId);
+      if (!table) return;
+      let csv = [];
+      const rows = table.querySelectorAll('tr');
+      for (let i = 0; i < rows.length; i++) {
+        const row = [];
+        const cols = rows[i].querySelectorAll('td, th');
+        for (let j = 0; j < cols.length; j++) {
+          row.push('"' + cols[j].innerText.replace(/"/g, '""') + '"');
+        }
+        csv.push(row.join(','));
+      }
+      const csvFile = new Blob([csv.join('\n')], { type: 'text/csv' });
+      const downloadLink = document.createElement('a');
+      downloadLink.download = filename;
+      downloadLink.href = window.URL.createObjectURL(csvFile);
+      downloadLink.style.display = 'none';
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+    }
+
+    function exportTableToPDF(tableId, filename) {
+      window.print();
+    }
+
+    function exportRegionCSV() {
+      exportTableToCSV('regionTable', `${activeRegion.toLowerCase()}_region_rankings.csv`);
+    }
+
+    function exportRegionPDF() {
+      exportTableToPDF('regionTable', `${activeRegion.toLowerCase()}_region_rankings.pdf`);
+    }
+
+    function boot() {
+      const session = initAuth({ requireLogin: true, toolContainerId: 'toolArea' });
+      if (!session) return;
+
+      // Restrict exports to admin or premium role only
+      document.querySelectorAll('.export-btn-group').forEach(group => {
+        if (session.role !== 'admin' && session.role !== 'premium') {
+          group.style.display = 'none';
+        }
+      });
+
+      loadData();
+    }
+
+    window.setViewMode = setViewMode;
+    window.setRegion = setRegion;
+    window.applyRegionFilters = applyRegionFilters;
+    window.exportRegionCSV = exportRegionCSV;
+    window.exportRegionPDF = exportRegionPDF;
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+    else boot();
+  </script>
+
   <!-- SEO Content Section: Crawlable keyword-rich directory for search engine indexing -->
   <article id="seo-content" style="max-width:1100px;margin:60px auto 0;padding:40px 24px;border-top:1px solid #e5e7eb;color:#374151;font-size:14px;line-height:1.8">
     <h2 style="font-size:22px;font-weight:800;color:#111827;margin-bottom:16px">Top Engineering Colleges in Maharashtra Under MHT-CET 2026</h2>
@@ -1338,193 +1402,6 @@
 
     <p style="margin-top:24px;font-size:12px;color:#9ca3af;text-align:center">MHT-CET Top Engineering Colleges Directory — Managed by <strong>College Simplified</strong> (Concept Simplified). Official DTE Data & Placement Records.</p>
   </article>
-
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-  <script src="firebase_config.js"></script>
-  <script src="shared_auth.js"></script>
-  <script>
-    'use strict';
-    let stateData = [];
-    let activeRegion = 'PUNE';
-
-    function setViewMode(mode) {
-      document.getElementById('tabState').classList.toggle('active', mode === 'state');
-      document.getElementById('tabRegion').classList.toggle('active', mode === 'region');
-      document.getElementById('stateView').style.display = mode === 'state' ? 'block' : 'none';
-      document.getElementById('regionView').style.display = mode === 'region' ? 'block' : 'none';
-    }
-
-    function exportTableToCSV(tableId, filename) {
-      const table = document.getElementById(tableId);
-      if (!table) return;
-      let csv = [];
-      const rows = table.querySelectorAll('tr');
-      for (let i = 0; i < rows.length; i++) {
-        const row = [];
-        const cols = rows[i].querySelectorAll('td, th');
-        for (let j = 0; j < cols.length - 1; j++) {
-          row.push('"' + cols[j].innerText.replace(/"/g, '""') + '"');
-        }
-        csv.push(row.join(','));
-      }
-      const csvFile = new Blob([csv.join('\n')], { type: 'text/csv' });
-      const downloadLink = document.createElement('a');
-      downloadLink.download = filename;
-      downloadLink.href = window.URL.createObjectURL(csvFile);
-      downloadLink.style.display = 'none';
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-    }
-
-    function exportTableToPDF(tableId, filename) {
-      window.print();
-    }
-
-    function exportCSV() { exportTableToCSV('collegesTable', 'mhtcet_college_rankings.csv'); }
-    function exportPDF() { exportTableToPDF('collegesTable', 'mhtcet_college_rankings.pdf'); }
-
-    function loadData() {
-      fetch('ALL_CLG_PLACEMENT_TIER.json')
-        .then(r => r.json())
-        .then(data => {
-          stateData = data;
-          applyFilters();
-          applyRegionFilters();
-        })
-        .catch(err => console.error('Error loading placement data:', err));
-    }
-
-    function applyFilters() {
-      const query = (document.getElementById('searchInput').value || '').toLowerCase();
-      const sort = document.getElementById('sortSelect').value;
-      const tier = document.getElementById('tierSelect').value;
-
-      let filtered = stateData.filter(item => {
-        const matchName = (item.name || '').toLowerCase().includes(query) ||
-                          (item.code || '').toString().includes(query) ||
-                          (item.city || '').toLowerCase().includes(query);
-        const matchTier = tier === 'all' || item.tier === tier;
-        return matchName && matchTier;
-      });
-
-      if (sort === 'package-desc') {
-        filtered.sort((a, b) => (b.avgPackage || 0) - (a.avgPackage || 0));
-      } else {
-        filtered.sort((a, b) => (a.rank || 999) - (b.rank || 999));
-      }
-
-      renderTable(filtered);
-    }
-
-    function renderTable(data) {
-      const tbody = document.getElementById('tableBody');
-      const emptyState = document.getElementById('emptyState');
-
-      if (!data.length) {
-        tbody.innerHTML = '';
-        emptyState.style.display = 'block';
-        return;
-      }
-
-      emptyState.style.display = 'none';
-      tbody.innerHTML = data.map((item, idx) => {
-        const tierBadge = `<span class="tier-badge tier-${(item.tier || '').replace('Tier ', '')}">${item.tier || 'N/A'}</span>`;
-        const pkg = item.avgPackage ? `${item.avgPackage} LPA` : 'N/A';
-        const webButton = item.website ? `<a href="${item.website}" target="_blank" class="web-link-btn" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> Website</a>` : '—';
-
-        return `<tr onclick="window.location.href='cutoff_checker.html?code=${item.code}'">
-            <td class="rank-col">#${item.rank || idx + 1}</td>
-            <td class="college-name-col">
-              <div>${item.name}</div>
-              <div class="college-sub-info">DTE Code: ${item.code || 'N/A'} | ${item.city || 'Maharashtra'}</div>
-            </td>
-            <td><span class="placement-badge">₹ ${pkg}</span></td>
-            <td>${tierBadge}</td>
-            <td>${webButton}</td>
-          </tr>`;
-      }).join('');
-    }
-
-    function setRegion(reg) {
-      activeRegion = reg;
-      document.querySelectorAll('#regionChips .tier-chip').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('data-region') === reg);
-      });
-      document.getElementById('regionTableTitle').innerText = `${reg.charAt(0) + reg.slice(1).toLowerCase()} Region Rankings`;
-      applyRegionFilters();
-    }
-
-    function applyRegionFilters() {
-      const query = (document.getElementById('regionSearchInput').value || '').toLowerCase();
-      const tier = document.getElementById('regionTierSelect').value;
-
-      let filtered = stateData.filter(item => {
-        const itemRegion = (item.region || '').toUpperCase();
-        const matchRegion = itemRegion.includes(activeRegion);
-        const matchName = (item.name || '').toLowerCase().includes(query);
-        const matchTier = tier === 'all' || item.tier === tier;
-        return matchRegion && matchName && matchTier;
-      });
-
-      filtered.sort((a, b) => (a.rank || 999) - (b.rank || 999));
-      document.getElementById('regionStats').innerText = `${filtered.length} colleges found in ${activeRegion}`;
-
-      const tbody = document.querySelector('#regionTable tbody');
-      if (!filtered.length) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--muted)">No colleges match this filter in ' + activeRegion + '</td></tr>';
-        return;
-      }
-
-      tbody.innerHTML = filtered.map((item, idx) => {
-        const tierBadge = `<span class="tier-badge tier-${(item.tier || '').replace('Tier ', '')}">${item.tier || 'N/A'}</span>`;
-        const pkg = item.avgPackage ? `${item.avgPackage} LPA` : 'N/A';
-        const webButton = item.website ? `<a href="${item.website}" target="_blank" class="web-link-btn" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> Website</a>` : '—';
-
-        return `<tr onclick="window.location.href='cutoff_checker.html?code=${item.code}'">
-            <td class="rank-col">#${idx + 1}</td>
-            <td class="college-name-col">
-              <div>${item.name}</div>
-              <div class="college-sub-info">DTE Code: ${item.code || 'N/A'} | ${item.city || activeRegion}</div>
-            </td>
-            <td><span class="placement-badge">₹ ${pkg}</span></td>
-            <td>${tierBadge}</td>
-            <td>${webButton}</td>
-          </tr>`;
-      }).join('');
-    }
-
-    function exportRegionCSV() {
-      exportTableToCSV('regionTable', `${activeRegion.toLowerCase()}_region_rankings.csv`);
-    }
-
-    function exportRegionPDF() {
-      exportTableToPDF('regionTable', `${activeRegion.toLowerCase()}_region_rankings.pdf`);
-    }
-
-    function boot() {
-      const session = initAuth({ requireLogin: true, toolContainerId: 'toolArea' });
-      if (!session) return;
-
-      // Restrict exports to admin or premium role only
-      document.querySelectorAll('.export-btn-group').forEach(group => {
-        if (session.role !== 'admin' && session.role !== 'premium') {
-          group.style.display = 'none';
-        }
-      });
-
-      loadData();
-    }
-
-    window.setViewMode = setViewMode;
-    window.setRegion = setRegion;
-    window.applyRegionFilters = applyRegionFilters;
-    window.exportRegionCSV = exportRegionCSV;
-    window.exportRegionPDF = exportRegionPDF;
-
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
-    else boot();
-  </script>
 </body>
 
 </html>
