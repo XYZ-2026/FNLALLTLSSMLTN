@@ -85,6 +85,25 @@ function injectGlobalUI() {
     @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
     .sidebar-sub-link { display: flex; align-items: center; padding: 8px 12px; border-radius: 10px; text-decoration: none; color: var(--muted); font-size: 12.5px; font-weight: 600; transition: 0.2s; }
     .sidebar-sub-link:hover { color: var(--brand); background: var(--brand-soft); }
+    .sidebar-sub-link-2026 {
+      background: #dc2626 !important;
+      color: #ffffff !important;
+      font-weight: 700 !important;
+      border-radius: 8px !important;
+      padding: 8px 10px !important;
+      font-size: 12px !important;
+      margin: 2px 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 6px !important;
+      line-height: 1.3 !important;
+      box-shadow: 0 2px 6px rgba(220, 38, 38, 0.2);
+    }
+    .sidebar-sub-link-2026:hover {
+      background: #b91c1c !important;
+      color: #ffffff !important;
+    }
     .dropdown-toggle .chevron { margin-left: auto; transition: transform 0.3s; }
     .dropdown-toggle.active .chevron { transform: rotate(180deg); }
 
@@ -617,6 +636,15 @@ function injectGlobalUI() {
             <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="dropdown-content" id="drop-cet">
+            <a href="mht_cet_college_predictor_2026.html" class="sidebar-sub-link sidebar-sub-link-2026">
+              <span>College Predictor 2026</span>
+            </a>
+            <a href="college_explorer_2026.html" class="sidebar-sub-link sidebar-sub-link-2026">
+              <span>Cutoff Checker 2026</span>
+            </a>
+            <a href="percentile_vs_college_predictor_2026.html" class="sidebar-sub-link sidebar-sub-link-2026">
+              <span>JEE AI Predictor 2026</span>
+            </a>
             <a href="cet-landing.html" class="sidebar-sub-link">Hub Overview</a>
             <a href="cet_marks.html" class="sidebar-sub-link">Marks vs Percentile</a>
             <a href="cet_rank.html" class="sidebar-sub-link">Percentile vs Rank</a>
@@ -810,16 +838,16 @@ function injectGlobalUI() {
   try {
     var path = window.location.pathname.split('/').pop() || 'index.html';
     path = path.split('?')[0]; // strip query parameters
-    
+
     // 1. Activate and highlight dropdown sub-links
     var subLinks = document.querySelectorAll('.sidebar-sub-link');
-    subLinks.forEach(function(link) {
+    subLinks.forEach(function (link) {
       var href = link.getAttribute('href');
       if (href && href.split('?')[0] === path) {
         link.style.color = 'var(--brand)';
         link.style.background = 'var(--brand-soft)';
         link.classList.add('active');
-        
+
         // Find closest parent dropdown content container and open it
         var drop = link.closest('.dropdown-content');
         if (drop) {
@@ -832,7 +860,7 @@ function injectGlobalUI() {
 
     // 2. Activate and highlight main sidebar links
     var mainLinks = document.querySelectorAll('.sidebar-link:not(.dropdown-toggle)');
-    mainLinks.forEach(function(link) {
+    mainLinks.forEach(function (link) {
       var href = link.getAttribute('href');
       if (href && href.split('?')[0] === path) {
         link.style.color = 'var(--brand)';
@@ -854,7 +882,7 @@ window.toggleDropdown = function (id) {
   btn.classList.toggle('active');
 };
 
-window.toggleTermsCheckbox = function(e) {
+window.toggleTermsCheckbox = function (e) {
   if (e.target.tagName === 'A' || e.target.tagName === 'INPUT') return;
   var cb = document.getElementById('cs-terms-checkbox');
   if (cb) {
@@ -863,7 +891,7 @@ window.toggleTermsCheckbox = function(e) {
   }
 };
 
-window.updateTermsButtonState = function() {
+window.updateTermsButtonState = function () {
   var cb = document.getElementById('cs-terms-checkbox');
   var btn = document.getElementById('cs-terms-accept-btn');
   if (cb && btn) {
@@ -871,16 +899,16 @@ window.updateTermsButtonState = function() {
   }
 };
 
-window.acceptTermsAndConditions = async function() {
+window.acceptTermsAndConditions = async function () {
   var user = getSession();
   if (!user || !user.id) return;
-  
+
   var btn = document.getElementById('cs-terms-accept-btn');
   var spinner = document.getElementById('cs-terms-spinner');
-  
+
   if (btn) btn.disabled = true;
   if (spinner) spinner.style.display = 'block';
-  
+
   try {
     // 1. Update user document in Firestore with the timestamp
     if (typeof db !== 'undefined') {
@@ -889,11 +917,11 @@ window.acceptTermsAndConditions = async function() {
         acceptedTermsAt: ts
       });
     }
-    
+
     // 2. Update local storage session
     user.acceptedTermsAt = new Date().toISOString();
     setSession(user);
-    
+
     // 3. Hide the modal
     var modal = document.getElementById('cs-terms-acceptance-modal');
     if (modal) modal.classList.remove('show');
@@ -1003,12 +1031,12 @@ function getSession() { try { return JSON.parse(localStorage.getItem(AUTH_CONFIG
 function setSession(user) { localStorage.setItem(AUTH_CONFIG.SESSION_KEY, JSON.stringify(user)); }
 function clearSession() { localStorage.removeItem(AUTH_CONFIG.SESSION_KEY); }
 function isLoggedIn() { return !!getSession(); }
-function doLogout() { 
-  clearSession(); 
+function doLogout() {
+  clearSession();
   if (typeof firebase !== 'undefined' && typeof firebase.auth === 'function') {
     firebase.auth().signOut().catch(console.error);
   }
-  window.location.href = AUTH_CONFIG.HOME_PAGE; 
+  window.location.href = AUTH_CONFIG.HOME_PAGE;
 }
 function escAuth(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
@@ -1062,7 +1090,7 @@ function initAuth(opts) {
 
   // Sync user status from Firestore in background to allow instant premium access without relogin
   if (session && session.id && typeof db !== 'undefined') {
-    db.collection('users').doc(session.id).get().then(function(doc) {
+    db.collection('users').doc(session.id).get().then(function (doc) {
       if (doc.exists) {
         var userData = doc.data();
         var updated = false;
@@ -1115,7 +1143,7 @@ function initAuth(opts) {
           // Hide or show premium banners depending on the updated status
           var isNowPremium = session.role === 'premium' || session.premium === true || session.role === 'admin';
           var banners = document.querySelectorAll('.premium-banners-section');
-          banners.forEach(function(el) {
+          banners.forEach(function (el) {
             el.style.display = isNowPremium ? 'none' : '';
           });
 
@@ -1123,16 +1151,16 @@ function initAuth(opts) {
           window.location.reload();
         }
       }
-    }).catch(function(err) {
+    }).catch(function (err) {
       console.error('Error syncing user session with Firestore:', err);
     });
   }
 
   var isPremium = session && (session.role === 'premium' || session.premium === true);
   if (isPremium) {
-    var hidePremiumElements = function() {
+    var hidePremiumElements = function () {
       var banners = document.querySelectorAll('.premium-banners-section');
-      banners.forEach(function(el) {
+      banners.forEach(function (el) {
         el.style.display = 'none';
       });
     };
@@ -1190,13 +1218,13 @@ function initAuth(opts) {
   try {
     var pName = window.location.pathname.split('/').pop() || 'index.html';
     if (pName !== 'admin.html' && pName !== 'auth.html') {
-      setTimeout(function() {
+      setTimeout(function () {
         if (typeof logUserPortalActivity === 'function') {
           logUserPortalActivity('page_view', pName);
         }
       }, 1000);
     }
-  } catch(e) {
+  } catch (e) {
     console.error('Page view logging failed:', e);
   }
 
@@ -1447,7 +1475,7 @@ function initAdPopup() {
   if (path === '' || path === '/' || !path) {
     path = 'index.html';
   }
-  
+
   if (landingPages.indexOf(path.toLowerCase()) >= 0) {
     return;
   }
@@ -1747,11 +1775,11 @@ function initAdPopup() {
   `;
   document.body.insertAdjacentHTML('beforeend', modalHtml);
 
-  window.closeAdModal = function() {
+  window.closeAdModal = function () {
     var modal = document.getElementById('cs-ad-modal');
     if (modal) {
       modal.classList.remove('show');
-      setTimeout(function() {
+      setTimeout(function () {
         modal.style.display = 'none';
       }, 400);
     }
@@ -1760,7 +1788,7 @@ function initAdPopup() {
   // Close ad when clicking outside modal content
   var adModalElement = document.getElementById('cs-ad-modal');
   if (adModalElement) {
-    adModalElement.addEventListener('click', function(e) {
+    adModalElement.addEventListener('click', function (e) {
       if (e.target === this) {
         window.closeAdModal();
       }
@@ -1785,23 +1813,23 @@ function initAdPopup() {
    ══════════════════════════════════════════ */
 
 function injectClaimPremiumButton() {
-  var upgradeLinks = Array.from(document.querySelectorAll('a')).filter(function(a) {
+  var upgradeLinks = Array.from(document.querySelectorAll('a')).filter(function (a) {
     var href = a.getAttribute('href') || '';
     var text = a.innerText || '';
-    
+
     // Exclude banners and ads
-    if (a.classList.contains('premium-banner-card') || 
-        a.closest('.banners-grid') || 
-        a.closest('.premium-banners-section') ||
-        a.closest('.cs-ad-card') || 
-        a.closest('.cs-ad-modal-content')) {
+    if (a.classList.contains('premium-banner-card') ||
+      a.closest('.banners-grid') ||
+      a.closest('.premium-banners-section') ||
+      a.closest('.cs-ad-card') ||
+      a.closest('.cs-ad-modal-content')) {
       return false;
     }
-                     
+
     return href.includes('conceptsimplified.in/courses') || text.includes('Upgrade to Premium');
   });
 
-  upgradeLinks.forEach(function(link) {
+  upgradeLinks.forEach(function (link) {
     // Check if we already wrapped this link in lock-btn-group
     if (link.parentNode && link.parentNode.classList.contains('lock-btn-group')) {
       return;
@@ -1821,17 +1849,17 @@ function injectClaimPremiumButton() {
       </svg>
       Link Purchase / Grant Access
     `;
-    claimBtn.onclick = function() {
+    claimBtn.onclick = function () {
       window.openClaimPremiumModal();
     };
 
     // Create wrapper div
     var wrapper = document.createElement('div');
     wrapper.className = 'lock-btn-group';
-    
+
     // Insert wrapper in the DOM right before the link
     link.parentNode.insertBefore(wrapper, link);
-    
+
     // Move the link and newly created button inside the wrapper
     wrapper.appendChild(link);
     wrapper.appendChild(claimBtn);
@@ -1843,13 +1871,13 @@ function startUpgradeButtonObserver() {
   injectClaimPremiumButton();
 
   // Watch for dynamic DOM updates (since calculators swap page views dynamically)
-  var observer = new MutationObserver(function() {
+  var observer = new MutationObserver(function () {
     injectClaimPremiumButton();
   });
   observer.observe(document.body, { childList: true, subtree: true });
 }
 
-window.openClaimPremiumModal = function() {
+window.openClaimPremiumModal = function () {
   var modal = document.getElementById('cs-claim-premium-modal');
   if (modal) {
     modal.style.display = 'flex';
@@ -1862,21 +1890,21 @@ window.openClaimPremiumModal = function() {
   }
 };
 
-window.closeClaimPremiumModal = function() {
+window.closeClaimPremiumModal = function () {
   var modal = document.getElementById('cs-claim-premium-modal');
   if (modal) {
     modal.classList.remove('show');
-    setTimeout(function() {
+    setTimeout(function () {
       modal.style.display = 'none';
     }, 300);
   }
 };
 
 // Add listener to close when clicking outside the modal content wrapper
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   var modal = document.getElementById('cs-claim-premium-modal');
   if (modal) {
-    modal.addEventListener('click', function(e) {
+    modal.addEventListener('click', function (e) {
       if (e.target === this) {
         window.closeClaimPremiumModal();
       }
@@ -1884,9 +1912,9 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-window.submitClaimPremium = async function(event) {
+window.submitClaimPremium = async function (event) {
   event.preventDefault();
-  
+
   var emailInput = document.getElementById('cs-claim-email');
   var phoneInput = document.getElementById('cs-claim-phone');
   var errorDiv = document.getElementById('cs-claim-error-msg');
@@ -1898,7 +1926,7 @@ window.submitClaimPremium = async function(event) {
 
   var email = emailInput.value.trim().toLowerCase();
   var rawPhone = phoneInput.value.trim();
-  
+
   // Normalize phone number (digits only, last 10 digits)
   var numericPhone = rawPhone.replace(/\D/g, '');
   var normalizedPhone = numericPhone.slice(-10);
@@ -1929,7 +1957,7 @@ window.submitClaimPremium = async function(event) {
     if (typeof db === 'undefined') {
       throw new Error('Database connection is not initialized yet. Please refresh.');
     }
-    
+
     var snap = await db.collection('users').where('email', '==', email).limit(1).get();
     if (snap.empty) {
       throw new Error('No purchase record found for this email address. Please make sure the email matches your payment receipt.');
@@ -1940,7 +1968,7 @@ window.submitClaimPremium = async function(event) {
     // 3. Verify phone number / password hash
     var enteredHashed = await hashPassword(normalizedPhone);
     var matchesPassword = purchaseUser.password === enteredHashed;
-    
+
     var purchasePhoneDigits = String(purchaseUser.phone || '').replace(/\D/g, '').slice(-10);
     var matchesPhone = purchasePhoneDigits && purchasePhoneDigits === normalizedPhone;
 
@@ -1970,7 +1998,7 @@ window.submitClaimPremium = async function(event) {
     successDiv.innerText = 'Premium benefits linked successfully! Reloading page to activate...';
     successDiv.style.display = 'block';
 
-    setTimeout(function() {
+    setTimeout(function () {
       window.location.reload();
     }, 2000);
 
@@ -1978,7 +2006,7 @@ window.submitClaimPremium = async function(event) {
     console.error('Claim premium error:', err);
     errorDiv.innerText = err.message || 'An error occurred during verification. Please try again.';
     errorDiv.style.display = 'block';
-    
+
     // Reset button state
     submitBtn.disabled = false;
     submitBtn.querySelector('.btn-text').innerText = 'Validate & Activate Premium';
@@ -1986,7 +2014,7 @@ window.submitClaimPremium = async function(event) {
   }
 };
 
-window.getOrCreateSessionId = function(session) {
+window.getOrCreateSessionId = function (session) {
   if (session && session.id) return session.id;
   var gId = sessionStorage.getItem('cs_guest_session_id');
   if (!gId) {
@@ -1996,7 +2024,7 @@ window.getOrCreateSessionId = function(session) {
   return gId;
 };
 
-window.logUserPortalActivity = async function(action, details) {
+window.logUserPortalActivity = async function (action, details) {
   var session = getSession();
   var sessId = getOrCreateSessionId(session);
   var uId = session ? session.id : 'guest';
@@ -2014,7 +2042,7 @@ window.logUserPortalActivity = async function(action, details) {
     sessionId: sessId,
     action: action,
     details: details
-  }).catch(function(err) {
+  }).catch(function (err) {
     console.error('Activity logging API failed:', err);
   });
 };
