@@ -139,7 +139,13 @@
             <label class="form-label" for="filterRegion">Filter Region</label>
             <div class="input-wrap">
               <select id="filterRegion" onchange="renderListView()">
-                <option value="all">All Regions</option>
+                <option value="all">All Regions (1 to 6)</option>
+                <option value="1">1 – Amravati Region</option>
+                <option value="2">2 – Chhatrapati Sambhajinagar (Aurangabad) Region</option>
+                <option value="3">3 – Mumbai Region</option>
+                <option value="4">4 – Nagpur Region</option>
+                <option value="5">5 – Nashik Region</option>
+                <option value="6">6 – Pune Region</option>
               </select>
             </div>
           </div>
@@ -270,6 +276,26 @@
     let tablePageSize = 50;
     let tableCurrentPage = 1;
 
+    function getRegionCode(code) {
+      const str = String(code || '').trim().replace(/^0+/, '');
+      const first = str.charAt(0);
+      return ['1', '2', '3', '4', '5', '6'].includes(first) ? first : 'other';
+    }
+
+    const REGION_NAMES = {
+      '1': 'Amravati Region (1)',
+      '2': 'Chhatrapati Sambhajinagar / Aurangabad Region (2)',
+      '3': 'Mumbai Region (3)',
+      '4': 'Nagpur Region (4)',
+      '5': 'Nashik Region (5)',
+      '6': 'Pune Region (6)'
+    };
+
+    function getRegionName(code) {
+      const r = getRegionCode(code);
+      return REGION_NAMES[r] || 'Other';
+    }
+
     // ── BUILD COLLEGE MAP ──
     function buildCollegeMap() {
       cetData.forEach(r => {
@@ -278,7 +304,8 @@
           collegeMap.set(code, {
             code: code,
             name: r.institute_name,
-            region: r.region,
+            regionCode: getRegionCode(code),
+            regionName: getRegionName(code),
             status: r.status,
             home_university: r.home_university
           });
@@ -291,7 +318,8 @@
           collegeMap.set(codeStr, {
             code: codeStr,
             name: (r['Institute Name'] || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
-            region: '—',
+            regionCode: getRegionCode(codeStr),
+            regionName: getRegionName(codeStr),
             status: '—',
             home_university: '—'
           });
@@ -314,7 +342,7 @@
         );
       }
       if (regionFilter !== 'all') {
-        colleges = colleges.filter(c => c.region === regionFilter);
+        colleges = colleges.filter(c => c.regionCode === regionFilter);
       }
       if (statusFilter !== 'all') {
         const s = statusFilter.toLowerCase();
@@ -342,7 +370,7 @@
             <span class="clg-card-code">Code: ${c.code}</span>
             <div class="clg-card-name">${c.name}</div>
             <div class="clg-card-meta">
-              <span>📍 ${c.region || '—'}</span>
+              <span>📍 ${c.regionName}</span>
               <span>• ${(c.status || '—').split(',')[0].trim()}</span>
             </div>
           </div>
@@ -363,7 +391,7 @@
       document.getElementById('dbCollegeName').textContent = currentCollege.name;
       document.getElementById('dbCollegeCode').textContent = 'Code: ' + currentCollege.code;
       document.getElementById('dbCollegeType').textContent = (currentCollege.status || '—').split(',').slice(0, 2).join(', ');
-      document.getElementById('dbCollegeRegion').textContent = 'Region: ' + (currentCollege.region || '—');
+      document.getElementById('dbCollegeRegion').textContent = 'Region: ' + currentCollege.regionName;
 
       // Load MHT-CET cutoffs for this college
       filteredCetRows = cetData.filter(r => r.institute_code === code);
@@ -537,13 +565,6 @@
         jeeData = jeeJson['ALL_INDIA_2026'] || jeeJson || [];
 
         buildCollegeMap();
-
-        // Populate region filter
-        const regions = new Set();
-        cetData.forEach(r => { if (r.region) regions.add(r.region); });
-        const regionSel = document.getElementById('filterRegion');
-        regionSel.innerHTML = '<option value="all">All Regions</option>' +
-          Array.from(regions).sort().map(r => `<option value="${r}">${r}</option>`).join('');
 
         document.getElementById('dataLoader').style.display = 'none';
         document.getElementById('explorerContent').style.display = 'block';

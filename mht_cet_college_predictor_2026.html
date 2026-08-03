@@ -243,29 +243,29 @@
                 <div class="region-chip-chk">✓</div>
                 All Regions
               </div>
-              <div class="region-chip" data-val="Amravati" onclick="toggleRegion('Amravati')">
+              <div class="region-chip" data-val="1" onclick="toggleRegion('1')">
                 <div class="region-chip-chk"></div>
-                Amravati
+                1 – Amravati Region
               </div>
-              <div class="region-chip" data-val="Aurangabad" onclick="toggleRegion('Aurangabad')">
+              <div class="region-chip" data-val="2" onclick="toggleRegion('2')">
                 <div class="region-chip-chk"></div>
-                Aurangabad
+                2 – Chhatrapati Sambhajinagar (Aurangabad)
               </div>
-              <div class="region-chip" data-val="Mumbai" onclick="toggleRegion('Mumbai')">
+              <div class="region-chip" data-val="3" onclick="toggleRegion('3')">
                 <div class="region-chip-chk"></div>
-                Mumbai
+                3 – Mumbai Region
               </div>
-              <div class="region-chip" data-val="Nagpur" onclick="toggleRegion('Nagpur')">
+              <div class="region-chip" data-val="4" onclick="toggleRegion('4')">
                 <div class="region-chip-chk"></div>
-                Nagpur
+                4 – Nagpur Region
               </div>
-              <div class="region-chip" data-val="Nashik" onclick="toggleRegion('Nashik')">
+              <div class="region-chip" data-val="5" onclick="toggleRegion('5')">
                 <div class="region-chip-chk"></div>
-                Nashik
+                5 – Nashik Region
               </div>
-              <div class="region-chip" data-val="Pune" onclick="toggleRegion('Pune')">
+              <div class="region-chip" data-val="6" onclick="toggleRegion('6')">
                 <div class="region-chip-chk"></div>
-                Pune
+                6 – Pune Region
               </div>
             </div>
           </div>
@@ -436,6 +436,21 @@
       return labels[cat] || cat;
     }
 
+    function getRegionCode(code) {
+      const str = String(code || '').trim().replace(/^0+/, '');
+      const first = str.charAt(0);
+      return ['1', '2', '3', '4', '5', '6'].includes(first) ? first : 'other';
+    }
+
+    const REGION_NAMES = {
+      '1': 'Amravati Region',
+      '2': 'Chhatrapati Sambhajinagar (Aurangabad) Region',
+      '3': 'Mumbai Region',
+      '4': 'Nagpur Region',
+      '5': 'Nashik Region',
+      '6': 'Pune Region'
+    };
+
     function predict() {
       const pctVal = document.getElementById('inPercentile').value;
       const rankVal = document.getElementById('inRank').value;
@@ -459,9 +474,12 @@
         filtered = filtered.filter(r => r.rank !== undefined && r.rank !== null && rank <= r.rank);
       }
       
-      // Region Filter
+      // Region Filter based on College Code first digit (1-6)
       if (!selectedRegions.has('all')) {
-        filtered = filtered.filter(r => selectedRegions.has(r.region));
+        filtered = filtered.filter(r => {
+          const rCode = getRegionCode(r.code);
+          return selectedRegions.has(rCode);
+        });
       }
 
       const isGenderNeutral = ['EWS', 'TFWS', 'MI', 'ORPHAN', 'ORPHANN'].includes(cat) || cat.startsWith('DEF') || cat.startsWith('PWD');
@@ -513,7 +531,7 @@
         category: cat,
         gender: gender,
         homeUniv: studentHU || 'None',
-        region: selectedRegions.has('all') ? 'All Regions' : Array.from(selectedRegions).join(', '),
+        region: selectedRegions.has('all') ? 'All Regions' : Array.from(selectedRegions).map(c => REGION_NAMES[c] || c).join(', '),
         scoreType: scoreType,
         minorityType: 'None',
         source: '2026_round1'
