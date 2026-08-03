@@ -471,6 +471,60 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    .region-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .region-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      border: 1.5px solid var(--stroke);
+      background: var(--card);
+      color: var(--ink2);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .region-chip:hover {
+      border-color: var(--brand-ring);
+      background: var(--brand-soft);
+    }
+
+    .region-chip.selected {
+      border-color: var(--brand);
+      background: var(--brand-soft);
+      color: var(--brand);
+      font-weight: 700;
+    }
+
+    .region-chip-chk {
+      width: 18px;
+      height: 18px;
+      border-radius: 6px;
+      border: 1.5px solid var(--stroke);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      transition: all 0.2s;
+    }
+
+    .region-chip.selected .region-chip-chk {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #fff;
+    }
+
     @media (max-width: 600px) {
       .wrap { padding: 20px 16px; }
       .card { padding: 24px 18px; border-radius: 20px; }
@@ -537,6 +591,40 @@
                 <line x1="12" y1="16" x2="12.01" y2="16" />
               </svg>
               <input type="number" id="inPercentile" placeholder="e.g. 97.45" step="0.0001" min="0" max="100">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">College Region (Select Multiple)</label>
+            <div class="region-chips" id="regionChips">
+              <div class="region-chip selected" data-val="all" onclick="toggleRegion('all')">
+                <div class="region-chip-chk">✓</div>
+                All Regions
+              </div>
+              <div class="region-chip" data-val="1" onclick="toggleRegion('1')">
+                <div class="region-chip-chk"></div>
+                1 – Amravati Region
+              </div>
+              <div class="region-chip" data-val="2" onclick="toggleRegion('2')">
+                <div class="region-chip-chk"></div>
+                2 – Chhatrapati Sambhajinagar (Aurangabad)
+              </div>
+              <div class="region-chip" data-val="3" onclick="toggleRegion('3')">
+                <div class="region-chip-chk"></div>
+                3 – Mumbai Region
+              </div>
+              <div class="region-chip" data-val="4" onclick="toggleRegion('4')">
+                <div class="region-chip-chk"></div>
+                4 – Nagpur Region
+              </div>
+              <div class="region-chip" data-val="5" onclick="toggleRegion('5')">
+                <div class="region-chip-chk"></div>
+                5 – Nashik Region
+              </div>
+              <div class="region-chip" data-val="6" onclick="toggleRegion('6')">
+                <div class="region-chip-chk"></div>
+                6 – Pune Region
+              </div>
             </div>
           </div>
 
@@ -631,6 +719,57 @@
       return 'Other Branches';
     }
 
+    let selectedRegions = new Set(['all']);
+
+    function getRegionCode(code) {
+      const str = String(code || '').trim().replace(/^0+/, '');
+      const first = str.charAt(0);
+      return ['1', '2', '3', '4', '5', '6'].includes(first) ? first : 'other';
+    }
+
+    const REGION_NAMES = {
+      '1': 'Amravati Region',
+      '2': 'Chhatrapati Sambhajinagar (Aurangabad) Region',
+      '3': 'Mumbai Region',
+      '4': 'Nagpur Region',
+      '5': 'Nashik Region',
+      '6': 'Pune Region'
+    };
+
+    function toggleRegion(val) {
+      if (val === 'all') {
+        selectedRegions.clear();
+        selectedRegions.add('all');
+      } else {
+        selectedRegions.delete('all');
+        if (selectedRegions.has(val)) {
+          selectedRegions.delete(val);
+        } else {
+          selectedRegions.add(val);
+        }
+        if (selectedRegions.size === 0) {
+          selectedRegions.add('all');
+        }
+      }
+      renderRegionChips();
+    }
+
+    function renderRegionChips() {
+      const chips = document.querySelectorAll('.region-chip');
+      chips.forEach(chip => {
+        const val = chip.getAttribute('data-val');
+        if (selectedRegions.has(val)) {
+          chip.classList.add('selected');
+          const chk = chip.querySelector('.region-chip-chk');
+          if (chk) chk.innerHTML = '✓';
+        } else {
+          chip.classList.remove('selected');
+          const chk = chip.querySelector('.region-chip-chk');
+          if (chk) chk.innerHTML = '';
+        }
+      });
+    }
+
     function predict() {
       const pctVal = document.getElementById('inPercentile').value;
       const pct = parseFloat(pctVal);
@@ -641,6 +780,14 @@
 
       // Filter by Percentile
       let filtered = allData.filter(r => r.percentile <= pct);
+
+      // Region Filter
+      if (!selectedRegions.has('all')) {
+        filtered = filtered.filter(r => {
+          const rCode = getRegionCode(r.code);
+          return selectedRegions.has(rCode);
+        });
+      }
 
       // Minority Filter
       if (minorityPref) {
@@ -666,6 +813,7 @@
         exam: 'JEE Mains',
         category: 'All India',
         minority: minorityPref || 'None',
+        region: selectedRegions.has('all') ? 'All Regions' : Array.from(selectedRegions).map(c => REGION_NAMES[c] || c).join(', '),
         source: '2026_all_india_round1'
       }));
       window.location.href = "results.html";
@@ -858,6 +1006,7 @@
 
     window.predict = predict;
     window.goStep = goStep;
+    window.toggleRegion = toggleRegion;
     window.toggleBranch = toggleBranch;
     window.toggleCategory = toggleCategory;
     window.toggleAllBranches = toggleAllBranches;
