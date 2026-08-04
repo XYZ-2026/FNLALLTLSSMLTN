@@ -628,31 +628,6 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Minority Preference (Optional)</label>
-            <div class="input-wrap">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              </svg>
-              <select id="inMinority">
-                <option value="">None (All Colleges)</option>
-                <option value="Muslim">Religious Minority - Muslim</option>
-                <option value="Jain">Religious Minority - Jain</option>
-                <option value="Christian">Religious Minority - Christian</option>
-                <option value="Roman Catholics">Religious Minority - Roman Catholics</option>
-                <option value="Sikh">Religious Minority - Sikh</option>
-                <option value="Buddhist">Religious Minority - Buddhist</option>
-                <option value="Gujarathi">Linguistic Minority - Gujarathi</option>
-                <option value="Hindi">Linguistic Minority - Hindi</option>
-                <option value="Sindhi">Linguistic Minority - Sindhi</option>
-                <option value="Kannada">Linguistic Minority - Kannada</option>
-                <option value="Malyalam">Linguistic Minority - Malyalam</option>
-                <option value="Punjabi">Linguistic Minority - Punjabi</option>
-                <option value="Tamil">Linguistic Minority - Tamil</option>
-              </select>
-            </div>
-          </div>
-
           <button class="btn" onclick="goStep(2)">
             Continue to Branches
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
@@ -774,7 +749,6 @@
       const pctVal = document.getElementById('inPercentile').value;
       const pct = parseFloat(pctVal);
       if (!pctVal || isNaN(pct)) return alert('Enter a valid percentile');
-      const minorityPref = document.getElementById('inMinority').value;
 
       if (!allData.length) return alert("Data is loading, please wait...");
 
@@ -786,14 +760,6 @@
         filtered = filtered.filter(r => {
           const rCode = getRegionCode(r.code);
           return selectedRegions.has(rCode);
-        });
-      }
-
-      // Minority Filter
-      if (minorityPref) {
-        filtered = filtered.filter(r => {
-          const meta = collegeMetadata.find(m => m.code === parseInt(r.code));
-          return meta && meta.status && meta.status.toLowerCase().includes(minorityPref.toLowerCase());
         });
       }
 
@@ -812,7 +778,7 @@
         scoreType: 'pct',
         exam: 'JEE Mains',
         category: 'All India',
-        minority: minorityPref || 'None',
+        minority: 'None',
         region: selectedRegions.has('all') ? 'All Regions' : Array.from(selectedRegions).map(c => REGION_NAMES[c] || c).join(', '),
         source: '2026_all_india_round1'
       }));

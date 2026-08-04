@@ -1760,7 +1760,7 @@ function initAdPopup() {
           </div>
           <div class="cs-ad-card">
             <div class="cs-ad-image-container">
-              <img src="https://courses-assets-v2.classplus.co/_next/image?url=/api/proxyimage?url=https%3A%2F%2Fcdn-wl-assets.classplus.co%2Fproduction%2Fsingle%2Fijpsrw%2F79751778-f0dd-4a31-be62-47dd801de8e3.png&w=640&q=75" alt="AI Counselling">
+              <img src="https://courses-assets-v2.classplus.co/_next/image?url=/api/proxyimage?url=https%3A%2F%2Fcdn-wl-assets.classplus.co%2Fproduction%2Fsingle%2Fijpsrw%2F0c12cc3c-cb87-46ff-a2cc-8a1a790b2e4c.png&w=640&q=75" alt="AI Counselling">
             </div>
             <div class="cs-ad-text-container">
               <div class="cs-ad-badge">AI Counselling</div>

@@ -991,404 +991,6 @@
                 chances, expected cutoff ranks, and percentile metrics with high-precision analytical tools.</p>
         </section>
 
-        <!-- Premium Counselling Banners Section -->
-        <section class="premium-banners-section">
-            <style>
-                .premium-banners-section {
-                    width: 100%;
-                    max-width: 1200px;
-                    margin: 0 auto;
-                    padding: 0 20px 48px;
-                    font-family: 'Inter', sans-serif;
-                }
-
-                .banners-grid {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-                    gap: 28px;
-                    margin-top: 24px;
-                }
-
-                .premium-banner-card {
-                    background: var(--card, #ffffff);
-                    border: 1px solid var(--stroke, rgba(0, 0, 0, 0.08));
-                    border-radius: 24px;
-                    overflow: hidden;
-                    text-decoration: none;
-                    color: inherit;
-                    display: flex;
-                    flex-direction: column;
-                    box-shadow: var(--shadow, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
-                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-                }
-
-                .premium-banner-card:hover {
-                    transform: translateY(-8px);
-                    box-shadow: var(--shadow-lg, 0 20px 25px -5px rgba(0, 0, 0, 0.1));
-                    border-color: var(--brand, #dc2626);
-                }
-
-                .banner-img-container {
-                    position: relative;
-                    width: 100%;
-                    padding-top: 52%;
-                    /* Aspect ratio of banners */
-                    overflow: hidden;
-                    background: #f3f4f6;
-                }
-
-                .banner-img-container img {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-                }
-
-                .premium-banner-card:hover .banner-img-container img {
-                    transform: scale(1.05);
-                }
-
-                .banner-overlay {
-                    position: absolute;
-                    inset: 0;
-                    background: rgba(0, 0, 0, 0.3);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    opacity: 0;
-                    transition: opacity 0.3s ease;
-                }
-
-                .premium-banner-card:hover .banner-overlay {
-                    opacity: 1;
-                }
-
-                .view-program-btn {
-                    background: #ffffff;
-                    color: #111827;
-                    padding: 10px 20px;
-                    border-radius: 100px;
-                    font-weight: 700;
-                    font-size: 13px;
-                    text-transform: uppercase;
-                    letter-spacing: 0.5px;
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-                    transform: translateY(10px);
-                    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-                }
-
-                .premium-banner-card:hover .view-program-btn {
-                    transform: translateY(0);
-                }
-
-                .banner-text-details {
-                    padding: 20px 24px;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 6px;
-                }
-
-                .banner-text-details h3 {
-                    font-family: 'Lexend', sans-serif;
-                    font-weight: 700;
-                    font-size: 18px;
-                    color: var(--ink, #111827);
-                }
-
-                .banner-text-details p {
-                    font-size: 13.5px;
-                    color: var(--muted, #6b7280);
-                    line-height: 1.4;
-                }
-
-                .section-header-banner {
-                    margin-bottom: 8px;
-                }
-
-                .banner-badge-top {
-                    background: var(--brand-soft, #fef2f2);
-                    color: var(--brand, #dc2626);
-                    padding: 6px 14px;
-                    border-radius: 100px;
-                    font-size: 11px;
-                    font-weight: 800;
-                    text-transform: uppercase;
-                    letter-spacing: 1px;
-                    display: inline-block;
-                    margin-bottom: 12px;
-                    border: 1px solid var(--brand-ring, rgba(220, 38, 38, 0.1));
-                }
-
-                .section-header-banner h2 {
-                    font-family: 'Lexend', sans-serif;
-                    font-weight: 800;
-                    font-size: 24px;
-                    color: var(--ink, #111827);
-                    letter-spacing: -0.01em;
-                }
-
-                .section-header-banner p {
-                    color: var(--muted, #6b7280);
-                    font-size: 14.5px;
-                    margin-top: 4px;
-                }
-
-                @media (max-width: 640px) {
-                    .banners-grid {
-                        grid-template-columns: 1fr;
-                        gap: 20px;
-                    }
-
-                    .premium-banners-section {
-                        padding: 0 20px 32px;
-                    }
-
-                    .banner-text-details {
-                        padding: 16px 20px;
-                    }
-
-                    .banner-text-details h3 {
-                        font-size: 16px;
-                    }
-
-                    .section-header-banner h2 {
-                        font-size: 20px;
-                    }
-                }
-            </style>
-            <div class="section-header-banner">
-                <div class="banner-badge-top">Premium Counselling Programs</div>
-                <h2>Direct Personal Counselling 2026</h2>
-                <p>Get premium mentoring from expert counselors to secure your dream engineering college seat.</p>
-            </div>
-            <div class="banners-grid">
-                <!-- Banner 1 -->
-                <a href="https://www.conceptsimplified.in/courses/668919" target="_blank" class="premium-banner-card">
-                    <div class="banner-img-container">
-                        <img src="https://courses-assets-v2.classplus.co/_next/image?url=/api/proxyimage?url=https%3A%2F%2Fcdn-wl-assets.classplus.co%2Fproduction%2Fsingle%2Fijpsrw%2Fa181e913-c49f-4ed8-8838-c15b38cf7a58.png&w=640&q=75"
-                            alt="Simplified Pro | Maharashtra Engineering Admission Counselling 2026">
-                        <div class="banner-overlay">
-                            <span class="view-program-btn">View Program &rarr;</span>
-                        </div>
-                    </div>
-                    <div class="banner-text-details">
-                        <h3>Simplified Pro</h3>
-                        <p>Maharashtra Engineering Admission Counselling 2026</p>
-                    </div>
-                </a>
-
-                <!-- Banner 2 -->
-                <a href="https://www.conceptsimplified.in/courses/840574" target="_blank" class="premium-banner-card">
-                    <div class="banner-img-container">
-                        <img src="https://courses-assets-v2.classplus.co/_next/image?url=/api/proxyimage?url=https%3A%2F%2Fcdn-wl-assets.classplus.co%2Fproduction%2Fsingle%2Fijpsrw%2Fbde224eb-a206-48f0-ae15-2d2d20fbfaf5.png&w=640&q=75"
-                            alt="Simplified Premium 1:1 | Maharashtra Engineering Admission Counselling 2026">
-                        <div class="banner-overlay">
-                            <span class="view-program-btn">View Program &rarr;</span>
-                        </div>
-                    </div>
-                    <div class="banner-text-details">
-                        <h3>Simplified Premium 1:1</h3>
-                        <p>Maharashtra Engineering Admission Counselling 2026</p>
-                    </div>
-                </a>
-
-                <!-- Banner 3 -->
-                <a href="https://www.conceptsimplified.in/courses/860295" target="_blank" class="premium-banner-card">
-                    <div class="banner-img-container">
-                        <img src="https://courses-assets-v2.classplus.co/_next/image?url=/api/proxyimage?url=https%3A%2F%2Fcdn-wl-assets.classplus.co%2Fproduction%2Fsingle%2Fijpsrw%2F79751778-f0dd-4a31-be62-47dd801de8e3.png&w=640&q=75"
-                            alt="AI Counselling | College Predictor Platform 2026">
-                        <div class="banner-overlay">
-                            <span class="view-program-btn">Explore AI Counselling &rarr;</span>
-                        </div>
-                    </div>
-                    <div class="banner-text-details">
-                        <h3>AI-Powered College Predictor</h3>
-                        <p>Data-driven branch predictions & personalized admission strategies</p>
-                    </div>
-                </a>
-            </div>
-
-            <!-- How to Enroll Guide -->
-            <style>
-                .enroll-guide-container {
-                    margin-top: 48px;
-                    background: var(--card, #ffffff);
-                    border: 1px solid var(--stroke, rgba(0, 0, 0, 0.08));
-                    border-radius: 28px;
-                    padding: 32px;
-                    box-shadow: var(--shadow, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
-                    text-align: left;
-                }
-
-                .enroll-guide-hdr {
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                    margin-bottom: 24px;
-                    border-bottom: 1.5px solid var(--stroke, rgba(0, 0, 0, 0.08));
-                    padding-bottom: 16px;
-                }
-
-                .enroll-guide-hdr h3 {
-                    font-family: 'Lexend', sans-serif;
-                    font-weight: 800;
-                    font-size: 20px;
-                    color: var(--ink, #111827);
-                    margin: 0;
-                }
-
-                .enroll-steps-grid {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-                    gap: 24px;
-                }
-
-                .enroll-step-card {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 12px;
-                }
-
-                .enroll-step-badge {
-                    width: 36px;
-                    height: 36px;
-                    border-radius: 12px;
-                    background: var(--brand-soft, #fef2f2);
-                    color: var(--brand, #dc2626);
-                    font-weight: 800;
-                    font-size: 14px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    border: 1px solid var(--brand-ring, rgba(220, 38, 38, 0.1));
-                }
-
-                .enroll-step-card h4 {
-                    font-family: 'Lexend', sans-serif;
-                    font-weight: 700;
-                    font-size: 15px;
-                    color: var(--ink, #111827);
-                    margin: 0;
-                }
-
-                .enroll-step-card p {
-                    font-size: 13.5px;
-                    color: var(--muted, #6b7280);
-                    line-height: 1.5;
-                    margin: 0;
-                }
-
-                @media (max-width: 640px) {
-                    .enroll-guide-container {
-                        padding: 24px;
-                        margin-top: 32px;
-                    }
-
-                    .enroll-steps-grid {
-                        grid-template-columns: 1fr;
-                        gap: 20px;
-                    }
-                }
-            </style>
-            <div class="enroll-guide-container">
-                <div class="enroll-guide-hdr">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.5"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10" />
-                        <polyline points="12 6 12 12 16 14" />
-                    </svg>
-                    <h3>How to Enroll Step-by-Step</h3>
-                </div>
-                <div class="enroll-steps-grid">
-                    <div class="enroll-step-card">
-                        <div class="enroll-step-badge">1</div>
-                        <h4>Select Program</h4>
-                        <p>Click on the <strong>"Unlock All Choices"</strong> button or click any counselling banner on
-                            this page.</p>
-                    </div>
-                    <div class="enroll-step-card">
-                        <div class="enroll-step-badge">2</div>
-                        <h4>Choose Course</h4>
-                        <p>Select your desired premium engineering counselling course or mentorship program.</p>
-                    </div>
-                    <div class="enroll-step-card">
-                        <div class="enroll-step-badge">3</div>
-                        <h4>Enter Details</h4>
-                        <p>Fill in your Email and Phone Number (both mandatory). Your phone number will act as your
-                            initial account password.</p>
-                    </div>
-                    <div class="enroll-step-card">
-                        <div class="enroll-step-badge">4</div>
-                        <h4>Pay & Login</h4>
-                        <p>Complete the purchase. Log in to the platform using the same email and your phone number as
-                            password.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Promotional Banners Grid Wrapper -->
-        <div class="promotional-banners-wrapper">
-            <!-- Scaler School of Technology Promotion Section -->
-            <section class="scaler-whatsapp-section">
-                <div class="scaler-container">
-                    <div class="scaler-image-wrapper">
-                        <img src="SCHOOLS/schools.png" alt="School of Technologies" class="scaler-img">
-                    </div>
-                    <div class="scaler-content">
-                        <div class="scaler-text-group">
-                            <span class="scaler-badge">Admissions 2026</span>
-                            <h2>Confused about School of Technologies?</h2>
-                            <p>Get a free 1:1 counselling session with our expert mentors to clarify your doubts and map out your path to a successful engineering career.</p>
-                        </div>
-                        <div class="scaler-buttons">
-                            <a href="https://forms.gle/1iN7rrBbrASDJWVH8" target="_blank" class="scaler-btn scaler-btn-whatsapp">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                                </svg>
-                                Get free 1:1 counselling
-                            </a>
-                            <a href="https://chat.whatsapp.com/EwG2jSAFAySKYqXOitNkwC?s=cl&p=a&mlu=0" target="_blank" class="scaler-btn scaler-btn-form">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.005 5.234 5.24.002 11.693.002c3.127.001 6.068 1.219 8.28 3.43 2.21 2.21 3.427 5.15 3.425 8.277-.005 6.458-5.24 11.69-11.696 11.69-2.003 0-3.97-.514-5.702-1.492L0 24zm6.59-4.777c1.65.981 3.266 1.49 4.96 1.493 5.485.002 9.948-4.46 9.95-9.947.002-2.658-1.03-5.157-2.906-7.034C16.82 1.859 14.322.827 11.69.827c-5.49 0-9.953 4.462-9.956 9.95-.001 1.83.486 3.62 1.411 5.2l-.995 3.633 3.722-.976zm12.112-7.398c-.287-.143-1.696-.837-1.958-.933-.262-.096-.453-.143-.644.143-.191.287-.738.933-.905 1.124-.167.191-.334.215-.62.072-.287-.143-1.21-.446-2.305-1.424-.853-.761-1.43-1.7-1.597-1.986-.167-.287-.018-.442.125-.583.13-.127.287-.334.43-.501.142-.167.19-.286.285-.477.096-.191.048-.358-.024-.501-.072-.143-.644-1.551-.882-2.123-.233-.559-.469-.482-.644-.491-.167-.008-.358-.01-.55-.01s-.502.072-.764.358c-.262.287-1.002.979-1.002 2.387 0 1.408 1.026 2.769 1.17 2.96.143.191 2.019 3.082 4.89 4.32.683.294 1.218.469 1.634.6.685.218 1.31.187 1.802.114.549-.081 1.696-.692 1.934-1.36.238-.668.238-1.24.167-1.36-.072-.12-.262-.215-.55-.358z"/>
-                                </svg>
-                                Join WhatsApp Group
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Community Discussion Section -->
-            <section class="community-section">
-                <div class="community-container">
-                    <div class="community-image-wrapper">
-                        <img src="COMMUNITY/community.png" alt="Community Discussion" class="community-img">
-                    </div>
-                    <div class="community-content">
-                        <div class="community-text-group">
-                            <span class="community-badge">Community Groups</span>
-                            <h2>Worried about spot rounds? Discuss in the community</h2>
-                            <p>Join our active community group to discuss vacancy seats, cutoff trends, and spot round allotment updates with fellow engineering aspirants.</p>
-                        </div>
-                        <div class="community-buttons">
-                            <a href="https://www.collegesimplified.in/groups" target="_blank" class="community-btn community-btn-primary">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="9" cy="7" r="4"></circle>
-                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                                </svg>
-                                Join Community Discussion
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
         <section class="grid">
             <style>
               .choice-card-2026 {
@@ -1634,6 +1236,405 @@
                 <div class="card-footer">Start Checklist <span>→</span></div>
             </a>
         </section>
+
+        <!-- Premium Counselling Banners Section -->
+        <section class="premium-banners-section">
+            <style>
+                .premium-banners-section {
+                    width: 100%;
+                    max-width: 1200px;
+                    margin: 0 auto;
+                    padding: 0 20px 48px;
+                    font-family: 'Inter', sans-serif;
+                }
+
+                .banners-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+                    gap: 28px;
+                    margin-top: 24px;
+                }
+
+                .premium-banner-card {
+                    background: var(--card, #ffffff);
+                    border: 1px solid var(--stroke, rgba(0, 0, 0, 0.08));
+                    border-radius: 24px;
+                    overflow: hidden;
+                    text-decoration: none;
+                    color: inherit;
+                    display: flex;
+                    flex-direction: column;
+                    box-shadow: var(--shadow, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                }
+
+                .premium-banner-card:hover {
+                    transform: translateY(-8px);
+                    box-shadow: var(--shadow-lg, 0 20px 25px -5px rgba(0, 0, 0, 0.1));
+                    border-color: var(--brand, #dc2626);
+                }
+
+                .banner-img-container {
+                    position: relative;
+                    width: 100%;
+                    padding-top: 52%;
+                    /* Aspect ratio of banners */
+                    overflow: hidden;
+                    background: #f3f4f6;
+                }
+
+                .banner-img-container img {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+                }
+
+                .premium-banner-card:hover .banner-img-container img {
+                    transform: scale(1.05);
+                }
+
+                .banner-overlay {
+                    position: absolute;
+                    inset: 0;
+                    background: rgba(0, 0, 0, 0.3);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                }
+
+                .premium-banner-card:hover .banner-overlay {
+                    opacity: 1;
+                }
+
+                .view-program-btn {
+                    background: #ffffff;
+                    color: #111827;
+                    padding: 10px 20px;
+                    border-radius: 100px;
+                    font-weight: 700;
+                    font-size: 13px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                    transform: translateY(10px);
+                    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                }
+
+                .premium-banner-card:hover .view-program-btn {
+                    transform: translateY(0);
+                }
+
+                .banner-text-details {
+                    padding: 20px 24px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                }
+
+                .banner-text-details h3 {
+                    font-family: 'Lexend', sans-serif;
+                    font-weight: 700;
+                    font-size: 18px;
+                    color: var(--ink, #111827);
+                }
+
+                .banner-text-details p {
+                    font-size: 13.5px;
+                    color: var(--muted, #6b7280);
+                    line-height: 1.4;
+                }
+
+                .section-header-banner {
+                    margin-bottom: 8px;
+                }
+
+                .banner-badge-top {
+                    background: var(--brand-soft, #fef2f2);
+                    color: var(--brand, #dc2626);
+                    padding: 6px 14px;
+                    border-radius: 100px;
+                    font-size: 11px;
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    display: inline-block;
+                    margin-bottom: 12px;
+                    border: 1px solid var(--brand-ring, rgba(220, 38, 38, 0.1));
+                }
+
+                .section-header-banner h2 {
+                    font-family: 'Lexend', sans-serif;
+                    font-weight: 800;
+                    font-size: 24px;
+                    color: var(--ink, #111827);
+                    letter-spacing: -0.01em;
+                }
+
+                .section-header-banner p {
+                    color: var(--muted, #6b7280);
+                    font-size: 14.5px;
+                    margin-top: 4px;
+                }
+
+                @media (max-width: 640px) {
+                    .banners-grid {
+                        grid-template-columns: 1fr;
+                        gap: 20px;
+                    }
+
+                    .premium-banners-section {
+                        padding: 0 20px 32px;
+                    }
+
+                    .banner-text-details {
+                        padding: 16px 20px;
+                    }
+
+                    .banner-text-details h3 {
+                        font-size: 16px;
+                    }
+
+                    .section-header-banner h2 {
+                        font-size: 20px;
+                    }
+                }
+            </style>
+            <div class="section-header-banner">
+                <div class="banner-badge-top">Premium Counselling Programs</div>
+                <h2>Direct Personal Counselling 2026</h2>
+                <p>Get premium mentoring from expert counselors to secure your dream engineering college seat.</p>
+            </div>
+            <div class="banners-grid">
+                <!-- Banner 1 -->
+                <a href="https://www.conceptsimplified.in/courses/668919" target="_blank" class="premium-banner-card">
+                    <div class="banner-img-container">
+                        <img src="https://courses-assets-v2.classplus.co/_next/image?url=/api/proxyimage?url=https%3A%2F%2Fcdn-wl-assets.classplus.co%2Fproduction%2Fsingle%2Fijpsrw%2Fa181e913-c49f-4ed8-8838-c15b38cf7a58.png&w=640&q=75"
+                            alt="Simplified Pro | Maharashtra Engineering Admission Counselling 2026">
+                        <div class="banner-overlay">
+                            <span class="view-program-btn">View Program &rarr;</span>
+                        </div>
+                    </div>
+                    <div class="banner-text-details">
+                        <h3>Simplified Pro</h3>
+                        <p>Maharashtra Engineering Admission Counselling 2026</p>
+                    </div>
+                </a>
+
+                <!-- Banner 2 -->
+                <a href="https://www.conceptsimplified.in/courses/840574" target="_blank" class="premium-banner-card">
+                    <div class="banner-img-container">
+                        <img src="https://courses-assets-v2.classplus.co/_next/image?url=/api/proxyimage?url=https%3A%2F%2Fcdn-wl-assets.classplus.co%2Fproduction%2Fsingle%2Fijpsrw%2Fbde224eb-a206-48f0-ae15-2d2d20fbfaf5.png&w=640&q=75"
+                            alt="Simplified Premium 1:1 | Maharashtra Engineering Admission Counselling 2026">
+                        <div class="banner-overlay">
+                            <span class="view-program-btn">View Program &rarr;</span>
+                        </div>
+                    </div>
+                    <div class="banner-text-details">
+                        <h3>Simplified Premium 1:1</h3>
+                        <p>Maharashtra Engineering Admission Counselling 2026</p>
+                    </div>
+                </a>
+
+                <!-- Banner 3 -->
+                <a href="https://www.conceptsimplified.in/courses/860295" target="_blank" class="premium-banner-card">
+                    <div class="banner-img-container">
+                        <img src="https://courses-assets-v2.classplus.co/_next/image?url=/api/proxyimage?url=https%3A%2F%2Fcdn-wl-assets.classplus.co%2Fproduction%2Fsingle%2Fijpsrw%2F0c12cc3c-cb87-46ff-a2cc-8a1a790b2e4c.png&w=640&q=75"
+                            alt="AI Counselling | College Predictor Platform 2026">
+                        <div class="banner-overlay">
+                            <span class="view-program-btn">Explore AI Counselling &rarr;</span>
+                        </div>
+                    </div>
+                    <div class="banner-text-details">
+                        <h3>AI-Powered College Predictor</h3>
+                        <p>Data-driven branch predictions & personalized admission strategies</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- How to Enroll Guide -->
+            <style>
+                .enroll-guide-container {
+                    margin-top: 48px;
+                    background: var(--card, #ffffff);
+                    border: 1px solid var(--stroke, rgba(0, 0, 0, 0.08));
+                    border-radius: 28px;
+                    padding: 32px;
+                    box-shadow: var(--shadow, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+                    text-align: left;
+                }
+
+                .enroll-guide-hdr {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    margin-bottom: 24px;
+                    border-bottom: 1.5px solid var(--stroke, rgba(0, 0, 0, 0.08));
+                    padding-bottom: 16px;
+                }
+
+                .enroll-guide-hdr h3 {
+                    font-family: 'Lexend', sans-serif;
+                    font-weight: 800;
+                    font-size: 20px;
+                    color: var(--ink, #111827);
+                    margin: 0;
+                }
+
+                .enroll-steps-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                    gap: 24px;
+                }
+
+                .enroll-step-card {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                }
+
+                .enroll-step-badge {
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 12px;
+                    background: var(--brand-soft, #fef2f2);
+                    color: var(--brand, #dc2626);
+                    font-weight: 800;
+                    font-size: 14px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border: 1px solid var(--brand-ring, rgba(220, 38, 38, 0.1));
+                }
+
+                .enroll-step-card h4 {
+                    font-family: 'Lexend', sans-serif;
+                    font-weight: 700;
+                    font-size: 15px;
+                    color: var(--ink, #111827);
+                    margin: 0;
+                }
+
+                .enroll-step-card p {
+                    font-size: 13.5px;
+                    color: var(--muted, #6b7280);
+                    line-height: 1.5;
+                    margin: 0;
+                }
+
+                @media (max-width: 640px) {
+                    .enroll-guide-container {
+                        padding: 24px;
+                        margin-top: 32px;
+                    }
+
+                    .enroll-steps-grid {
+                        grid-template-columns: 1fr;
+                        gap: 20px;
+                    }
+                }
+            </style>
+            <div class="enroll-guide-container">
+                <div class="enroll-guide-hdr">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                    <h3>How to Enroll Step-by-Step</h3>
+                </div>
+                <div class="enroll-steps-grid">
+                    <div class="enroll-step-card">
+                        <div class="enroll-step-badge">1</div>
+                        <h4>Select Program</h4>
+                        <p>Click on the <strong>"Unlock All Choices"</strong> button or click any counselling banner on
+                            this page.</p>
+                    </div>
+                    <div class="enroll-step-card">
+                        <div class="enroll-step-badge">2</div>
+                        <h4>Choose Course</h4>
+                        <p>Select your desired premium engineering counselling course or mentorship program.</p>
+                    </div>
+                    <div class="enroll-step-card">
+                        <div class="enroll-step-badge">3</div>
+                        <h4>Enter Details</h4>
+                        <p>Fill in your Email and Phone Number (both mandatory). Your phone number will act as your
+                            initial account password.</p>
+                    </div>
+                    <div class="enroll-step-card">
+                        <div class="enroll-step-badge">4</div>
+                        <h4>Pay & Login</h4>
+                        <p>Complete the purchase. Log in to the platform using the same email and your phone number as
+                            password.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Promotional Banners Grid Wrapper -->
+        <div class="promotional-banners-wrapper">
+            <!-- Scaler School of Technology Promotion Section -->
+            <section class="scaler-whatsapp-section">
+                <div class="scaler-container">
+                    <div class="scaler-image-wrapper">
+                        <img src="SCHOOLS/schools.png" alt="School of Technologies" class="scaler-img">
+                    </div>
+                    <div class="scaler-content">
+                        <div class="scaler-text-group">
+                            <span class="scaler-badge">Admissions 2026</span>
+                            <h2>Confused about School of Technologies?</h2>
+                            <p>Get a free 1:1 counselling session with our expert mentors to clarify your doubts and map out your path to a successful engineering career.</p>
+                        </div>
+                        <div class="scaler-buttons">
+                            <a href="https://forms.gle/1iN7rrBbrASDJWVH8" target="_blank" class="scaler-btn scaler-btn-whatsapp">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                </svg>
+                                Get free 1:1 counselling
+                            </a>
+                            <a href="https://chat.whatsapp.com/EwG2jSAFAySKYqXOitNkwC?s=cl&p=a&mlu=0" target="_blank" class="scaler-btn scaler-btn-form">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.005 5.234 5.24.002 11.693.002c3.127.001 6.068 1.219 8.28 3.43 2.21 2.21 3.427 5.15 3.425 8.277-.005 6.458-5.24 11.69-11.696 11.69-2.003 0-3.97-.514-5.702-1.492L0 24zm6.59-4.777c1.65.981 3.266 1.49 4.96 1.493 5.485.002 9.948-4.46 9.95-9.947.002-2.658-1.03-5.157-2.906-7.034C16.82 1.859 14.322.827 11.69.827c-5.49 0-9.953 4.462-9.956 9.95-.001 1.83.486 3.62 1.411 5.2l-.995 3.633 3.722-.976zm12.112-7.398c-.287-.143-1.696-.837-1.958-.933-.262-.096-.453-.143-.644.143-.191.287-.738.933-.905 1.124-.167.191-.334.215-.62.072-.287-.143-1.21-.446-2.305-1.424-.853-.761-1.43-1.7-1.597-1.986-.167-.287-.018-.442.125-.583.13-.127.287-.334.43-.501.142-.167.19-.286.285-.477.096-.191.048-.358-.024-.501-.072-.143-.644-1.551-.882-2.123-.233-.559-.469-.482-.644-.491-.167-.008-.358-.01-.55-.01s-.502.072-.764.358c-.262.287-1.002.979-1.002 2.387 0 1.408 1.026 2.769 1.17 2.96.143.191 2.019 3.082 4.89 4.32.683.294 1.218.469 1.634.6.685.218 1.31.187 1.802.114.549-.081 1.696-.692 1.934-1.36.238-.668.238-1.24.167-1.36-.072-.12-.262-.215-.55-.358z"/>
+                                </svg>
+                                Join WhatsApp Group
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Community Discussion Section -->
+            <section class="community-section">
+                <div class="community-container">
+                    <div class="community-image-wrapper">
+                        <img src="COMMUNITY/community.png" alt="Community Discussion" class="community-img">
+                    </div>
+                    <div class="community-content">
+                        <div class="community-text-group">
+                            <span class="community-badge">Community Groups</span>
+                            <h2>Worried about spot rounds? Discuss in the community</h2>
+                            <p>Join our active community group to discuss vacancy seats, cutoff trends, and spot round allotment updates with fellow engineering aspirants.</p>
+                        </div>
+                        <div class="community-buttons">
+                            <a href="https://www.collegesimplified.in/groups" target="_blank" class="community-btn community-btn-primary">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                </svg>
+                                Join Community Discussion
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
 
         <section class="notices-section" id="latest-notices">
             <div class="section-hdr">
