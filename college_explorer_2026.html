@@ -1441,10 +1441,8 @@
         <div id="cutoffSectionWrapper" style="display: none; margin-bottom: 40px;">
           <!-- Tabs for MHT-CET vs JEE Mains -->
           <div class="college-tabs-header">
-            <button class="college-tab-btn active" id="tabMhtcetBtn" onclick="setCollegeTab('mhtcet')">MHT-CET (CAP
-              Rounds 1-4)</button>
-            <button class="college-tab-btn" id="tabJeeBtn" onclick="setCollegeTab('jee')">JEE Mains (All India
-              Quota)</button>
+            <button class="college-tab-btn active" id="tabMhtcetBtn" onclick="setCollegeTab('mhtcet')">MHT-CET (Round 1 2026)</button>
+            <button class="college-tab-btn" id="tabJeeBtn" onclick="setCollegeTab('jee')">JEE Mains All India (Round 1 2026)</button>
           </div>
 
           <!-- Detailed Analytics Content -->
@@ -1456,15 +1454,9 @@
               <div class="master-list-card">
                 <div class="master-list-header"
                   style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
-                  <h3 style="margin:0;">All Branch Cutoffs Explorer</h3>
+                  <h3 style="margin:0;">MHT-CET Branch Cutoffs — Round 1 (2026)</h3>
                   <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                     <div class="master-filters">
-                      <select id="tblRound" onchange="applyTableFilters()" class="filter-select">
-                        <option value="R1">Round 1</option>
-                        <option value="R2">Round 2</option>
-                        <option value="R3">Round 3</option>
-                        <option value="R4">Round 4</option>
-                      </select>
                       <select id="tblCategory" onchange="applyTableFilters()" class="filter-select">
                         <!-- Populated dynamically -->
                       </select>
@@ -1494,70 +1486,6 @@
                   <button class="btn-load-more" onclick="loadMoreTableRows()">Load More Rows</button>
                 </div>
               </div>
-
-              <!-- Filter & Line Chart Grid -->
-              <div class="trend-analysis-grid">
-                <!-- Filters sidebar -->
-                <div class="filters-card">
-                  <h3>Chart Filters</h3>
-                  <div class="form-group">
-                    <label for="cBranch" class="form-label"
-                      style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Academic
-                      Program</label>
-                    <div class="input-wrap">
-                      <select id="cBranch" onchange="renderChartAndSummary()"
-                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid var(--stroke); background: var(--card); color: var(--ink); outline: none;"></select>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="cCategory" class="form-label"
-                      style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Category</label>
-                    <div class="input-wrap">
-                      <select id="cCategory" onchange="renderChartAndSummary()"
-                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid var(--stroke); background: var(--card); color: var(--ink); outline: none;"></select>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Visualization Chart Card -->
-                <div class="visualization-card">
-                  <div
-                    style="display:flex; justify-content:space-between; align-items:center; border-bottom:1.5px solid var(--stroke); padding-bottom:10px;">
-                    <h3 style="font-family:'Lexend',sans-serif; font-size:16px; font-weight:700; color: var(--ink);">
-                      Cutoff Movement Trends</h3>
-                    <div class="toggle-group" id="chartMetricToggle">
-                      <button class="toggle-btn active" id="btnMetricPct"
-                        onclick="setChartMetric('percentile')">Percentile</button>
-                      <button class="toggle-btn" id="btnMetricRank" onclick="setChartMetric('rank')">Rank</button>
-                    </div>
-                  </div>
-                  <div class="chart-container" style="height: 320px;">
-                    <canvas id="trendChart"></canvas>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Round Summary Table Card -->
-              <div class="master-list-card" style="margin-bottom: 24px;">
-                <div style="border-bottom: 1.5px solid var(--stroke); padding-bottom: 10px; margin-bottom: 14px;">
-                  <h3 style="font-family:'Lexend',sans-serif; font-size:16px; font-weight:700; color: var(--ink);">
-                    Round-by-Round Trend Details</h3>
-                </div>
-                <div class="table-container">
-                  <table class="cutoff-table" id="summaryTable">
-                    <thead>
-                      <tr>
-                        <th>Round</th>
-                        <th>Cutoff Rank</th>
-                        <th>Cutoff Percentile</th>
-                        <th>Round Change (Closing Rank)</th>
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody id="summaryTableBody"></tbody>
-                  </table>
-                </div>
-              </div>
             </div>
 
             <!-- JEE Mains Tab Content -->
@@ -1566,18 +1494,11 @@
                 <div class="master-list-header"
                   style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
                   <div>
-                    <h3 style="margin:0;">JEE Mains All India Cutoffs</h3>
-                    <span style="font-size: 12px; color: var(--muted); font-weight: 500;">Direct admission cutoff via
-                      JEE Mains score</span>
+                    <h3 style="margin:0;">JEE Mains All India Cutoffs — Round 1 (2026)</h3>
+                    <span style="font-size: 12px; color: var(--muted); font-weight: 500;">Direct admission cutoff via JEE Mains score</span>
                   </div>
                   <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                     <div class="master-filters">
-                      <select id="tblJeeRound" onchange="applyJeeTableFilters()" class="filter-select">
-                        <option value="R1">Round 1</option>
-                        <option value="R2">Round 2</option>
-                        <option value="R3">Round 3</option>
-                        <option value="R4">Round 4</option>
-                      </select>
                       <input type="text" id="tblJeeSearch" placeholder="Search branch or choice code..."
                         oninput="applyJeeTableFilters()" class="filter-search-input">
                     </div>
@@ -1602,62 +1523,6 @@
                 </div>
                 <div id="jeeLoadMore" class="load-more-container hidden">
                   <button class="btn-load-more" onclick="loadMoreJeeRows()">Load More Rows</button>
-                </div>
-              </div>
-
-              <!-- Filter & Line Chart Grid for JEE -->
-              <div class="trend-analysis-grid">
-                <!-- Filters sidebar -->
-                <div class="filters-card">
-                  <h3>JEE Chart Filters</h3>
-                  <div class="form-group">
-                    <label for="cJeeBranch" class="form-label"
-                      style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Academic
-                      Program</label>
-                    <div class="input-wrap">
-                      <select id="cJeeBranch" onchange="renderJeeChartAndSummary()"
-                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid var(--stroke); background: var(--card); color: var(--ink); outline: none;"></select>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Visualization Chart Card -->
-                <div class="visualization-card">
-                  <div
-                    style="display:flex; justify-content:space-between; align-items:center; border-bottom:1.5px solid var(--stroke); padding-bottom:10px;">
-                    <h3 style="font-family:'Lexend',sans-serif; font-size:16px; font-weight:700; color: var(--ink);">
-                      JEE Cutoff Movement Trends</h3>
-                    <div class="toggle-group" id="jeeChartMetricToggle">
-                      <button class="toggle-btn active" id="btnJeeMetricPct"
-                        onclick="setJeeChartMetric('percentile')">Percentile</button>
-                      <button class="toggle-btn" id="btnJeeMetricRank" onclick="setJeeChartMetric('rank')">Rank</button>
-                    </div>
-                  </div>
-                  <div class="chart-container" style="height: 320px;">
-                    <canvas id="jeeTrendChart"></canvas>
-                  </div>
-                </div>
-              </div>
-
-              <!-- JEE Round Summary Table Card -->
-              <div class="master-list-card" style="margin-top: 24px; margin-bottom: 24px;">
-                <div style="border-bottom: 1.5px solid var(--stroke); padding-bottom: 10px; margin-bottom: 14px;">
-                  <h3 style="font-family:'Lexend',sans-serif; font-size:16px; font-weight:700; color: var(--ink);">
-                    JEE Round-by-Round Trend Details</h3>
-                </div>
-                <div class="table-container">
-                  <table class="cutoff-table" id="jeeSummaryTable">
-                    <thead>
-                      <tr>
-                        <th>Round</th>
-                        <th>Cutoff Rank</th>
-                        <th>Cutoff Percentile</th>
-                        <th>Round Change (Closing Rank)</th>
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody id="jeeSummaryTableBody"></tbody>
-                  </table>
                 </div>
               </div>
             </div>
@@ -1726,51 +1591,84 @@
         // Normalization for placement fuzzy name matching using mhtcet_colleges_with_codes.csv
         function findPlacementData(collegeName, collegeCode) {
           const cleanTargetCode = collegeCode ? String(collegeCode).trim().replace(/^0+/, '') : "";
+          const stripPrefix = (name) => String(name || '').replace(/^\d+\s*[-–]\s*/, '').trim();
 
           let match = null;
 
           // 1. Match by Code
           if (cleanTargetCode) {
             match = allPlacementTiers.find(p => {
-              const csvCode = p["College Code"] ? String(p["College Code"]).trim().replace(/^0+/, '') : "";
-              return csvCode === cleanTargetCode;
+              const csvCode = p["College Code"] || p["Code"] || p["Institute Code"];
+              if (!csvCode) return false;
+              return String(csvCode).trim().replace(/^0+/, '') === cleanTargetCode;
             });
           }
 
-          // 2. Fallback to name matching
+          // 2. Fallback to name matching with code prefix stripping & acronym expansions
           if (!match && collegeName) {
             const cleanName = (name) => {
-              return String(name || '')
+              return stripPrefix(name)
                 .toLowerCase()
+                .replace(/veermata jijabai technological institute/gi, 'vjti')
+                .replace(/sardar patel institute of technology/gi, 'spit')
+                .replace(/pune institute of computer technology/gi, 'pict')
+                .replace(/walchand college of engineering/gi, 'wce')
+                .replace(/pimpri chinchwad college of engineering/gi, 'pccoe')
+                .replace(/vishwakarma institute of technology/gi, 'vit')
                 .replace(/government college of engineering/gi, 'gcoe')
                 .replace(/college of engineering/gi, 'coe')
                 .replace(/institute of technology/gi, 'it')
                 .replace(/[^a-z0-9]/g, '');
             };
-            const targetClean = cleanName(collegeName);
-            match = allPlacementTiers.find(p => {
-              const pName = p["College Name"] ? p["College Name"].toLowerCase().trim() : "";
-              return cleanName(pName) === targetClean;
-            });
 
-            if (!match) {
+            const targetClean = cleanName(collegeName);
+
+            if (targetClean) {
               match = allPlacementTiers.find(p => {
                 const pName = p["College Name"] ? p["College Name"].toLowerCase().trim() : "";
-                const cleanP = cleanName(pName);
-                return cleanP.includes(targetClean) || targetClean.includes(cleanP);
+                return cleanName(pName) === targetClean;
               });
+
+              if (!match) {
+                match = allPlacementTiers.find(p => {
+                  const pName = p["College Name"] ? p["College Name"].toLowerCase().trim() : "";
+                  const cleanP = cleanName(pName);
+                  return (cleanP.length >= 4 && (cleanP.includes(targetClean) || targetClean.includes(cleanP)));
+                });
+              }
+
+              // 3. Keyword / Token match
+              if (!match) {
+                const words = stripPrefix(collegeName)
+                  .toLowerCase()
+                  .replace(/[^a-z0-9\s]/g, ' ')
+                  .split(/\s+/)
+                  .filter(w => w.length > 3 && !['college', 'engineering', 'institute', 'technology', 'technological', 'university', 'campus', 'society', 'trust', 'mandal', 'shikshan', 'prasarak'].includes(w));
+
+                if (words.length > 0) {
+                  match = allPlacementTiers.find(p => {
+                    const pLower = (p["College Name"] || '').toLowerCase();
+                    return words.every(w => pLower.includes(w));
+                  });
+                }
+              }
             }
           }
 
           let website = '';
           if (match) {
-            const webKey = Object.keys(match).find(k => k.trim() === 'Official Sites');
+            const webKey = Object.keys(match).find(k => k.trim() === 'Official Sites' || k.trim().toLowerCase().includes('site') || k.trim().toLowerCase().includes('web'));
             website = webKey ? (match[webKey] || '').trim() : '';
           }
 
+          let avgPkg = match ? (match["Avg Package (LPA)"] || match["Average Package"] || '—') : '—';
+          if (avgPkg && avgPkg !== '—') {
+            avgPkg = String(avgPkg).replace(/[\ufffd\uFFFD\u2013\u2014]/g, '-');
+          }
+
           return {
-            average: match ? match["Avg Package (LPA)"] : '—',
-            tier: match ? match["Tier"] : '—',
+            average: avgPkg,
+            tier: match ? (match["Tier"] || '—') : '—',
             website: website
           };
         }
@@ -1835,26 +1733,27 @@
             const jeeRaw = jeeJson.ALL_INDIA_2026 || jeeJson || [];
             jeeData = jeeRaw.map(r => {
               const choiceCode = String(r['Choice Code'] || r.choiceCode || '');
-              const instCode = choiceCode.substring(0, 5);
+              const instMatch = (r['Institute Name'] || r.instituteName || '').match(/^(\d+)/);
+              const instCode = instMatch ? instMatch[1] : (choiceCode.length === 10 ? choiceCode.substring(0, 5) : choiceCode.substring(0, 4));
               const branchStr = (r['Course Name'] || r.branch || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
               const meritStr = r['All India Merit'] || '';
-              const matchMerit = meritStr.match(/(\d+)\s*\(([\d\.]+)%\)/);
-              const rank = matchMerit ? parseInt(matchMerit[1]) : null;
-              const pct = matchMerit ? parseFloat(matchMerit[2]) : null;
+              const matchMerit = meritStr.match(/(\d+)\s*\(([\d\.]+)%?\)/);
+              const rank = matchMerit ? parseInt(matchMerit[1]) : (r.rank || null);
+              const pct = matchMerit ? parseFloat(matchMerit[2]) : (r.percentile || null);
               return {
                 choiceCode: choiceCode,
                 instituteCode: instCode,
                 instituteName: r['Institute Name'] || r.instituteName || '',
                 branch: branchStr,
-                seatType: r['Seat Type'] || 'AI',
-                type: r['Type'] || 'AI to AI',
+                seatType: r['Seat Type'] || r.seatType || 'AI',
+                type: r['Type'] || r.type || 'AI to AI',
                 meritStr: meritStr,
                 rank: rank,
                 percentile: pct,
                 rounds: {
-                  R1: { rank: rank, percentile: pct, seatType: r['Seat Type'] || 'AI', type: r['Type'] || 'AI to AI' },
-                  R2: { rank: rank, percentile: pct, seatType: r['Seat Type'] || 'AI', type: r['Type'] || 'AI to AI' },
-                  R3: { rank: rank, percentile: pct, seatType: r['Seat Type'] || 'AI', type: r['Type'] || 'AI to AI' }
+                  R1: { rank: rank, percentile: pct, seatType: r['Seat Type'] || r.seatType || 'AI', type: r['Type'] || r.type || 'AI to AI' },
+                  R2: { rank: rank, percentile: pct, seatType: r['Seat Type'] || r.seatType || 'AI', type: r['Type'] || r.type || 'AI to AI' },
+                  R3: { rank: rank, percentile: pct, seatType: r['Seat Type'] || r.seatType || 'AI', type: r['Type'] || r.type || 'AI to AI' }
                 }
               };
             });
@@ -2003,7 +1902,7 @@
             const avgPkg = placement.average && placement.average !== '—' ? `${placement.average} LPA` : '—';
 
             return `
-            <div class="college-item-card" onclick="selectCollege(${c.code})">
+            <div class="college-item-card" onclick="selectCollege('${c.code}')">
               <div class="clg-card-top">
                 <span class="clg-card-code">Code: ${String(c.code).padStart(4, '0')}</span>
                 <h3 class="clg-card-name">${escAuth(c.name)}</h3>
@@ -2031,7 +1930,13 @@
         };
 
         window.selectCollege = function (code) {
-          const college = collegeList.find(c => c.code === code);
+          const targetCodeStr = String(code).trim();
+          const targetCodeClean = targetCodeStr.replace(/^0+/, '');
+
+          const college = collegeList.find(c => {
+            const cStr = String(c.code).trim();
+            return cStr === targetCodeStr || cStr.replace(/^0+/, '') === targetCodeClean;
+          });
           if (!college) return;
 
           // Populate search input
@@ -2050,7 +1955,7 @@
 
           // Get placement statistics
           const placement = findPlacementData(college.name, college.code);
-          document.getElementById('pkgAverage').innerHTML = placement.average && placement.average !== '—' ? `${placement.average} <span>LPA</span>` : '—';
+          document.getElementById('pkgAverage').innerHTML = placement.average && placement.average !== '—' ? `${placement.average} <span>LPA</span>` : '— <span>LPA</span>';
           document.getElementById('pkgTier').innerText = placement.tier || '—';
 
           // Update Official Website button visibility & link
@@ -2065,18 +1970,20 @@
           }
 
           // Render seats matrix
-          const collegeSeats = seatsData.filter(row => parseInt(row.College_Code) === code);
+          const collegeSeats = seatsData.filter(row => {
+            const sCode = String(row.College_Code || '').trim();
+            return sCode === targetCodeStr || sCode.replace(/^0+/, '') === targetCodeClean;
+          });
           renderSeatsDashboard(college, collegeSeats);
 
           // Filter records for cutoff checker section
-          const cleanTargetCode = String(code).trim().replace(/^0+/, '');
           const collegeMht = mhtData.filter(row => {
-            const mhtCode = row.instituteCode ? String(row.instituteCode).trim().replace(/^0+/, '') : '';
-            return mhtCode === cleanTargetCode;
+            const mhtCode = row.instituteCode ? String(row.instituteCode).trim().replace(/^0+/, '') : (row.choiceCode ? String(row.choiceCode).trim().substring(0, 4) : '');
+            return mhtCode === targetCodeClean;
           });
           const collegeJee = jeeData.filter(row => {
-            const jeeCode = row.instituteCode ? String(row.instituteCode).trim().replace(/^0+/, '') : '';
-            return jeeCode === cleanTargetCode;
+            const jeeCode = row.instituteCode ? String(row.instituteCode).trim().replace(/^0+/, '') : (row.choiceCode ? String(row.choiceCode).trim().substring(0, 4) : '');
+            return jeeCode === targetCodeClean;
           });
 
           // Initialize college analytics for cutoff checker section
@@ -2552,16 +2459,20 @@
           const cutoffSection = document.getElementById('cutoffSectionWrapper');
 
           if (collegeMht.length === 0 && collegeJee.length === 0) {
-            cutoffSection.style.display = 'none';
+            if (cutoffSection) cutoffSection.style.display = 'none';
             return;
           }
-          cutoffSection.style.display = 'block';
+          if (cutoffSection) cutoffSection.style.display = 'block';
 
-          if (collegeMht.length > 0) mhtTabBtn.classList.remove('hidden');
-          else mhtTabBtn.classList.add('hidden');
+          if (mhtTabBtn) {
+            if (collegeMht.length > 0) mhtTabBtn.classList.remove('hidden');
+            else mhtTabBtn.classList.add('hidden');
+          }
 
-          if (collegeJee.length > 0) jeeTabBtn.classList.remove('hidden');
-          else jeeTabBtn.classList.add('hidden');
+          if (jeeTabBtn) {
+            if (collegeJee.length > 0) jeeTabBtn.classList.remove('hidden');
+            else jeeTabBtn.classList.add('hidden');
+          }
 
           if (collegeMht.length > 0) {
             setCollegeTab('mhtcet');
@@ -2569,46 +2480,21 @@
             setCollegeTab('jee');
           }
 
-          const branches = new Set();
           const categories = new Set();
-
           collegeMht.forEach(row => {
-            if (row.branch) branches.add(row.branch.trim());
             if (row.category) categories.add(row.category.trim());
           });
 
-          const branchArray = Array.from(branches).sort();
           const categoryArray = Array.from(categories).sort();
 
-          const cBranchSel = document.getElementById('cBranch');
-          const cCategorySel = document.getElementById('cCategory');
-
-          cBranchSel.innerHTML = branchArray.map(b => `<option value="${escAuth(b)}">${escAuth(b)}</option>`).join('');
-          cCategorySel.innerHTML = categoryArray.map(c => `<option value="${escAuth(c)}">${escAuth(c)}</option>`).join('');
-
-          setSmartDropdownDefault(cBranchSel, ['Computer Science', 'Computer Engineering', 'Information Technology', 'Electronics']);
-          setSmartDropdownDefault(cCategorySel, ['GOPENS', 'GOPEN', 'GSCS', 'GOBCS']);
-
           const tblCategorySel = document.getElementById('tblCategory');
-          tblCategorySel.innerHTML = categoryArray.map(c => `<option value="${escAuth(c)}">${escAuth(c)}</option>`).join('');
-          setSmartDropdownDefault(tblCategorySel, ['GOPENS', 'GOPEN']);
-
-          // Populate JEE branches dropdown
-          const jeeBranches = new Set();
-          collegeJee.forEach(row => {
-            if (row.branch) jeeBranches.add(row.branch.trim());
-          });
-          const jeeBranchArray = Array.from(jeeBranches).sort();
-          const cJeeBranchSel = document.getElementById('cJeeBranch');
-          if (cJeeBranchSel) {
-            cJeeBranchSel.innerHTML = jeeBranchArray.map(b => `<option value="${escAuth(b)}">${escAuth(b)}</option>`).join('');
-            setSmartDropdownDefault(cJeeBranchSel, ['Computer Science', 'Computer Engineering', 'Information Technology', 'Electronics']);
+          if (tblCategorySel) {
+            tblCategorySel.innerHTML = categoryArray.map(c => `<option value="${escAuth(c)}">${escAuth(c)}</option>`).join('');
+            setSmartDropdownDefault(tblCategorySel, ['GOPENS', 'GOPEN']);
           }
 
-          renderChartAndSummary();
           applyTableFilters();
           applyJeeTableFilters();
-          renderJeeChartAndSummary();
         }
 
         window.setCollegeTab = function (tab) {
@@ -2855,12 +2741,12 @@
 
         window.applyTableFilters = function () {
           mhtTableLimit = 30;
-          const roundKey = document.getElementById('tblRound').value;
-          const category = document.getElementById('tblCategory').value;
-          const search = document.getElementById('tblSearch').value.toLowerCase().trim();
+          const roundKey = 'R1';
+          const category = document.getElementById('tblCategory') ? document.getElementById('tblCategory').value : '';
+          const search = document.getElementById('tblSearch') ? document.getElementById('tblSearch').value.toLowerCase().trim() : '';
 
           mhtTableFilteredRows = curMht.filter(row => {
-            const matchesCategory = row.category === category;
+            const matchesCategory = !category || row.category === category;
             const matchesSearch = !search || (row.branch && row.branch.toLowerCase().includes(search)) || (row.choiceCode && row.choiceCode.includes(search));
             const hasRoundData = row.rounds && row.rounds[roundKey] && row.rounds[roundKey].rank !== null;
 
@@ -2871,6 +2757,7 @@
         };
 
         function renderMasterTable(roundKey) {
+          roundKey = roundKey || 'R1';
           const tbody = document.getElementById('masterCutoffTableBody');
           const paginated = mhtTableFilteredRows.slice(0, mhtTableLimit);
 
@@ -2880,7 +2767,7 @@
               <td colspan="5" class="empty-state" style="text-align:center; padding:40px; color:var(--muted)">
                 <div style="font-size:32px; margin-bottom:10px;">🔍</div>
                 <h4>No Branch Cutoffs Matching Filters</h4>
-                <p>Try modifying your category, CAP round, or search filter.</p>
+                <p>Try modifying your category or search filter.</p>
               </td>
             </tr>
           `;
@@ -2889,9 +2776,9 @@
           }
 
           tbody.innerHTML = paginated.map(row => {
-            const roundData = row.rounds[roundKey] || {};
-            const rankText = roundData.rank ? roundData.rank.toLocaleString('en-IN') : 'N/A';
-            const pctText = roundData.percentile ? parseFloat(roundData.percentile).toFixed(4) + '%' : 'N/A';
+            const roundData = (row.rounds && row.rounds[roundKey]) || {};
+            const rankText = roundData.rank ? roundData.rank.toLocaleString('en-IN') : (row.rank ? row.rank.toLocaleString('en-IN') : 'N/A');
+            const pctText = roundData.percentile ? parseFloat(roundData.percentile).toFixed(4) + '%' : (row.percentile ? parseFloat(row.percentile).toFixed(4) + '%' : 'N/A');
 
             return `
             <tr>
@@ -2910,18 +2797,17 @@
 
         window.loadMoreTableRows = function () {
           mhtTableLimit += 30;
-          const roundKey = document.getElementById('tblRound').value;
-          renderMasterTable(roundKey);
+          renderMasterTable('R1');
         };
 
         window.applyJeeTableFilters = function () {
           jeeTableLimit = 30;
-          const roundKey = document.getElementById('tblJeeRound').value;
-          const search = document.getElementById('tblJeeSearch').value.toLowerCase().trim();
+          const roundKey = 'R1';
+          const search = document.getElementById('tblJeeSearch') ? document.getElementById('tblJeeSearch').value.toLowerCase().trim() : '';
 
           jeeTableFilteredRows = curJee.filter(row => {
             const matchesSearch = !search || (row.branch && row.branch.toLowerCase().includes(search)) || (row.choiceCode && row.choiceCode.includes(search));
-            const hasRoundData = row.rounds && row.rounds[roundKey] && row.rounds[roundKey].rank !== null;
+            const hasRoundData = (row.rounds && row.rounds[roundKey] && row.rounds[roundKey].rank !== null) || row.rank !== undefined || row['All India Merit'] !== undefined;
 
             return matchesSearch && hasRoundData;
           });
@@ -2930,6 +2816,7 @@
         };
 
         function renderJeeMasterTable(roundKey) {
+          roundKey = roundKey || 'R1';
           const tbody = document.getElementById('jeeCutoffTableBody');
           if (!tbody) return;
           
@@ -2941,7 +2828,7 @@
               <td colspan="7" class="empty-state" style="text-align:center; padding:40px; color:var(--muted)">
                 <div style="font-size:32px; margin-bottom:10px;">🔍</div>
                 <h4>No JEE Mains All India Cutoffs Matching Filters</h4>
-                <p>Try modifying your CAP round or search filter.</p>
+                <p>Try modifying your search filter.</p>
               </td>
             </tr>
           `;
@@ -2950,11 +2837,11 @@
           }
 
           tbody.innerHTML = paginated.map(row => {
-            const roundData = row.rounds[roundKey] || {};
-            const rankText = roundData.rank ? roundData.rank.toLocaleString('en-IN') : 'N/A';
-            const pctText = roundData.percentile ? parseFloat(roundData.percentile).toFixed(4) + '%' : 'N/A';
+            const roundData = (row.rounds && row.rounds[roundKey]) || {};
+            const rankText = roundData.rank ? roundData.rank.toLocaleString('en-IN') : (row.rank ? row.rank.toLocaleString('en-IN') : (row['All India Merit'] || 'N/A'));
+            const pctText = roundData.percentile ? parseFloat(roundData.percentile).toFixed(4) + '%' : (row.percentile ? parseFloat(row.percentile).toFixed(4) + '%' : 'N/A');
             
-            const instCode = row.instituteCode || row.choiceCode.substring(0, 4);
+            const instCode = row.instituteCode || (row.choiceCode ? row.choiceCode.substring(0, 4) : '');
             const linkUrl = `https://fe2025.mahacet.org/StaticPages/frmInstituteSummary?InstituteCode=${String(instCode).padStart(5, '0')}`;
             
             const linkHtml = `
@@ -2986,8 +2873,7 @@
 
         window.loadMoreJeeRows = function () {
           jeeTableLimit += 30;
-          const roundKey = document.getElementById('tblJeeRound').value;
-          renderJeeMasterTable(roundKey);
+          renderJeeMasterTable('R1');
         };
 
         window.setJeeChartMetric = function (metric) {
