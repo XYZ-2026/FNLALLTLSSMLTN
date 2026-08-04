@@ -1794,39 +1794,70 @@
         // Bootstrapping
         async function init() {
           try {
-            const [metaRes, seatsText, placementText, cetJson, jeeJson] = await Promise.all([
+            const [metaRes, seatsJson, placementJson, cetJson, jeeJson] = await Promise.all([
               fetch('college-data.json').then(r => r.json()),
-              fetch('MHT_CET_Seats.csv').then(r => r.text()),
-              fetch('mhtcet_colleges_with_codes.csv').then(r => r.text()),
-              fetch('cleaned_cet_data.json').then(r => r.json()),
-              fetch('cleaned_jee_data.json').then(r => r.json())
+              fetch('cutoffs 2026/MHT_CET_2026_Seat_Matrix.json').then(r => r.json()),
+              fetch('ALL_CLG_PLACEMENT_TIER.json').then(r => r.json()).catch(() => ({ ALL_CLG_PLACEMENT_TIER: [] })),
+              fetch('cutoffs 2026/MHT-CET Round 1 2026 Cutoff_cutoffs.json').then(r => r.json()),
+              fetch('cutoffs 2026/ROUND_1_ALL_INDIA_2026.json').then(r => r.json())
             ]);
 
             // Parse seats matrix
-            const parsed = Papa.parse(seatsText, { header: true, skipEmptyLines: true });
-            seatsData = parsed.data || [];
+            seatsData = seatsJson || [];
 
             // Save placement tables
-            const parsedPlacements = Papa.parse(placementText, { header: true, skipEmptyLines: true });
-            allPlacementTiers = parsedPlacements.data || [];
+            allPlacementTiers = placementJson.ALL_CLG_PLACEMENT_TIER || placementJson || [];
 
-            // Normalize MHT CET rounds data
-            cetJson.forEach(row => {
-              row.branch = (row.branch || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-              row.category = (row.category || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-              row.choiceCode = String(row.choiceCode || '');
-              row.instituteCode = String(row.instituteCode || '');
+            // Normalize MHT CET rounds data (2026 Round 1)
+            mhtData = (cetJson || []).map(r => {
+              const instCode = String(r.institute_code || r.instituteCode || '');
+              const choiceCode = String(r.choice_code || r.choiceCode || '');
+              const branchStr = (r.branch_name || r.branch || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+              const catStr = (r.category || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+              return {
+                instituteCode: instCode,
+                choiceCode: choiceCode,
+                instituteName: r.institute_name || r.instituteName || '',
+                branch: branchStr,
+                category: catStr,
+                seatType: r.seat_type || r.seatType || catStr,
+                rank: r.rank,
+                percentile: r.percentile,
+                rounds: {
+                  R1: { rank: r.rank, percentile: r.percentile, seatType: r.seat_type || catStr },
+                  R2: { rank: r.rank, percentile: r.percentile, seatType: r.seat_type || catStr },
+                  R3: { rank: r.rank, percentile: r.percentile, seatType: r.seat_type || catStr }
+                }
+              };
             });
-            mhtData = cetJson;
 
-            // Normalize JEE Mains data
-            jeeJson.forEach(row => {
-              row.branch = (row.branch || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-              row.category = (row.category || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-              row.choiceCode = String(row.choiceCode || '');
-              row.instituteCode = String(row.instituteCode || '');
+            // Normalize JEE Mains data (2026 Round 1)
+            const jeeRaw = jeeJson.ALL_INDIA_2026 || jeeJson || [];
+            jeeData = jeeRaw.map(r => {
+              const choiceCode = String(r['Choice Code'] || r.choiceCode || '');
+              const instCode = choiceCode.substring(0, 5);
+              const branchStr = (r['Course Name'] || r.branch || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+              const meritStr = r['All India Merit'] || '';
+              const matchMerit = meritStr.match(/(\d+)\s*\(([\d\.]+)%\)/);
+              const rank = matchMerit ? parseInt(matchMerit[1]) : null;
+              const pct = matchMerit ? parseFloat(matchMerit[2]) : null;
+              return {
+                choiceCode: choiceCode,
+                instituteCode: instCode,
+                instituteName: r['Institute Name'] || r.instituteName || '',
+                branch: branchStr,
+                seatType: r['Seat Type'] || 'AI',
+                type: r['Type'] || 'AI to AI',
+                meritStr: meritStr,
+                rank: rank,
+                percentile: pct,
+                rounds: {
+                  R1: { rank: rank, percentile: pct, seatType: r['Seat Type'] || 'AI', type: r['Type'] || 'AI to AI' },
+                  R2: { rank: rank, percentile: pct, seatType: r['Seat Type'] || 'AI', type: r['Type'] || 'AI to AI' },
+                  R3: { rank: rank, percentile: pct, seatType: r['Seat Type'] || 'AI', type: r['Type'] || 'AI to AI' }
+                }
+              };
             });
-            jeeData = jeeJson;
 
             // Map list of unique colleges
             const uniqueMap = {};
