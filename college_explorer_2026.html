@@ -1591,7 +1591,6 @@
         // Normalization for placement fuzzy name matching using mhtcet_colleges_with_codes.csv
         function findPlacementData(collegeName, collegeCode) {
           const cleanTargetCode = collegeCode ? String(collegeCode).trim().replace(/^0+/, '') : "";
-          const stripPrefix = (name) => String(name || '').replace(/^\d+\s*[-–]\s*/, '').trim();
 
           let match = null;
 
@@ -1604,54 +1603,37 @@
             });
           }
 
-          // 2. Fallback to name matching with code prefix stripping & acronym expansions
+          // 2. Token / Acronym / Substring Fuzzy Matcher
           if (!match && collegeName) {
-            const cleanName = (name) => {
-              return stripPrefix(name)
-                .toLowerCase()
-                .replace(/veermata jijabai technological institute/gi, 'vjti')
-                .replace(/sardar patel institute of technology/gi, 'spit')
-                .replace(/pune institute of computer technology/gi, 'pict')
-                .replace(/walchand college of engineering/gi, 'wce')
-                .replace(/pimpri chinchwad college of engineering/gi, 'pccoe')
-                .replace(/vishwakarma institute of technology/gi, 'vit')
-                .replace(/government college of engineering/gi, 'gcoe')
-                .replace(/college of engineering/gi, 'coe')
-                .replace(/institute of technology/gi, 'it')
-                .replace(/[^a-z0-9]/g, '');
+            const getTokens = (name) => {
+              let s = String(name || '').replace(/^\d+\s*[-–]\s*/, '').toLowerCase();
+              s = s.replace(/veermata jijabai technological institute/gi, 'vjti')
+                   .replace(/sardar patel institute of technology/gi, 'spit')
+                   .replace(/pune institute of computer technology/gi, 'pict')
+                   .replace(/walchand college of engineering/gi, 'wce')
+                   .replace(/pimpri chinchwad college of engineering/gi, 'pccoe')
+                   .replace(/vishwakarma institute of technology/gi, 'vit');
+              const words = s.replace(/[^a-z0-9\s]/g, ' ').split(/\s+/);
+              const ignore = new Set(['college', 'engineering', 'institute', 'technology', 'technological', 'university', 'campus', 'society', 'trust', 'mandal', 'shikshan', 'prasarak', 'dept', 'department']);
+              return words.filter(w => w.length >= 3 && !ignore.has(w));
             };
 
-            const targetClean = cleanName(collegeName);
+            const targetTokens = getTokens(collegeName);
+            if (targetTokens.length > 0) {
+              let bestMatch = null;
+              let bestScore = 0;
 
-            if (targetClean) {
-              match = allPlacementTiers.find(p => {
-                const pName = p["College Name"] ? p["College Name"].toLowerCase().trim() : "";
-                return cleanName(pName) === targetClean;
-              });
-
-              if (!match) {
-                match = allPlacementTiers.find(p => {
-                  const pName = p["College Name"] ? p["College Name"].toLowerCase().trim() : "";
-                  const cleanP = cleanName(pName);
-                  return (cleanP.length >= 4 && (cleanP.includes(targetClean) || targetClean.includes(cleanP)));
-                });
-              }
-
-              // 3. Keyword / Token match
-              if (!match) {
-                const words = stripPrefix(collegeName)
-                  .toLowerCase()
-                  .replace(/[^a-z0-9\s]/g, ' ')
-                  .split(/\s+/)
-                  .filter(w => w.length > 3 && !['college', 'engineering', 'institute', 'technology', 'technological', 'university', 'campus', 'society', 'trust', 'mandal', 'shikshan', 'prasarak'].includes(w));
-
-                if (words.length > 0) {
-                  match = allPlacementTiers.find(p => {
-                    const pLower = (p["College Name"] || '').toLowerCase();
-                    return words.every(w => pLower.includes(w));
-                  });
+              for (let p of allPlacementTiers) {
+                const pTokens = getTokens(p["College Name"]);
+                const overlap = targetTokens.filter(w => pTokens.includes(w));
+                const score = overlap.length;
+                const minReq = Math.max(1, Math.min(2, pTokens.length));
+                if (score > bestScore && score >= minReq) {
+                  bestScore = score;
+                  bestMatch = p;
                 }
               }
+              match = bestMatch;
             }
           }
 
@@ -1955,7 +1937,7 @@
 
           // Get placement statistics
           const placement = findPlacementData(college.name, college.code);
-          document.getElementById('pkgAverage').innerHTML = placement.average && placement.average !== '—' ? `${placement.average} <span>LPA</span>` : '— <span>LPA</span>';
+          document.getElementById('pkgAverage').innerHTML = placement.average && placement.average !== '—' ? `${placement.average} <span>LPA</span>` : '—';
           document.getElementById('pkgTier').innerText = placement.tier || '—';
 
           // Update Official Website button visibility & link
