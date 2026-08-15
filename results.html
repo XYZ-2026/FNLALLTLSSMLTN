@@ -293,32 +293,126 @@
       let results = [];
       try { if (raw) results = JSON.parse(raw); } catch(e) { results = []; }
 
-      // Check if it is JEE Mains predictor results
+      // Check if it is JEE Mains predictor results and detect 2026 source
       const topMetaRaw = localStorage.getItem("searchMeta");
       let isJee = false;
+      let is2026 = false;
+      let source2026Round = 0;
       if (topMetaRaw) {
         try {
           const meta = JSON.parse(topMetaRaw);
           isJee = (meta.exam === 'JEE Mains');
+          if (meta.source && meta.source.startsWith('2026')) {
+            is2026 = true;
+            // Extract which round from source like '2026_round2' or '2026_all_india_round2'
+            const roundMatch = meta.source.match(/round(\d+)/);
+            source2026Round = roundMatch ? parseInt(roundMatch[1]) : 2;
+          }
         } catch(e) {}
+      }
+
+      // For 2026 data, adjust the table header to only show Round 1 & Round 2
+      const totalRounds = is2026 ? 2 : 4;
+      if (is2026) {
+        const thead = document.querySelector('#resultsTable thead tr');
+        thead.innerHTML = `
+          <th>#</th>
+          <th>Code</th>
+          <th>Institute Name</th>
+          <th>Branch</th>
+          <th>Category</th>
+          <th>Round 1</th>
+          <th>Round 2</th>
+          <th>Action</th>
+        `;
       }
 
       // Fetch appropriate data and index it
       const cetMap = new Map();
-      const dataUrl = isJee ? 'cleaned_jee_data.json' : 'cleaned_cet_data.json';
-      try {
-        const res = await fetch(dataUrl);
-        if (!res.ok) throw new Error('Network response not ok');
-        const cetData = await res.json();
-        (cetData || []).forEach(item => {
-          const code = String(item.instituteCode || '').trim();
-          const branch = String(item.branch || '').trim().toLowerCase().replace(/\s+/g, ' ');
-          const category = String(item.category || '').trim();
-          const key = `${code}|${branch}|${category}`;
-          cetMap.set(key, item.rounds || {});
-        });
-      } catch (e) {
-        console.error("Error loading cleaned data:", e);
+
+      if (is2026) {
+        // Load 2026 data from CUTOFFS 2026 folder
+        try {
+          if (isJee) {
+            // Load JEE Round 1 and Round 2
+            const [r1Res, r2Res] = await Promise.all([
+              fetch('cutoffs 2026/ROUND_1_ALL_INDIA_2026.json').then(r => r.json()).catch(() => ({})),
+              fetch('cutoffs 2026/All_India_Round_2.json').then(r => r.json()).catch(() => ({}))
+            ]);
+            const meritRegex = /^(\d+)\s*\(([\d\.]+)\)$/;
+            function parseJeeRound(jsonData, key) {
+              const list = jsonData[key] || jsonData || [];
+              const map = new Map();
+              list.forEach(r => {
+                const choiceCode = String(r['Choice Code'] || '').trim();
+                const instCode = choiceCode.substring(0, 5);
+                const branch = (r['Course Name'] || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+                const meritStr = String(r['All India Merit'] || '').trim();
+                const m = meritStr.match(meritRegex);
+                let rank = null, percentile = null;
+                if (m) { rank = parseInt(m[1]); percentile = parseFloat(m[2]); }
+                const lookupKey = `${instCode}|${branch}|All India`;
+                map.set(lookupKey, { rank, percentile });
+              });
+              return map;
+            }
+            const r1Map = parseJeeRound(r1Res, 'ALL_INDIA_2026');
+            const r2Map = parseJeeRound(r2Res, 'All_India_Round_2');
+            // Merge into cetMap with R1/R2 structure
+            const allKeys = new Set([...r1Map.keys(), ...r2Map.keys()]);
+            allKeys.forEach(key => {
+              cetMap.set(key, {
+                R1: r1Map.get(key) || null,
+                R2: r2Map.get(key) || null
+              });
+            });
+          } else {
+            // Load MHT-CET Round 1 and Round 2
+            const [r1Res, r2Res] = await Promise.all([
+              fetch('cutoffs 2026/MHT-CET Round 1 2026 Cutoff_cutoffs.json').then(r => r.json()).catch(() => []),
+              fetch('cutoffs 2026/MHT-CET Round 2 2026 Cutoff_cutoffs.json').then(r => r.json()).catch(() => [])
+            ]);
+            function indexMhtRound(data) {
+              const map = new Map();
+              (data || []).forEach(r => {
+                const code = String(r.institute_code || '').trim();
+                const branch = (r.branch_name || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+                const category = (r.category || '').trim();
+                const key = `${code}|${branch}|${category}`;
+                map.set(key, { rank: r.rank, percentile: r.percentile });
+              });
+              return map;
+            }
+            const r1Map = indexMhtRound(r1Res);
+            const r2Map = indexMhtRound(r2Res);
+            const allKeys = new Set([...r1Map.keys(), ...r2Map.keys()]);
+            allKeys.forEach(key => {
+              cetMap.set(key, {
+                R1: r1Map.get(key) || null,
+                R2: r2Map.get(key) || null
+              });
+            });
+          }
+        } catch (e) {
+          console.error("Error loading 2026 cutoff data:", e);
+        }
+      } else {
+        // Load legacy multi-round data (2025 etc.)
+        const dataUrl = isJee ? 'cleaned_jee_data.json' : 'cleaned_cet_data.json';
+        try {
+          const res = await fetch(dataUrl);
+          if (!res.ok) throw new Error('Network response not ok');
+          const cetData = await res.json();
+          (cetData || []).forEach(item => {
+            const code = String(item.instituteCode || '').trim();
+            const branch = String(item.branch || '').trim().toLowerCase().replace(/\s+/g, ' ');
+            const category = String(item.category || '').trim();
+            const key = `${code}|${branch}|${category}`;
+            cetMap.set(key, item.rounds || {});
+          });
+        } catch (e) {
+          console.error("Error loading cleaned data:", e);
+        }
       }
 
       // Render search metadata banner
@@ -387,8 +481,6 @@
 
         let r1 = rounds.R1 ? formatRound(rounds.R1) : (r.percentile ? formatRound({ rank: r.rank, percentile: r.percentile }) : '<span style="color:var(--muted)">—</span>');
         let r2 = rounds.R2 ? formatRound(rounds.R2) : '<span style="color:var(--muted)">—</span>';
-        let r3 = rounds.R3 ? formatRound(rounds.R3) : '<span style="color:var(--muted)">—</span>';
-        let r4 = rounds.R4 ? formatRound(rounds.R4) : '<span style="color:var(--muted)">—</span>';
 
         if (isLocked) {
           const lockedCell = `
@@ -398,6 +490,23 @@
             </div>
           `;
           
+          if (is2026) {
+            return `
+              <tr class="locked-row">
+                <td style="color:var(--muted)">${i + 1}</td>
+                <td><span class="college-code" style="filter: blur(2px); opacity: 0.5;">0000</span></td>
+                <td style="max-width:300px;"><span style="filter: blur(4px); opacity: 0.5; font-weight:600;">••••••••••••••••••••••••••••••••••••</span></td>
+                <td><span style="filter: blur(4px); opacity: 0.5; color:var(--muted)">••••••••••••••••••••</span></td>
+                <td><span style="filter: blur(4px); opacity: 0.5;">••••</span></td>
+                <td>${lockedCell}</td>
+                <td>${lockedCell}</td>
+                <td>
+                  <span style="color:var(--muted); font-size:12px; font-weight:600; display:inline-flex; align-items:center; gap:4px;">Locked 🔒</span>
+                </td>
+              </tr>
+            `;
+          }
+
           return `
             <tr class="locked-row">
               <td style="color:var(--muted)">${i + 1}</td>
@@ -415,6 +524,26 @@
             </tr>
           `;
         }
+
+        if (is2026) {
+          return `
+            <tr>
+              <td style="color:var(--muted)">${i + 1}</td>
+              <td><span class="college-code">${r.code || '—'}</span></td>
+              <td style="font-weight:600; max-width:300px;">${r.name || '—'}</td>
+              <td style="color:var(--muted)">${r.branch || '—'}</td>
+              <td>${r.category || '—'}</td>
+              <td>${r1}</td>
+              <td>${r2}</td>
+              <td>
+                <a href="https://fe2025.mahacet.org/StaticPages/frmInstituteSummary?InstituteCode=${String(r.code || '').padStart(5, '0')}" target="_blank" style="color:var(--brand); text-decoration:none; font-weight:700; font-size:12px;">Visit Portal →</a>
+              </td>
+            </tr>
+          `;
+        }
+
+        let r3 = rounds.R3 ? formatRound(rounds.R3) : '<span style="color:var(--muted)">—</span>';
+        let r4 = rounds.R4 ? formatRound(rounds.R4) : '<span style="color:var(--muted)">—</span>';
 
         return `
           <tr>

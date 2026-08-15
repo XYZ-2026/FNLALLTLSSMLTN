@@ -1440,9 +1440,16 @@
         <!-- Cutoff Checker Section Wrapper -->
         <div id="cutoffSectionWrapper" style="display: none; margin-bottom: 40px;">
           <!-- Tabs for MHT-CET vs JEE Mains -->
-          <div class="college-tabs-header">
-            <button class="college-tab-btn active" id="tabMhtcetBtn" onclick="setCollegeTab('mhtcet')">MHT-CET (Round 1 2026)</button>
-            <button class="college-tab-btn" id="tabJeeBtn" onclick="setCollegeTab('jee')">JEE Mains All India (Round 1 2026)</button>
+          <div class="college-tabs-header" style="display:flex; align-items:center; flex-wrap:wrap; gap:12px;">
+            <button class="college-tab-btn active" id="tabMhtcetBtn" onclick="setCollegeTab('mhtcet')">MHT-CET (Round <span id="tabMhtcetRound">2</span> 2026)</button>
+            <button class="college-tab-btn" id="tabJeeBtn" onclick="setCollegeTab('jee')">JEE Mains All India (Round <span id="tabJeeRound">2</span> 2026)</button>
+            <div style="margin-left:auto; display:flex; align-items:center; gap:6px;">
+              <span style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px;">CAP Round:</span>
+              <div style="display:flex; background:var(--bg); padding:3px; border-radius:8px; border:1px solid var(--stroke);">
+                <button class="toggle-btn" id="explorerRoundBtn1" onclick="switchExplorerRound(1)" style="font-size:11px; padding:6px 12px; font-weight:700; border:none; border-radius:6px; cursor:pointer; background:transparent; color:var(--muted);">Round 1</button>
+                <button class="toggle-btn active" id="explorerRoundBtn2" onclick="switchExplorerRound(2)" style="font-size:11px; padding:6px 12px; font-weight:700; border:none; border-radius:6px; cursor:pointer; background:var(--brand); color:#fff;">Round 2</button>
+              </div>
+            </div>
           </div>
 
           <!-- Detailed Analytics Content -->
@@ -1454,36 +1461,37 @@
               <div class="master-list-card">
                 <div class="master-list-header"
                   style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
-                  <h3 style="margin:0;">MHT-CET Branch Cutoffs — Round 1 (2026)</h3>
+                  <h3 style="margin:0;" id="mhtcetTableTitle">MHT-CET Branch Cutoffs — Round 2 (2026)</h3>
                   <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                     <div class="master-filters">
                       <select id="tblCategory" onchange="applyTableFilters()" class="filter-select">
                         <!-- Populated dynamically -->
                       </select>
                       <input type="text" id="tblSearch" placeholder="Search branch or choice code..."
-                        oninput="applyTableFilters()" class="filter-search-input">
+                        onkeyup="applyTableFilters()" class="filter-search-input" />
                     </div>
-                    <div class="export-btn-group" id="mhtcetExportGroup"></div>
                   </div>
                 </div>
 
                 <div class="table-container">
-                  <table class="cutoff-table" id="mhtcetCutoffTable">
+                  <table class="data-table">
                     <thead>
                       <tr>
-                        <th>Branch Program</th>
+                        <th>Course / Branch</th>
                         <th>Choice Code</th>
                         <th>Category</th>
                         <th>Cutoff Rank</th>
-                        <th>Cutoff Percentile</th>
+                        <th>Percentile</th>
                       </tr>
                     </thead>
                     <tbody id="masterCutoffTableBody"></tbody>
                   </table>
                 </div>
 
-                <div id="masterLoadMore" class="load-more-container hidden">
-                  <button class="btn-load-more" onclick="loadMoreTableRows()">Load More Rows</button>
+                <div style="padding:16px; text-align:center; border-top:1px solid var(--stroke);">
+                  <button id="masterLoadMore" onclick="loadMoreTableRows()" class="load-more-btn hidden">
+                    Load More Cutoffs
+                  </button>
                 </div>
               </div>
             </div>
@@ -1494,8 +1502,9 @@
                 <div class="master-list-header"
                   style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
                   <div>
-                    <h3 style="margin:0;">JEE Mains All India Cutoffs — Round 1 (2026)</h3>
-                    <span style="font-size: 12px; color: var(--muted); font-weight: 500;">Direct admission cutoff via JEE Mains score</span>
+                    <h3 style="margin:0;" id="jeeTableTitle">JEE Mains All India Cutoffs — Round 2 (2026)</h3>
+                    <span style="font-size: 12px; color: var(--muted); font-weight: 500;">Direct admission cutoff via
+                      JEE Mains score</span>
                   </div>
                   <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                     <div class="master-filters">
@@ -1562,7 +1571,12 @@
         let seatsData = [];
         let allPlacementTiers = [];
         let mhtData = [];
+        let mhtDataR1 = [];
+        let mhtDataR2 = [];
         let jeeData = [];
+        let jeeDataR1 = [];
+        let jeeDataR2 = [];
+        let explorerCurrentRound = 2; // Default to Round 2
 
         let gaugeChartInstance = null;
         let pieChartInstance = null;
@@ -1608,11 +1622,11 @@
             const getTokens = (name) => {
               let s = String(name || '').replace(/^\d+\s*[-–]\s*/, '').toLowerCase();
               s = s.replace(/veermata jijabai technological institute/gi, 'vjti')
-                   .replace(/sardar patel institute of technology/gi, 'spit')
-                   .replace(/pune institute of computer technology/gi, 'pict')
-                   .replace(/walchand college of engineering/gi, 'wce')
-                   .replace(/pimpri chinchwad college of engineering/gi, 'pccoe')
-                   .replace(/vishwakarma institute of technology/gi, 'vit');
+                .replace(/sardar patel institute of technology/gi, 'spit')
+                .replace(/pune institute of computer technology/gi, 'pict')
+                .replace(/walchand college of engineering/gi, 'wce')
+                .replace(/pimpri chinchwad college of engineering/gi, 'pccoe')
+                .replace(/vishwakarma institute of technology/gi, 'vit');
               const words = s.replace(/[^a-z0-9\s]/g, ' ').split(/\s+/);
               const ignore = new Set(['college', 'engineering', 'institute', 'technology', 'technological', 'university', 'campus', 'society', 'trust', 'mandal', 'shikshan', 'prasarak', 'dept', 'department']);
               return words.filter(w => w.length >= 3 && !ignore.has(w));
@@ -1674,12 +1688,14 @@
         // Bootstrapping
         async function init() {
           try {
-            const [metaRes, seatsJson, placementJson, cetJson, jeeJson] = await Promise.all([
+            const [metaRes, seatsJson, placementJson, cetR1Json, cetR2Json, jeeR1Json, jeeR2Json] = await Promise.all([
               fetch('college-data.json').then(r => r.json()),
               fetch('cutoffs 2026/MHT_CET_2026_Seat_Matrix.json').then(r => r.json()),
               fetch('ALL_CLG_PLACEMENT_TIER.json').then(r => r.json()).catch(() => ({ ALL_CLG_PLACEMENT_TIER: [] })),
               fetch('cutoffs 2026/MHT-CET Round 1 2026 Cutoff_cutoffs.json').then(r => r.json()),
-              fetch('cutoffs 2026/ROUND_1_ALL_INDIA_2026.json').then(r => r.json())
+              fetch('cutoffs 2026/MHT-CET Round 2 2026 Cutoff_cutoffs.json').then(r => r.json()).catch(() => []),
+              fetch('cutoffs 2026/ROUND_1_ALL_INDIA_2026.json').then(r => r.json()),
+              fetch('cutoffs 2026/All_India_Round_2.json').then(r => r.json()).catch(() => ({}))
             ]);
 
             // Parse seats matrix
@@ -1688,57 +1704,59 @@
             // Save placement tables
             allPlacementTiers = placementJson.ALL_CLG_PLACEMENT_TIER || placementJson || [];
 
-            // Normalize MHT CET rounds data (2026 Round 1)
-            mhtData = (cetJson || []).map(r => {
-              const instCode = String(r.institute_code || r.instituteCode || '');
-              const choiceCode = String(r.choice_code || r.choiceCode || '');
-              const branchStr = (r.branch_name || r.branch || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-              const catStr = (r.category || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-              return {
-                instituteCode: instCode,
-                choiceCode: choiceCode,
-                instituteName: r.institute_name || r.instituteName || '',
-                branch: branchStr,
-                category: catStr,
-                seatType: r.seat_type || r.seatType || catStr,
-                rank: r.rank,
-                percentile: r.percentile,
-                rounds: {
-                  R1: { rank: r.rank, percentile: r.percentile, seatType: r.seat_type || catStr },
-                  R2: { rank: r.rank, percentile: r.percentile, seatType: r.seat_type || catStr },
-                  R3: { rank: r.rank, percentile: r.percentile, seatType: r.seat_type || catStr }
-                }
-              };
-            });
+            // Parse MHT-CET data helper
+            function parseMhtData(cetJson) {
+              return (cetJson || []).map(r => {
+                const instCode = String(r.institute_code || r.instituteCode || '');
+                const choiceCode = String(r.choice_code || r.choiceCode || '');
+                const branchStr = (r.branch_name || r.branch || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+                const catStr = (r.category || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+                return {
+                  instituteCode: instCode,
+                  choiceCode: choiceCode,
+                  instituteName: r.institute_name || r.instituteName || '',
+                  branch: branchStr,
+                  category: catStr,
+                  seatType: r.seat_type || r.seatType || catStr,
+                  rank: typeof r.rank === 'number' ? r.rank : parseInt(String(r.rank || '999999').replace(/,/g, '')),
+                  percentile: typeof r.percentile === 'number' ? r.percentile : parseFloat(String(r.percentile || '0'))
+                };
+              });
+            }
 
-            // Normalize JEE Mains data (2026 Round 1)
-            const jeeRaw = jeeJson.ALL_INDIA_2026 || jeeJson || [];
-            jeeData = jeeRaw.map(r => {
-              const choiceCode = String(r['Choice Code'] || r.choiceCode || '');
-              const instMatch = (r['Institute Name'] || r.instituteName || '').match(/^(\d+)/);
-              const instCode = instMatch ? instMatch[1] : (choiceCode.length === 10 ? choiceCode.substring(0, 5) : choiceCode.substring(0, 4));
-              const branchStr = (r['Course Name'] || r.branch || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-              const meritStr = r['All India Merit'] || '';
-              const matchMerit = meritStr.match(/(\d+)\s*\(([\d\.]+)%?\)/);
-              const rank = matchMerit ? parseInt(matchMerit[1]) : (r.rank || null);
-              const pct = matchMerit ? parseFloat(matchMerit[2]) : (r.percentile || null);
-              return {
-                choiceCode: choiceCode,
-                instituteCode: instCode,
-                instituteName: r['Institute Name'] || r.instituteName || '',
-                branch: branchStr,
-                seatType: r['Seat Type'] || r.seatType || 'AI',
-                type: r['Type'] || r.type || 'AI to AI',
-                meritStr: meritStr,
-                rank: rank,
-                percentile: pct,
-                rounds: {
-                  R1: { rank: rank, percentile: pct, seatType: r['Seat Type'] || r.seatType || 'AI', type: r['Type'] || r.type || 'AI to AI' },
-                  R2: { rank: rank, percentile: pct, seatType: r['Seat Type'] || r.seatType || 'AI', type: r['Type'] || r.type || 'AI to AI' },
-                  R3: { rank: rank, percentile: pct, seatType: r['Seat Type'] || r.seatType || 'AI', type: r['Type'] || r.type || 'AI to AI' }
-                }
-              };
-            });
+            mhtDataR1 = parseMhtData(cetR1Json);
+            mhtDataR2 = parseMhtData(cetR2Json);
+            mhtData = explorerCurrentRound === 2 ? mhtDataR2 : mhtDataR1;
+
+            // Parse JEE data helper
+            function parseJeeData(jeeJson, key) {
+              const jeeRaw = jeeJson[key] || jeeJson || [];
+              return jeeRaw.map(r => {
+                const choiceCode = String(r['Choice Code'] || r.choiceCode || '');
+                const instMatch = (r['Institute Name'] || r.instituteName || '').match(/^(\d+)/);
+                const instCode = instMatch ? instMatch[1] : (choiceCode.length === 10 ? choiceCode.substring(0, 5) : choiceCode.substring(0, 4));
+                const branchStr = (r['Course Name'] || r.branch || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+                const meritStr = r['All India Merit'] || '';
+                const matchMerit = meritStr.match(/(\d+)\s*\(([\d\.]+)%?\)/);
+                const rank = matchMerit ? parseInt(matchMerit[1]) : (r.rank || null);
+                const pct = matchMerit ? parseFloat(matchMerit[2]) : (r.percentile || null);
+                return {
+                  choiceCode: choiceCode,
+                  instituteCode: instCode,
+                  instituteName: r['Institute Name'] || r.instituteName || '',
+                  branch: branchStr,
+                  seatType: r['Seat Type'] || r.seatType || 'AI',
+                  type: r['Type'] || r.type || 'AI to AI',
+                  meritStr: meritStr,
+                  rank: rank,
+                  percentile: pct
+                };
+              });
+            }
+
+            jeeDataR1 = parseJeeData(jeeR1Json, 'ALL_INDIA_2026');
+            jeeDataR2 = parseJeeData(jeeR2Json, 'All_India_Round_2');
+            jeeData = explorerCurrentRound === 2 ? jeeDataR2 : jeeDataR1;
 
             // Map list of unique colleges
             const uniqueMap = {};
@@ -1960,11 +1978,11 @@
 
           // Filter records for cutoff checker section
           const collegeMht = mhtData.filter(row => {
-            const mhtCode = row.instituteCode ? String(row.instituteCode).trim().replace(/^0+/, '') : (row.choiceCode ? String(row.choiceCode).trim().substring(0, 4) : '');
+            const mhtCode = row.instituteCode ? String(row.instituteCode).trim().replace(/^0+/, '') : (row.choiceCode ? String(row.choiceCode).trim().substring(0, 5).replace(/^0+/, '') : '');
             return mhtCode === targetCodeClean;
           });
           const collegeJee = jeeData.filter(row => {
-            const jeeCode = row.instituteCode ? String(row.instituteCode).trim().replace(/^0+/, '') : (row.choiceCode ? String(row.choiceCode).trim().substring(0, 4) : '');
+            const jeeCode = row.instituteCode ? String(row.instituteCode).trim().replace(/^0+/, '') : (row.choiceCode ? String(row.choiceCode).trim().substring(0, 5).replace(/^0+/, '') : '');
             return jeeCode === targetCodeClean;
           });
 
@@ -2479,6 +2497,57 @@
           applyJeeTableFilters();
         }
 
+        window.switchExplorerRound = function(round) {
+          if (round === explorerCurrentRound) return;
+          explorerCurrentRound = round;
+
+          // Update toggle buttons
+          const btn1 = document.getElementById('explorerRoundBtn1');
+          const btn2 = document.getElementById('explorerRoundBtn2');
+          if (btn1) {
+            btn1.style.background = round === 1 ? 'var(--brand)' : 'transparent';
+            btn1.style.color = round === 1 ? '#fff' : 'var(--muted)';
+          }
+          if (btn2) {
+            btn2.style.background = round === 2 ? 'var(--brand)' : 'transparent';
+            btn2.style.color = round === 2 ? '#fff' : 'var(--muted)';
+          }
+
+          // Switch data sources
+          mhtData = round === 2 ? mhtDataR2 : mhtDataR1;
+          jeeData = round === 2 ? jeeDataR2 : jeeDataR1;
+
+          // Update tab labels
+          const tabMhtRound = document.getElementById('tabMhtcetRound');
+          const tabJeeRound = document.getElementById('tabJeeRound');
+          if (tabMhtRound) tabMhtRound.textContent = round;
+          if (tabJeeRound) tabJeeRound.textContent = round;
+
+          // Update table titles
+          const mhtTitle = document.getElementById('mhtcetTableTitle');
+          const jeeTitle = document.getElementById('jeeTableTitle');
+          if (mhtTitle) mhtTitle.textContent = `MHT-CET Branch Cutoffs — Round ${round} (2026)`;
+          if (jeeTitle) jeeTitle.textContent = `JEE Mains All India Cutoffs — Round ${round} (2026)`;
+
+          // Re-filter cutoffs for currently selected college
+          const searchVal = document.getElementById('searchColleges') ? document.getElementById('searchColleges').value : '';
+          if (searchVal && document.getElementById('collegeDashboard') && document.getElementById('collegeDashboard').style.display === 'block') {
+            const college = collegeList.find(c => c.name === searchVal);
+            if (college) {
+              const targetCodeClean = String(college.code).trim().replace(/^0+/, '');
+              const collegeMht = mhtData.filter(row => {
+                const mhtCode = row.instituteCode ? String(row.instituteCode).trim().replace(/^0+/, '') : (row.choiceCode ? String(row.choiceCode).trim().substring(0, 5).replace(/^0+/, '') : '');
+                return mhtCode === targetCodeClean;
+              });
+              const collegeJee = jeeData.filter(row => {
+                const jeeCode = row.instituteCode ? String(row.instituteCode).trim().replace(/^0+/, '') : (row.choiceCode ? String(row.choiceCode).trim().substring(0, 5).replace(/^0+/, '') : '');
+                return jeeCode === targetCodeClean;
+              });
+              initCutoffCheckerSection(college, collegeMht, collegeJee);
+            }
+          }
+        };
+
         window.setCollegeTab = function (tab) {
           document.getElementById('tabMhtcetBtn').classList.toggle('active', tab === 'mhtcet');
           document.getElementById('tabJeeBtn').classList.toggle('active', tab === 'jee');
@@ -2519,28 +2588,28 @@
 
           if (!branch || !category) return;
 
-          const labels = ['Round 1', 'Round 2', 'Round 3', 'Round 4'];
+          const labels = ['Round 1', 'Round 2'];
           const percentiles = [];
           const ranks = [];
           const tableRows = [];
 
-          const match = curMht.find(row => {
-            return row.branch && row.branch.trim() === branch.trim() && row.category && row.category.trim() === category.trim();
-          });
-
-          for (let r = 1; r <= 4; r++) {
-            const roundKey = 'R' + r;
-            if (match && match.rounds && match.rounds[roundKey]) {
-              const roundData = match.rounds[roundKey];
-              const pVal = parseFloat(roundData.percentile);
-              const rVal = parseInt(roundData.rank);
+          // Lookup from each round's data
+          const roundDataSets = [mhtDataR1, mhtDataR2];
+          for (let r = 0; r < roundDataSets.length; r++) {
+            const roundArr = roundDataSets[r];
+            const match = roundArr.find(row => {
+              return row.branch && row.branch.trim() === branch.trim() && row.category && row.category.trim() === category.trim();
+            });
+            if (match && match.rank != null) {
+              const pVal = parseFloat(match.percentile);
+              const rVal = parseInt(match.rank);
               percentiles.push(isNaN(pVal) ? null : pVal);
               ranks.push(isNaN(rVal) ? null : rVal);
-              tableRows.push({ round: r, rank: rVal, percentile: pVal });
+              tableRows.push({ round: r + 1, rank: isNaN(rVal) ? null : rVal, percentile: isNaN(pVal) ? null : pVal });
             } else {
               percentiles.push(null);
               ranks.push(null);
-              tableRows.push({ round: r, rank: null, percentile: null });
+              tableRows.push({ round: r + 1, rank: null, percentile: null });
             }
           }
 
@@ -2723,24 +2792,24 @@
 
         window.applyTableFilters = function () {
           mhtTableLimit = 30;
-          const roundKey = 'R1';
           const category = document.getElementById('tblCategory') ? document.getElementById('tblCategory').value : '';
           const search = document.getElementById('tblSearch') ? document.getElementById('tblSearch').value.toLowerCase().trim() : '';
 
           mhtTableFilteredRows = curMht.filter(row => {
             const matchesCategory = !category || row.category === category;
             const matchesSearch = !search || (row.branch && row.branch.toLowerCase().includes(search)) || (row.choiceCode && row.choiceCode.includes(search));
-            const hasRoundData = row.rounds && row.rounds[roundKey] && row.rounds[roundKey].rank !== null;
+            const hasData = row.rank !== null && row.rank !== undefined && !isNaN(row.rank);
 
-            return matchesCategory && matchesSearch && hasRoundData;
+            return matchesCategory && matchesSearch && hasData;
           });
 
-          renderMasterTable(roundKey);
+          renderMasterTable();
         };
 
-        function renderMasterTable(roundKey) {
-          roundKey = roundKey || 'R1';
+        function renderMasterTable() {
           const tbody = document.getElementById('masterCutoffTableBody');
+          if (!tbody) return;
+
           const paginated = mhtTableFilteredRows.slice(0, mhtTableLimit);
 
           if (!paginated.length) {
@@ -2753,14 +2822,14 @@
               </td>
             </tr>
           `;
-            document.getElementById('masterLoadMore').classList.add('hidden');
+            const lm = document.getElementById('masterLoadMore');
+            if (lm) lm.classList.add('hidden');
             return;
           }
 
           tbody.innerHTML = paginated.map(row => {
-            const roundData = (row.rounds && row.rounds[roundKey]) || {};
-            const rankText = roundData.rank ? roundData.rank.toLocaleString('en-IN') : (row.rank ? row.rank.toLocaleString('en-IN') : 'N/A');
-            const pctText = roundData.percentile ? parseFloat(roundData.percentile).toFixed(4) + '%' : (row.percentile ? parseFloat(row.percentile).toFixed(4) + '%' : 'N/A');
+            const rankText = (row.rank && row.rank < 999999) ? row.rank.toLocaleString('en-IN') : 'N/A';
+            const pctText = (row.percentile !== undefined && row.percentile !== null) ? parseFloat(row.percentile).toFixed(4) + '%' : 'N/A';
 
             return `
             <tr>
@@ -2774,34 +2843,33 @@
           }).join('');
 
           const hasMore = mhtTableFilteredRows.length > mhtTableLimit;
-          document.getElementById('masterLoadMore').classList.toggle('hidden', !hasMore);
+          const lm = document.getElementById('masterLoadMore');
+          if (lm) lm.classList.toggle('hidden', !hasMore);
         }
 
         window.loadMoreTableRows = function () {
           mhtTableLimit += 30;
-          renderMasterTable('R1');
+          renderMasterTable();
         };
 
         window.applyJeeTableFilters = function () {
           jeeTableLimit = 30;
-          const roundKey = 'R1';
           const search = document.getElementById('tblJeeSearch') ? document.getElementById('tblJeeSearch').value.toLowerCase().trim() : '';
 
           jeeTableFilteredRows = curJee.filter(row => {
             const matchesSearch = !search || (row.branch && row.branch.toLowerCase().includes(search)) || (row.choiceCode && row.choiceCode.includes(search));
-            const hasRoundData = (row.rounds && row.rounds[roundKey] && row.rounds[roundKey].rank !== null) || row.rank !== undefined || row['All India Merit'] !== undefined;
+            const hasData = row.rank !== undefined && row.rank !== null;
 
-            return matchesSearch && hasRoundData;
+            return matchesSearch && hasData;
           });
 
-          renderJeeMasterTable(roundKey);
+          renderJeeMasterTable();
         };
 
-        function renderJeeMasterTable(roundKey) {
-          roundKey = roundKey || 'R1';
+        function renderJeeMasterTable() {
           const tbody = document.getElementById('jeeCutoffTableBody');
           if (!tbody) return;
-          
+
           const paginated = jeeTableFilteredRows.slice(0, jeeTableLimit);
 
           if (!paginated.length) {
@@ -2814,18 +2882,18 @@
               </td>
             </tr>
           `;
-            document.getElementById('jeeLoadMore').classList.add('hidden');
+            const lm = document.getElementById('jeeLoadMore');
+            if (lm) lm.classList.add('hidden');
             return;
           }
 
           tbody.innerHTML = paginated.map(row => {
-            const roundData = (row.rounds && row.rounds[roundKey]) || {};
-            const rankText = roundData.rank ? roundData.rank.toLocaleString('en-IN') : (row.rank ? row.rank.toLocaleString('en-IN') : (row['All India Merit'] || 'N/A'));
-            const pctText = roundData.percentile ? parseFloat(roundData.percentile).toFixed(4) + '%' : (row.percentile ? parseFloat(row.percentile).toFixed(4) + '%' : 'N/A');
-            
-            const instCode = row.instituteCode || (row.choiceCode ? row.choiceCode.substring(0, 4) : '');
+            const rankText = (row.rank && row.rank < 999999) ? row.rank.toLocaleString('en-IN') : (row.meritStr || 'N/A');
+            const pctText = (row.percentile !== undefined && row.percentile !== null) ? parseFloat(row.percentile).toFixed(4) + '%' : 'N/A';
+
+            const instCode = row.instituteCode || (row.choiceCode ? row.choiceCode.substring(0, 5) : '');
             const linkUrl = `https://fe2025.mahacet.org/StaticPages/frmInstituteSummary?InstituteCode=${String(instCode).padStart(5, '0')}`;
-            
+
             const linkHtml = `
               <a class="card-link" href="${linkUrl}" target="_blank" rel="noopener" style="color:var(--blue); text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-top:2px">
@@ -2840,8 +2908,8 @@
             <tr>
               <td style="font-weight:600; color:var(--muted)">${escAuth(row.choiceCode || 'N/A')}</td>
               <td style="font-weight:700">${escAuth(row.branch)}</td>
-              <td><span class="chip chip-blue" style="font-size:11px">${escAuth(roundData.seatType || row.seatType || 'AI')}</span></td>
-              <td style="font-size:12px">${escAuth(roundData.type || row.type || 'AI to AI')}</td>
+              <td><span class="chip chip-blue" style="font-size:11px">${escAuth(row.seatType || 'AI')}</span></td>
+              <td style="font-size:12px">${escAuth(row.type || 'AI to AI')}</td>
               <td style="font-weight:600">${rankText}</td>
               <td style="font-weight:800; color:var(--blue)">${pctText}</td>
               <td>${linkHtml}</td>
@@ -2850,12 +2918,13 @@
           }).join('');
 
           const hasMore = jeeTableFilteredRows.length > jeeTableLimit;
-          document.getElementById('jeeLoadMore').classList.toggle('hidden', !hasMore);
+          const lm = document.getElementById('jeeLoadMore');
+          if (lm) lm.classList.toggle('hidden', !hasMore);
         }
 
         window.loadMoreJeeRows = function () {
           jeeTableLimit += 30;
-          renderJeeMasterTable('R1');
+          renderJeeMasterTable();
         };
 
         window.setJeeChartMetric = function (metric) {
@@ -2870,28 +2939,28 @@
 
           if (!branch) return;
 
-          const labels = ['Round 1', 'Round 2', 'Round 3', 'Round 4'];
+          const labels = ['Round 1', 'Round 2'];
           const percentiles = [];
           const ranks = [];
           const tableRows = [];
 
-          const match = curJee.find(row => {
-            return row.branch && row.branch.trim() === branch.trim();
-          });
-
-          for (let r = 1; r <= 4; r++) {
-            const roundKey = 'R' + r;
-            if (match && match.rounds && match.rounds[roundKey]) {
-              const roundData = match.rounds[roundKey];
-              const pVal = parseFloat(roundData.percentile);
-              const rVal = parseInt(roundData.rank);
+          // Lookup from each round's data
+          const roundDataSets = [jeeDataR1, jeeDataR2];
+          for (let r = 0; r < roundDataSets.length; r++) {
+            const roundArr = roundDataSets[r];
+            const match = roundArr.find(row => {
+              return row.branch && row.branch.trim() === branch.trim();
+            });
+            if (match && match.rank != null) {
+              const pVal = parseFloat(match.percentile);
+              const rVal = parseInt(match.rank);
               percentiles.push(isNaN(pVal) ? null : pVal);
               ranks.push(isNaN(rVal) ? null : rVal);
-              tableRows.push({ round: r, rank: rVal, percentile: pVal });
+              tableRows.push({ round: r + 1, rank: isNaN(rVal) ? null : rVal, percentile: isNaN(pVal) ? null : pVal });
             } else {
               percentiles.push(null);
               ranks.push(null);
-              tableRows.push({ round: r, rank: null, percentile: null });
+              tableRows.push({ round: r + 1, rank: null, percentile: null });
             }
           }
 
