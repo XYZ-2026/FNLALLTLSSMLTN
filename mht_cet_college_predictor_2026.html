@@ -3,11 +3,11 @@
 
 <head>
   <!-- SEO Optimization Meta Tags -->
-  <title>MHT-CET 2026 College Predictor — Round 1 Cutoffs | Which College Can I Get? | College Simplified</title>
+  <title>MHT-CET 2026 College Predictor — Round 3 Cutoffs | Which College Can I Get? | College Simplified</title>
   <meta name="keywords"
-    content="MHT CET 2026 college predictor, MHT CET round 1 2026 cutoff, which college can I get with MHT CET 2026 score, MHT CET 2026 percentile vs college, Maharashtra engineering college predictor 2026, CAP round 1 college predictor 2026, college simplified">
+    content="MHT CET 2026 college predictor, MHT CET round 3 2026 cutoff, which college can I get with MHT CET 2026 score, MHT CET 2026 percentile vs college, Maharashtra engineering college predictor 2026, CAP round 3 college predictor 2026, college simplified">
   <meta name="description"
-    content="MHT-CET 2026 College Predictor based on official Round 1 cutoffs — Find which engineering college in Maharashtra you can get based on your MHT-CET percentile, rank, category, gender & home university. Free tool by College Simplified.">
+    content="MHT-CET 2026 College Predictor based on official Round 3 cutoffs — Find which engineering college in Maharashtra you can get based on your MHT-CET percentile, rank, category, gender & home university. Free tool by College Simplified.">
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="canonical" href="https://counselling.collegesimplified.in/mht_cet_college_predictor_2026.html">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
@@ -17,9 +17,9 @@
   <meta name="geo.placename" content="Maharashtra, India">
 
   <!-- Open Graph / Facebook Meta Tags -->
-  <meta property="og:title" content="MHT-CET 2026 College Predictor — Round 1 Cutoffs | College Simplified">
+  <meta property="og:title" content="MHT-CET 2026 College Predictor — Round 3 Cutoffs | College Simplified">
   <meta property="og:description"
-    content="Find which engineering college in Maharashtra you can get based on your MHT-CET 2026 Round 1 cutoff data. Predict VJTI, COEP, SPIT, PICT, WCE & 300+ colleges.">
+    content="Find which engineering college in Maharashtra you can get based on your MHT-CET 2026 Round 3 cutoff data. Predict VJTI, COEP, SPIT, PICT, WCE & 300+ colleges.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://counselling.collegesimplified.in/mht_cet_college_predictor_2026.html">
   <meta property="og:site_name" content="College Simplified">
@@ -27,9 +27,9 @@
 
   <!-- Twitter Card Meta Tags -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="MHT-CET 2026 College Predictor — Round 1 | College Simplified">
+  <meta name="twitter:title" content="MHT-CET 2026 College Predictor — Round 3 | College Simplified">
   <meta name="twitter:description"
-    content="Which college can I get with my MHT-CET 2026 percentile? Predict your admission chances using official Round 1 cutoff data. Free tool.">
+    content="Which college can I get with my MHT-CET 2026 percentile? Predict your admission chances using official Round 3 cutoff data. Free tool.">
 
   <!-- Structured Data: BreadcrumbList -->
   <script type="application/ld+json">
@@ -668,9 +668,16 @@
       <div id="helloBanner" class="greeting"></div>
 
       <div class="page-hero">
-        <div class="hero-badge" id="heroBadge">🔥 2026 ROUND 2 • LATEST DATA</div>
+        <div class="hero-badge" id="heroBadge">🔥 2026 ROUND 3 • LATEST DATA</div>
         <h1>MHT CET College Predictor 2026</h1>
-        <p id="heroDesc">Based on official CAP Round 2 (2026) closing cutoffs. Find your best college matches using real cutoff data.</p>
+        <p id="heroDesc">Based on official CAP Round 3 (2026) closing cutoffs. Find your best college matches using real cutoff data.</p>
+        <div style="display:flex; justify-content:center; margin-top:16px;">
+          <div style="display:inline-flex; background:var(--bg); padding:4px; border-radius:12px; border:1px solid var(--stroke);">
+            <button class="toggle-btn" id="roundBtn1" onclick="switchRound(1)" style="font-family:Lexend,sans-serif; font-size:12px; padding:6px 14px; font-weight:700; border:none; border-radius:8px; cursor:pointer; background:transparent; color:var(--muted); transition:0.2s;">Round 1</button>
+            <button class="toggle-btn" id="roundBtn2" onclick="switchRound(2)" style="font-family:Lexend,sans-serif; font-size:12px; padding:6px 14px; font-weight:700; border:none; border-radius:8px; cursor:pointer; background:transparent; color:var(--muted); transition:0.2s;">Round 2</button>
+            <button class="toggle-btn active" id="roundBtn3" onclick="switchRound(3)" style="font-family:Lexend,sans-serif; font-size:12px; padding:6px 14px; font-weight:700; border:none; border-radius:8px; cursor:pointer; background:var(--accent); color:#fff; transition:0.2s;">Round 3 <span class="round-badge" style="background:#fff; color:var(--accent); font-size:9px; padding:1px 5px; border-radius:6px; margin-left:4px;">Latest</span></button>
+          </div>
+        </div>
       </div>
 
       <div class="card">
@@ -859,11 +866,12 @@
     let selectedBranches = new Set();
     let allBranchNames = [];
     let expandedCats = new Set();
-    let currentRound = 2; // default to Round 2 (latest)
+    let currentRound = 3; // default to Round 3 (latest)
 
     const ROUND_FILES = {
       1: 'CUTOFFS 2026/MHT-CET Round 1 2026 Cutoff_cutoffs.json',
-      2: 'CUTOFFS 2026/MHT-CET Round 2 2026 Cutoff_cutoffs.json'
+      2: 'CUTOFFS 2026/MHT-CET Round 2 2026 Cutoff_cutoffs.json',
+      3: 'CUTOFFS 2026/CAP-3-CUT-OFF-MH_cutoffs.json'
     };
 
     const CATS = {
@@ -1232,15 +1240,24 @@
 
       const btn1 = document.getElementById('roundBtn1');
       const btn2 = document.getElementById('roundBtn2');
-      if (btn1) btn1.classList.toggle('active', round === 1);
-      if (btn2) btn2.classList.toggle('active', round === 2);
+      const btn3 = document.getElementById('roundBtn3');
+      
+      [1, 2, 3].forEach(r => {
+        const btn = document.getElementById('roundBtn' + r);
+        if (btn) {
+          btn.classList.toggle('active', round === r);
+          btn.style.background = (round === r) ? 'var(--accent)' : 'transparent';
+          btn.style.color = (round === r) ? '#fff' : 'var(--muted)';
+        }
+      });
 
-      if (btn2) btn2.innerHTML = round === 2 ? 'Round 2 <span class="round-badge">Latest</span>' : 'Round 2';
       if (btn1) btn1.innerHTML = 'Round 1';
+      if (btn2) btn2.innerHTML = 'Round 2';
+      if (btn3) btn3.innerHTML = round === 3 ? 'Round 3 <span class="round-badge" style="background:#fff; color:var(--accent); font-size:9px; padding:1px 5px; border-radius:6px; margin-left:4px;">Latest</span>' : 'Round 3';
 
       const heroBadge = document.getElementById('heroBadge');
       const heroDesc = document.getElementById('heroDesc');
-      if (heroBadge) heroBadge.textContent = `🔥 2026 ROUND ${round} • ${round === 2 ? 'LATEST DATA' : 'CUTOFF DATA'}`;
+      if (heroBadge) heroBadge.textContent = `🔥 2026 ROUND ${round} • ${round === 3 ? 'LATEST DATA' : 'CUTOFF DATA'}`;
       if (heroDesc) heroDesc.textContent = `Based on official CAP Round ${round} (2026) closing cutoffs. Find your best college matches using real cutoff data.`;
 
       const user = getSession();
@@ -1273,19 +1290,8 @@
       }
 
       const urlRound = params.get('round');
-      if (urlRound === '1') {
-        currentRound = 1;
-        const btn1 = document.getElementById('roundBtn1');
-        const btn2 = document.getElementById('roundBtn2');
-        if (btn1) btn1.classList.add('active');
-        if (btn2) {
-          btn2.classList.remove('active');
-          btn2.innerHTML = 'Round 2';
-        }
-        const heroBadge = document.getElementById('heroBadge');
-        const heroDesc = document.getElementById('heroDesc');
-        if (heroBadge) heroBadge.textContent = '🔥 2026 ROUND 1 • CUTOFF DATA';
-        if (heroDesc) heroDesc.textContent = 'Based on official CAP Round 1 (2026) closing cutoffs. Find your best college matches using real cutoff data.';
+      if (['1', '2', '3'].includes(urlRound)) {
+        switchRound(parseInt(urlRound));
       }
 
       await loadRoundData(currentRound);

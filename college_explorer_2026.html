@@ -1441,13 +1441,14 @@
         <div id="cutoffSectionWrapper" style="display: none; margin-bottom: 40px;">
           <!-- Tabs for MHT-CET vs JEE Mains -->
           <div class="college-tabs-header" style="display:flex; align-items:center; flex-wrap:wrap; gap:12px;">
-            <button class="college-tab-btn active" id="tabMhtcetBtn" onclick="setCollegeTab('mhtcet')">MHT-CET (Round <span id="tabMhtcetRound">2</span> 2026)</button>
-            <button class="college-tab-btn" id="tabJeeBtn" onclick="setCollegeTab('jee')">JEE Mains All India (Round <span id="tabJeeRound">2</span> 2026)</button>
+            <button class="college-tab-btn active" id="tabMhtcetBtn" onclick="setCollegeTab('mhtcet')">MHT-CET (Round <span id="tabMhtcetRound">3</span> 2026)</button>
+            <button class="college-tab-btn" id="tabJeeBtn" onclick="setCollegeTab('jee')">JEE Mains All India (Round <span id="tabJeeRound">3</span> 2026)</button>
             <div style="margin-left:auto; display:flex; align-items:center; gap:6px;">
               <span style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px;">CAP Round:</span>
               <div style="display:flex; background:var(--bg); padding:3px; border-radius:8px; border:1px solid var(--stroke);">
                 <button class="toggle-btn" id="explorerRoundBtn1" onclick="switchExplorerRound(1)" style="font-size:11px; padding:6px 12px; font-weight:700; border:none; border-radius:6px; cursor:pointer; background:transparent; color:var(--muted);">Round 1</button>
-                <button class="toggle-btn active" id="explorerRoundBtn2" onclick="switchExplorerRound(2)" style="font-size:11px; padding:6px 12px; font-weight:700; border:none; border-radius:6px; cursor:pointer; background:var(--brand); color:#fff;">Round 2</button>
+                <button class="toggle-btn" id="explorerRoundBtn2" onclick="switchExplorerRound(2)" style="font-size:11px; padding:6px 12px; font-weight:700; border:none; border-radius:6px; cursor:pointer; background:transparent; color:var(--muted);">Round 2</button>
+                <button class="toggle-btn active" id="explorerRoundBtn3" onclick="switchExplorerRound(3)" style="font-size:11px; padding:6px 12px; font-weight:700; border:none; border-radius:6px; cursor:pointer; background:var(--brand); color:#fff;">Round 3</button>
               </div>
             </div>
           </div>
@@ -1461,7 +1462,7 @@
               <div class="master-list-card">
                 <div class="master-list-header"
                   style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
-                  <h3 style="margin:0;" id="mhtcetTableTitle">MHT-CET Branch Cutoffs — Round 2 (2026)</h3>
+                  <h3 style="margin:0;" id="mhtcetTableTitle">MHT-CET Branch Cutoffs — Round 3 (2026)</h3>
                   <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
                     <div class="master-filters">
                       <select id="tblCategory" onchange="applyTableFilters()" class="filter-select">
@@ -1502,7 +1503,7 @@
                 <div class="master-list-header"
                   style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
                   <div>
-                    <h3 style="margin:0;" id="jeeTableTitle">JEE Mains All India Cutoffs — Round 2 (2026)</h3>
+                    <h3 style="margin:0;" id="jeeTableTitle">JEE Mains All India Cutoffs — Round 3 (2026)</h3>
                     <span style="font-size: 12px; color: var(--muted); font-weight: 500;">Direct admission cutoff via
                       JEE Mains score</span>
                   </div>
@@ -1573,10 +1574,12 @@
         let mhtData = [];
         let mhtDataR1 = [];
         let mhtDataR2 = [];
+        let mhtDataR3 = [];
         let jeeData = [];
         let jeeDataR1 = [];
         let jeeDataR2 = [];
-        let explorerCurrentRound = 2; // Default to Round 2
+        let jeeDataR3 = [];
+        let explorerCurrentRound = 3; // Default to Round 3
 
         let gaugeChartInstance = null;
         let pieChartInstance = null;
@@ -1688,14 +1691,16 @@
         // Bootstrapping
         async function init() {
           try {
-            const [metaRes, seatsJson, placementJson, cetR1Json, cetR2Json, jeeR1Json, jeeR2Json] = await Promise.all([
+            const [metaRes, seatsJson, placementJson, cetR1Json, cetR2Json, cetR3Json, jeeR1Json, jeeR2Json, jeeR3Json] = await Promise.all([
               fetch('college-data.json').then(r => r.json()),
               fetch('cutoffs 2026/MHT_CET_2026_Seat_Matrix.json').then(r => r.json()),
               fetch('ALL_CLG_PLACEMENT_TIER.json').then(r => r.json()).catch(() => ({ ALL_CLG_PLACEMENT_TIER: [] })),
               fetch('cutoffs 2026/MHT-CET Round 1 2026 Cutoff_cutoffs.json').then(r => r.json()),
               fetch('cutoffs 2026/MHT-CET Round 2 2026 Cutoff_cutoffs.json').then(r => r.json()).catch(() => []),
+              fetch('cutoffs 2026/CAP-3-CUT-OFF-MH_cutoffs.json').then(r => r.json()).catch(() => []),
               fetch('cutoffs 2026/ROUND_1_ALL_INDIA_2026.json').then(r => r.json()),
-              fetch('cutoffs 2026/All_India_Round_2.json').then(r => r.json()).catch(() => ({}))
+              fetch('cutoffs 2026/All_India_Round_2.json').then(r => r.json()).catch(() => ({})),
+              fetch('cutoffs 2026/All India Round 3 2026.json').then(r => r.json()).catch(() => ({}))
             ]);
 
             // Parse seats matrix
@@ -1726,7 +1731,8 @@
 
             mhtDataR1 = parseMhtData(cetR1Json);
             mhtDataR2 = parseMhtData(cetR2Json);
-            mhtData = explorerCurrentRound === 2 ? mhtDataR2 : mhtDataR1;
+            mhtDataR3 = parseMhtData(cetR3Json);
+            mhtData = explorerCurrentRound === 3 ? mhtDataR3 : (explorerCurrentRound === 2 ? mhtDataR2 : mhtDataR1);
 
             // Parse JEE data helper
             function parseJeeData(jeeJson, key) {
@@ -1756,7 +1762,8 @@
 
             jeeDataR1 = parseJeeData(jeeR1Json, 'ALL_INDIA_2026');
             jeeDataR2 = parseJeeData(jeeR2Json, 'All_India_Round_2');
-            jeeData = explorerCurrentRound === 2 ? jeeDataR2 : jeeDataR1;
+            jeeDataR3 = parseJeeData(jeeR3Json, 'All India Round 3 2026');
+            jeeData = explorerCurrentRound === 3 ? jeeDataR3 : (explorerCurrentRound === 2 ? jeeDataR2 : jeeDataR1);
 
             // Map list of unique colleges
             const uniqueMap = {};
@@ -2502,20 +2509,17 @@
           explorerCurrentRound = round;
 
           // Update toggle buttons
-          const btn1 = document.getElementById('explorerRoundBtn1');
-          const btn2 = document.getElementById('explorerRoundBtn2');
-          if (btn1) {
-            btn1.style.background = round === 1 ? 'var(--brand)' : 'transparent';
-            btn1.style.color = round === 1 ? '#fff' : 'var(--muted)';
-          }
-          if (btn2) {
-            btn2.style.background = round === 2 ? 'var(--brand)' : 'transparent';
-            btn2.style.color = round === 2 ? '#fff' : 'var(--muted)';
-          }
+          [1, 2, 3].forEach(r => {
+            const btn = document.getElementById('explorerRoundBtn' + r);
+            if (btn) {
+              btn.style.background = r === round ? 'var(--brand)' : 'transparent';
+              btn.style.color = r === round ? '#fff' : 'var(--muted)';
+            }
+          });
 
           // Switch data sources
-          mhtData = round === 2 ? mhtDataR2 : mhtDataR1;
-          jeeData = round === 2 ? jeeDataR2 : jeeDataR1;
+          mhtData = round === 3 ? mhtDataR3 : (round === 2 ? mhtDataR2 : mhtDataR1);
+          jeeData = round === 3 ? jeeDataR3 : (round === 2 ? jeeDataR2 : jeeDataR1);
 
           // Update tab labels
           const tabMhtRound = document.getElementById('tabMhtcetRound');
@@ -2588,13 +2592,13 @@
 
           if (!branch || !category) return;
 
-          const labels = ['Round 1', 'Round 2'];
+          const labels = ['Round 1', 'Round 2', 'Round 3'];
           const percentiles = [];
           const ranks = [];
           const tableRows = [];
 
           // Lookup from each round's data
-          const roundDataSets = [mhtDataR1, mhtDataR2];
+          const roundDataSets = [mhtDataR1, mhtDataR2, mhtDataR3];
           for (let r = 0; r < roundDataSets.length; r++) {
             const roundArr = roundDataSets[r];
             const match = roundArr.find(row => {
@@ -2939,13 +2943,13 @@
 
           if (!branch) return;
 
-          const labels = ['Round 1', 'Round 2'];
+          const labels = ['Round 1', 'Round 2', 'Round 3'];
           const percentiles = [];
           const ranks = [];
           const tableRows = [];
 
           // Lookup from each round's data
-          const roundDataSets = [jeeDataR1, jeeDataR2];
+          const roundDataSets = [jeeDataR1, jeeDataR2, jeeDataR3];
           for (let r = 0; r < roundDataSets.length; r++) {
             const roundArr = roundDataSets[r];
             const match = roundArr.find(row => {

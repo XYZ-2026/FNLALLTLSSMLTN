@@ -311,8 +311,8 @@
         } catch(e) {}
       }
 
-      // For 2026 data, adjust the table header to only show Round 1 & Round 2
-      const totalRounds = is2026 ? 2 : 4;
+      // For 2026 data, adjust the table header to show Round 1, Round 2 & Round 3
+      const totalRounds = is2026 ? 3 : 4;
       if (is2026) {
         const thead = document.querySelector('#resultsTable thead tr');
         thead.innerHTML = `
@@ -323,6 +323,7 @@
           <th>Category</th>
           <th>Round 1</th>
           <th>Round 2</th>
+          <th>Round 3</th>
           <th>Action</th>
         `;
       }
@@ -334,10 +335,11 @@
         // Load 2026 data from CUTOFFS 2026 folder
         try {
           if (isJee) {
-            // Load JEE Round 1 and Round 2
-            const [r1Res, r2Res] = await Promise.all([
+            // Load JEE Round 1, Round 2, and Round 3
+            const [r1Res, r2Res, r3Res] = await Promise.all([
               fetch('cutoffs 2026/ROUND_1_ALL_INDIA_2026.json').then(r => r.json()).catch(() => ({})),
-              fetch('cutoffs 2026/All_India_Round_2.json').then(r => r.json()).catch(() => ({}))
+              fetch('cutoffs 2026/All_India_Round_2.json').then(r => r.json()).catch(() => ({})),
+              fetch('cutoffs 2026/All India Round 3 2026.json').then(r => r.json()).catch(() => ({}))
             ]);
             const meritRegex = /^(\d+)\s*\(([\d\.]+)\)$/;
             function parseJeeRound(jsonData, key) {
@@ -358,19 +360,22 @@
             }
             const r1Map = parseJeeRound(r1Res, 'ALL_INDIA_2026');
             const r2Map = parseJeeRound(r2Res, 'All_India_Round_2');
-            // Merge into cetMap with R1/R2 structure
-            const allKeys = new Set([...r1Map.keys(), ...r2Map.keys()]);
+            const r3Map = parseJeeRound(r3Res, 'All India Round 3 2026');
+            // Merge into cetMap with R1/R2/R3 structure
+            const allKeys = new Set([...r1Map.keys(), ...r2Map.keys(), ...r3Map.keys()]);
             allKeys.forEach(key => {
               cetMap.set(key, {
                 R1: r1Map.get(key) || null,
-                R2: r2Map.get(key) || null
+                R2: r2Map.get(key) || null,
+                R3: r3Map.get(key) || null
               });
             });
           } else {
-            // Load MHT-CET Round 1 and Round 2
-            const [r1Res, r2Res] = await Promise.all([
+            // Load MHT-CET Round 1, Round 2, and Round 3
+            const [r1Res, r2Res, r3Res] = await Promise.all([
               fetch('cutoffs 2026/MHT-CET Round 1 2026 Cutoff_cutoffs.json').then(r => r.json()).catch(() => []),
-              fetch('cutoffs 2026/MHT-CET Round 2 2026 Cutoff_cutoffs.json').then(r => r.json()).catch(() => [])
+              fetch('cutoffs 2026/MHT-CET Round 2 2026 Cutoff_cutoffs.json').then(r => r.json()).catch(() => []),
+              fetch('cutoffs 2026/CAP-3-CUT-OFF-MH_cutoffs.json').then(r => r.json()).catch(() => [])
             ]);
             function indexMhtRound(data) {
               const map = new Map();
@@ -385,11 +390,13 @@
             }
             const r1Map = indexMhtRound(r1Res);
             const r2Map = indexMhtRound(r2Res);
-            const allKeys = new Set([...r1Map.keys(), ...r2Map.keys()]);
+            const r3Map = indexMhtRound(r3Res);
+            const allKeys = new Set([...r1Map.keys(), ...r2Map.keys(), ...r3Map.keys()]);
             allKeys.forEach(key => {
               cetMap.set(key, {
                 R1: r1Map.get(key) || null,
-                R2: r2Map.get(key) || null
+                R2: r2Map.get(key) || null,
+                R3: r3Map.get(key) || null
               });
             });
           }
@@ -481,6 +488,7 @@
 
         let r1 = rounds.R1 ? formatRound(rounds.R1) : (r.percentile ? formatRound({ rank: r.rank, percentile: r.percentile }) : '<span style="color:var(--muted)">—</span>');
         let r2 = rounds.R2 ? formatRound(rounds.R2) : '<span style="color:var(--muted)">—</span>';
+        let r3_2026 = rounds.R3 ? formatRound(rounds.R3) : '<span style="color:var(--muted)">—</span>';
 
         if (isLocked) {
           const lockedCell = `
@@ -498,6 +506,7 @@
                 <td style="max-width:300px;"><span style="filter: blur(4px); opacity: 0.5; font-weight:600;">••••••••••••••••••••••••••••••••••••</span></td>
                 <td><span style="filter: blur(4px); opacity: 0.5; color:var(--muted)">••••••••••••••••••••</span></td>
                 <td><span style="filter: blur(4px); opacity: 0.5;">••••</span></td>
+                <td>${lockedCell}</td>
                 <td>${lockedCell}</td>
                 <td>${lockedCell}</td>
                 <td>
@@ -535,6 +544,7 @@
               <td>${r.category || '—'}</td>
               <td>${r1}</td>
               <td>${r2}</td>
+              <td>${r3_2026}</td>
               <td>
                 <a href="https://fe2025.mahacet.org/StaticPages/frmInstituteSummary?InstituteCode=${String(r.code || '').padStart(5, '0')}" target="_blank" style="color:var(--brand); text-decoration:none; font-weight:700; font-size:12px;">Visit Portal →</a>
               </td>
