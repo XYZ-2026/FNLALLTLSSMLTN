@@ -296,37 +296,31 @@
       // Check if it is JEE Mains predictor results and detect 2026 source
       const topMetaRaw = localStorage.getItem("searchMeta");
       let isJee = false;
-      let is2026 = false;
-      let source2026Round = 0;
+      let is2026 = true; // Default to 2026 data
       if (topMetaRaw) {
         try {
           const meta = JSON.parse(topMetaRaw);
-          isJee = (meta.exam === 'JEE Mains');
-          if (meta.source && meta.source.startsWith('2026')) {
-            is2026 = true;
-            // Extract which round from source like '2026_round2' or '2026_all_india_round2'
-            const roundMatch = meta.source.match(/round(\d+)/);
-            source2026Round = roundMatch ? parseInt(roundMatch[1]) : 2;
+          isJee = (meta.exam === 'JEE Mains' || (meta.exam && meta.exam.includes('JEE')));
+          if (meta.source === 'legacy') {
+            is2026 = false;
           }
         } catch(e) {}
       }
 
-      // For 2026 data, adjust the table header to show Round 1, Round 2 & Round 3
-      const totalRounds = is2026 ? 3 : 4;
-      if (is2026) {
-        const thead = document.querySelector('#resultsTable thead tr');
-        thead.innerHTML = `
-          <th>#</th>
-          <th>Code</th>
-          <th>Institute Name</th>
-          <th>Branch</th>
-          <th>Category</th>
-          <th>Round 1</th>
-          <th>Round 2</th>
-          <th>Round 3</th>
-          <th>Action</th>
-        `;
-      }
+      // For 2026 data, adjust the table header to show Round 1, Round 2, Round 3 & Round 4
+      const thead = document.querySelector('#resultsTable thead tr');
+      thead.innerHTML = `
+        <th>#</th>
+        <th>CODE</th>
+        <th>INSTITUTE NAME</th>
+        <th>BRANCH</th>
+        <th>CATEGORY</th>
+        <th>ROUND 1</th>
+        <th>ROUND 2</th>
+        <th>ROUND 3</th>
+        <th>ROUND 4</th>
+        <th>ACTION</th>
+      `;
 
       // Fetch appropriate data and index it
       const cetMap = new Map();
@@ -335,47 +329,53 @@
         // Load 2026 data from CUTOFFS 2026 folder
         try {
           if (isJee) {
-            // Load JEE Round 1, Round 2, and Round 3
-            const [r1Res, r2Res, r3Res] = await Promise.all([
-              fetch('cutoffs 2026/ROUND_1_ALL_INDIA_2026.json').then(r => r.json()).catch(() => ({})),
-              fetch('cutoffs 2026/All_India_Round_2.json').then(r => r.json()).catch(() => ({})),
-              fetch('cutoffs 2026/All India Round 3 2026.json').then(r => r.json()).catch(() => ({}))
+            // Load JEE Round 1, Round 2, Round 3, and Round 4
+            const [r1Res, r2Res, r3Res, r4Res] = await Promise.all([
+              fetch('CUTOFFS 2026/round1_all_india.json').then(r => r.json()).catch(() => ({})),
+              fetch('CUTOFFS 2026/round2_all_india.json').then(r => r.json()).catch(() => ({})),
+              fetch('CUTOFFS 2026/round3_all_india.json').then(r => r.json()).catch(() => ({})),
+              fetch('CUTOFFS 2026/round4_all_india.json').then(r => r.json()).catch(() => ({}))
             ]);
-            const meritRegex = /^(\d+)\s*\(([\d\.]+)\)$/;
-            function parseJeeRound(jsonData, key) {
-              const list = jsonData[key] || jsonData || [];
+            const meritRegex = /^(\d+)\s*\(([\d\.]+)\)%?/;
+            function parseJeeRound(jsonData) {
+              const list = Array.isArray(jsonData) ? jsonData : (Object.values(jsonData)[0] || []);
               const map = new Map();
-              list.forEach(r => {
-                const choiceCode = String(r['Choice Code'] || '').trim();
-                const instCode = choiceCode.substring(0, 5);
-                const branch = (r['Course Name'] || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
-                const meritStr = String(r['All India Merit'] || '').trim();
-                const m = meritStr.match(meritRegex);
-                let rank = null, percentile = null;
-                if (m) { rank = parseInt(m[1]); percentile = parseFloat(m[2]); }
+              (list || []).forEach(r => {
+                const choiceCode = String(r['Choice Code'] || r.choiceCode || '').trim();
+                const instCode = choiceCode.length >= 5 ? choiceCode.substring(0, 5) : choiceCode.substring(0, 4);
+                const branch = (r['Course Name'] || r.branch_name || r.branch || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+                let rank = r.rank || null;
+                let percentile = r.percentile || null;
+                if (r['All India Merit']) {
+                  const m = String(r['All India Merit']).match(meritRegex);
+                  if (m) { rank = parseInt(m[1]); percentile = parseFloat(m[2]); }
+                }
                 const lookupKey = `${instCode}|${branch}|All India`;
                 map.set(lookupKey, { rank, percentile });
               });
               return map;
             }
-            const r1Map = parseJeeRound(r1Res, 'ALL_INDIA_2026');
-            const r2Map = parseJeeRound(r2Res, 'All_India_Round_2');
-            const r3Map = parseJeeRound(r3Res, 'All India Round 3 2026');
-            // Merge into cetMap with R1/R2/R3 structure
-            const allKeys = new Set([...r1Map.keys(), ...r2Map.keys(), ...r3Map.keys()]);
+            const r1Map = parseJeeRound(r1Res);
+            const r2Map = parseJeeRound(r2Res);
+            const r3Map = parseJeeRound(r3Res);
+            const r4Map = parseJeeRound(r4Res);
+            // Merge into cetMap with R1/R2/R3/R4 structure
+            const allKeys = new Set([...r1Map.keys(), ...r2Map.keys(), ...r3Map.keys(), ...r4Map.keys()]);
             allKeys.forEach(key => {
               cetMap.set(key, {
                 R1: r1Map.get(key) || null,
                 R2: r2Map.get(key) || null,
-                R3: r3Map.get(key) || null
+                R3: r3Map.get(key) || null,
+                R4: r4Map.get(key) || null
               });
             });
           } else {
-            // Load MHT-CET Round 1, Round 2, and Round 3
-            const [r1Res, r2Res, r3Res] = await Promise.all([
-              fetch('cutoffs 2026/MHT-CET Round 1 2026 Cutoff_cutoffs.json').then(r => r.json()).catch(() => []),
-              fetch('cutoffs 2026/MHT-CET Round 2 2026 Cutoff_cutoffs.json').then(r => r.json()).catch(() => []),
-              fetch('cutoffs 2026/CAP-3-CUT-OFF-MH_cutoffs.json').then(r => r.json()).catch(() => [])
+            // Load MHT-CET Round 1, Round 2, Round 3, and Round 4
+            const [r1Res, r2Res, r3Res, r4Res] = await Promise.all([
+              fetch('CUTOFFS 2026/mhtcet_round1.json').then(r => r.json()).catch(() => []),
+              fetch('CUTOFFS 2026/mhtcet_round2.json').then(r => r.json()).catch(() => []),
+              fetch('CUTOFFS 2026/mhtcet_round3.json').then(r => r.json()).catch(() => []),
+              fetch('CUTOFFS 2026/mhtcet_round4.json').then(r => r.json()).catch(() => [])
             ]);
             function indexMhtRound(data) {
               const map = new Map();
@@ -391,12 +391,14 @@
             const r1Map = indexMhtRound(r1Res);
             const r2Map = indexMhtRound(r2Res);
             const r3Map = indexMhtRound(r3Res);
-            const allKeys = new Set([...r1Map.keys(), ...r2Map.keys(), ...r3Map.keys()]);
+            const r4Map = indexMhtRound(r4Res);
+            const allKeys = new Set([...r1Map.keys(), ...r2Map.keys(), ...r3Map.keys(), ...r4Map.keys()]);
             allKeys.forEach(key => {
               cetMap.set(key, {
                 R1: r1Map.get(key) || null,
                 R2: r2Map.get(key) || null,
-                R3: r3Map.get(key) || null
+                R3: r3Map.get(key) || null,
+                R4: r4Map.get(key) || null
               });
             });
           }
@@ -483,12 +485,13 @@
         const isLocked = !isPremium && i >= 10;
         
         // Lookup rounds in cetMap
-        const lookupKey = `${String(r.code).trim()}|${String(r.branch).trim().toLowerCase().replace(/\s+/g, ' ')}|${String(r.category).trim()}`;
+        const lookupKey = isJee ? `${String(r.code).trim()}|${String(r.branch).trim().toLowerCase().replace(/\s+/g, ' ')}|All India` : `${String(r.code).trim()}|${String(r.branch).trim().toLowerCase().replace(/\s+/g, ' ')}|${String(r.category).trim()}`;
         const rounds = cetMap.get(lookupKey) || {};
 
         let r1 = rounds.R1 ? formatRound(rounds.R1) : (r.percentile ? formatRound({ rank: r.rank, percentile: r.percentile }) : '<span style="color:var(--muted)">—</span>');
         let r2 = rounds.R2 ? formatRound(rounds.R2) : '<span style="color:var(--muted)">—</span>';
-        let r3_2026 = rounds.R3 ? formatRound(rounds.R3) : '<span style="color:var(--muted)">—</span>';
+        let r3 = rounds.R3 ? formatRound(rounds.R3) : '<span style="color:var(--muted)">—</span>';
+        let r4 = rounds.R4 ? formatRound(rounds.R4) : '<span style="color:var(--muted)">—</span>';
 
         if (isLocked) {
           const lockedCell = `
@@ -498,24 +501,6 @@
             </div>
           `;
           
-          if (is2026) {
-            return `
-              <tr class="locked-row">
-                <td style="color:var(--muted)">${i + 1}</td>
-                <td><span class="college-code" style="filter: blur(2px); opacity: 0.5;">0000</span></td>
-                <td style="max-width:300px;"><span style="filter: blur(4px); opacity: 0.5; font-weight:600;">••••••••••••••••••••••••••••••••••••</span></td>
-                <td><span style="filter: blur(4px); opacity: 0.5; color:var(--muted)">••••••••••••••••••••</span></td>
-                <td><span style="filter: blur(4px); opacity: 0.5;">••••</span></td>
-                <td>${lockedCell}</td>
-                <td>${lockedCell}</td>
-                <td>${lockedCell}</td>
-                <td>
-                  <span style="color:var(--muted); font-size:12px; font-weight:600; display:inline-flex; align-items:center; gap:4px;">Locked 🔒</span>
-                </td>
-              </tr>
-            `;
-          }
-
           return `
             <tr class="locked-row">
               <td style="color:var(--muted)">${i + 1}</td>
@@ -534,27 +519,6 @@
           `;
         }
 
-        if (is2026) {
-          return `
-            <tr>
-              <td style="color:var(--muted)">${i + 1}</td>
-              <td><span class="college-code">${r.code || '—'}</span></td>
-              <td style="font-weight:600; max-width:300px;">${r.name || '—'}</td>
-              <td style="color:var(--muted)">${r.branch || '—'}</td>
-              <td>${r.category || '—'}</td>
-              <td>${r1}</td>
-              <td>${r2}</td>
-              <td>${r3_2026}</td>
-              <td>
-                <a href="https://fe2025.mahacet.org/StaticPages/frmInstituteSummary?InstituteCode=${String(r.code || '').padStart(5, '0')}" target="_blank" style="color:var(--brand); text-decoration:none; font-weight:700; font-size:12px;">Visit Portal →</a>
-              </td>
-            </tr>
-          `;
-        }
-
-        let r3 = rounds.R3 ? formatRound(rounds.R3) : '<span style="color:var(--muted)">—</span>';
-        let r4 = rounds.R4 ? formatRound(rounds.R4) : '<span style="color:var(--muted)">—</span>';
-
         return `
           <tr>
             <td style="color:var(--muted)">${i + 1}</td>
@@ -567,7 +531,7 @@
             <td>${r3}</td>
             <td>${r4}</td>
             <td>
-              <a href="https://fe2025.mahacet.org/StaticPages/frmInstituteSummary?InstituteCode=${String(r.code || '').padStart(5, '0')}" target="_blank" style="color:var(--brand); text-decoration:none; font-weight:700; font-size:12px;">Visit Portal →</a>
+              <a href="https://fe2026.mahacet.org/StaticPages/frmInstituteSummary?InstituteCode=${String(r.code || '').padStart(5, '0')}" target="_blank" style="color:var(--brand); text-decoration:none; font-weight:700; font-size:12px;">Visit Portal →</a>
             </td>
           </tr>
         `;

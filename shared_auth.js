@@ -32,6 +32,7 @@ function injectGlobalUI() {
       --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
       --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1);
     }
+    .premium-banners-section { display: none !important; }
     header { background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--stroke); padding: 0 20px; position: fixed; width: 100%; top: 0 !important; z-index: 500; height: 64px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 100%; gap: 12px; }
     .header-left { display: flex; align-items: center; gap: 16px; }
@@ -636,15 +637,6 @@ function injectGlobalUI() {
             <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="dropdown-content" id="drop-cet">
-            <a href="mht_cet_college_predictor_2026.html" class="sidebar-sub-link sidebar-sub-link-2026">
-              <span>College Predictor 2026</span>
-            </a>
-            <a href="college_explorer_2026.html" class="sidebar-sub-link sidebar-sub-link-2026">
-              <span>Cutoff Checker 2026</span>
-            </a>
-            <a href="percentile_vs_college_predictor_2026.html" class="sidebar-sub-link sidebar-sub-link-2026">
-              <span>JEE AI Predictor 2026</span>
-            </a>
             <a href="cet-landing.html" class="sidebar-sub-link">Hub Overview</a>
             <a href="cet_marks.html" class="sidebar-sub-link">Marks vs Percentile</a>
             <a href="cet_rank.html" class="sidebar-sub-link">Percentile vs Rank</a>
@@ -729,6 +721,34 @@ function injectGlobalUI() {
 
         <a href="manipal_cutoff.html" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg> Manipal MET</a>
         
+        <div class="sidebar-label">Utility Tools</div>
+        <div class="sidebar-dropdown">
+          <button class="sidebar-link dropdown-toggle" style="background:none;border:none;width:100%;cursor:pointer" onclick="toggleDropdown('utiltools')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+            Image & PDF Tools
+            <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="dropdown-content" id="drop-utiltools">
+            <a href="tools.html" class="sidebar-sub-link" style="font-weight:700;color:var(--ink)">All Tools</a>
+            <a href="tools.html#img-compress" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','compress')">Image Compressor</a>
+            <a href="tools.html#img-resize" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','resize')">Image Resizer</a>
+            <a href="tools.html#img-crop" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','crop')">Image Cropper</a>
+            <a href="tools.html#img-convert" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','jpg2png')">JPG → PNG</a>
+            <a href="tools.html#img-convert" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','png2jpg')">PNG → JPG</a>
+            <a href="tools.html#img-convert" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','webp')">WebP Converter</a>
+            <a href="tools.html#img-pdf" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','img2pdf')">Image → PDF</a>
+            <a href="tools.html#img-passport" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','passport')">Passport / ID Photo</a>
+            <a href="tools.html#pdf-maker" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','pdfmaker')">PDF Maker</a>
+            <a href="tools.html#pdf-imgs" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','imgs2pdf')">Images → PDF</a>
+            <a href="tools.html#pdf-merge" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','mergepdf')">Merge PDF</a>
+            <a href="tools.html#pdf-split" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','splitpdf')">Split PDF</a>
+            <a href="tools.html#pdf-extract" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','extractpdf')">Extract Pages</a>
+            <a href="tools.html#pdf-delete" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','deletepdf')">Delete Pages</a>
+            <a href="tools.html#pdf-compress" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','compresspdf')">Compress PDF</a>
+            <a href="tools.html#pdf-reorder" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','reorderpdf')">Reorder & Rotate Pages</a>
+          </div>
+        </div>
+
         <div class="sidebar-label">Tools</div>
         <a href="auto-preference-builder.html" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/></svg> Auto Preference Builder</a>
         <a href="Branch.html" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg> Branch Prediction Test</a>
@@ -1456,356 +1476,8 @@ window.exportTableToPDF = async function (tableOrId, filename) {
    ══════════════════════════════════════════ */
 
 function initAdPopup() {
-  var session = getSession();
-  if (session && (session.role === 'premium' || session.premium === true)) {
-    return;
-  }
-
-  var landingPages = [
-    'index.html',
-    'cet-landing.html',
-    'josaa-landing.html',
-    'csab-landing.html',
-    'comedk-landing.html',
-    'auth.html',
-    'admin.html',
-    'seed.html'
-  ];
-  var path = window.location.pathname.split('/').pop();
-  if (path === '' || path === '/' || !path) {
-    path = 'index.html';
-  }
-
-  if (landingPages.indexOf(path.toLowerCase()) >= 0) {
-    return;
-  }
-
-  var adStyle = document.createElement('style');
-  adStyle.innerHTML = `
-    .cs-ad-modal {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        z-index: 99999;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 0.4s ease;
-        padding: 20px;
-    }
-    .cs-ad-modal.show {
-        display: flex;
-        opacity: 1;
-    }
-    .cs-ad-modal-content {
-        background: var(--card, #ffffff);
-        border: 1px solid var(--stroke, rgba(0,0,0,0.08));
-        border-radius: 28px;
-        width: 100%;
-        max-width: 920px;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-        transform: scale(0.9) translateY(20px);
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .cs-ad-modal.show .cs-ad-modal-content {
-        transform: scale(1) translateY(0);
-    }
-    .cs-ad-close-btn {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background: rgba(255, 255, 255, 0.9);
-        border: 1px solid var(--stroke, rgba(0,0,0,0.08));
-        color: #111827;
-        border-radius: 50%;
-        width: 36px;
-        height: 36px;
-        font-size: 20px;
-        font-weight: 700;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10;
-        transition: all 0.2s;
-    }
-    .cs-ad-close-btn:hover {
-        background: var(--brand-soft, #fef2f2);
-        color: var(--brand, #dc2626);
-        transform: scale(1.05);
-    }
-    .cs-ad-header {
-        padding: 32px 56px 12px 32px;
-        text-align: center;
-        position: relative;
-    }
-    .cs-ad-badge-top {
-        background: var(--brand-soft, #fef2f2);
-        color: var(--brand, #dc2626);
-        padding: 6px 14px;
-        border-radius: 100px;
-        font-size: 11px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        display: inline-block;
-        margin-bottom: 12px;
-        border: 1px solid var(--brand-ring, rgba(220,38,38,0.1));
-    }
-    .cs-ad-header-title {
-        font-family: 'Lexend', sans-serif;
-        font-weight: 800;
-        font-size: 22px;
-        color: var(--ink, #111827);
-        letter-spacing: -0.01em;
-        margin-bottom: 6px;
-    }
-    .cs-ad-header-desc {
-        color: var(--muted, #6b7280);
-        font-size: 14px;
-        max-width: 600px;
-        margin: 0 auto;
-        line-height: 1.45;
-    }
-    .cs-ad-cards-container {
-        display: flex;
-        gap: 24px;
-        padding: 0 32px 32px;
-        flex-direction: row;
-    }
-    .cs-ad-card {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        background: var(--card, #ffffff);
-        border: 1px solid var(--stroke, rgba(0,0,0,0.08));
-        border-radius: 20px;
-        overflow: hidden;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    }
-    .cs-ad-card:hover {
-        transform: translateY(-4px);
-        border-color: var(--brand, #dc2626);
-        box-shadow: 0 12px 24px var(--brand-ring, rgba(220, 38, 38, 0.1));
-    }
-    .cs-ad-image-container {
-        width: 100%;
-        padding-top: 52%;
-        position: relative;
-        background: #f3f4f6;
-    }
-    .cs-ad-image-container img {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-    .cs-ad-text-container {
-        padding: 24px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        flex-grow: 1;
-    }
-    .cs-ad-badge {
-        background: var(--brand-soft, #fef2f2);
-        color: var(--brand, #dc2626);
-        padding: 6px 14px;
-        border-radius: 100px;
-        font-size: 11px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 12px;
-        border: 1px solid var(--brand-ring, rgba(220,38,38,0.1));
-    }
-    .cs-ad-title {
-        font-family: 'Lexend', sans-serif;
-        font-weight: 800;
-        font-size: 18px;
-        color: var(--ink, #111827);
-        line-height: 1.3;
-        margin-bottom: 8px;
-    }
-    .cs-ad-description {
-        font-size: 13.5px;
-        color: var(--muted, #6b7280);
-        line-height: 1.45;
-        margin-bottom: 20px;
-        flex-grow: 1;
-    }
-    .cs-ad-cta-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        padding: 12px 24px;
-        background: var(--brand, #dc2626);
-        color: #ffffff !important;
-        text-decoration: none;
-        border-radius: 14px;
-        font-family: 'Lexend', sans-serif;
-        font-weight: 800;
-        font-size: 14px;
-        transition: all 0.3s;
-        box-shadow: 0 4px 12px var(--brand-ring, rgba(220, 38, 38, 0.15));
-        margin-top: auto;
-    }
-    .cs-ad-cta-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 6px 16px var(--brand-ring, rgba(220, 38, 38, 0.25));
-        background: #b91c1c;
-    }
-    @media (max-width: 768px) {
-        .cs-ad-modal {
-            padding: 10px;
-        }
-        .cs-ad-modal-content {
-            max-width: 420px;
-            max-height: 95vh;
-            overflow-y: auto;
-            border-radius: 20px;
-        }
-        .cs-ad-header {
-            padding: 16px 36px 8px 16px;
-        }
-        .cs-ad-badge-top {
-            margin-bottom: 6px;
-            padding: 4px 10px;
-            font-size: 10px;
-        }
-        .cs-ad-header-title {
-            font-size: 16px;
-            margin-bottom: 0px;
-        }
-        .cs-ad-header-desc {
-            display: none;
-        }
-        .cs-ad-cards-container {
-            flex-direction: column;
-            gap: 10px;
-            padding: 0 12px 16px;
-        }
-        .cs-ad-card {
-            border-radius: 14px;
-        }
-        .cs-ad-image-container {
-            padding-top: 36%;
-        }
-        .cs-ad-text-container {
-            padding: 12px;
-        }
-        .cs-ad-badge {
-            margin-bottom: 6px;
-            padding: 4px 10px;
-            font-size: 10px;
-        }
-        .cs-ad-title {
-            font-size: 14px;
-            margin-bottom: 6px;
-        }
-        .cs-ad-description {
-            display: none;
-        }
-        .cs-ad-cta-btn {
-            padding: 10px 20px;
-            font-size: 13px;
-            border-radius: 10px;
-            margin-top: 4px;
-        }
-    }
-  `;
-  document.head.appendChild(adStyle);
-
-  var modalHtml = `
-    <div id="cs-ad-modal" class="cs-ad-modal">
-      <div class="cs-ad-modal-content">
-        <button class="cs-ad-close-btn" onclick="window.closeAdModal()">&times;</button>
-        <div class="cs-ad-header">
-          <div class="cs-ad-badge-top">Premium Counselling Programs</div>
-          <h2 class="cs-ad-header-title">Direct Personal Counselling 2026</h2>
-          <p class="cs-ad-header-desc">Get premium mentoring from expert counselors to secure your dream engineering college seat.</p>
-        </div>
-        <div class="cs-ad-cards-container">
-          <div class="cs-ad-card">
-            <div class="cs-ad-image-container">
-              <img src="https://courses-assets-v2.classplus.co/_next/image?url=/api/proxyimage?url=https%3A%2F%2Fcdn-wl-assets.classplus.co%2Fproduction%2Fsingle%2Fijpsrw%2Fa181e913-c49f-4ed8-8838-c15b38cf7a58.png&w=640&q=75" alt="Simplified Pro">
-            </div>
-            <div class="cs-ad-text-container">
-              <div class="cs-ad-badge">Simplified Pro</div>
-              <h3 class="cs-ad-title">Simplified Pro Counselling 2026</h3>
-              <p class="cs-ad-description">Maximize your admission chances! Get expert choice filling lists, strategic round analyses, and college tier matches.</p>
-              <a href="https://www.conceptsimplified.in/courses/668919" target="_blank" class="cs-ad-cta-btn">Register for Simplified Pro</a>
-            </div>
-          </div>
-          <div class="cs-ad-card">
-            <div class="cs-ad-image-container">
-              <img src="https://courses-assets-v2.classplus.co/_next/image?url=/api/proxyimage?url=https%3A%2F%2Fcdn-wl-assets.classplus.co%2Fproduction%2Fsingle%2Fijpsrw%2Fbde224eb-a206-48f0-ae15-2d2d20fbfaf5.png&w=640&q=75" alt="Personalized 1:1">
-            </div>
-            <div class="cs-ad-text-container">
-              <div class="cs-ad-badge">Personalized 1:1</div>
-              <h3 class="cs-ad-title">Simplified Premium 1:1 counselling</h3>
-              <p class="cs-ad-description">Tired of searching manually? Get personalized 1:1 counselling support and dedicated mentoring from expert counselors.</p>
-              <a href="https://www.conceptsimplified.in/courses/840574" target="_blank" class="cs-ad-cta-btn">Get Personalized 1:1 Help</a>
-            </div>
-          </div>
-          <div class="cs-ad-card">
-            <div class="cs-ad-image-container">
-              <img src="https://courses-assets-v2.classplus.co/_next/image?url=/api/proxyimage?url=https%3A%2F%2Fcdn-wl-assets.classplus.co%2Fproduction%2Fsingle%2Fijpsrw%2F0c12cc3c-cb87-46ff-a2cc-8a1a790b2e4c.png&w=640&q=75" alt="AI Counselling">
-            </div>
-            <div class="cs-ad-text-container">
-              <div class="cs-ad-badge">AI Counselling</div>
-              <h3 class="cs-ad-title">AI-Powered College Predictor Platform</h3>
-              <p class="cs-ad-description">Leverage our AI-driven college predictor to get data-backed recommendations, branch predictions, and personalized admission strategies.</p>
-              <a href="https://www.conceptsimplified.in/courses/860295" target="_blank" class="cs-ad-cta-btn">Explore AI Counselling</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-  document.body.insertAdjacentHTML('beforeend', modalHtml);
-
-  window.closeAdModal = function () {
-    var modal = document.getElementById('cs-ad-modal');
-    if (modal) {
-      modal.classList.remove('show');
-      setTimeout(function () {
-        modal.style.display = 'none';
-      }, 400);
-    }
-  };
-
-  // Close ad when clicking outside modal content
-  var adModalElement = document.getElementById('cs-ad-modal');
-  if (adModalElement) {
-    adModalElement.addEventListener('click', function (e) {
-      if (e.target === this) {
-        window.closeAdModal();
-      }
-    });
-  }
-
-  function showAd() {
-    var modal = document.getElementById('cs-ad-modal');
-    if (modal) {
-      modal.style.display = 'flex';
-      modal.offsetHeight; // force reflow
-      modal.classList.add('show');
-    }
-  }
-
-  // Pop up every 2 minutes
-  setInterval(showAd, 120000);
+  // Direct counselling popup disabled for 2027
+  return;
 }
 
 /* ══════════════════════════════════════════

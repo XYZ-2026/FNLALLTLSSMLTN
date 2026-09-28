@@ -711,8 +711,8 @@
 <body>
   <div class="wrap" id="toolArea">
     <div class="page-hdr">
-      <h1>DSE College Explorer & Cutoffs</h1>
-      <p>Analyze admission cutoff percentiles, closing ranks, and placement packages for Direct Second Year (DSE) engineering colleges in Maharashtra.</p>
+      <h1>DSE College Explorer & Cutoffs (2026 Data)</h1>
+      <p>Analyze official 2026 admission cutoff percentiles, closing ranks, and placement packages for Direct Second Year (DSE) engineering colleges in Maharashtra.</p>
     </div>
 
     <!-- Data loading state spinner -->
@@ -1023,26 +1023,26 @@
           const [metaRes, placementText, dseR1Json, dseR2Json] = await Promise.all([
             fetch('college-data.json').then(r => r.json()),
             fetch('mhtcet_colleges_with_codes.csv').then(r => r.text()),
-            fetch('DSE/DSE_CUTOFFS_R1.json').then(r => r.json()),
-            fetch('DSE/DSE_CUTOFFS_R2.json').then(r => r.json())
+            fetch('DSE 2026/DSE_CAP_1_2026_cutoffs.json').then(r => r.json()),
+            fetch('DSE 2026/DSE_CAP_2_2026_cutoffs.json').then(r => r.json())
           ]);
 
           const parsedPlacements = Papa.parse(placementText, { header: true, skipEmptyLines: true });
           allPlacementTiers = parsedPlacements.data || [];
 
-          const r1Raw = dseR1Json["DSE_CUTOFFS"] || dseR1Json || [];
-          const r2Raw = dseR2Json["DSE_CUTOFFS"] || dseR2Json || [];
+          const r1Raw = Array.isArray(dseR1Json) ? dseR1Json : (dseR1Json["DSE_CUTOFFS"] || []);
+          const r2Raw = Array.isArray(dseR2Json) ? dseR2Json : (dseR2Json["DSE_CUTOFFS"] || []);
 
           const mergedMap = {};
 
           r1Raw.forEach(r => {
             const code = String(r["Institute Code"] || '').trim();
             const name = (r["Institute"] || '').replace(/^\d+\s*-\s*/, '').replace(/^\d+\s+/, '').trim();
-            const branch = (r["Course Name"] || '').trim();
-            const seatType = (r["Seat Type."] || '').trim();
+            const branch = (r["Branch"] || r["Course Name"] || '').trim();
+            const seatType = (r["Seat Type"] || r["Seat Type."] || '').trim();
             const percentile = parseFloat(r["Percentile"]) || null;
             const rank = parseInt(r["Rank"]) || null;
-            const stage = "Stage-I";
+            const stage = (r["Stage"] || 'Stage-I').trim();
 
             const key = `${code}_${branch}_${seatType}_${stage}`;
             if (!mergedMap[key]) {
@@ -1065,12 +1065,11 @@
           });
 
           r2Raw.forEach(r => {
-            const choiceCode = String(r["Choice Code"] || '').trim();
-            const code = choiceCode.substring(0, 4);
-            const name = (r["College Name"] || '').replace(/^\d+\s*-\s*/, '').replace(/^\d+\s+/, '').trim();
-            const branch = (r["Course Name"] || '').trim();
-            const seatType = (r["Category"] || '').trim();
-            const percentile = parseFloat(r["Percentage"]) || null;
+            const code = String(r["Institute Code"] || '').trim();
+            const name = (r["Institute"] || '').replace(/^\d+\s*-\s*/, '').replace(/^\d+\s+/, '').trim();
+            const branch = (r["Branch"] || r["Course Name"] || '').trim();
+            const seatType = (r["Seat Type"] || r["Category"] || '').trim();
+            const percentile = parseFloat(r["Percentile"] || r["Percentage"]) || null;
             const rank = parseInt(r["Rank"]) || null;
             const stage = (r["Stage"] || 'Stage-I').trim();
 

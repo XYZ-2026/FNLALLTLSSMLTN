@@ -784,8 +784,8 @@
 
         <!-- HERO -->
         <div class="compare-hero">
-            <h2>DSE College Compare Tool</h2>
-            <p>Compare two engineering colleges in Maharashtra side-by-side. Analyze DSE Diploma cutoffs, intakes, and placement statistics.</p>
+            <h2>DSE College Compare Tool (2026 Data)</h2>
+            <p>Compare two engineering colleges in Maharashtra side-by-side. Analyze 2026 DSE Diploma cutoffs, intakes, and placement statistics.</p>
         </div>
 
         <!-- SELECTORS -->
@@ -975,11 +975,13 @@
                 }
 
                 // 6. DSE data
-                const dseRes = await fetch('DSE/DSE_CUTOFFS_R1.json');
+                const dseRes = await fetch('DSE 2026/DSE_CAP_1_2026_cutoffs.json');
                 if (dseRes.ok) {
                     const json = await dseRes.json();
-                    DSE_DATA = json.DSE_CUTOFFS || [];
+                    DSE_DATA = Array.isArray(json) ? json : (json.DSE_CUTOFFS || []);
                     DSE_DATA.forEach(row => {
+                        row['Course Name'] = row['Branch'] || row['Course Name'] || '';
+                        row['Seat Type.'] = row['Seat Type'] || row['Seat Type.'] || '';
                         row._pct = parseFloat(row.Percentile) || 0;
                         row._rank = parseInt(row.Rank) || 999999;
                     });

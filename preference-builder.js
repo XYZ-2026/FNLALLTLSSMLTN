@@ -478,7 +478,7 @@ async function loadData() {
     
     // Fetch data.json, college-data.json, and jee_data.json concurrently
     const [res1, res2, res3] = await Promise.all([
-      fetch('data.json'),
+      fetch('CUTOFFS 2026/mhtcet_round1.json'),
       fetch('college-data.json'),
       fetch('jee_data.json')
     ]);
@@ -486,12 +486,12 @@ async function loadData() {
     const j2 = await res2.json();
     const j3 = await res3.json();
 
-    const raw1 = j1['MHT-CET College Data'] || j1[Object.keys(j1)[0]] || [];
+    const raw1 = Array.isArray(j1) ? j1 : (j1['MHT-CET College Data'] || j1[Object.keys(j1)[0]] || []);
     cutoffData = raw1.map(r => ({
-      code: String(r['Institute Code'] || ''), name: r['Institute'] || r['Institute Name'] || '',
-      branch: (r['Branch'] || r['Branch Name'] || '').trim(),
-      seatType: r['Seat Type'] || '', rank: parseInt(r['Rank']) || 0,
-      percentile: parseFloat(r['Percentile']) || 0
+      code: String(r['institute_code'] || r['Institute Code'] || ''), name: r['institute_name'] || r['Institute'] || r['Institute Name'] || '',
+      branch: (r['branch_name'] || r['Branch'] || r['Branch Name'] || '').trim(),
+      seatType: r['category'] || r['Seat Type'] || '', rank: parseInt(r['rank'] || r['Rank']) || 0,
+      percentile: parseFloat(r['percentile'] || r['Percentile']) || 0
     }));
 
     collegeMetadata = (j2['college-data'] || []).map(c => ({

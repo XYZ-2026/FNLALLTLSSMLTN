@@ -241,16 +241,16 @@ async function loadData() {
     loader.innerHTML = '<div class="pb-spinner"></div><span>Loading DSE cutoff data...</span>';
     
     const [res1, res2] = await Promise.all([
-      fetch('DSE/DSE_CUTOFFS_R1.json'),
+      fetch('DSE 2026/DSE_CAP_1_2026_cutoffs.json'),
       fetch('college-data.json')
     ]);
     const j1 = await res1.json();
     const j2 = await res2.json();
 
-    const raw1 = j1['DSE_CUTOFFS'] || [];
+    const raw1 = Array.isArray(j1) ? j1 : (j1['DSE_CUTOFFS'] || []);
     const categoriesSet = new Set();
     allData = raw1.map(r => {
-      const st = r['Seat Type.'] || '';
+      const st = r['Seat Type'] || r['Seat Type.'] || '';
       if (st === 'EWS') {
         categoriesSet.add('EWS');
       } else if (st.startsWith('G') || st.startsWith('L')) {
@@ -260,7 +260,7 @@ async function loadData() {
       return {
         code: String(r['Institute Code'] || '').trim(),
         name: (r['Institute'] || '').replace(/^\d+\s*-\s*/, '').replace(/^\d+\s+/, '').trim(),
-        branch: (r['Course Name'] || '').trim(),
+        branch: (r['Branch'] || r['Course Name'] || '').trim(),
         percentile: parseFloat(r['Percentile']) || 0,
         rank: parseInt(r['Rank']) || 999999,
         seatType: st

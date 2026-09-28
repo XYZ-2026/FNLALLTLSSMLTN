@@ -310,9 +310,9 @@
       <div id="helloBanner" class="greeting"></div>
       
       <div class="page-hero">
-        <div style="display:inline-block; background:rgba(255,255,255,0.2); padding:4px 12px; border-radius:100px; font-size:11px; font-weight:800; margin-bottom:12px; letter-spacing:1px; border:1px solid rgba(255,255,255,0.3)">MHT-CET HUB</div>
+        <div style="display:inline-block; background:rgba(255,255,255,0.2); padding:4px 12px; border-radius:100px; font-size:11px; font-weight:800; margin-bottom:12px; letter-spacing:1px; border:1px solid rgba(255,255,255,0.3)">MHT-CET HUB — 2026 ROUND 1 DATA</div>
         <h1>MHT CET College Predictor</h1>
-        <p>Strategic predictor for Maharashtra engineering admissions. Uses your rank and percentile to find the most accurate college matches.</p>
+        <p>Strategic predictor for Maharashtra engineering admissions. Uses your rank and percentile to find the most accurate college matches based on 2026 Round 1 cutoff data.</p>
       </div>
 
       <div class="card">
@@ -432,15 +432,17 @@
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20M4 19.5V3a2.5 2.5 0 0 1 2.5-2.5H20v22M12 6v6m-3-3h6"/></svg>
               <select id="inHomeUniv">
                 <option value="">No Preference (Show all seat types)</option>
-                <option value="Mumbai">University of Mumbai (MU)</option>
-                <option value="Pune">Savitribai Phule Pune University (SPPU)</option>
-                <option value="Nagpur">RTMNU, Nagpur</option>
-                <option value="Aurangabad">BAMU, Chhatrapati Sambhajinagar</option>
-                <option value="Kolhapur">Shivaji University, Kolhapur</option>
-                <option value="Jalgaon">KBCNMU, Jalgaon</option>
-                <option value="Amravati">SGBAU, Amravati</option>
-                <option value="Nanded">SRTMUN, Nanded</option>
-                <option value="Solapur">Solapur University</option>
+                <option value="Autonomous Institute">Autonomous Institute</option>
+                <option value="University of Mumbai">University of Mumbai (MU)</option>
+                <option value="Savitribai Phule Pune University">Savitribai Phule Pune University (SPPU)</option>
+                <option value="Dr. Babasaheb Ambedkar Technological University">DBATU, Lonere</option>
+                <option value="Rashtrasant Tukadoji Maharaj Nagpur University">RTMNU, Nagpur</option>
+                <option value="Dr. Babasaheb Ambedkar Marathwada University">BAMU, Chhatrapati Sambhajinagar</option>
+                <option value="Shivaji University, Kolhapur">Shivaji University, Kolhapur</option>
+                <option value="Kavayitri Bahinabai Chaudhari North Maharashtra University">KBCNMU, Jalgaon</option>
+                <option value="Sant Gadge Baba Amravati University">SGBAU, Amravati</option>
+                <option value="Swami Ramanand Teerth Marathwada University">SRTMUN, Nanded</option>
+                <option value="Solapur University">Solapur University</option>
               </select>
             </div>
           </div>
@@ -523,66 +525,21 @@
         tabPct.style.background = 'transparent';
         tabPct.style.color = 'var(--muted)';
       }
-    }    const HOME_UNIVERSITY_MAP = {
-      'Mumbai': {
-        name: 'University of Mumbai (MU)',
-        cities: ['mumbai', 'thane', 'raigad', 'palghar', 'ratnagiri', 'sindhudurg', 'navi mumbai', 'panvel', 'ulhasnagar', 'vasai', 'virar', 'badlapur', 'karjat', 'kharghar', 'andheri', 'boisar', 'new panvel', 'khalapur', 'bapsai', 'tal-ambernath']
-      },
-      'Pune': {
-        name: 'Savitribai Phule Pune University (SPPU)',
-        cities: ['pune', 'ahmednagar', 'nashik', 'baramati', 'lonavala', 'talegaon', 'kopargaon', 'sangamner', 'narhe', 'wagholi', 'pisoli', 'ravet', 'haveli', 'indapur', 'shegaon', 'malegaon-baramati', 'chincholi', 'swami - chincholi', 'avasari', 'kuran', 'ohar']
-      },
-      'Nagpur': {
-        name: 'RTMNU, Nagpur',
-        cities: ['nagpur', 'wardha', 'bhandara', 'gondia', 'gadchiroli', 'chandrapur', 'ramtek', 'sevagram', 'bhadrawati', 'sakoli', 'hingna', 'babulgaon', 'sindhi(meghe)']
-      },
-      'Aurangabad': {
-        name: 'BAMU, Chhatrapati Sambhajinagar',
-        cities: ['aurangabad', 'chhatrapati sambhajinagar', 'jalna', 'beed', 'osmanabad', 'ambejogai', 'dharashiv']
-      },
-      'Kolhapur': {
-        name: 'Shivaji University, Kolhapur',
-        cities: ['kolhapur', 'sangli', 'satara', 'karad', 'ichalkaranji', 'gadhinglaj', 'jaysingpur', 'warananagar', 'miraj', 'yadrav', 'kankavli']
-      },
-      'Jalgaon': {
-        name: 'KBCNMU, Jalgaon',
-        cities: ['jalgaon', 'dhule', 'nandurbar', 'bhusawal', 'chopda', 'shirpur', 'faizpur', 'dondaicha', 'malegaon']
-      },
-      'Amravati': {
-        name: 'SGBAU, Amravati',
-        cities: ['amravati', 'akola', 'yavatmal', 'buldhana', 'washim', 'badnera', 'shegaon', 'pusad', 'achalpur']
-      },
-      'Nanded': {
-        name: 'SRTMUN, Nanded',
-        cities: ['nanded', 'latur', 'parbhani', 'hingoli', 'tuljapur']
-      },
-      'Solapur': {
-        name: 'Solapur University',
-        cities: ['solapur', 'pandharpur', 'barshi', 'sangola', 'akluj']
-      }
-    };
-
-    function getCollegeHU(collegeName) {
-      const nameLower = (collegeName || '').toLowerCase();
-      for (const [huKey, huData] of Object.entries(HOME_UNIVERSITY_MAP)) {
-        for (const city of huData.cities) {
-          if (nameLower.includes(city)) return huKey;
-        }
-      }
-      return null;
-    }
-
-    function getSeatSuffix(collegeName, collegeStatus, studentHU) {
-      if (!studentHU) return null;
-      const statusLower = (collegeStatus || '').toLowerCase();
-      if (statusLower.includes('autonomous') || statusLower.includes('university department')) return 'S';
-      const collegeHU = getCollegeHU(collegeName);
-      if (!collegeHU) return 'S';
-      return collegeHU === studentHU ? 'H' : 'O';
+    }    // 2026 data has home_university field directly - no city-matching needed
+    function getSeatTypeMatch(row, studentHU) {
+      if (!studentHU) return true; // no preference, show all
+      const rowHU = (row.home_university || '').trim();
+      const rowSeatType = (row.seat_type || '').trim();
+      // Autonomous/State level - show to everyone
+      if (rowSeatType === 'State Level' || rowHU === 'Autonomous Institute') return true;
+      // Home University match
+      if (rowHU === studentHU) return true;
+      // Other University - still show but indicate it's Other
+      return true;
     }
 
     function getBaseCategory(cat) {
-      if (['EWS', 'TFWS', 'MI', 'ORPHAN'].includes(cat)) return cat;
+      if (['EWS', 'TFWS', 'MI', 'ORPHAN', 'ORPHANN'].includes(cat)) return cat;
       if (cat.endsWith('H') || cat.endsWith('O') || cat.endsWith('S')) {
         return cat.slice(0, -1);
       }
@@ -591,12 +548,12 @@
 
     function getGenderFreeCategory(cat) {
       if (!cat) return '';
-      if (['EWS', 'TFWS', 'MI', 'ORPHAN'].includes(cat)) return cat;
+      if (['EWS', 'TFWS', 'MI', 'ORPHAN', 'ORPHANN'].includes(cat)) return cat;
       let base = cat;
       if (cat.endsWith('H') || cat.endsWith('O') || cat.endsWith('S')) {
         base = cat.slice(0, -1);
       }
-      if (['EWS', 'TFWS', 'MI', 'ORPHAN'].includes(base)) return base;
+      if (['EWS', 'TFWS', 'MI', 'ORPHAN', 'ORPHANN'].includes(base)) return base;
       if (base.startsWith('G') || base.startsWith('L')) {
         return base.slice(1);
       }
@@ -743,46 +700,51 @@
 
       let filtered = allData;
       
-      // Filter by Percentile or Rank (MUTUALLY EXCLUSIVE) matching any round
+      // Filter by Percentile or Rank
       if (scoreType === 'pct') {
-        filtered = filtered.filter(r => satisfiesScoreRange(r, 'pct', pct));
+        filtered = filtered.filter(r => r.percentile !== undefined && r.percentile !== null && r.percentile <= pct);
       } else {
-        filtered = filtered.filter(r => satisfiesScoreRange(r, 'rank', rank));
+        filtered = filtered.filter(r => r.rank !== undefined && r.rank !== null && rank <= r.rank);
       }
       
-      // Region Filter
+      // Region Filter based on College Code first digit (1-6)
       if (!selectedRegions.has('all')) {
         filtered = filtered.filter(r => {
-          const s = String(r.code || '').trim();
-          if (!s) return false;
-          const clean = s.replace(/^0+/, '');
-          const char = clean.length === 5 ? clean.charAt(1) : clean.charAt(0);
-          return selectedRegions.has(char);
+          const str = String(r.code || '').trim().replace(/^0+/, '');
+          const first = str.charAt(0);
+          return selectedRegions.has(first);
         });
       }
 
-      const isGenderNeutral = ['EWS', 'TFWS', 'MI', 'ORPHAN'].includes(cat) || cat.startsWith('DEF') || cat.startsWith('PWD');
+      const isGenderNeutral = ['EWS', 'TFWS', 'MI', 'ORPHAN', 'ORPHANN'].includes(cat) || cat.startsWith('DEF') || cat.startsWith('PWD');
       const expectedBaseCat = isGenderNeutral ? cat : gender + cat;
 
-      // Filter by Category and Home University (H / O / S suffix mapping)
+      // Filter by Category with Home University seat type suffix
       filtered = filtered.filter(r => {
         const baseCat = getBaseCategory(r.category);
         if (baseCat !== expectedBaseCat) return false;
 
         // If category is MI and a specific minority type is selected, filter by college status
         if (cat === 'MI' && minorityType && minorityType !== 'all') {
-          const meta = collegeMetadata.find(m => m.code === parseInt(r.code));
-          if (!meta || !meta.status || !meta.status.includes(minorityType)) {
+          if (!r.status || !r.status.includes(minorityType)) {
             return false;
           }
         }
 
-        // If category is suffix-based and studentHU is selected, filter by suffix
-        if (studentHU && (r.category.endsWith('H') || r.category.endsWith('O') || r.category.endsWith('S'))) {
-          const meta = collegeMetadata.find(m => m.code === parseInt(r.code));
-          const status = meta ? meta.status : '';
-          const suffix = getSeatSuffix(r.name, status, studentHU);
-          return r.category.endsWith(suffix);
+        // If studentHU is selected, filter by seat type suffix (H/O/S)
+        if (studentHU) {
+          const suffix = r.category.slice(-1); // Last char: H, O, or S
+          const rowHU = (r.home_university || '').trim();
+          const rowStatus = (r.status || '').toLowerCase();
+
+          // State Level / Autonomous → suffix S
+          if (rowHU === 'Autonomous Institute' || rowStatus.includes('autonomous') || rowStatus.includes('university department')) {
+            return suffix === 'S';
+          }
+          // Same HU → suffix H (Home)
+          if (rowHU === studentHU) return suffix === 'H';
+          // Different HU → suffix O (Other)
+          return suffix === 'O';
         }
         return true;
       });
@@ -814,7 +776,8 @@
           return names[r] || r;
         }).join(', '),
         scoreType: scoreType,
-        minorityType: cat === 'MI' ? minorityType : 'None'
+        minorityType: cat === 'MI' ? minorityType : 'None',
+        source: '2026'
       }));
       window.location.href = "results.html";
     }
@@ -962,23 +925,21 @@
       }
 
       try {
-        const res = await fetch('data.json');
-        const rJson = await res.json();
-        const json = rJson['MHT-CET College Data'] || rJson;
-        allData = (json || []).map(r => {
-          const rawRank = String(r['Rank'] || '999999').replace(/,/g, '').trim();
-          const rankVal = parseInt(rawRank);
-          const rawPct = String(r['Percentile'] || '0').trim();
-          const pctVal = parseFloat(rawPct);
-          return {
-            code: String(r['Institute Code'] || ''),
-            name: (r['Institute'] || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
-            branch: (r['Branch'] || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
-            category: (r['Seat Type'] || '').trim(),
-            rank: isNaN(rankVal) ? 999999 : rankVal,
-            percentile: isNaN(pctVal) ? 0.0 : pctVal
-          };
-        }).filter(r => r.category !== 'AI' && r.category !== 'All India');
+        const res = await fetch('CUTOFFS 2026/mhtcet_round1.json');
+        const json = await res.json();
+        allData = (json || []).map(r => ({
+          code: String(r.institute_code || ''),
+          choice_code: String(r.choice_code || ''),
+          name: (r.institute_name || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
+          branch: (r.branch_name || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
+          category: (r.category || '').trim(),
+          rank: typeof r.rank === 'number' ? r.rank : parseInt(String(r.rank || '999999').replace(/,/g, '')),
+          percentile: typeof r.percentile === 'number' ? r.percentile : parseFloat(String(r.percentile || '0')),
+          seat_type: (r.seat_type || '').trim(),
+          region: (r.region || '').trim(),
+          status: (r.status || '').trim(),
+          home_university: (r.home_university || '').trim()
+        }));
 
         const bSet = new Set();
         const cleanCatSet = new Set();
@@ -990,7 +951,7 @@
         renderBranchPanel();
 
         // Populate Category Selection dynamically from JSON data (clean categories)
-        const sortedCleanCats = Array.from(cleanCatSet).sort();
+        const sortedCleanCats = Array.from(cleanCatSet).filter(c => c).sort();
         const catSel = document.getElementById('inCategory');
         catSel.innerHTML = sortedCleanCats.map(c => `<option value="${c}">${getCleanCategoryLabel(c)}</option>`).join('');
         
@@ -1001,18 +962,11 @@
           catSel.value = sortedCleanCats[0];
         }
 
-        const rm = await fetch('college-data.json');
-        const jm = await rm.json();
-        collegeMetadata = (jm["college-data"] || []).map(m => ({
-          code: parseInt(m["Institute Code"]),
-          status: m["Status"] || ""
-        }));
-
-        // Parse minority options from collegeMetadata
+        // Parse minority options from the 2026 data status field
         const minoritySet = new Set();
-        collegeMetadata.forEach(c => {
-          if (c.status) {
-            const parts = c.status.split(',');
+        allData.forEach(r => {
+          if (r.status) {
+            const parts = r.status.split(',');
             for (let part of parts) {
               let trimmed = part.trim();
               if (trimmed.toLowerCase().includes('minority')) {
@@ -1025,6 +979,7 @@
             }
           }
         });
+        collegeMetadata = []; // no longer needed separately
         const sortedMinorities = Array.from(minoritySet).sort((a, b) => a.localeCompare(b));
         const minSel = document.getElementById('inMinority');
         minSel.innerHTML = '<option value="all">Any Minority / Show All</option>' + 

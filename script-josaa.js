@@ -182,12 +182,23 @@ function matchesBranchGroup(branchName, group) {
 /* ══════════════════════════════════════════════════════════════
    INSTITUTE TYPE DETECTION
    ══════════════════════════════════════════════════════════════ */
+let clgsMap = {};
+fetch('JOSAA/clgs.json').then(r => r.json()).then(data => {
+  clgsMap = {};
+  for (const type in data) {
+    data[type].forEach(n => { clgsMap[n.trim().toLowerCase()] = type; });
+  }
+}).catch(() => {});
+
 /**
  * Detect whether an institute is NIT, IIIT, or GFTI.
  * @param {string} instituteName
  * @returns {string} 'NIT' | 'IIIT' | 'GFTI'
  */
-function detectInstituteType(instituteName) {
+function detectInstituteType(instituteName, row) {
+  if (row && row.Type) return row.Type;
+  const norm = (instituteName || '').trim().toLowerCase();
+  if (clgsMap[norm]) return clgsMap[norm];
   const lower = instituteName.toLowerCase();
   if (lower.includes('national institute of technology') || lower.includes(' nit ') || lower.startsWith('nit '))
     return 'NIT';

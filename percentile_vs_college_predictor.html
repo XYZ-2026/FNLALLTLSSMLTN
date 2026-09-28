@@ -540,10 +540,9 @@
       <div class="page-hero">
         <div
           style="display:inline-block; background:rgba(255,255,255,0.2); padding:4px 12px; border-radius:100px; font-size:11px; font-weight:800; margin-bottom:12px; letter-spacing:1px; border:1px solid rgba(255,255,255,0.3)">
-          Data upto 2025</div>
+          2026 ROUND 1 DATA</div>
         <h1>ALL INDIA SEATS College Predictor</h1>
-        <p>Advanced AI engine analyzing 1,00,000+ data points to predict your best engineering college matches
-          instantly.</p>
+        <p>Advanced AI engine analyzing 2026 Round 1 All India cutoff data to predict your best engineering college matches instantly.</p>
       </div>
 
       <div class="card">
@@ -625,8 +624,8 @@
 
       if (!allData.length) return alert("Data is loading, please wait...");
 
-      // Filter by JEE and AI Seat Type
-      let filtered = allData.filter(r => r.exam === 'JEE' && (r.seatType || '').includes('AI'));
+      // All data is already All India quota
+      let filtered = allData;
 
       // Filter by Percentile
       filtered = filtered.filter(r => r.percentile <= pct);
@@ -644,9 +643,10 @@
       localStorage.setItem("searchMeta", JSON.stringify({
         percentile: pct,
         scoreType: 'pct',
-        exam: 'JEE Mains',
+        exam: 'JEE Mains / MHT-CET (All India)',
         category: 'All India',
-        minority: 'None'
+        minority: 'None',
+        source: '2026_round1'
       }));
       window.location.href = "results.html";
     }
@@ -794,55 +794,36 @@
       let jeeData = [];
 
       try {
-        loaderTxt.textContent = "Loading JEE All India data...";
-        const r2 = await fetch('cleaned_jee_data.json');
+        loaderTxt.textContent = "Loading 2026 Round 1 All India data...";
+        const r2 = await fetch('CUTOFFS 2026/round1_all_india.json');
         const j2 = await r2.json();
-        
-        // Helper to get easiest/minimum percentile cutoff
-        function getEasiestRoundCutoff(rounds) {
-          let easiest = null;
-          let minPct = Infinity;
-          for (let r of ['R1', 'R2', 'R3', 'R4']) {
-            if (rounds[r] && rounds[r].percentile !== null) {
-              const p = parseFloat(rounds[r].percentile);
-              if (!isNaN(p) && p < minPct) {
-                minPct = p;
-                easiest = rounds[r];
-              }
-            }
-          }
-          return easiest;
-        }
+        const rawArr = j2.ALL_INDIA_2026 || j2 || [];
 
-        // Map cleaned_jee_data.json records to the structure expected by predictor logic
-        jeeData = j2.map(r => {
-          const easiest = getEasiestRoundCutoff(r.rounds || {});
-          
+        // Parse "15943 (86.5868550)" format from "All India Merit" field
+        jeeData = rawArr.map(r => {
+          const meritStr = r['All India Merit'] || '';
+          const match = meritStr.match(/^(\d+)\s*\(([\d.]+)\)/);
+          const rank = match ? parseInt(match[1]) : 999999;
+          const percentile = match ? parseFloat(match[2]) : 0;
+          const instName = (r['Institute Name'] || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+          // Extract institute code from "01101 - Name" format
+          const codeMatch = instName.match(/^(\d+)/);
+          const code = codeMatch ? codeMatch[1] : '';
+
           return {
-            exam: 'JEE',
-            code: r.instituteCode || r.choiceCode.substring(0, 4),
-            name: (r.instituteName || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
-            branch: (r.branch || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
-            percentile: easiest ? parseFloat(easiest.percentile) : 0,
-            rank: easiest ? parseInt(easiest.rank) : 999999,
-            seatType: 'AI',
+            exam: r['Merit Exam'] || 'JEE',
+            code: code,
+            name: instName.replace(/^\d+\s*-\s*/, '').trim(),
+            branch: (r['Course Name'] || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
+            percentile: percentile,
+            rank: rank,
+            seatType: r['Seat Type'] || 'AI',
             category: 'All India',
-            url: `https://fe2025.mahacet.org/StaticPages/frmInstituteSummary?InstituteCode=${String(r.instituteCode || '').padStart(5, '0')}`,
-            choiceCode: r.choiceCode
+            choiceCode: r['Choice Code'] || ''
           };
         });
-        console.log("JEE Loaded:", jeeData.length);
-      } catch (e) { console.error("JEE Load Fail:", e); }
-
-      try {
-        const rm = await fetch('college-data.json');
-        const jm = await rm.json();
-        const rawMeta = jm["college-data"] || [];
-        collegeMetadata = rawMeta.map(m => ({
-          code: parseInt(m["Institute Code"]),
-          status: m["Status"] || ""
-        }));
-      } catch (e) { console.error("Meta Load Fail:", e); }
+        console.log("All India 2026 Loaded:", jeeData.length);
+      } catch (e) { console.error("All India Load Fail:", e); }
 
       allData = jeeData;
 
@@ -850,7 +831,6 @@
         const bSet = new Set();
         allData.forEach(r => { 
           if (r.branch) {
-            // Normalize: trim and collapse multiple spaces into one
             const normalized = r.branch.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
             r.branch = normalized;
             bSet.add(normalized); 

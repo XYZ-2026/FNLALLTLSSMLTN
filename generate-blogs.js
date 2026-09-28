@@ -20,7 +20,7 @@ const CONFIG = {
   BASE_URL: 'https://counselling.collegesimplified.in',
   SITE_NAME: 'College Simplified',
   YEAR: '2026',
-  CUTOFF_YEAR: '2025',
+  CUTOFF_YEAR: '2026',
 };
 
 // ── Utility: CSV Parser ────────────────────────────────────────

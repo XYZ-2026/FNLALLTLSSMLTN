@@ -41,6 +41,155 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lexend:wght@400;600;700;800&display=swap"
     rel="stylesheet">
   <style>
+    /* ── Scaler Promo Banner Section ── */
+    .scaler-promo-section {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 20px 0;
+    }
+    .scaler-promo-container {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      align-items: center;
+      background: linear-gradient(135deg, #dc2626 0%, #be123c 50%, #9f1239 100%);
+      border-radius: 28px;
+      padding: 40px;
+      gap: 40px;
+      box-shadow: 0 20px 40px -15px rgba(220, 38, 38, 0.3);
+      position: relative;
+      overflow: hidden;
+      color: #ffffff;
+    }
+    .scaler-promo-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -150%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+      transform: skewX(-25deg);
+      transition: 0.8s;
+    }
+    .scaler-promo-container:hover::before {
+      left: 150%;
+    }
+    .scaler-promo-content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      z-index: 2;
+    }
+    .scaler-promo-badge {
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: 100px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .scaler-promo-content h2 {
+      font-family: 'Lexend', sans-serif;
+      font-weight: 800;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      color: #ffffff;
+      margin: 0;
+    }
+    .scaler-promo-content p {
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.6;
+      margin: 0;
+    }
+    .scaler-promo-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .scaler-promo-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 28px;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 14px;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+    }
+    .scaler-promo-btn.btn-primary {
+      background: #ffffff;
+      color: #be123c;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .scaler-promo-btn.btn-primary:hover {
+      background: #fef2f2;
+      color: #9f1239;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    .scaler-promo-btn.btn-secondary {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+    }
+    .scaler-promo-btn.btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: translateY(-2px);
+    }
+    .scaler-promo-image {
+      width: 100%;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      line-height: 0;
+      z-index: 2;
+    }
+    .scaler-promo-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    @media (max-width: 991px) {
+      .scaler-promo-container {
+        grid-template-columns: 1fr;
+        padding: 32px;
+        gap: 32px;
+      }
+      .scaler-promo-image {
+        order: -1;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+      .scaler-promo-content {
+        align-items: center;
+        text-align: center;
+      }
+      .scaler-promo-badge {
+        align-self: center;
+      }
+      .scaler-promo-buttons {
+        justify-content: center;
+        width: 100%;
+      }
+      .scaler-promo-btn {
+        width: 100%;
+        max-width: 320px;
+      }
+    }
+
     :root {
       --brand: #dc2626;
       --ink: #111827;
@@ -709,218 +858,6 @@
   </div>
 
   <div class="wrap">
-    <!-- Premium Counselling Banners Section -->
-    <section class="premium-banners-section">
-      <style>
-        .premium-banners-section {
-          width: 100%;
-          font-family: 'Inter', sans-serif;
-        }
-
-        .banners-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-          gap: 28px;
-          margin-top: 24px;
-        }
-
-        .premium-banner-card {
-          background: var(--card, #ffffff);
-          border: 1px solid var(--stroke, rgba(0, 0, 0, 0.08));
-          border-radius: 24px;
-          overflow: hidden;
-          text-decoration: none;
-          color: inherit;
-          display: flex;
-          flex-direction: column;
-          box-shadow: var(--shadow, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
-          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .premium-banner-card:hover {
-          transform: translateY(-8px);
-          box-shadow: var(--shadow-lg, 0 20px 25px -5px rgba(0, 0, 0, 0.1));
-          border-color: var(--brand, #dc2626);
-        }
-
-        .banner-img-container {
-          position: relative;
-          width: 100%;
-          padding-top: 52%;
-          /* Aspect ratio of banners */
-          overflow: hidden;
-          background: #f3f4f6;
-        }
-
-        .banner-img-container img {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .premium-banner-card:hover .banner-img-container img {
-          transform: scale(1.05);
-        }
-
-        .banner-overlay {
-          position: absolute;
-          inset: 0;
-          background: rgba(0, 0, 0, 0.3);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          opacity: 0;
-          transition: opacity 0.3s ease;
-        }
-
-        .premium-banner-card:hover .banner-overlay {
-          opacity: 1;
-        }
-
-        .view-program-btn {
-          background: #ffffff;
-          color: #111827;
-          padding: 10px 20px;
-          border-radius: 100px;
-          font-weight: 700;
-          font-size: 13px;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-          transform: translateY(10px);
-          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .premium-banner-card:hover .view-program-btn {
-          transform: translateY(0);
-        }
-
-        .banner-text-details {
-          padding: 20px 24px;
-          display: flex;
-          flex-direction: column;
-          gap: 6px;
-        }
-
-        .banner-text-details h3 {
-          font-family: 'Lexend', sans-serif;
-          font-weight: 700;
-          font-size: 18px;
-          color: var(--ink, #111827);
-        }
-
-        .banner-text-details p {
-          font-size: 13.5px;
-          color: var(--muted, #6b7280);
-          line-height: 1.4;
-        }
-
-        .section-header-banner {
-          margin-bottom: 8px;
-        }
-
-        .banner-badge-top {
-          background: var(--brand-soft, #fef2f2);
-          color: var(--brand, #dc2626);
-          padding: 6px 14px;
-          border-radius: 100px;
-          font-size: 11px;
-          font-weight: 800;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-          display: inline-block;
-          margin-bottom: 12px;
-          border: 1px solid var(--brand-ring, rgba(220, 38, 38, 0.1));
-        }
-
-        .section-header-banner h2 {
-          font-family: 'Lexend', sans-serif;
-          font-weight: 800;
-          font-size: 24px;
-          color: var(--ink, #111827);
-          letter-spacing: -0.01em;
-        }
-
-        .section-header-banner p {
-          color: var(--muted, #6b7280);
-          font-size: 14.5px;
-          margin-top: 4px;
-        }
-
-        @media (max-width: 640px) {
-          .banners-grid {
-            grid-template-columns: 1fr;
-            gap: 20px;
-          }
-
-          .banner-text-details {
-            padding: 16px 20px;
-          }
-
-          .banner-text-details h3 {
-            font-size: 16px;
-          }
-
-          .section-header-banner h2 {
-            font-size: 20px;
-          }
-        }
-      </style>
-      <div class="section-header-banner">
-        <div class="banner-badge-top">Premium Counselling Programs</div>
-        <h2>Direct Personal Counselling 2026</h2>
-        <p>Get premium mentoring from expert counselors to secure your dream engineering college seat.</p>
-      </div>
-      <div class="banners-grid">
-        <!-- Banner 1 -->
-        <a href="https://www.conceptsimplified.in/courses/668919" target="_blank" class="premium-banner-card">
-          <div class="banner-img-container">
-            <img src="https://courses-assets-v2.classplus.co/_next/image?url=/api/proxyimage?url=https%3A%2F%2Fcdn-wl-assets.classplus.co%2Fproduction%2Fsingle%2Fijpsrw%2Fa181e913-c49f-4ed8-8838-c15b38cf7a58.png&w=640&q=75"
-              alt="Simplified Pro | Maharashtra Engineering Admission Counselling 2026">
-            <div class="banner-overlay">
-              <span class="view-program-btn">View Program &rarr;</span>
-            </div>
-          </div>
-          <div class="banner-text-details">
-            <h3>Simplified Pro</h3>
-            <p>Maharashtra Engineering Admission Counselling 2026</p>
-          </div>
-        </a>
-
-        <!-- Banner 2 -->
-        <a href="https://www.conceptsimplified.in/courses/840574" target="_blank" class="premium-banner-card">
-          <div class="banner-img-container">
-            <img src="https://courses-assets-v2.classplus.co/_next/image?url=/api/proxyimage?url=https%3A%2F%2Fcdn-wl-assets.classplus.co%2Fproduction%2Fsingle%2Fijpsrw%2Fbde224eb-a206-48f0-ae15-2d2d20fbfaf5.png&w=640&q=75"
-              alt="Simplified Premium 1:1 | Maharashtra Engineering Admission Counselling 2026">
-            <div class="banner-overlay">
-              <span class="view-program-btn">View Program &rarr;</span>
-            </div>
-          </div>
-          <div class="banner-text-details">
-            <h3>Simplified Premium 1:1</h3>
-            <p>Maharashtra Engineering Admission Counselling 2026</p>
-          </div>
-        </a>
-
-        <!-- Banner 3 -->
-        <a href="https://www.conceptsimplified.in/courses/860295" target="_blank" class="premium-banner-card">
-          <div class="banner-img-container">
-            <img src="https://courses-assets-v2.classplus.co/_next/image?url=/api/proxyimage?url=https%3A%2F%2Fcdn-wl-assets.classplus.co%2Fproduction%2Fsingle%2Fijpsrw%2F0c12cc3c-cb87-46ff-a2cc-8a1a790b2e4c.png&w=640&q=75" alt="AI Counselling | College Predictor Platform 2026">
-            <div class="banner-overlay">
-              <span class="view-program-btn">Explore AI Counselling &rarr;</span>
-            </div>
-          </div>
-          <div class="banner-text-details">
-            <h3>AI-Powered College Predictor</h3>
-            <p>Data-driven branch predictions & personalized admission strategies</p>
-          </div>
-        </a>
-      </div>
-
     <section class="section">
       <div class="section-header">
         <div class="section-icon">

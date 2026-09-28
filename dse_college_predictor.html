@@ -569,9 +569,9 @@
             <div id="helloBanner" class="greeting"></div>
 
             <div class="page-hero">
-                <div style="display:inline-block; background:rgba(255,255,255,0.2); padding:4px 12px; border-radius:100px; font-size:11px; font-weight:800; margin-bottom:12px; letter-spacing:1px; border:1px solid rgba(255,255,255,0.3)">DSE CAP PORTAL</div>
+                <div style="display:inline-block; background:rgba(255,255,255,0.2); padding:4px 12px; border-radius:100px; font-size:11px; font-weight:800; margin-bottom:12px; letter-spacing:1px; border:1px solid rgba(255,255,255,0.3)">DSE CAP PORTAL — 2026 ROUND 1 DATA</div>
                 <h1>DSE College Predictor</h1>
-                <p>Estimate your Direct Second Year engineering admission chances in Maharashtra. Uses your Diploma score metrics to fetch matching college branches.</p>
+                <p>Estimate your Direct Second Year engineering admission chances in Maharashtra using 2026 Round 1 cutoff data.</p>
             </div>
 
             <div class="card">
@@ -770,17 +770,11 @@
 
             let filtered = allData;
 
-            // 1. Filter by Score (1st Round Cutoff)
+            // 1. Filter by Score (Round 1 Cutoff)
             if (scoreType === 'pct') {
-                filtered = filtered.filter(r => {
-                    const r1Pct = r.rounds.R1 && r.rounds.R1.percentile;
-                    return r1Pct !== null && r1Pct > 0 && r1Pct <= pct;
-                });
+                filtered = filtered.filter(r => r.percentile > 0 && r.percentile <= pct);
             } else {
-                filtered = filtered.filter(r => {
-                    const r1Rank = r.rounds.R1 && r.rounds.R1.rank;
-                    return r1Rank !== null && r1Rank > 0 && r1Rank >= rank;
-                });
+                filtered = filtered.filter(r => r.rank > 0 && r.rank >= rank);
             }
 
             // 2. Filter by Seat Type (Gender + Category)
@@ -801,8 +795,7 @@
             // 4. Filter by Minority
             if (minorityPref) {
                 filtered = filtered.filter(r => {
-                    const meta = collegeMetadata.find(m => m.code === parseInt(r.code));
-                    return meta && meta.status && meta.status.toLowerCase().includes(minorityPref.toLowerCase());
+                    return r.instituteStatus && r.instituteStatus.toLowerCase().includes(minorityPref.toLowerCase());
                 });
             }
 
@@ -814,12 +807,8 @@
                 });
             }
 
-            // Sort results (1st round cutoff percentile descending, best match first)
-            filtered.sort((a, b) => {
-                const aPct = a.rounds.R1?.percentile || 0;
-                const bPct = b.rounds.R1?.percentile || 0;
-                return bPct - aPct;
-            });
+            // Sort by percentile descending
+            filtered.sort((a, b) => b.percentile - a.percentile);
 
             // Save results to localStorage
             localStorage.setItem("dse_results", JSON.stringify(filtered.slice(0, 150)));
@@ -829,7 +818,8 @@
                 category: cat,
                 gender: gender === 'G' ? 'General' : 'Ladies',
                 region: region === 'all' ? 'All Regions' : (region === '1' ? 'Amravati' : (region === '2' ? 'Aurangabad' : (region === '3' ? 'Mumbai' : (region === '4' ? 'Nagpur' : (region === '5' ? 'Nashik' : 'Pune'))))),
-                minority: minorityPref || 'None'
+                minority: minorityPref || 'None',
+                source: '2026_round1'
             }));
 
             window.location.href = "dse_results.html";
@@ -952,19 +942,13 @@
             }
 
             try {
-                const [r1Res, r2Res] = await Promise.all([
-                    fetch('DSE/DSE_CUTOFFS_R1.json').then(r => r.json()),
-                    fetch('DSE/DSE_CUTOFFS_R2.json').then(r => r.json())
-                ]);
+                const r1Res = await fetch('DSE 2026/DSE_CAP_1_2026_cutoffs.json').then(r => r.json());
+                const r1Raw = Array.isArray(r1Res) ? r1Res : (r1Res["DSE_CUTOFFS"] || []);
 
-                const r1Raw = r1Res["DSE_CUTOFFS"] || r1Res || [];
-                const r2Raw = r2Res["DSE_CUTOFFS"] || r2Res || [];
-
-                const mergedMap = {};
                 const categoriesSet = new Set();
 
-                r1Raw.forEach(r => {
-                    const st = r["Seat Type."] || '';
+                allData = r1Raw.map(r => {
+                    const st = r["Seat Type"] || r["Seat Type."] || '';
                     if (st === 'EWS') {
                         categoriesSet.add('EWS');
                     } else if (st.startsWith('G') || st.startsWith('L')) {
@@ -974,79 +958,21 @@
 
                     const code = String(r["Institute Code"] || '').trim();
                     const name = (r["Institute"] || '').replace(/^\d+\s*-\s*/, '').replace(/^\d+\s+/, '').trim();
-                    const branch = (r["Course Name"] || '').trim();
+                    const branch = (r["Branch"] || r["Course Name"] || '').trim();
                     const percentile = parseFloat(r["Percentile"]) || 0;
-                    const rank = parseInt(r["Rank"]) || null;
-                    const stage = "Stage-I";
+                    const rank = parseInt(r["Rank"]) || 999999;
 
-                    const key = `${code}_${branch}_${st}_${stage}`;
-                    if (!mergedMap[key]) {
-                        mergedMap[key] = {
-                            code,
-                            name,
-                            branch,
-                            seatType: st,
-                            stage,
-                            percentile,
-                            rank: rank || 999999,
-                            rounds: {
-                                R1: { percentile, rank },
-                                R2: { percentile: null, rank: null },
-                                R3: { percentile: null, rank: null },
-                                R4: { percentile: null, rank: null }
-                            }
-                        };
-                    } else {
-                        mergedMap[key].rounds.R1 = { percentile, rank };
-                        mergedMap[key].percentile = percentile;
-                        mergedMap[key].rank = rank || 999999;
-                    }
+                    return {
+                        code,
+                        name,
+                        branch,
+                        seatType: st,
+                        stage: (r["Stage"] || 'Stage-I').trim(),
+                        percentile,
+                        rank,
+                        instituteStatus: (r["Institute Status"] || '').trim()
+                    };
                 });
-
-                r2Raw.forEach(r => {
-                    const st = r["Category"] || '';
-                    if (st === 'EWS') {
-                        categoriesSet.add('EWS');
-                    } else if (st.startsWith('G') || st.startsWith('L')) {
-                        const cat = st.substring(1);
-                        if (cat) categoriesSet.add(cat);
-                    }
-
-                    const choiceCode = String(r["Choice Code"] || '').trim();
-                    const code = choiceCode.substring(0, 4);
-                    const name = (r["College Name"] || '').replace(/^\d+\s*-\s*/, '').replace(/^\d+\s+/, '').trim();
-                    const branch = (r["Course Name"] || '').trim();
-                    const percentile = parseFloat(r["Percentage"]) || 0;
-                    const rank = parseInt(r["Rank"]) || null;
-                    const stage = (r["Stage"] || 'Stage-I').trim();
-
-                    const key = `${code}_${branch}_${st}_${stage}`;
-                    if (!mergedMap[key]) {
-                        mergedMap[key] = {
-                            code,
-                            name,
-                            branch,
-                            seatType: st,
-                            stage,
-                            percentile,
-                            rank: rank || 999999,
-                            rounds: {
-                                R1: { percentile: null, rank: null },
-                                R2: { percentile, rank },
-                                R3: { percentile: null, rank: null },
-                                R4: { percentile: null, rank: null }
-                            }
-                        };
-                    } else {
-                        mergedMap[key].rounds.R2 = { percentile, rank };
-                        if (mergedMap[key].percentile === 0) {
-                            mergedMap[key].percentile = percentile;
-                            mergedMap[key].rank = rank || 999999;
-                        }
-                    }
-                });
-
-                allData = Object.values(mergedMap);
 
                 // Populate categories dynamically
                 const categoriesArray = Array.from(categoriesSet);
@@ -1071,13 +997,6 @@
                 allData.forEach(r => { if (r.branch) bSet.add(r.branch.trim()); });
                 allBranchNames = Array.from(bSet).sort();
                 renderBranchPanel();
-
-                const rm = await fetch('college-data.json');
-                const jm = await rm.json();
-                collegeMetadata = (jm["college-data"] || []).map(m => ({
-                    code: parseInt(m["Institute Code"]),
-                    status: m["Status"] || ""
-                }));
 
                 document.getElementById('predictBtn').disabled = false;
                 document.getElementById('dataLoader').style.display = 'none';

@@ -822,7 +822,7 @@
       <div class="page-hero">
         <h1>CSAB Special Round Predictor</h1>
         <p>Predict your college admissions for NITs, IIITs, and GFTIs in CSAB Special Rounds based on your CRL/All India Rank and category preferences using official cutoff data across all rounds.</p>
-        <div class="data-badge">Based on CSAB 2025 Special Rounds Cutoffs — All 3 Rounds</div>
+        <div class="data-badge">Based on CSAB 2026 Special Rounds Cutoffs — 2 Rounds</div>
       </div>
 
       <div class="card">
@@ -968,7 +968,6 @@
                 <th>Gender</th>
                 <th class="col-round">Round 1<br>Closing</th>
                 <th class="col-round">Round 2<br>Closing</th>
-                <th class="col-round">Round 3<br>Closing</th>
               </tr>
             </thead>
             <tbody id="resultsTableBody"></tbody>
@@ -1007,8 +1006,13 @@
       return 'Other Branches';
     }
 
-    function getInstituteType(instituteName) {
-      const u = instituteName.toUpperCase();
+    let clgsMap = {};
+
+    function getInstituteType(instituteName, row) {
+      if (row && row.Type) return row.Type;
+      const norm = (instituteName || '').trim().toLowerCase();
+      if (clgsMap[norm]) return clgsMap[norm];
+      const u = (instituteName || '').toUpperCase();
       if (u.includes('NATIONAL INSTITUTE OF TECHNOLOGY') || u.includes('NIT')) return 'NIT';
       if (u.includes('INDIAN INSTITUTE OF INFORMATION TECHNOLOGY') || u.includes('IIIT')) return 'IIIT';
       return 'GFTI';
@@ -1116,9 +1120,8 @@
       });
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-     function getFinalClosingRank(r) {
-      const r3 = parseInt(r["Round 3 - Closing Rank "]);
-      if (!isNaN(r3)) return r3;
+
+    function getFinalClosingRank(r) {
       const r2 = parseInt(r["Round 2 - Closing Rank "]);
       if (!isNaN(r2)) return r2;
       const r1 = parseInt(r["Round 1 - Closing Rank "]);
@@ -1151,7 +1154,7 @@
 
       if (selectedTypes.length > 0) {
         filtered = filtered.filter(r => {
-          const instType = r._instType || getInstituteType(r.Institute);
+          const instType = r._instType || getInstituteType(r.Institute, r);
           return selectedTypes.includes(instType);
         });
       }
@@ -1203,11 +1206,10 @@
             </tr>`;
           }
 
-          const instType = r._instType || getInstituteType(r.Institute);
+          const instType = r._instType || getInstituteType(r.Institute, r);
           const tagClass = instType === 'NIT' ? 'tag-nit' : instType === 'IIIT' ? 'tag-iiit' : 'tag-gfti';
           const r1 = r["Round 1 - Closing Rank "] || '-';
           const r2 = r["Round 2 - Closing Rank "] || '-';
-          const r3 = r["Round 3 - Closing Rank "] || '-';
 
           return `<tr>
             <td style="min-width:200px">
@@ -1220,8 +1222,7 @@
             <td style="font-weight:600">${r["Seat Type"]}</td>
             <td style="font-size:12px">${r.Gender}</td>
             <td class="col-round" style="font-weight:600; color:var(--muted); white-space:nowrap;">${r1}</td>
-            <td class="col-round" style="font-weight:600; color:var(--muted); white-space:nowrap;">${r2}</td>
-            <td class="col-round" style="font-weight:800; color:var(--brand); white-space:nowrap;">${r3}</td>
+            <td class="col-round" style="font-weight:800; color:var(--brand); white-space:nowrap;">${r2}</td>
           </tr>`;
         }).join('');
       }
@@ -1290,12 +1291,24 @@
     }
 
     async function loadAllData() {
-      const url = 'JOSAA/CSAB_CUTOFF_CONSOLIDATED.json';
-      const res = await fetch(url);
+      const url = 'JOSAA/CSAB_CUTOFF_CONSOLIDATED_2026.json';
+      const [res, clgsRes] = await Promise.all([
+        fetch(url),
+        fetch('JOSAA/clgs.json').catch(() => null)
+      ]);
       if (!res.ok) throw new Error(`Failed to load ${url}`);
+      if (clgsRes && clgsRes.ok) {
+        try {
+          const cData = await clgsRes.json();
+          clgsMap = {};
+          for (const type in cData) {
+            cData[type].forEach(n => { clgsMap[n.trim().toLowerCase()] = type; });
+          }
+        } catch(e) {}
+      }
       const json = await res.json();
-      const arr = json['CSAB_CUTOFF_CONSOLIDATED'] || [];
-      csabData = arr.map(r => ({ ...r, _instType: getInstituteType(r.Institute) }));
+      const arr = json['CSAB_CUTOFF_CONSOLIDATED_2026'] || [];
+      csabData = arr.map(r => ({ ...r, _instType: r.Type || getInstituteType(r.Institute, r) }));
       return csabData;
     }
 

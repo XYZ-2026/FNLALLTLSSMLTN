@@ -1211,19 +1211,18 @@
       }
 
       try {
-        const res = await fetch('data.json');
-        const rJson = await res.json();
-        const json = rJson['MHT-CET College Data'] || rJson;
+        const res = await fetch('CUTOFFS 2026/mhtcet_round1.json');
+        const json = await res.json();
         allData = (json || []).map(r => {
-          const rawRank = String(r['Rank'] || '999999').replace(/,/g, '').trim();
+          const rawRank = String(r.rank || '999999').replace(/,/g, '').trim();
           const rankVal = parseInt(rawRank);
-          const rawPct = String(r['Percentile'] || '0').trim();
+          const rawPct = String(r.percentile || '0').trim();
           const pctVal = parseFloat(rawPct);
           return {
-            code: String(r['Institute Code'] || ''),
-            name: (r['Institute'] || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
-            branch: (r['Branch'] || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
-            category: (r['Seat Type'] || '').trim(),
+            code: String(r.institute_code || ''),
+            name: (r.institute_name || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
+            branch: (r.branch_name || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
+            category: (r.category || '').trim(),
             rank: isNaN(rankVal) ? 999999 : rankVal,
             percentile: isNaN(pctVal) ? 0.0 : pctVal
           };

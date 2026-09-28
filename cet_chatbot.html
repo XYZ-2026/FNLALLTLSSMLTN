@@ -543,22 +543,22 @@
       // Start loading databases
       try {
         const [rData, rMeta, rRank, rMarks] = await Promise.all([
-          fetch('data.json').then(r => r.json()),
+          fetch('CUTOFFS 2026/mhtcet_round1.json').then(r => r.json()),
           fetch('college-data.json').then(r => r.json()),
           fetch('MHT CET percentile vs rank.json').then(r => r.json()),
           fetch('MHT CET marks vs percentile.json').then(r => r.json())
         ]);
         
-        allData = (rData['MHT-CET College Data'] || rData || []).map(r => {
-          const rawRank = String(r['Rank'] || '999999').replace(/,/g, '').trim();
+        allData = (rData || []).map(r => {
+          const rawRank = String(r.rank || '999999').replace(/,/g, '').trim();
           const rankVal = parseInt(rawRank);
-          const rawPct = String(r['Percentile'] || '0').trim();
+          const rawPct = String(r.percentile || '0').trim();
           const pctVal = parseFloat(rawPct);
           return {
-            code: String(r['Institute Code'] || ''),
-            name: (r['Institute'] || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
-            branch: (r['Branch'] || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
-            category: (r['Seat Type'] || '').trim(),
+            code: String(r.institute_code || ''),
+            name: (r.institute_name || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
+            branch: (r.branch_name || '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim(),
+            category: (r.category || '').trim(),
             rank: isNaN(rankVal) ? 999999 : rankVal,
             percentile: isNaN(pctVal) ? 0.0 : pctVal
           };

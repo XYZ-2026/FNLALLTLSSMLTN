@@ -882,8 +882,8 @@
       <!-- MAIN LANDING / SEARCH PANEL -->
       <div id="landingSection" class="hidden">
         <div class="page-hero">
-          <h1>JoSAA Cutoff Explorer</h1>
-          <p>Analyze official opening and closing rank cutoff trends round by round. Click on any institute to view detailed graphs showing cutoff movements across all counseling rounds.</p>
+          <h1>JoSAA Cutoff Explorer (2026 Data)</h1>
+          <p>Analyze official 2026 opening and closing rank cutoff trends round by round. Click on any institute to view detailed graphs showing cutoff movements across all counseling rounds.</p>
 
           <div class="search-box-container">
             <div class="search-input-wrap">
@@ -929,11 +929,7 @@
               <span id="colTypeTag" class="tag tag-nit">NIT</span>
             </div>
             <div style="display:flex; gap:10px; margin-left:auto; align-items:center;">
-              <span style="font-size:12px; font-weight:700; color:var(--muted);">Cutoff Year:</span>
-              <div class="year-segmented-control" style="display:inline-flex; padding:3px; border-radius:18px; background:var(--card); border:1.5px solid var(--stroke);">
-                <button type="button" class="year-seg-btn active" id="year-pill-2026" onclick="switchCutoffYear('2026')" style="padding:6px 14px; font-size:12px; border-radius:14px;">2026 Data (R1–5)</button>
-                <button type="button" class="year-seg-btn" id="year-pill-2025" onclick="switchCutoffYear('2025')" style="padding:6px 14px; font-size:12px; border-radius:14px;">2025 Data (R1–6)</button>
-              </div>
+              <span style="font-size:12px; font-weight:700; color:var(--brand); background:var(--brand-soft); border:1px solid var(--brand); padding:6px 14px; border-radius:14px;">2026 Data (Rounds 1–5)</span>
             </div>
           </div>
         </div>
@@ -1099,7 +1095,18 @@
     // Chart details
     let trendChart = null;
 
-    function getInstituteType(instName) {
+    let clgsMap = {};
+    fetch('JOSAA/clgs.json').then(r => r.json()).then(data => {
+      clgsMap = {};
+      for (const type in data) {
+        data[type].forEach(n => { clgsMap[n.trim().toLowerCase()] = type; });
+      }
+    }).catch(() => {});
+
+    function getInstituteType(instName, row) {
+      if (row && row.Type) return row.Type;
+      const norm = (instName || '').trim().toLowerCase();
+      if (clgsMap[norm]) return clgsMap[norm];
       const u = (instName || '').toUpperCase();
       if (u.includes('INDIAN INSTITUTE OF TECHNOLOGY') || u.match(/\bIIT\b/)) return 'IIT';
       if (u.includes('NATIONAL INSTITUTE OF TECHNOLOGY') || u.match(/\bNIT\b/)) return 'NIT';
@@ -1107,16 +1114,8 @@
       return 'GFTI';
     }
 
-    function switchCutoffYear(year) {
-      if (selectedYear === year) return;
-      selectedYear = year;
-      const p26 = document.getElementById('year-pill-2026');
-      const p25 = document.getElementById('year-pill-2025');
-      if (p26 && p25) {
-        p26.classList.toggle('active', year === '2026');
-        p25.classList.toggle('active', year === '2025');
-      }
-      
+    function switchCutoffYear(year = '2026') {
+      selectedYear = '2026';
       if (selectedCollegeName) {
         selectCollege(selectedCollegeName);
       }

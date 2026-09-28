@@ -1017,13 +1017,17 @@
         }
 
         // 4. Fetch MHT cutoffs
-        const mhtRes = await fetch('data.json');
+        const mhtRes = await fetch('CUTOFFS 2026/mhtcet_round1.json');
         if (mhtRes.ok) {
           const json = await mhtRes.json();
           MHT_DATA = Array.isArray(json) ? json : (json[Object.keys(json)[0]] || []);
           MHT_DATA.forEach(row => {
-            row._pct = parseFloat(row.Percentile) || 0;
-            row._rank = parseInt(row.Rank) || 999999;
+            row._pct = parseFloat(row.percentile || row.Percentile) || 0;
+            row._rank = parseInt(row.rank || row.Rank) || 999999;
+            row.Institute = row.institute_name || row.Institute;
+            row['Institute Code'] = row.institute_code || row['Institute Code'];
+            row.Branch = row.branch_name || row.Branch;
+            row['Seat Type'] = row.category || row['Seat Type'];
           });
         }
 

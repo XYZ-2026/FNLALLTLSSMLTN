@@ -5,7 +5,7 @@
 
 # Dependency directories
 node_modules/
-
+scratch/
 # Netlify local development
 .netlify/
 

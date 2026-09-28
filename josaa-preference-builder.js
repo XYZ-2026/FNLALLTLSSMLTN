@@ -24,8 +24,19 @@ const CATS = {
 
 const FIXED_ASPIRATIONAL = [];
 
+let clgsMap = {};
+fetch('JOSAA/clgs.json').then(r => r.json()).then(data => {
+  clgsMap = {};
+  for (const type in data) {
+    data[type].forEach(n => { clgsMap[n.trim().toLowerCase()] = type; });
+  }
+}).catch(() => {});
+
 /* ══════ INSTITUTE TYPE HELPER ══════ */
-function getInstituteType(instituteName) {
+function getInstituteType(instituteName, row) {
+  if (row && row.Type) return row.Type;
+  const norm = (instituteName || '').trim().toLowerCase();
+  if (clgsMap[norm]) return clgsMap[norm];
   const u = (instituteName || '').toUpperCase();
   if (u.includes('NATIONAL INSTITUTE OF TECHNOLOGY') || u.match(/\bNIT\b/)) return 'NIT';
   if (u.includes('INDIAN INSTITUTE OF INFORMATION TECHNOLOGY') || u.match(/\bIIIT\b/)) return 'IIIT';
@@ -255,29 +266,9 @@ async function loadData(year = selectedYear) {
   }
 }
 
-function switchCutoffYear(year) {
-  if (selectedYear === year) return;
-  selectedYear = year;
-  const pill26 = document.getElementById('year-pill-2026');
-  const pill25 = document.getElementById('year-pill-2025');
-  if (pill26 && pill25) {
-    if (year === '2026') {
-      pill26.style.background = 'var(--brand-soft)';
-      pill26.style.borderColor = 'var(--brand)';
-      pill26.style.color = 'var(--brand)';
-      pill25.style.background = 'transparent';
-      pill25.style.borderColor = 'var(--stroke)';
-      pill25.style.color = 'var(--muted)';
-    } else {
-      pill25.style.background = 'var(--brand-soft)';
-      pill25.style.borderColor = 'var(--brand)';
-      pill25.style.color = 'var(--brand)';
-      pill26.style.background = 'transparent';
-      pill26.style.borderColor = 'var(--stroke)';
-      pill26.style.color = 'var(--muted)';
-    }
-  }
-  loadData(selectedYear);
+function switchCutoffYear(year = '2026') {
+  selectedYear = '2026';
+  loadData('2026');
 }
 window.switchCutoffYear = switchCutoffYear;
 

@@ -884,9 +884,9 @@
         <div class="panel active" id="panel1">
           <div class="form-group" style="margin-bottom:20px;">
             <label class="form-label"><strong>Cutoff Data Year</strong></label>
-            <div class="year-segmented-control" style="width:100%; display:flex; padding:4px; border-radius:16px;">
-              <button type="button" class="year-seg-btn active" id="year-pill-2026" onclick="switchCutoffYear('2026')" style="flex:1; padding:10px; font-size:13px; border-radius:12px;">2026 Cutoffs (Rounds 1–5)</button>
-              <button type="button" class="year-seg-btn" id="year-pill-2025" onclick="switchCutoffYear('2025')" style="flex:1; padding:10px; font-size:13px; border-radius:12px;">2025 Cutoffs (Rounds 1–6)</button>
+            <div style="background:var(--brand-soft); color:var(--brand); border:1.5px solid var(--brand); padding:10px 16px; border-radius:12px; font-size:13px; font-weight:700; display:flex; align-items:center; gap:8px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              2026 Official Cutoffs (All 5 Rounds)
             </div>
           </div>
           <!-- Rank Info Callout -->
@@ -996,13 +996,7 @@
             </h2>
             <span class="results-count" id="resultsCount"></span>
           </div>
-          <div class="year-switcher-wrap">
-            <span class="year-switcher-label">Cutoff Year:</span>
-            <div class="year-segmented-control">
-              <button type="button" class="year-seg-btn active" id="btn-year-2026" onclick="switchCutoffYear('2026')">2026 Data (R1–5)</button>
-              <button type="button" class="year-seg-btn" id="btn-year-2025" onclick="switchCutoffYear('2025')">2025 Data (R1–6)</button>
-            </div>
-          </div>
+
         </div>
         <div class="table-scroll-wrap">
           <table class="results-table">
@@ -1060,27 +1054,15 @@
     }
 
     /* Switch Cutoff Data Year */
-    function switchCutoffYear(year) {
-      selectedYear = year;
-      const b26 = document.getElementById('btn-year-2026');
-      const b25 = document.getElementById('btn-year-2025');
-      if (b26 && b25) {
-        b26.classList.toggle('active', year === '2026');
-        b25.classList.toggle('active', year === '2025');
-      }
-      const p26 = document.getElementById('year-pill-2026');
-      const p25 = document.getElementById('year-pill-2025');
-      if (p26 && p25) {
-        p26.classList.toggle('active', year === '2026');
-        p25.classList.toggle('active', year === '2025');
-      }
+    function switchCutoffYear(year = '2026') {
+      selectedYear = '2026';
       const badge = document.getElementById('heroBadge');
       if (badge) {
-        badge.textContent = year === '2026' ? 'Based on IIT 2026 Cutoffs — All 5 Rounds' : 'Based on IIT 2025 Cutoffs — All 6 Rounds';
+        badge.textContent = 'Based on IIT 2026 Cutoffs — All 5 Rounds';
       }
       const resBadge = document.getElementById('resultsYearBadge');
       if (resBadge) {
-        resBadge.textContent = year === '2026' ? '2026 Cutoffs (5 Rounds)' : '2025 Cutoffs (6 Rounds)';
+        resBadge.textContent = '2026 Cutoffs (5 Rounds)';
       }
       
       document.getElementById('dataLoader').style.display = 'flex';
