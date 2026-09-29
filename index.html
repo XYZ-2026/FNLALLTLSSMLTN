@@ -267,38 +267,7 @@
             }
         }
 
-        @media (max-width: 768px) {
-            .hero {
-                padding: 80px 20px 40px;
-            }
-
-            h1 {
-                font-size: 1.75rem;
-            }
-
-            .grid {
-                padding-bottom: 60px;
-                gap: 20px;
-                grid-template-columns: 1fr;
-            }
-
-            .choice-card {
-                padding: 32px;
-            }
-
-            .choice-card-split {
-                flex-direction: column !important;
-            }
-
-            .card-half {
-                padding: 24px 32px;
-            }
-
-            .card-half+.card-half {
-                border-left: none;
-                border-top: 1px solid var(--border);
-            }
-        }
+        /* Old mobile overrides removed — now handled by mobile app redesign below */
 
         /* ── Latest Notices ── */
         .notices-section {
@@ -463,12 +432,14 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                padding: 10px 16px;
+                padding: 7px 14px;
                 background: linear-gradient(135deg, #fefdf7, #fef9e7);
                 border-bottom: 1px solid rgba(184, 134, 11, 0.12);
                 text-align: center;
                 width: 100%;
                 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+                border-radius: 0;
+                margin-bottom: 0;
             }
 
             .mobile-enquiry-bar a {
@@ -975,8 +946,516 @@
             .scaler-btn, .community-btn {
                 width: 100%;
                 max-width: 320px;
-                white-space: normal; /* Allow text wrapping on mobile */
+                white-space: normal;
                 text-align: center;
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════
+           MOBILE APP-LIKE REDESIGN (≤ 768px)
+           ═══════════════════════════════════════════════════ */
+
+        /* --- Mobile Greeting Header --- */
+        .mobile-app-greeting { display: none; }
+        .mobile-app-search { display: none; }
+        .mobile-app-welcome-banner { display: none; }
+        .mobile-bottom-nav { display: none; }
+        .mobile-section-label { display: none; }
+
+        @media (max-width: 768px) {
+
+            /* Hide the default desktop hero on mobile */
+            .hero {
+                display: none !important;
+            }
+
+            /* Show mobile-only elements */
+            .mobile-app-greeting {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 12px 20px 4px;
+            }
+            .mobile-app-greeting .mag-left h2 {
+                font-family: 'Lexend', sans-serif;
+                font-size: 22px;
+                font-weight: 800;
+                color: var(--ink);
+                margin: 0;
+                line-height: 1.2;
+            }
+            .mobile-app-greeting .mag-left p {
+                font-size: 13px;
+                color: var(--muted);
+                margin: 2px 0 0;
+                font-weight: 500;
+            }
+            .mobile-app-greeting .mag-right {
+                width: 42px;
+                height: 42px;
+                background: var(--brand-soft);
+                border: 2px solid var(--brand-ring);
+                border-radius: 50%;
+                display: grid;
+                place-items: center;
+                flex-shrink: 0;
+            }
+            .mobile-app-greeting .mag-right svg {
+                color: var(--brand);
+            }
+
+            /* --- Mobile Search Bar --- */
+            .mobile-app-search {
+                display: block;
+                padding: 10px 20px 6px;
+            }
+            .mobile-app-search .mas-input-wrap {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                background: var(--card);
+                border: 1.5px solid var(--stroke);
+                border-radius: 14px;
+                padding: 11px 16px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                transition: all 0.2s;
+            }
+            .mobile-app-search .mas-input-wrap:focus-within {
+                border-color: var(--brand);
+                box-shadow: 0 0 0 3px var(--brand-ring);
+            }
+            .mobile-app-search .mas-input-wrap svg {
+                color: var(--muted);
+                flex-shrink: 0;
+            }
+            .mobile-app-search input {
+                flex: 1;
+                border: none;
+                outline: none;
+                background: none;
+                font-size: 14px;
+                font-family: 'Inter', sans-serif;
+                color: var(--ink);
+            }
+            .mobile-app-search input::placeholder {
+                color: var(--muted);
+            }
+
+            /* --- Mobile Welcome Banner --- */
+            .mobile-app-welcome-banner {
+                display: block;
+                padding: 8px 20px 4px;
+            }
+            .mobile-app-welcome-banner .mawb-card {
+                background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+                border-radius: 20px;
+                padding: 20px 22px;
+                color: #fff;
+                position: relative;
+                overflow: hidden;
+            }
+            .mobile-app-welcome-banner .mawb-card::after {
+                content: '';
+                position: absolute;
+                top: -30px;
+                right: -30px;
+                width: 100px;
+                height: 100px;
+                background: rgba(255,255,255,0.08);
+                border-radius: 50%;
+            }
+            .mobile-app-welcome-banner .mawb-card::before {
+                content: '';
+                position: absolute;
+                bottom: -20px;
+                right: 40px;
+                width: 60px;
+                height: 60px;
+                background: rgba(255,255,255,0.06);
+                border-radius: 50%;
+            }
+            .mobile-app-welcome-banner h3 {
+                font-family: 'Lexend', sans-serif;
+                font-size: 17px;
+                font-weight: 800;
+                margin: 0 0 6px;
+                line-height: 1.3;
+            }
+            .mobile-app-welcome-banner p {
+                font-size: 12.5px;
+                opacity: 0.9;
+                margin: 0;
+                line-height: 1.4;
+                max-width: 220px;
+            }
+
+            /* --- Section Label (mobile) --- */
+            .mobile-section-label {
+                display: flex !important;
+                align-items: center;
+                justify-content: space-between;
+                padding: 14px 20px 6px;
+            }
+            .mobile-section-label h3 {
+                font-family: 'Lexend', sans-serif;
+                font-size: 16px;
+                font-weight: 800;
+                color: var(--ink);
+                margin: 0;
+            }
+            .mobile-section-label a {
+                font-size: 12px;
+                font-weight: 700;
+                color: var(--brand);
+                text-decoration: none;
+            }
+
+            /* --- 2-Column Mini Card Grid --- */
+            .grid {
+                padding: 0 14px 16px !important;
+                gap: 12px !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+
+            .choice-card {
+                padding: 16px !important;
+                border-radius: 18px !important;
+                gap: 10px !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
+            }
+            .choice-card .card-icon {
+                width: 40px !important;
+                height: 40px !important;
+                border-radius: 12px !important;
+            }
+            .choice-card .card-icon svg {
+                width: 20px !important;
+                height: 20px !important;
+            }
+            .choice-card h2 {
+                font-size: 13px !important;
+                line-height: 1.3 !important;
+            }
+            .choice-card p {
+                display: none !important;
+            }
+            .choice-card .card-footer {
+                font-size: 10px !important;
+                letter-spacing: 0.5px !important;
+                margin-top: 4px !important;
+            }
+            .choice-card .card-footer span {
+                font-size: 12px;
+            }
+
+            /* Split cards → 2 columns like normal cards on mobile */
+            .choice-card-split {
+                grid-column: span 2 !important;
+                flex-direction: row !important;
+                padding: 0 !important;
+            }
+            .card-half {
+                padding: 16px !important;
+                gap: 10px !important;
+            }
+            .card-half h2 {
+                font-size: 13px !important;
+            }
+            .card-half p {
+                display: none !important;
+            }
+            .card-half .card-footer {
+                font-size: 10px !important;
+                margin-top: 4px !important;
+            }
+            .card-half .card-icon {
+                width: 40px !important;
+                height: 40px !important;
+                border-radius: 12px !important;
+            }
+            .card-half .card-icon svg {
+                width: 20px !important;
+                height: 20px !important;
+            }
+            .card-half + .card-half {
+                border-left: 1px solid var(--border) !important;
+                border-top: none !important;
+            }
+
+            /* Hover effects disabled on touch */
+            .choice-card:hover {
+                transform: none !important;
+            }
+            .card-half:hover {
+                background: none !important;
+            }
+
+            /* --- Compact Promotional Banners (Mobile) --- */
+            .promotional-banners-wrapper {
+                padding: 0 14px !important;
+                gap: 12px !important;
+                margin-bottom: 16px !important;
+            }
+            .scaler-container, .community-container {
+                padding: 20px !important;
+                border-radius: 18px !important;
+            }
+            .scaler-image-wrapper, .community-image-wrapper {
+                border-radius: 12px !important;
+                margin-bottom: 14px !important;
+                aspect-ratio: 2 !important;
+            }
+            .scaler-content h2, .community-content h2 {
+                font-size: 16px !important;
+            }
+            .scaler-content p, .community-content p {
+                font-size: 12.5px !important;
+            }
+            .scaler-btn, .community-btn {
+                padding: 10px 18px !important;
+                font-size: 12px !important;
+                border-radius: 10px !important;
+            }
+
+            /* --- Compact Notices (Mobile) --- */
+            .notices-section {
+                padding: 0 14px !important;
+                margin-bottom: 24px !important;
+            }
+            .section-hdr h2 {
+                font-size: 18px !important;
+            }
+            .section-hdr {
+                margin-bottom: 16px !important;
+            }
+            .notice-item {
+                padding: 16px !important;
+                border-radius: 14px !important;
+            }
+            .notice-item-title {
+                font-size: 14px !important;
+            }
+            .notices-grid {
+                gap: 10px !important;
+            }
+
+            /* --- Compact Tools Guide (Mobile) --- */
+            .tools-guide-section {
+                padding: 0 14px !important;
+                margin-bottom: 24px !important;
+            }
+            .tools-guide-section h2 {
+                font-size: 18px !important;
+                margin-bottom: 16px !important;
+            }
+            .tools-guide-grid {
+                grid-template-columns: 1fr !important;
+                gap: 12px !important;
+            }
+            .tool-guide-card {
+                padding: 20px !important;
+                border-radius: 16px !important;
+                gap: 12px !important;
+            }
+            .tool-guide-card h3 {
+                font-size: 15px !important;
+            }
+            .tool-guide-card li {
+                font-size: 12px !important;
+            }
+
+            /* --- Compact Utility Tools (Mobile) --- */
+            .utility-tools-section {
+                padding: 0 14px !important;
+                margin-bottom: 24px !important;
+            }
+            .utility-tools-hdr h2 {
+                font-size: 18px !important;
+            }
+            .utility-tool-card {
+                padding: 18px !important;
+                border-radius: 16px !important;
+                gap: 14px !important;
+            }
+            .utility-tool-card-icon {
+                width: 44px !important;
+                height: 44px !important;
+                border-radius: 14px !important;
+            }
+            .utility-tool-card-body h3 {
+                font-size: 15px !important;
+            }
+            .utility-tool-card-body p {
+                font-size: 12px !important;
+            }
+
+            /* --- Compact Overview (Mobile) --- */
+            .overview-section {
+                padding: 0 14px !important;
+                margin-bottom: 24px !important;
+            }
+            .overview-section h2 {
+                font-size: 18px !important;
+                margin-bottom: 16px !important;
+            }
+            .overview-card {
+                padding: 20px !important;
+                border-radius: 18px !important;
+            }
+            .overview-card p.intro {
+                font-size: 13px !important;
+                margin-bottom: 16px !important;
+            }
+            .overview-list {
+                grid-template-columns: 1fr !important;
+                gap: 14px !important;
+            }
+            .overview-list li {
+                font-size: 13px !important;
+                padding-left: 28px !important;
+            }
+            .overview-list li strong {
+                font-size: 14px !important;
+            }
+
+            /* --- Compact FAQs (Mobile) --- */
+            .faq-section {
+                padding: 0 14px !important;
+                margin-bottom: 24px !important;
+            }
+            .faq-section h2 {
+                font-size: 20px !important;
+                margin-bottom: 20px !important;
+            }
+            .faq-grid {
+                gap: 10px !important;
+            }
+            .faq-item {
+                padding: 16px !important;
+                border-radius: 14px !important;
+            }
+            .faq-item-question {
+                font-size: 14px !important;
+            }
+            .faq-item-answer {
+                font-size: 13px !important;
+            }
+
+            /* --- Compact Links (Mobile) --- */
+            .links-section {
+                padding: 0 14px !important;
+                margin-bottom: 24px !important;
+            }
+            .links-section h2 {
+                font-size: 18px !important;
+                margin-bottom: 16px !important;
+            }
+            .links-grid {
+                grid-template-columns: 1fr !important;
+                gap: 10px !important;
+            }
+            .link-card {
+                padding: 16px !important;
+                border-radius: 14px !important;
+                gap: 12px !important;
+            }
+            .link-card-icon {
+                width: 40px !important;
+                height: 40px !important;
+                border-radius: 12px !important;
+            }
+            .link-card-title {
+                font-size: 14px !important;
+            }
+
+            /* --- Bottom Tab Nav --- */
+            .mobile-bottom-nav {
+                display: flex !important;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 64px;
+                background: rgba(255,255,255,0.95);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                border-top: 1px solid var(--stroke);
+                z-index: 999;
+                justify-content: space-around;
+                align-items: center;
+                padding: 0 8px;
+                box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+            }
+            .mobile-bottom-nav a {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 3px;
+                text-decoration: none;
+                color: var(--muted);
+                font-size: 10px;
+                font-weight: 700;
+                padding: 6px 12px;
+                border-radius: 12px;
+                transition: all 0.2s;
+                position: relative;
+            }
+            .mobile-bottom-nav a.active {
+                color: var(--brand);
+            }
+            .mobile-bottom-nav a.active::before {
+                content: '';
+                position: absolute;
+                top: -1px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 20px;
+                height: 3px;
+                background: var(--brand);
+                border-radius: 0 0 3px 3px;
+            }
+            .mobile-bottom-nav a svg {
+                width: 22px;
+                height: 22px;
+            }
+
+            /* Add bottom padding for body so content doesn't hide behind bottom nav */
+            body {
+                padding-bottom: 72px !important;
+            }
+
+            /* Reduce body top padding since header is compact */
+            body {
+                padding-top: 56px !important;
+            }
+
+            /* Make header slimmer on mobile */
+            #global-header {
+                height: 56px !important;
+            }
+        }
+
+        /* Extra compact for very small phones */
+        @media (max-width: 380px) {
+            .grid {
+                padding: 0 10px 16px !important;
+                gap: 8px !important;
+            }
+            .choice-card {
+                padding: 12px !important;
+            }
+            .choice-card h2 {
+                font-size: 12px !important;
+            }
+            .choice-card .card-icon {
+                width: 36px !important;
+                height: 36px !important;
+            }
+            .mobile-app-greeting .mag-left h2 {
+                font-size: 19px;
+            }
+            .mobile-app-welcome-banner .mawb-card {
+                padding: 16px 18px;
             }
         }
     </style>
@@ -984,6 +1463,32 @@
 
 <body>
     <main>
+        <!-- Mobile App-Like Elements (hidden on desktop) -->
+        <div class="mobile-app-greeting">
+            <div class="mag-left">
+                <h2 id="mobile-greeting-name">Hi there! 👋</h2>
+                <p>Find your dream college</p>
+            </div>
+        </div>
+
+        <div class="mobile-app-search">
+            <div class="mas-input-wrap">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="mobile-search-input" placeholder="Search predictors, tools..." autocomplete="off">
+            </div>
+        </div>
+
+        <div class="mobile-app-welcome-banner">
+            <div class="mawb-card">
+                <h3>Welcome!</h3>
+                <p>Explore college predictors, preference builders & counselling tools.</p>
+            </div>
+        </div>
+
+        <div class="mobile-section-label">
+            <h3>Predictors</h3>
+            <a href="#latest-notices">View all</a>
+        </div>
         <section class="hero">
             <div class="badge">Best Engineering College Predictor</div>
             <h1>Your Ultimate <span>College Predictor Hub</span></h1>
@@ -1206,35 +1711,6 @@
 
         <!-- Promotional Banners Grid Wrapper -->
         <div class="promotional-banners-wrapper">
-            <!-- Scaler School of Technology Promotion Section -->
-            <section class="scaler-whatsapp-section">
-                <div class="scaler-container">
-                    <div class="scaler-image-wrapper">
-                        <img src="SCHOOLS/schools.png" alt="School of Technologies" class="scaler-img">
-                    </div>
-                    <div class="scaler-content">
-                        <div class="scaler-text-group">
-                            <span class="scaler-badge">Admissions 2026</span>
-                            <h2>Confused about School of Technologies?</h2>
-                            <p>Get a free 1:1 counselling session with our expert mentors to clarify your doubts and map out your path to a successful engineering career.</p>
-                        </div>
-                        <div class="scaler-buttons">
-                            <a href="https://forms.gle/1iN7rrBbrASDJWVH8" target="_blank" class="scaler-btn scaler-btn-whatsapp">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                                </svg>
-                                Get free 1:1 counselling
-                            </a>
-                            <a href="https://chat.whatsapp.com/EwG2jSAFAySKYqXOitNkwC?s=cl&p=a&mlu=0" target="_blank" class="scaler-btn scaler-btn-form">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.005 5.234 5.24.002 11.693.002c3.127.001 6.068 1.219 8.28 3.43 2.21 2.21 3.427 5.15 3.425 8.277-.005 6.458-5.24 11.69-11.696 11.69-2.003 0-3.97-.514-5.702-1.492L0 24zm6.59-4.777c1.65.981 3.266 1.49 4.96 1.493 5.485.002 9.948-4.46 9.95-9.947.002-2.658-1.03-5.157-2.906-7.034C16.82 1.859 14.322.827 11.69.827c-5.49 0-9.953 4.462-9.956 9.95-.001 1.83.486 3.62 1.411 5.2l-.995 3.633 3.722-.976zm12.112-7.398c-.287-.143-1.696-.837-1.958-.933-.262-.096-.453-.143-.644.143-.191.287-.738.933-.905 1.124-.167.191-.334.215-.62.072-.287-.143-1.21-.446-2.305-1.424-.853-.761-1.43-1.7-1.597-1.986-.167-.287-.018-.442.125-.583.13-.127.287-.334.43-.501.142-.167.19-.286.285-.477.096-.191.048-.358-.024-.501-.072-.143-.644-1.551-.882-2.123-.233-.559-.469-.482-.644-.491-.167-.008-.358-.01-.55-.01s-.502.072-.764.358c-.262.287-1.002.979-1.002 2.387 0 1.408 1.026 2.769 1.17 2.96.143.191 2.019 3.082 4.89 4.32.683.294 1.218.469 1.634.6.685.218 1.31.187 1.802.114.549-.081 1.696-.692 1.934-1.36.238-.668.238-1.24.167-1.36-.072-.12-.262-.215-.55-.358z"/>
-                                </svg>
-                                Join WhatsApp Group
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </section>
 
             <!-- Community Discussion Section -->
             <section class="community-section">
@@ -1249,7 +1725,7 @@
                             <p>Join our active community group to discuss vacancy seats, cutoff trends, and spot round allotment updates with fellow engineering aspirants.</p>
                         </div>
                         <div class="community-buttons">
-                            <a href="https://www.collegesimplified.in/groups" target="_blank" class="community-btn community-btn-primary">
+                            <a href="https://www.conceptsimplified.in/community" target="_blank" class="community-btn community-btn-primary">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                                     <circle cx="9" cy="7" r="4"></circle>
@@ -1266,7 +1742,7 @@
 
         <section class="notices-section" id="latest-notices">
             <div class="section-hdr">
-                <h2>Latest Notifications & Updates</h2>
+                <h2>Latest Updates</h2>
             </div>
             <div class="notices-grid" id="noticesContainer">
                 <div style="text-align:center; padding:40px; color:var(--muted)">Syncing with server...</div>
@@ -1839,6 +2315,7 @@
         </section>
     </main>
 
+
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
     <script src="firebase_config.js"></script>
@@ -1846,33 +2323,7 @@
     <script>
         initAuth({ requireLogin: false });
 
-        // Add Management Seats Enquiry link in navbar & mobile sub-bar
-        (function () {
-            // 1. Top Navbar (Desktop Only)
-            const headerRight = document.querySelector('#global-header .header-right');
-            if (headerRight) {
-                const link = document.createElement('a');
-                link.href = 'https://forms.gle/E5PYRE6bE6pZVvn39';
-                link.target = '_blank';
-                link.className = 'nav-link-enquiry';
-                link.innerText = 'Management Seats Enquiry';
-                headerRight.insertBefore(link, headerRight.firstChild);
-            }
 
-            // 2. Mobile Enquiry Bar (positioned below fixed navbar)
-            const mainEl = document.querySelector('main');
-            if (mainEl) {
-                const mobileBar = document.createElement('div');
-                mobileBar.className = 'mobile-enquiry-bar';
-                mobileBar.innerHTML = `
-                    <a href="https://forms.gle/E5PYRE6bE6pZVvn39" target="_blank">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                        Management Seats Enquiry &rarr;
-                    </a>
-                `;
-                mainEl.insertBefore(mobileBar, mainEl.firstChild);
-            }
-        })();
 
         async function loadNotices() {
             const container = document.getElementById('noticesContainer');
@@ -1905,6 +2356,40 @@
         }
 
         loadNotices();
+
+        // ── Mobile App Features (Index-specific) ──
+        (function initMobileApp() {
+            // 1. Personalize index-specific greeting (the one embedded in index.html)
+            function updateMobileGreeting() {
+                var user = getSession();
+                // Update index.html embedded greeting
+                var el = document.getElementById('mobile-greeting-name');
+                if (el && user && user.name) {
+                    el.textContent = 'Hi ' + user.name.split(' ')[0] + '! 👋';
+                }
+            }
+            updateMobileGreeting();
+            setTimeout(updateMobileGreeting, 1500);
+
+            // 2. Mobile search — filter predictor cards (index.html only)
+            var searchInput = document.getElementById('mobile-search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    var query = this.value.toLowerCase().trim();
+                    var cards = document.querySelectorAll('.grid .choice-card, .grid .choice-card-split');
+                    cards.forEach(function(card) {
+                        var text = card.textContent.toLowerCase();
+                        if (!query || text.indexOf(query) > -1) {
+                            card.style.display = '';
+                            card.style.opacity = '1';
+                        } else {
+                            card.style.display = 'none';
+                            card.style.opacity = '0';
+                        }
+                    });
+                });
+            }
+        })();
     </script>
 </body>
 

@@ -586,6 +586,236 @@ function injectGlobalUI() {
       transform: none;
       box-shadow: none;
     }
+
+    /* ═══════════════════════════════════════════════════
+       GLOBAL MOBILE APP-LIKE STYLES (all pages)
+       ═══════════════════════════════════════════════════ */
+    .cs-mobile-bottom-nav { display: none; }
+    .cs-mobile-greeting { display: none; }
+
+    @media (max-width: 768px) {
+      /* --- Bottom Tab Nav (persistent on all pages) --- */
+      .cs-mobile-bottom-nav {
+        display: flex !important;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 64px;
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-top: 1px solid var(--stroke, rgba(0,0,0,0.08));
+        z-index: 999;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0 8px;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+      }
+      .cs-mobile-bottom-nav a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        text-decoration: none;
+        color: var(--muted, #6b7280);
+        font-size: 10px;
+        font-weight: 700;
+        padding: 6px 12px;
+        border-radius: 12px;
+        transition: all 0.2s;
+        position: relative;
+        font-family: 'Inter', sans-serif;
+      }
+      .cs-mobile-bottom-nav a.cs-tab-active {
+        color: var(--brand, #dc2626);
+      }
+      .cs-mobile-bottom-nav a.cs-tab-active::before {
+        content: '';
+        position: absolute;
+        top: -1px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 20px;
+        height: 3px;
+        background: var(--brand, #dc2626);
+        border-radius: 0 0 3px 3px;
+      }
+      .cs-mobile-bottom-nav a svg {
+        width: 22px;
+        height: 22px;
+      }
+
+      /* Body padding for bottom nav clearance */
+      body {
+        padding-bottom: 72px !important;
+        padding-top: 56px !important;
+      }
+      header {
+        height: 56px !important;
+      }
+
+      /* --- Mobile Greeting (landing pages) --- */
+      .cs-mobile-greeting {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 20px 4px;
+      }
+      .cs-mobile-greeting .csmg-left h2 {
+        font-family: 'Lexend', sans-serif;
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--ink, #111827);
+        margin: 0;
+        line-height: 1.2;
+      }
+      .cs-mobile-greeting .csmg-left p {
+        font-size: 12px;
+        color: var(--muted, #6b7280);
+        margin: 2px 0 0;
+        font-weight: 500;
+      }
+      .cs-mobile-greeting .csmg-right {
+        width: 38px;
+        height: 38px;
+        background: var(--brand-soft, #fef2f2);
+        border: 2px solid var(--brand-ring, rgba(220,38,38,0.15));
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+      }
+      .cs-mobile-greeting .csmg-right svg {
+        color: var(--brand, #dc2626);
+      }
+
+      /* --- Landing Page Hero -> Hidden on mobile --- */
+      .hero {
+        display: none !important;
+      }
+
+      /* --- Landing Page Sections Compact --- */
+      .wrap {
+        gap: 24px !important;
+        padding: 0 14px 24px !important;
+      }
+      .section-header {
+        flex-direction: column !important;
+        gap: 10px !important;
+        margin-bottom: 16px !important;
+      }
+      .section-icon {
+        width: 44px !important;
+        height: 44px !important;
+        border-radius: 14px !important;
+      }
+      .section-icon svg {
+        width: 22px !important;
+        height: 22px !important;
+      }
+      .section-title h2 {
+        font-size: 18px !important;
+      }
+      .section-title p {
+        font-size: 13px !important;
+        display: none !important;
+      }
+      .meta-badge {
+        font-size: 10px !important;
+        padding: 4px 10px !important;
+        margin-top: 6px !important;
+      }
+
+      /* --- Tool Cards -> 2-Column Grid --- */
+      .grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+      }
+      .tool-card, .tool-card-2026 {
+        padding: 16px !important;
+        border-radius: 18px !important;
+        gap: 10px !important;
+      }
+      .tool-card:hover, .tool-card-2026:hover {
+        transform: none !important;
+      }
+      .tool-icon {
+        width: 38px !important;
+        height: 38px !important;
+        border-radius: 12px !important;
+      }
+      .tool-icon svg {
+        width: 18px !important;
+        height: 18px !important;
+      }
+      .arrow {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 12px !important;
+      }
+      .tool-info h3 {
+        font-size: 13px !important;
+        margin-bottom: 4px !important;
+        line-height: 1.3 !important;
+      }
+      .tool-info p {
+        display: none !important;
+      }
+      .tool-tag {
+        font-size: 9px !important;
+        padding: 3px 8px !important;
+        border-radius: 6px !important;
+        margin-top: 4px !important;
+      }
+      .new-2026-badge {
+        font-size: 8px !important;
+        padding: 2px 8px !important;
+      }
+
+      /* --- Compact Promo/Community Banners --- */
+      .promotional-banners-wrapper {
+        padding: 0 14px !important;
+        gap: 12px !important;
+        margin-bottom: 16px !important;
+      }
+      .community-container, .scaler-promo-container {
+        padding: 20px !important;
+        border-radius: 18px !important;
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+      }
+      .community-content h2, .scaler-promo-content h2 {
+        font-size: 16px !important;
+      }
+      .community-content p, .scaler-promo-content p {
+        font-size: 12px !important;
+      }
+      .community-btn, .scaler-promo-btn {
+        padding: 10px 18px !important;
+        font-size: 12px !important;
+        border-radius: 10px !important;
+      }
+      .community-image-wrapper, .scaler-promo-image {
+        border-radius: 12px !important;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .grid {
+        gap: 8px !important;
+      }
+      .tool-card, .tool-card-2026 {
+        padding: 12px !important;
+      }
+      .tool-info h3 {
+        font-size: 12px !important;
+      }
+      .tool-icon {
+        width: 34px !important;
+        height: 34px !important;
+      }
+    }
   `;
   document.head.appendChild(style);
 
@@ -618,12 +848,6 @@ function injectGlobalUI() {
       <div class="sidebar-user-area" style="display:flex;flex-direction:column;gap:12px">
         <div id="sidebarProfile"></div>
         <div id="sidebarLogout"></div>
-        <div id="sidebarEnquiry">
-          <a href="https://forms.gle/E5PYRE6bE6pZVvn39" target="_blank" class="sidebar-enquiry-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-            Management Seats Enquiry
-          </a>
-        </div>
       </div>
       <nav style="display:flex;flex-direction:column;gap:4px;overflow-y:auto;padding-right:4px">
         <div class="sidebar-label">Navigation</div>
@@ -648,7 +872,6 @@ function injectGlobalUI() {
             <a href="career_library.html" class="sidebar-sub-link">Career Library</a>
             <a href="cet_chatbot.html" class="sidebar-sub-link">MHT CET Chatbot</a>
             <a href="preference-builder.html" class="sidebar-sub-link">CET Preference Builder</a>
-            <a href="auto-preference-builder.html" class="sidebar-sub-link">Auto Preference Builder</a>
             <a href="percentile_vs_college_predictor.html" class="sidebar-sub-link">JEE ALL INDIA Predictor</a>
             <a href="document_checklist.html" class="sidebar-sub-link">Document Checklist</a>
           </div>
@@ -750,13 +973,11 @@ function injectGlobalUI() {
         </div>
 
         <div class="sidebar-label">Tools</div>
-        <a href="auto-preference-builder.html" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/></svg> Auto Preference Builder</a>
         <a href="Branch.html" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg> Branch Prediction Test</a>
         <a href="career_library.html" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> Career Library</a>
         <a href="document_checklist.html" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Document Checklist</a>
         <a href="calendar.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Event Calendar</a>
-        <a href="non-cap-admissions.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> NON-CAP Admissions</a>
-        <a href="index.html#latest-notices" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Latest Notices</a>
+        <a href="index.html#latest-notices" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Latest Updates</a>
 
         <div class="sidebar-label">Legal</div>
         <a href="terms.html" class="sidebar-link" target="_blank"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Terms & Conditions</a>
@@ -852,7 +1073,78 @@ function injectGlobalUI() {
 
   document.body.insertAdjacentHTML('afterbegin', headerHtml + sidebarHtml + claimModalHtml + termsModalHtml);
 
-  // 3. Inject Banner removed
+  // 3. Inject Mobile Bottom Nav (persistent across all pages)
+  var mobileBottomNavHtml = `
+    <nav class="cs-mobile-bottom-nav" id="cs-mobile-bottom-nav">
+      <a href="index.html" data-tab="home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </a>
+      <a href="tools.html" data-tab="tools">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        Tools
+      </a>
+      <a href="career_library.html" data-tab="careers">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Careers
+      </a>
+      <a href="auth.html" data-tab="profile" id="cs-mobile-tab-profile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Profile
+      </a>
+    </nav>
+  `;
+  document.body.insertAdjacentHTML('beforeend', mobileBottomNavHtml);
+
+  // Auto-detect active tab from current URL
+  try {
+    var curPage = (window.location.pathname.split('/').pop() || 'index.html').split('?')[0];
+    var tabMap = {
+      'index.html': 'home',
+      'tools.html': 'tools',
+      'career_library.html': 'careers',
+      'auth.html': 'profile'
+    };
+    // Landing pages → Home tab
+    if (curPage.indexOf('-landing') > -1) tabMap[curPage] = 'home';
+    var activeTab = tabMap[curPage] || '';
+    if (activeTab) {
+      var tabLink = document.querySelector('.cs-mobile-bottom-nav a[data-tab="' + activeTab + '"]');
+      if (tabLink) tabLink.classList.add('cs-tab-active');
+    }
+  } catch(e) {}
+
+  // 4. Inject Mobile Greeting (for landing pages that have a .hero, only if not already present in DOM)
+  try {
+    if (!document.querySelector('.mobile-app-greeting') && !document.querySelector('.cs-mobile-greeting')) {
+      var heroEl = document.querySelector('.hero');
+      if (heroEl) {
+        var greetingHtml = '<div class="cs-mobile-greeting"><div class="csmg-left"><h2 id="cs-mobile-greeting-name">Hi there! 👋</h2><p>Find your dream college</p></div></div>';
+        heroEl.insertAdjacentHTML('beforebegin', greetingHtml);
+      }
+    }
+    // Personalize greeting name
+    setTimeout(function() {
+      var user = getSession();
+      var el = document.getElementById('cs-mobile-greeting-name') || document.getElementById('mobile-greeting-name');
+      if (el && user && user.name) {
+        el.textContent = 'Hi ' + user.name.split(' ')[0] + '! 👋';
+      }
+    }, 300);
+  } catch(e) {}
+
+  // 5. Profile tab → open sidebar if logged in
+  setTimeout(function() {
+    var profileTab = document.getElementById('cs-mobile-tab-profile');
+    if (profileTab && getSession()) {
+      profileTab.onclick = function(e) {
+        e.preventDefault();
+        toggleSidebar();
+      };
+    }
+  }, 100);
+
+  // Inject Banner removed
 
   // Dynamic Sidebar Link Activation based on current page pathname
   try {
@@ -1089,7 +1381,7 @@ function initAuth(opts) {
   // Desktop Sidebar State Restore
   if (window.innerWidth > 1024) {
     var pref = localStorage.getItem('cs_sidebar_pref');
-    if (pref === 'true' || pref === null) {
+    if (pref === 'true') {
       document.body.classList.add('sidebar-visible');
     }
   }

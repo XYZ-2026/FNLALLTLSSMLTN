@@ -12,7 +12,7 @@
 // These are loaded via <script> tags in HTML before this file.
 // firebase-app-compat.js + firebase-firestore-compat.js
 
-const firebaseConfig = {
+var firebaseConfig = window.firebaseConfig || {
   apiKey: "AIzaSyAtWXG-w4sqidiHeOiK18MQ1EAfiUoCJrY",
   authDomain: "mht-cet-counselling.firebaseapp.com",
   projectId: "mht-cet-counselling",
@@ -1041,9 +1041,10 @@ async function fireApi(action, payload) {
 
       case 'logUserActivity': {
         const { userId, email, name, role, device, sessionId, action, details } = payload;
+        const nowIso = new Date().toISOString();
         if (userId && userId !== 'guest') {
           db.collection('users').doc(userId).update({
-            lastActiveAt: firebase.firestore.FieldValue.serverTimestamp()
+            lastActiveAt: nowIso
           }).catch(err => console.error('Error updating lastActiveAt:', err));
         }
         await db.collection('userActivityLogs').add({
@@ -1055,7 +1056,7 @@ async function fireApi(action, payload) {
           sessionId: sessionId || 'guest_session',
           action: action || 'page_view',
           details: details || '',
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          timestamp: nowIso
         });
         return { ok: true };
       }
