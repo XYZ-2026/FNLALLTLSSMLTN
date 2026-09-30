@@ -1154,13 +1154,14 @@
       background: var(--brand-soft);
     }
 
-    /* Toggle button group for chart metric */
+    /* Toggle button group for chart metric & round filters */
     .toggle-group {
       display: flex;
       background: var(--bg);
       padding: 3px;
       border-radius: 8px;
       border: 1px solid var(--stroke);
+      max-width: 100%;
     }
 
     .toggle-btn {
@@ -1173,6 +1174,7 @@
       border-radius: 6px;
       cursor: pointer;
       transition: all 0.15s;
+      white-space: nowrap;
     }
 
     .toggle-btn.active {
@@ -1192,6 +1194,21 @@
       min-width: 0;
     }
 
+    .show-mobile {
+      display: none !important;
+    }
+    .filter-round-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .master-header-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
     @media (max-width: 768px) {
       .master-filters {
         display: flex;
@@ -1206,6 +1223,38 @@
     }
 
     @media (max-width: 640px) {
+      .hide-mobile {
+        display: none !important;
+      }
+      .show-mobile {
+        display: inline !important;
+      }
+      .filter-round-wrapper {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+      .master-header-controls {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+      .toggle-group {
+        width: 100%;
+        display: flex;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 2px;
+      }
+      .toggle-btn {
+        flex: 1;
+        padding: 6px 4px;
+        font-size: 11px;
+        text-align: center;
+        white-space: nowrap;
+      }
       .trend-filter-grid {
         flex-direction: column;
         gap: 10px;
@@ -1473,17 +1522,8 @@
         <div id="cutoffSectionWrapper" style="display: none; margin-bottom: 40px;">
           <!-- Tabs for MHT-CET vs JEE Mains -->
           <div class="college-tabs-header" style="display:flex; align-items:center; flex-wrap:wrap; gap:12px;">
-            <button class="college-tab-btn active" id="tabMhtcetBtn" onclick="setCollegeTab('mhtcet')">MHT-CET (Round <span id="tabMhtcetRound">1</span> 2026)</button>
-            <button class="college-tab-btn" id="tabJeeBtn" onclick="setCollegeTab('jee')">JEE Mains All India (Round <span id="tabJeeRound">1</span> 2026)</button>
-            <div style="margin-left:auto; display:flex; align-items:center; gap:6px;">
-              <span style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px;">CAP Round:</span>
-              <div style="display:flex; background:var(--bg); padding:3px; border-radius:8px; border:1px solid var(--stroke);">
-                <button class="toggle-btn active" id="explorerRoundBtn1" onclick="switchExplorerRound(1)" style="font-size:11px; padding:6px 12px; font-weight:700; border:none; border-radius:6px; cursor:pointer; background:var(--brand); color:#fff;">Round 1</button>
-                <button class="toggle-btn" id="explorerRoundBtn2" onclick="switchExplorerRound(2)" style="font-size:11px; padding:6px 12px; font-weight:700; border:none; border-radius:6px; cursor:pointer; background:transparent; color:var(--muted);">Round 2</button>
-                <button class="toggle-btn" id="explorerRoundBtn3" onclick="switchExplorerRound(3)" style="font-size:11px; padding:6px 12px; font-weight:700; border:none; border-radius:6px; cursor:pointer; background:transparent; color:var(--muted);">Round 3</button>
-                <button class="toggle-btn" id="explorerRoundBtn4" onclick="switchExplorerRound(4)" style="font-size:11px; padding:6px 12px; font-weight:700; border:none; border-radius:6px; cursor:pointer; background:transparent; color:var(--muted);">Round 4</button>
-              </div>
-            </div>
+            <button class="college-tab-btn active" id="tabMhtcetBtn" onclick="setCollegeTab('mhtcet')">MHT-CET Cutoffs & Analytics (2026)</button>
+            <button class="college-tab-btn" id="tabJeeBtn" onclick="setCollegeTab('jee')">JEE Mains All India Cutoffs & Analytics (2026)</button>
           </div>
 
           <!-- Detailed Analytics Content -->
@@ -1500,7 +1540,17 @@
                       Analyze how cutoffs progressed from Round 1 through Round 4 for specific engineering branches and categories.
                     </p>
                   </div>
-                  <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                  <div class="master-header-controls">
+                    <div class="filter-round-wrapper">
+                      <span style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px;">Filter Round:</span>
+                      <div class="toggle-group" id="graphMhtRoundGroup">
+                        <button class="toggle-btn active" id="graphMhtRoundBtnAll" onclick="setGraphRound('all', 'mhtcet')"><span class="hide-mobile">All Rounds</span><span class="show-mobile">All</span></button>
+                        <button class="toggle-btn" id="graphMhtRoundBtn1" onclick="setGraphRound(1, 'mhtcet')"><span class="hide-mobile">Round 1</span><span class="show-mobile">R1</span></button>
+                        <button class="toggle-btn" id="graphMhtRoundBtn2" onclick="setGraphRound(2, 'mhtcet')"><span class="hide-mobile">Round 2</span><span class="show-mobile">R2</span></button>
+                        <button class="toggle-btn" id="graphMhtRoundBtn3" onclick="setGraphRound(3, 'mhtcet')"><span class="hide-mobile">Round 3</span><span class="show-mobile">R3</span></button>
+                        <button class="toggle-btn" id="graphMhtRoundBtn4" onclick="setGraphRound(4, 'mhtcet')"><span class="hide-mobile">Round 4</span><span class="show-mobile">R4</span></button>
+                      </div>
+                    </div>
                     <div class="toggle-group">
                       <button class="toggle-btn active" id="btnMetricPct" onclick="setChartMetric('percentile')">Percentile</button>
                       <button class="toggle-btn" id="btnMetricRank" onclick="setChartMetric('rank')">Rank</button>
@@ -1547,8 +1597,17 @@
                 <div class="master-list-header"
                   style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
                   <h3 style="margin:0;" id="mhtcetTableTitle">MHT-CET Branch Cutoffs — Round 1 (2026)</h3>
-                  <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-                    <div class="master-filters">
+                  <div class="master-header-controls">
+                    <div class="master-filters" style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                      <div class="filter-round-wrapper">
+                        <span style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px;">Round:</span>
+                        <div class="toggle-group" id="tableMhtRoundGroup">
+                          <button class="toggle-btn active" id="tableMhtRoundBtn1" onclick="switchTableRound(1, 'mhtcet')"><span class="hide-mobile">Round 1</span><span class="show-mobile">R1</span></button>
+                          <button class="toggle-btn" id="tableMhtRoundBtn2" onclick="switchTableRound(2, 'mhtcet')"><span class="hide-mobile">Round 2</span><span class="show-mobile">R2</span></button>
+                          <button class="toggle-btn" id="tableMhtRoundBtn3" onclick="switchTableRound(3, 'mhtcet')"><span class="hide-mobile">Round 3</span><span class="show-mobile">R3</span></button>
+                          <button class="toggle-btn" id="tableMhtRoundBtn4" onclick="switchTableRound(4, 'mhtcet')"><span class="hide-mobile">Round 4</span><span class="show-mobile">R4</span></button>
+                        </div>
+                      </div>
                       <select id="tblCategory" onchange="applyTableFilters()" class="filter-select">
                         <!-- Populated dynamically -->
                       </select>
@@ -1592,7 +1651,17 @@
                       Track All India cutoff rank and percentile progression across Rounds 1, 2, 3, and 4.
                     </p>
                   </div>
-                  <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                  <div class="master-header-controls">
+                    <div class="filter-round-wrapper">
+                      <span style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px;">Filter Round:</span>
+                      <div class="toggle-group" id="graphJeeRoundGroup">
+                        <button class="toggle-btn active" id="graphJeeRoundBtnAll" onclick="setGraphRound('all', 'jee')"><span class="hide-mobile">All Rounds</span><span class="show-mobile">All</span></button>
+                        <button class="toggle-btn" id="graphJeeRoundBtn1" onclick="setGraphRound(1, 'jee')"><span class="hide-mobile">Round 1</span><span class="show-mobile">R1</span></button>
+                        <button class="toggle-btn" id="graphJeeRoundBtn2" onclick="setGraphRound(2, 'jee')"><span class="hide-mobile">Round 2</span><span class="show-mobile">R2</span></button>
+                        <button class="toggle-btn" id="graphJeeRoundBtn3" onclick="setGraphRound(3, 'jee')"><span class="hide-mobile">Round 3</span><span class="show-mobile">R3</span></button>
+                        <button class="toggle-btn" id="graphJeeRoundBtn4" onclick="setGraphRound(4, 'jee')"><span class="hide-mobile">Round 4</span><span class="show-mobile">R4</span></button>
+                      </div>
+                    </div>
                     <div class="toggle-group">
                       <button class="toggle-btn active" id="btnJeeMetricPct" onclick="setJeeChartMetric('percentile')">Percentile</button>
                       <button class="toggle-btn" id="btnJeeMetricRank" onclick="setJeeChartMetric('rank')">Rank</button>
@@ -1638,8 +1707,17 @@
                     <span style="font-size: 12px; color: var(--muted); font-weight: 500;">Direct admission cutoff via
                       JEE Mains score</span>
                   </div>
-                  <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-                    <div class="master-filters">
+                  <div class="master-header-controls">
+                    <div class="master-filters" style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                      <div class="filter-round-wrapper">
+                        <span style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px;">Round:</span>
+                        <div class="toggle-group" id="tableJeeRoundGroup">
+                          <button class="toggle-btn active" id="tableJeeRoundBtn1" onclick="switchTableRound(1, 'jee')"><span class="hide-mobile">Round 1</span><span class="show-mobile">R1</span></button>
+                          <button class="toggle-btn" id="tableJeeRoundBtn2" onclick="switchTableRound(2, 'jee')"><span class="hide-mobile">Round 2</span><span class="show-mobile">R2</span></button>
+                          <button class="toggle-btn" id="tableJeeRoundBtn3" onclick="switchTableRound(3, 'jee')"><span class="hide-mobile">Round 3</span><span class="show-mobile">R3</span></button>
+                          <button class="toggle-btn" id="tableJeeRoundBtn4" onclick="switchTableRound(4, 'jee')"><span class="hide-mobile">Round 4</span><span class="show-mobile">R4</span></button>
+                        </div>
+                      </div>
                       <input type="text" id="tblJeeSearch" placeholder="Search branch or choice code..."
                         oninput="applyJeeTableFilters()" class="filter-search-input">
                     </div>
@@ -1712,7 +1790,10 @@
         let jeeDataR2 = [];
         let jeeDataR3 = [];
         let jeeDataR4 = [];
-        let explorerCurrentRound = 1; // Default to Round 1
+        let tableMhtRound = 1;
+        let tableJeeRound = 1;
+        let graphMhtRound = 'all';
+        let graphJeeRound = 'all';
 
         let gaugeChartInstance = null;
         let pieChartInstance = null;
@@ -1868,7 +1949,7 @@
             mhtDataR2 = parseMhtData(cetR2Json);
             mhtDataR3 = parseMhtData(cetR3Json);
             mhtDataR4 = parseMhtData(cetR4Json);
-            mhtData = explorerCurrentRound === 4 ? mhtDataR4 : (explorerCurrentRound === 3 ? mhtDataR3 : (explorerCurrentRound === 2 ? mhtDataR2 : mhtDataR1));
+            mhtData = tableMhtRound === 4 ? mhtDataR4 : (tableMhtRound === 3 ? mhtDataR3 : (tableMhtRound === 2 ? mhtDataR2 : mhtDataR1));
 
             // Parse JEE data helper
             function parseJeeData(jeeJson) {
@@ -1900,7 +1981,7 @@
             jeeDataR2 = parseJeeData(jeeR2Json);
             jeeDataR3 = parseJeeData(jeeR3Json);
             jeeDataR4 = parseJeeData(jeeR4Json);
-            jeeData = explorerCurrentRound === 4 ? jeeDataR4 : (explorerCurrentRound === 3 ? jeeDataR3 : (explorerCurrentRound === 2 ? jeeDataR2 : jeeDataR1));
+            jeeData = tableJeeRound === 4 ? jeeDataR4 : (tableJeeRound === 3 ? jeeDataR3 : (tableJeeRound === 2 ? jeeDataR2 : jeeDataR1));
 
             // Map list of unique colleges
             const uniqueMap = {};
@@ -2595,8 +2676,19 @@
         }
 
         function initCutoffCheckerSection(college, collegeMht, collegeJee) {
-          curMht = collegeMht;
-          curJee = collegeJee;
+          const targetCodeClean = String(college.code).trim().replace(/^0+/, '');
+
+          const mhtRoundData = tableMhtRound === 4 ? mhtDataR4 : (tableMhtRound === 3 ? mhtDataR3 : (tableMhtRound === 2 ? mhtDataR2 : mhtDataR1));
+          curMht = mhtRoundData.filter(row => {
+            const mhtCode = row.instituteCode ? String(row.instituteCode).trim().replace(/^0+/, '') : (row.choiceCode ? String(row.choiceCode).trim().substring(0, 5).replace(/^0+/, '') : '');
+            return mhtCode === targetCodeClean;
+          });
+
+          const jeeRoundData = tableJeeRound === 4 ? jeeDataR4 : (tableJeeRound === 3 ? jeeDataR3 : (tableJeeRound === 2 ? jeeDataR2 : jeeDataR1));
+          curJee = jeeRoundData.filter(row => {
+            const jeeCode = row.instituteCode ? String(row.instituteCode).trim().replace(/^0+/, '') : (row.choiceCode ? String(row.choiceCode).trim().substring(0, 5).replace(/^0+/, '') : '');
+            return jeeCode === targetCodeClean;
+          });
 
           const mhtTabBtn = document.getElementById('tabMhtcetBtn');
           const jeeTabBtn = document.getElementById('tabJeeBtn');
@@ -2624,7 +2716,45 @@
             setCollegeTab('jee');
           }
 
-          const targetCodeClean = String(college.code).trim().replace(/^0+/, '');
+          // Sync table round button UI states
+          [1, 2, 3, 4].forEach(r => {
+            const btnMht = document.getElementById('tableMhtRoundBtn' + r);
+            if (btnMht) {
+              btnMht.classList.toggle('active', r === tableMhtRound);
+              btnMht.style.background = r === tableMhtRound ? 'var(--brand)' : 'transparent';
+              btnMht.style.color = r === tableMhtRound ? '#fff' : 'var(--muted)';
+            }
+            const btnJee = document.getElementById('tableJeeRoundBtn' + r);
+            if (btnJee) {
+              btnJee.classList.toggle('active', r === tableJeeRound);
+              btnJee.style.background = r === tableJeeRound ? 'var(--brand)' : 'transparent';
+              btnJee.style.color = r === tableJeeRound ? '#fff' : 'var(--muted)';
+            }
+          });
+
+          // Sync graph round button UI states
+          ['All', 1, 2, 3, 4].forEach(r => {
+            const btnMht = document.getElementById('graphMhtRoundBtn' + r);
+            if (btnMht) {
+              const isActive = (r === 'All' && graphMhtRound === 'all') || (r === graphMhtRound);
+              btnMht.classList.toggle('active', isActive);
+              btnMht.style.background = isActive ? 'var(--brand)' : 'transparent';
+              btnMht.style.color = isActive ? '#fff' : 'var(--muted)';
+            }
+            const btnJee = document.getElementById('graphJeeRoundBtn' + r);
+            if (btnJee) {
+              const isActive = (r === 'All' && graphJeeRound === 'all') || (r === graphJeeRound);
+              btnJee.classList.toggle('active', isActive);
+              btnJee.style.background = isActive ? 'var(--brand)' : 'transparent';
+              btnJee.style.color = isActive ? '#fff' : 'var(--muted)';
+            }
+          });
+
+          const mhtTitle = document.getElementById('mhtcetTableTitle');
+          if (mhtTitle) mhtTitle.textContent = `MHT-CET Branch Cutoffs — Round ${tableMhtRound} (2026)`;
+
+          const jeeTitle = document.getElementById('jeeTableTitle');
+          if (jeeTitle) jeeTitle.textContent = `JEE Mains All India Cutoffs — Round ${tableJeeRound} (2026)`;
 
           // Gather all MHT rows for this college across all 4 rounds for trend chart
           const allRoundsMht = [
@@ -2684,51 +2814,83 @@
           renderJeeChartAndSummary();
         }
 
-        window.switchExplorerRound = function(round) {
-          if (round === explorerCurrentRound) return;
-          explorerCurrentRound = round;
+        window.switchTableRound = function(round, system) {
+          if (system === 'mhtcet') {
+            tableMhtRound = round;
+            [1, 2, 3, 4].forEach(r => {
+              const btn = document.getElementById('tableMhtRoundBtn' + r);
+              if (btn) {
+                btn.classList.toggle('active', r === round);
+                btn.style.background = r === round ? 'var(--brand)' : 'transparent';
+                btn.style.color = r === round ? '#fff' : 'var(--muted)';
+              }
+            });
+            const mhtTitle = document.getElementById('mhtcetTableTitle');
+            if (mhtTitle) mhtTitle.textContent = `MHT-CET Branch Cutoffs — Round ${round} (2026)`;
 
-          // Update toggle buttons
-          [1, 2, 3, 4].forEach(r => {
-            const btn = document.getElementById('explorerRoundBtn' + r);
-            if (btn) {
-              btn.style.background = r === round ? 'var(--brand)' : 'transparent';
-              btn.style.color = r === round ? '#fff' : 'var(--muted)';
-            }
-          });
-
-          // Switch data sources
-          mhtData = round === 4 ? mhtDataR4 : (round === 3 ? mhtDataR3 : (round === 2 ? mhtDataR2 : mhtDataR1));
-          jeeData = round === 4 ? jeeDataR4 : (round === 3 ? jeeDataR3 : (round === 2 ? jeeDataR2 : jeeDataR1));
-
-          // Update tab labels
-          const tabMhtRound = document.getElementById('tabMhtcetRound');
-          const tabJeeRound = document.getElementById('tabJeeRound');
-          if (tabMhtRound) tabMhtRound.textContent = round;
-          if (tabJeeRound) tabJeeRound.textContent = round;
-
-          // Update table titles
-          const mhtTitle = document.getElementById('mhtcetTableTitle');
-          const jeeTitle = document.getElementById('jeeTableTitle');
-          if (mhtTitle) mhtTitle.textContent = `MHT-CET Branch Cutoffs — Round ${round} (2026)`;
-          if (jeeTitle) jeeTitle.textContent = `JEE Mains All India Cutoffs — Round ${round} (2026)`;
-
-          // Re-filter cutoffs for currently selected college
-          const searchVal = document.getElementById('searchColleges') ? document.getElementById('searchColleges').value : '';
-          if (searchVal && document.getElementById('collegeDashboard') && document.getElementById('collegeDashboard').style.display === 'block') {
+            const searchVal = document.getElementById('searchColleges') ? document.getElementById('searchColleges').value : '';
             const college = collegeList.find(c => c.name === searchVal);
             if (college) {
               const targetCodeClean = String(college.code).trim().replace(/^0+/, '');
-              const collegeMht = mhtData.filter(row => {
+              const roundData = round === 4 ? mhtDataR4 : (round === 3 ? mhtDataR3 : (round === 2 ? mhtDataR2 : mhtDataR1));
+              curMht = roundData.filter(row => {
                 const mhtCode = row.instituteCode ? String(row.instituteCode).trim().replace(/^0+/, '') : (row.choiceCode ? String(row.choiceCode).trim().substring(0, 5).replace(/^0+/, '') : '');
                 return mhtCode === targetCodeClean;
               });
-              const collegeJee = jeeData.filter(row => {
+              applyTableFilters();
+            }
+          } else if (system === 'jee') {
+            tableJeeRound = round;
+            [1, 2, 3, 4].forEach(r => {
+              const btn = document.getElementById('tableJeeRoundBtn' + r);
+              if (btn) {
+                btn.classList.toggle('active', r === round);
+                btn.style.background = r === round ? 'var(--brand)' : 'transparent';
+                btn.style.color = r === round ? '#fff' : 'var(--muted)';
+              }
+            });
+            const jeeTitle = document.getElementById('jeeTableTitle');
+            if (jeeTitle) jeeTitle.textContent = `JEE Mains All India Cutoffs — Round ${round} (2026)`;
+
+            const searchVal = document.getElementById('searchColleges') ? document.getElementById('searchColleges').value : '';
+            const college = collegeList.find(c => c.name === searchVal);
+            if (college) {
+              const targetCodeClean = String(college.code).trim().replace(/^0+/, '');
+              const roundData = round === 4 ? jeeDataR4 : (round === 3 ? jeeDataR3 : (round === 2 ? jeeDataR2 : jeeDataR1));
+              curJee = roundData.filter(row => {
                 const jeeCode = row.instituteCode ? String(row.instituteCode).trim().replace(/^0+/, '') : (row.choiceCode ? String(row.choiceCode).trim().substring(0, 5).replace(/^0+/, '') : '');
                 return jeeCode === targetCodeClean;
               });
-              initCutoffCheckerSection(college, collegeMht, collegeJee);
+              applyJeeTableFilters();
             }
+          }
+        };
+
+        window.setGraphRound = function(round, system) {
+          if (system === 'mhtcet') {
+            graphMhtRound = round;
+            ['All', 1, 2, 3, 4].forEach(r => {
+              const btn = document.getElementById('graphMhtRoundBtn' + r);
+              if (btn) {
+                const isActive = (r === 'All' && round === 'all') || (r === round);
+                btn.classList.toggle('active', isActive);
+                btn.style.background = isActive ? 'var(--brand)' : 'transparent';
+                btn.style.color = isActive ? '#fff' : 'var(--muted)';
+              }
+            });
+            renderChartAndSummary();
+          } else if (system === 'jee') {
+            graphJeeRound = round;
+            ['All', 1, 2, 3, 4].forEach(r => {
+              const btn = document.getElementById('graphJeeRoundBtn' + r);
+              if (btn) {
+                const isActive = (r === 'All' && round === 'all') || (r === round);
+                btn.classList.toggle('active', isActive);
+                btn.style.background = isActive ? 'var(--brand)' : 'transparent';
+                btn.style.color = isActive ? '#fff' : 'var(--muted)';
+              }
+            });
+            renderJeeChartAndSummary();
           }
         };
 
@@ -2838,6 +3000,11 @@
             yAxisReverse = true;
           }
 
+          const mainColor = trendMetric === 'percentile' ? '#dc2626' : '#2563eb';
+          const pointRadiusArr = labels.map((l, i) => (graphMhtRound !== 'all' && (i + 1) === graphMhtRound) ? (isMobile ? 7 : 9) : (isMobile ? 4 : 5));
+          const pointHoverRadiusArr = labels.map((l, i) => (graphMhtRound !== 'all' && (i + 1) === graphMhtRound) ? (isMobile ? 9 : 11) : (isMobile ? 6 : 7));
+          const pointBgColors = labels.map((l, i) => (graphMhtRound !== 'all' && (i + 1) === graphMhtRound) ? '#10b981' : mainColor);
+
           trendChartInstance = new Chart(ctx, {
             type: 'line',
             data: {
@@ -2846,14 +3013,14 @@
                 {
                   label: labelString,
                   data: chartData,
-                  borderColor: trendMetric === 'percentile' ? '#dc2626' : '#2563eb',
+                  borderColor: mainColor,
                   backgroundColor: trendMetric === 'percentile' ? 'rgba(220, 38, 38, 0.05)' : 'rgba(37, 99, 235, 0.05)',
                   borderWidth: isMobile ? 2.5 : 3,
-                  pointBackgroundColor: trendMetric === 'percentile' ? '#dc2626' : '#2563eb',
+                  pointBackgroundColor: pointBgColors,
                   pointBorderColor: isDark ? '#131620' : '#ffffff',
                   pointBorderWidth: 1.5,
-                  pointRadius: isMobile ? 4 : 5,
-                  pointHoverRadius: isMobile ? 6 : 7,
+                  pointRadius: pointRadiusArr,
+                  pointHoverRadius: pointHoverRadiusArr,
                   tension: 0.2,
                   spanGaps: true
                 }
@@ -2971,9 +3138,12 @@
               }
             }
 
+            const isCurrentGraphRound = graphMhtRound !== 'all' && row.round === graphMhtRound;
+            const rowStyle = isCurrentGraphRound ? 'style="background:var(--brand-soft); font-weight:bold; border-left:3px solid var(--brand);"' : '';
+
             tbody.innerHTML += `
-            <tr>
-              <td style="font-weight:700">Round ${row.round}</td>
+            <tr ${rowStyle}>
+              <td style="font-weight:700">Round ${row.round} ${isCurrentGraphRound ? '<span style="font-size:10px; background:var(--brand); color:#fff; padding:2px 6px; border-radius:4px; margin-left:4px;">Selected</span>' : ''}</td>
               <td style="font-weight:600">${rankText}</td>
               <td style="font-weight:800; color:var(--brand)">${pctText}</td>
               <td><span class="${trendClass} trend-indicator">${changeText}</span></td>
@@ -3189,6 +3359,11 @@
             yAxisReverse = true;
           }
 
+          const mainColor = jeeTrendMetric === 'percentile' ? '#dc2626' : '#2563eb';
+          const pointRadiusArr = labels.map((l, i) => (graphJeeRound !== 'all' && (i + 1) === graphJeeRound) ? (isMobile ? 7 : 9) : (isMobile ? 4 : 5));
+          const pointHoverRadiusArr = labels.map((l, i) => (graphJeeRound !== 'all' && (i + 1) === graphJeeRound) ? (isMobile ? 9 : 11) : (isMobile ? 6 : 7));
+          const pointBgColors = labels.map((l, i) => (graphJeeRound !== 'all' && (i + 1) === graphJeeRound) ? '#10b981' : mainColor);
+
           jeeTrendChartInstance = new Chart(ctx, {
             type: 'line',
             data: {
@@ -3197,14 +3372,14 @@
                 {
                   label: labelString,
                   data: chartData,
-                  borderColor: jeeTrendMetric === 'percentile' ? '#dc2626' : '#2563eb',
+                  borderColor: mainColor,
                   backgroundColor: jeeTrendMetric === 'percentile' ? 'rgba(220, 38, 38, 0.05)' : 'rgba(37, 99, 235, 0.05)',
                   borderWidth: isMobile ? 2.5 : 3,
-                  pointBackgroundColor: jeeTrendMetric === 'percentile' ? '#dc2626' : '#2563eb',
+                  pointBackgroundColor: pointBgColors,
                   pointBorderColor: isDark ? '#131620' : '#ffffff',
                   pointBorderWidth: 1.5,
-                  pointRadius: isMobile ? 4 : 5,
-                  pointHoverRadius: isMobile ? 6 : 7,
+                  pointRadius: pointRadiusArr,
+                  pointHoverRadius: pointHoverRadiusArr,
                   tension: 0.2,
                   spanGaps: true
                 }
@@ -3323,9 +3498,12 @@
               }
             }
 
+            const isCurrentGraphRound = graphJeeRound !== 'all' && row.round === graphJeeRound;
+            const rowStyle = isCurrentGraphRound ? 'style="background:var(--brand-soft); font-weight:bold; border-left:3px solid var(--brand);"' : '';
+
             tbody.innerHTML += `
-            <tr>
-              <td style="font-weight:700">Round ${row.round}</td>
+            <tr ${rowStyle}>
+              <td style="font-weight:700">Round ${row.round} ${isCurrentGraphRound ? '<span style="font-size:10px; background:var(--brand); color:#fff; padding:2px 6px; border-radius:4px; margin-left:4px;">Selected</span>' : ''}</td>
               <td style="font-weight:600">${rankText}</td>
               <td style="font-weight:800; color:var(--brand)">${pctText}</td>
               <td><span class="${trendClass} trend-indicator">${changeText}</span></td>
