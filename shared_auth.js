@@ -1786,7 +1786,8 @@ function injectClaimPremiumButton() {
       a.closest('.banners-grid') ||
       a.closest('.premium-banners-section') ||
       a.closest('.cs-ad-card') ||
-      a.closest('.cs-ad-modal-content')) {
+      a.closest('.cs-ad-modal-content') ||
+      a.closest('.csai-root')) {
       return false;
     }
 
@@ -2010,3 +2011,27 @@ window.logUserPortalActivity = async function (action, details) {
     console.error('Activity logging API failed:', err);
   });
 };
+
+/* ══════════════════════════════════════════
+   AI COUNSELLOR WIDGET (lazy)
+   Injected after the page has fully loaded and the browser is idle, so it
+   never touches the HTML, metadata, critical rendering path or layout (SEO-safe).
+   ══════════════════════════════════════════ */
+(function loadCsAssistantWidget() {
+  if (window.__csAssistantLoader) return;
+  window.__csAssistantLoader = true;
+  function inject() {
+    if (document.getElementById('cs-assistant-widget')) return;
+    var s = document.createElement('script');
+    s.id = 'cs-assistant-widget';
+    s.src = '/cs-assistant-widget.js?v=1';
+    s.async = true;
+    document.body.appendChild(s);
+  }
+  function whenIdle() {
+    if ('requestIdleCallback' in window) window.requestIdleCallback(inject, { timeout: 3000 });
+    else setTimeout(inject, 1200);
+  }
+  if (document.readyState === 'complete') whenIdle();
+  else window.addEventListener('load', whenIdle);
+})();

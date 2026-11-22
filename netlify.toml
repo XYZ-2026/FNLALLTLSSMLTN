@@ -3,3 +3,24 @@
 
 [build.environment]
   SECRETS_SCAN_SMART_DETECTION_ENABLED = "false"
+
+# AI Counsellor: bundle only the datasets it reads (keeps the function small).
+[functions."cs-assistant"]
+  included_files = [
+    "CUTOFFS 2026/mhtcet_round*.json",
+    "CUTOFFS 2026/round*_all_india.json",
+    "CUTOFFS 2026/MHT_CET_2026_Seat_Matrix.json",
+    "DSE 2026/DSE_CAP_*_2026_cutoffs.json",
+    "JOSAA/JOSAA_CUTOFF_CONSOLIDATED_2026.json",
+    "JOSAA/CSAB_CUTOFF_CONSOLIDATED_2026.json",
+    "JOSAA/IIT_ROUND_*_2026.json",
+    "COMEDK/*.json",
+    "MANIPAL/MANIPAL_CUTOFF.json",
+    "REGION_WISE_RANKING/*.json",
+    "placement/*.json",
+    "ALL_CLG_PLACEMENT_TIER.json",
+    "college-data.json",
+    "MHT CET marks vs percentile.json",
+    "MHT CET percentile vs rank.json",
+    "percentile vs rank jee mains.json",
+  ]
