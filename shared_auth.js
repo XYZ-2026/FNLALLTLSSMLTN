@@ -2025,7 +2025,7 @@ window.logUserPortalActivity = async function (action, details) {
     if (document.getElementById('cs-assistant-widget')) return;
     var s = document.createElement('script');
     s.id = 'cs-assistant-widget';
-    s.src = '/cs-assistant-widget.js?v=3';
+    s.src = '/cs-assistant-widget.js?v=4';
     s.async = true;
     document.body.appendChild(s);
   }

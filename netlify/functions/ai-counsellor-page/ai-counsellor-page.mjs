@@ -92,6 +92,8 @@ table{width:100%;border-collapse:collapse;font-size:.88rem}caption{text-align:le
 th{background:var(--brand-soft);color:#991b1b;text-align:left}th,td{padding:9px 14px;border-top:1px solid var(--stroke)}td:nth-last-child(-n+2){font-variant-numeric:tabular-nums}
 .tools{list-style:none;display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.tools a{display:block;padding:9px 14px;border:1px solid var(--brand-ring);border-radius:999px;background:var(--brand-soft);color:#b91c1c;font-weight:600;font-size:.86rem;text-decoration:none}.tools a:hover{background:#b91c1c;color:#fff}
 @media(min-width:1025px){body.sidebar-visible{padding-left:280px}}
+/* phones: same header/tab-bar clearance the site applies after load, and a chat frame that ends above the tab bar */
+@media(max-width:768px){body{padding-top:56px;padding-bottom:72px}#cs-ai-page{height:clamp(420px,calc(100vh - 340px),760px);height:clamp(420px,calc(100svh - 340px),760px)}}
 @media(max-width:560px){main{padding:20px 14px 56px}}
 `.trim();
 
@@ -131,7 +133,7 @@ export function renderPage() {
 <div id="cs-ai-page"><div class="shell">
 <div class="shell-h">CS AI Counsellor</div>
 <div class="shell-b"><p>Share your percentile or rank, category, gender and home district for a closer prediction. For example:</p><ul>${EXAMPLES.map((q) => `<li>${esc(q)}</li>`).join('')}</ul><noscript><p><strong>The live chat needs JavaScript.</strong> The cutoffs and tools below work without it.</p></noscript></div>
-<div class="shell-f"><textarea rows="1" maxlength="1000" aria-label="Your question" placeholder="Ask about cutoffs, colleges, ranks…"></textarea><button type="button" disabled>Send</button></div>
+<div class="shell-f"><textarea rows="1" maxlength="1000" aria-label="Your question" placeholder="Ask about cutoffs, ranks…"></textarea><button type="button" disabled>Send</button></div>
 </div></div>
 ${data}
 <section aria-labelledby="how"><h2 id="how">How it works</h2><p>The counsellor reads your exam, score, category, gender, home university or state, branch and college from your question. It then looks up matching rows in the 2026 data and explains them, marking each option Safe, Likely or Reach.</p></section>
@@ -143,7 +145,7 @@ ${data}
 <script src="/firebase_config.js"></script>
 <script src="/shared_auth.js"></script>
 <script>initAuth({ requireLogin: false });</script>
-<script id="cs-assistant-widget" src="/cs-assistant-widget.js?v=3" defer></script>
+<script id="cs-assistant-widget" src="/cs-assistant-widget.js?v=4" defer></script>
 </body>
 </html>`;
   return { html, complete };

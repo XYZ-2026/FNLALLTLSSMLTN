@@ -139,6 +139,9 @@
     '@media (max-width:560px){.csai-panel{right:0;left:0;bottom:0;width:100%;height:100%;height:100dvh;border-radius:0;border:0}' +
       '.csai-fab{right:16px;bottom:16px;width:56px;height:56px}.csai-fab.is-open{display:none}.csai-hint{right:82px;bottom:26px}' +
       '.csai-head{padding-top:max(16px,env(safe-area-inset-top))}.csai-foot{padding-bottom:max(12px,env(safe-area-inset-bottom))}.csai-input{font-size:16px}}' +
+    /* site-wide mobile tab bar (64px, z-index 999, <=768px): button sits above it, full-screen chat covers it */
+    '@media (max-width:768px){.csai-root.has-tabbar .csai-fab{bottom:78px}.csai-root.has-tabbar .csai-hint{bottom:88px}.csai-root.has-tabbar:not(.is-page) .csai-panel{bottom:150px;height:min(640px,calc(100vh - 222px))}}' +
+    '@media (max-width:560px){.csai-root.has-tabbar:not(.is-page) .csai-panel{bottom:0;height:100%;height:100dvh;z-index:1000}}' +
     /* full-page mode (ai-counsellor.html): the panel fills its server-rendered frame */
     '.csai-root.is-page{height:100%}.csai-root.is-page .csai-panel{position:relative;left:auto;right:auto;bottom:auto;z-index:0;width:100%;height:100%;border:1px solid var(--csai-stroke);border-radius:22px;box-shadow:0 12px 32px rgba(17,24,39,.08)}' +
     '.csai-root.is-page .csai-body{padding:22px 22px 8px}.csai-root.is-page .csai-msg.bot .csai-bubble{max-width:780px}.csai-root.is-page .csai-viz{max-width:600px}.csai-root.is-page .csai-viz svg{max-width:430px}.csai-root.is-page .csai-card{max-width:460px}' +
@@ -421,6 +424,7 @@
     var st = el('style'); st.id = 'csai-style'; st.textContent = CSS; document.head.appendChild(st);
     root = el('div', 'csai-root');
     root.setAttribute('data-nosnippet', '');
+    if (document.querySelector('.cs-mobile-bottom-nav, .mobile-bottom-nav')) root.classList.add('has-tabbar');
 
     fab = el('button', 'csai-fab', ICON.chat + ICON.x + '<span class="csai-badge">AI</span>');
     fab.type = 'button';
@@ -443,7 +447,7 @@
       '<div class="csai-body" aria-live="polite"></div>' +
       '<div class="csai-foot">' +
         '<div class="csai-quota" hidden></div>' +
-        '<form class="csai-form" autocomplete="off"><textarea class="csai-input" rows="1" maxlength="1000" placeholder="Ask about cutoffs, colleges, ranks…" aria-label="Your question"></textarea>' +
+        '<form class="csai-form" autocomplete="off"><textarea class="csai-input" rows="1" maxlength="1000" placeholder="Ask about cutoffs, ranks…" aria-label="Your question"></textarea>' +
         '<button type="submit" class="csai-send" aria-label="Send">' + ICON.send + '</button></form>' +
         '<div class="csai-disc">Based on 2026 counselling data. Cutoffs change every year, so verify on official portals.</div>' +
       '</div>';
@@ -510,7 +514,7 @@
   function hideHint() { if (hintEl) { hintEl.remove(); hintEl = null; } sset('localStorage', K.hint, '1'); }
   function autosize() { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 120) + 'px'; }
   function persist() { sset('sessionStorage', K.chat, JSON.stringify(history.slice(-24))); }
-  function scrollEnd() { bodyEl.scrollTop = bodyEl.scrollHeight; }
+  function scrollEnd() { bodyEl.scrollTop = history.length ? bodyEl.scrollHeight : 0; } // an empty chat starts at its greeting
 
   function toggle(force) {
     if (mount) { // always open here; "open" just brings it into view
