@@ -24,3 +24,10 @@
     "MHT CET percentile vs rank.json",
     "percentile vs rank jee mains.json",
   ]
+
+# AI Counsellor page (server-rendered at /ai-counsellor.html)
+[functions."ai-counsellor-page"]
+  included_files = [
+    "CUTOFFS 2026/mhtcet_round1.json",
+    "JOSAA/JOSAA_CUTOFF_CONSOLIDATED_2026.json",
+  ]

@@ -14,6 +14,14 @@
     <priority>0.90</priority>
   </url>
   
+  <!-- AI Counsellor -->
+  <url>
+    <loc>https://counselling.collegesimplified.in/ai-counsellor.html</loc>
+    <lastmod>2026-11-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+
   <!-- MHT-CET Counselling Pages -->
   <url>
     <loc>https://counselling.collegesimplified.in/auto-preference-builder.html</loc>

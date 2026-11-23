@@ -90,6 +90,7 @@ export function mhtSeatMatrix() {
       sc: (num(r.SC_G) || 0) + (num(r.SC_L) || 0),
       st: (num(r.ST_G) || 0) + (num(r.ST_L) || 0),
       sebc: (num(r.SEBC_G) || 0) + (num(r.SEBC_L) || 0),
+      vjnt: ['VJ/DT', 'NTB', 'NTC', 'NTD'].reduce((t, k) => t + (num(r[k + '_G']) || 0) + (num(r[k + '_L']) || 0), 0),
       ews: num(r.EWS_Seats),
       tfws: num(r.TFWS_Seats),
       allIndia: num(r.All_India),

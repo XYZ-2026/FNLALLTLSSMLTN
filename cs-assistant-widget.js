@@ -117,12 +117,32 @@
     '.csai-send{flex:0 0 38px;height:38px;border-radius:12px;border:0;cursor:pointer;color:#fff;display:grid;place-items:center;background:var(--csai-brand);transition:background .2s,transform .15s}' +
     '.csai-send:hover{background:var(--csai-brand-dark)}.csai-send:active{transform:scale(.94)}.csai-send:disabled{background:#d1d5db;cursor:not-allowed}.csai-send svg{width:18px;height:18px}' +
     '.csai-disc{font-size:10.5px;color:#9ca3af;text-align:center;margin-top:7px}' +
+    /* charts: series colours validated for colour-vision deficiency; identity also carried by legend + data table */
+    '.csai-viz{--v1:#dc2626;--v2:#2a78d6;--v3:#1baf7a;--v4:#6250d6;position:relative;background:var(--csai-card);border:1px solid var(--csai-stroke);border-radius:16px;padding:13px 14px 11px;margin:0 0 14px;box-shadow:0 1px 2px rgba(0,0,0,.04);animation:csai-in .28s ease both}' +
+    '.csai-vt{font:700 13.2px/1.35 Lexend,Inter,sans-serif}.csai-vs{font-size:11.2px;line-height:1.4;color:var(--csai-muted);margin:2px 0 8px}' +
+    '.csai-viz svg{display:block;width:100%;height:auto;overflow:visible;touch-action:pan-y}.csai-viz svg text{font:500 10.5px Inter,sans-serif;fill:var(--csai-muted)}.csai-viz svg text.ink{fill:var(--csai-ink);font-weight:700}' +
+    '.csai-viz [tabindex]:focus-visible{outline:2px solid var(--csai-brand);outline-offset:2px;border-radius:6px}' +
+    '.csai-leg{display:flex;flex-wrap:wrap;gap:4px 12px;margin:0 0 8px;font-size:11.2px;line-height:1.35}.csai-leg span{display:inline-flex;align-items:center;gap:6px}.csai-leg i{flex:0 0 14px;height:3px;border-radius:2px}' +
+    '.csai-grp{margin:8px 0 3px}.csai-row{display:grid;grid-template-columns:minmax(0,42%) minmax(0,1fr) 54px;gap:8px;align-items:center;padding:4px 0;border-radius:6px}.csai-row:hover{background:rgba(0,0,0,.03)}' +
+    '.csai-rl{min-width:0;font-size:11.6px;line-height:1.25}.csai-rl b,.csai-rl small{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}.csai-rl small{-webkit-line-clamp:3}.csai-rl b{font-weight:600}.csai-rl small{font-size:10.4px;color:var(--csai-muted)}' +
+    '.csai-rv{font-size:11.4px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}' +
+    '.csai-trk{position:relative;height:18px}.csai-trk::before{content:"";position:absolute;left:0;right:0;top:8.5px;height:1px;background:rgba(17,24,39,.12)}' +
+    '.csai-you{position:absolute;top:-4px;bottom:-4px;width:2px;margin-left:-1px;background:var(--csai-ink)}' +
+    '.csai-pt{position:absolute;top:4px;width:10px;height:10px;margin-left:-5px;border-radius:50%;box-shadow:0 0 0 2px var(--csai-card)}.csai-pt.reach{background:#dc2626}.csai-pt.likely{background:#b45309}.csai-pt.safe{background:#15803d}' +
+    '.csai-bar .csai-row{grid-template-columns:minmax(0,40%) minmax(0,1fr)}.csai-bw{display:flex;align-items:center;gap:6px}.csai-bw i{height:14px;border-radius:0 4px 4px 0;background:var(--v1);min-width:0}.csai-bw b{font-size:11.4px;font-weight:700;white-space:nowrap}' +
+    '.csai-tip{position:absolute;z-index:3;pointer-events:none;max-width:230px;background:#111827;color:#fff;border-radius:10px;padding:8px 10px;font-size:11.2px;line-height:1.4;box-shadow:0 8px 20px rgba(0,0,0,.22)}.csai-tip b{font-size:12px}.csai-tip div{display:flex;align-items:center;gap:6px;white-space:nowrap}.csai-tip div span{overflow:hidden;text-overflow:ellipsis}.csai-tip i{flex:0 0 12px;height:3px;border-radius:2px}' +
+    '.csai-viz details{margin-top:8px;font-size:11.4px}.csai-viz summary{cursor:pointer;color:var(--csai-brand);font-weight:600;width:max-content}.csai-viz details .csai-tw{margin:6px 0 0}' +
+    '@media (forced-colors:active){.csai-pt,.csai-you,.csai-bw i,.csai-leg i{forced-color-adjust:none}}' +
     '@keyframes csai-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}' +
     '@keyframes csai-dot{0%,80%,100%{opacity:.35;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}' +
     '@keyframes csai-pulse{0%{transform:scale(.95);opacity:.9}70%{transform:scale(1.25);opacity:0}100%{opacity:0}}' +
     '@media (max-width:560px){.csai-panel{right:0;left:0;bottom:0;width:100%;height:100%;height:100dvh;border-radius:0;border:0}' +
       '.csai-fab{right:16px;bottom:16px;width:56px;height:56px}.csai-fab.is-open{display:none}.csai-hint{right:82px;bottom:26px}' +
       '.csai-head{padding-top:max(16px,env(safe-area-inset-top))}.csai-foot{padding-bottom:max(12px,env(safe-area-inset-bottom))}.csai-input{font-size:16px}}' +
+    /* full-page mode (ai-counsellor.html): the panel fills its server-rendered frame */
+    '.csai-root.is-page{height:100%}.csai-root.is-page .csai-panel{position:relative;left:auto;right:auto;bottom:auto;z-index:0;width:100%;height:100%;border:1px solid var(--csai-stroke);border-radius:22px;box-shadow:0 12px 32px rgba(17,24,39,.08)}' +
+    '.csai-root.is-page .csai-body{padding:22px 22px 8px}.csai-root.is-page .csai-msg.bot .csai-bubble{max-width:780px}.csai-root.is-page .csai-viz{max-width:600px}.csai-root.is-page .csai-viz svg{max-width:430px}.csai-root.is-page .csai-card{max-width:460px}' +
+    '@media (max-width:560px){.csai-root.is-page .csai-body{padding:16px 12px 8px}.csai-root.is-page .csai-panel{border-radius:18px}.csai-root.is-page .csai-head{padding-top:16px}}' +
     '@media (prefers-reduced-motion:reduce){.csai-root *,.csai-fab::after{animation:none!important;transition:none!important}}' +
     '@media print{.csai-root{display:none!important}}';
 
@@ -205,14 +225,199 @@
     return out.join('');
   }
 
+  /* ───────── charts (drawn from server data; text is always set with textContent) ───────── */
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  var COLORS = ['var(--v1)', 'var(--v2)', 'var(--v3)', 'var(--v4)'];
+  function num(n) { return typeof n === 'number' && isFinite(n); }
+  function tx(tag, cls, t) { var e = document.createElement(tag); if (cls) e.className = cls; e.textContent = t == null ? '' : String(t); return e; }
+  function sv(tag, attrs, t) { var e = document.createElementNS(SVGNS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (t != null) e.textContent = t; return e; }
+  function fmtV(v, metric) {
+    if (!num(v)) return '–';
+    if (metric === 'pct') return v.toFixed(2);
+    return v.toLocaleString('en-IN', { maximumFractionDigits: 2 });
+  }
+  function ticks(lo, hi) {
+    var span = hi - lo || 1, raw = span / 4.5, mag = Math.pow(10, Math.floor(Math.log(raw) / Math.LN10)), f = raw / mag;
+    var step = (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * mag, out = [];
+    for (var i = Math.ceil(lo / step - 1e-9); i * step <= hi + step * 1e-9; i++) out.push(+(i * step).toFixed(6));
+    return out;
+  }
+  function tickLabel(v, metric) {
+    if (metric === 'pct') return String(+v.toFixed(3));
+    return Math.abs(v) >= 10000 ? +(v / 1000).toFixed(1) + 'K' : v.toLocaleString('en-IN');
+  }
+  function tipFor(card) {
+    var t = el('div', 'csai-tip'); t.hidden = true; card.appendChild(t);
+    return {
+      show: function (nodes, x, y) {
+        t.textContent = ''; nodes.forEach(function (n) { t.appendChild(n); }); t.hidden = false;
+        var w = card.clientWidth, tw = t.offsetWidth, th = t.offsetHeight;
+        t.style.left = Math.max(6, Math.min(x - tw / 2, w - tw - 6)) + 'px';
+        t.style.top = (y - th - 10 > 4 ? y - th - 10 : y + 16) + 'px';
+      },
+      hide: function () { t.hidden = true; },
+    };
+  }
+  function rowTip(tip, card, row, value, full) {
+    function show() {
+      var c = card.getBoundingClientRect(), r = row.getBoundingClientRect();
+      tip.show([tx('b', '', value), tx('span', '', ' ' + full)], r.left - c.left + r.width / 2, r.top - c.top);
+    }
+    row.tabIndex = 0;
+    row.setAttribute('role', 'img');
+    row.setAttribute('aria-label', full + ': ' + value);
+    row.addEventListener('pointerenter', show); row.addEventListener('pointerleave', tip.hide);
+    row.addEventListener('focus', show); row.addEventListener('blur', tip.hide);
+  }
+  function dataTable(head, rows) {
+    var d = document.createElement('details'); d.appendChild(tx('summary', '', 'View data'));
+    var w = el('div', 'csai-tw'), t = document.createElement('table'), th = document.createElement('thead'), tb = document.createElement('tbody'), tr = document.createElement('tr');
+    head.forEach(function (h) { tr.appendChild(tx('th', '', h)); }); th.appendChild(tr);
+    rows.forEach(function (r) { var x = document.createElement('tr'); r.forEach(function (c) { x.appendChild(tx('td', String(c).length > 18 ? 'w' : '', c)); }); tb.appendChild(x); });
+    t.appendChild(th); t.appendChild(tb); w.appendChild(t); d.appendChild(w);
+    return d;
+  }
+
+  function drawTrend(c, card) {
+    var series = c.series.slice(0, 4).filter(function (q) { return q && q.values && q.values.some(num); });
+    var all = [];
+    series.forEach(function (q) { q.values.forEach(function (v) { if (num(v)) all.push(v); }); });
+    if (!all.length || c.labels.length < 2) return false;
+    var lo = Math.min.apply(null, all), hi = Math.max.apply(null, all), span = hi - lo || Math.max(Math.abs(hi) * 0.01, 0.02);
+    // The student's line joins the scale only when it would not flatten the cutoffs.
+    var youIn = num(c.you) && c.you >= lo - span * 1.5 && c.you <= hi + span * 1.5;
+    if (youIn) { lo = Math.min(lo, c.you); hi = Math.max(hi, c.you); }
+    var pad = (hi - lo || span) * 0.14; lo -= pad; hi += pad;
+    if (c.metric === 'pct') hi = Math.min(hi, 100); else lo = Math.max(lo, 0);
+    var rank = c.metric === 'rank', W = 340, H = 178, L = 46, R = 16, T = 10, B = 24, n = c.labels.length;
+    function X(i) { return L + 10 + (W - L - R - 10) * (i / (n - 1)); }
+    function Y(v) { var f = (v - lo) / (hi - lo); return rank ? T + (H - T - B) * f : T + (H - T - B) * (1 - f); }
+
+    card.appendChild(tx('div', 'csai-vs', (c.shared || series.length === 1 ? (c.shared || series[0].name) + '. ' : '') + 'Higher on the chart = tougher to get.' + (num(c.you) && !youIn ? ' Your score (' + fmtV(c.you, c.metric) + ') is off this scale.' : '') + (c.note ? ' ' + c.note + '.' : '')));
+    if (series.length > 1) {
+      var leg = el('div', 'csai-leg');
+      series.forEach(function (q, k) { var it = tx('span', '', ''), key = el('i'); key.style.background = COLORS[k]; it.appendChild(key); it.appendChild(document.createTextNode(q.name)); leg.appendChild(it); });
+      card.appendChild(leg);
+    }
+    var svg = sv('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', tabindex: '0' });
+    svg.setAttribute('aria-label', c.title + '. ' + series.map(function (q) { return q.full + ': ' + c.labels.map(function (l, i) { return l + ' ' + fmtV(q.values[i], c.metric); }).join(', '); }).join('. '));
+    ticks(lo, hi).forEach(function (v) {
+      if (rank && v < 1) return; // there is no rank 0
+      svg.appendChild(sv('line', { x1: L, x2: W - R, y1: Y(v), y2: Y(v), stroke: 'rgba(17,24,39,.08)', 'stroke-width': 1 }));
+      svg.appendChild(sv('text', { x: L - 6, y: Y(v) + 3.5, 'text-anchor': 'end' }, tickLabel(v, c.metric)));
+    });
+    c.labels.forEach(function (l, i) { svg.appendChild(sv('text', { x: X(i), y: H - 6, 'text-anchor': 'middle' }, l)); });
+    if (youIn) {
+      svg.appendChild(sv('line', { x1: L, x2: W - R, y1: Y(c.you), y2: Y(c.you), stroke: 'var(--csai-ink)', 'stroke-width': 1.5 }));
+      svg.appendChild(sv('text', { x: W - R, y: Y(c.you) - 5, 'text-anchor': 'end', 'class': 'ink' }, 'You ' + fmtV(c.you, c.metric)));
+    }
+    var cross = sv('line', { y1: T, y2: H - B, stroke: 'rgba(17,24,39,.35)', 'stroke-width': 1, visibility: 'hidden' });
+    svg.appendChild(cross);
+    series.forEach(function (q, k) {
+      var d = '', pts = [];
+      q.values.forEach(function (v, i) { if (num(v)) { d += (pts.length ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(v).toFixed(1); pts.push(i); } });
+      if (pts.length > 1) svg.appendChild(sv('path', { d: d, fill: 'none', stroke: COLORS[k], 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
+      pts.forEach(function (i) { svg.appendChild(sv('circle', { cx: X(i), cy: Y(q.values[i]), r: 4, fill: COLORS[k], stroke: 'var(--csai-card)', 'stroke-width': 2 })); });
+    });
+    card.appendChild(svg);
+    var tip = tipFor(card), cur = n - 1;
+    function at(i) {
+      cur = i;
+      cross.setAttribute('x1', X(i)); cross.setAttribute('x2', X(i)); cross.setAttribute('visibility', 'visible');
+      var nodes = [tx('div', '', c.labels[i])];
+      series.forEach(function (q, k) {
+        var r = document.createElement('div'), key = el('i'); key.style.background = COLORS[k];
+        r.appendChild(key); r.appendChild(tx('b', '', fmtV(q.values[i], c.metric))); r.appendChild(tx('span', '', q.name)); nodes.push(r);
+      });
+      var cr = card.getBoundingClientRect(), sr = svg.getBoundingClientRect();
+      // Sit beside the crosshair, above the plot, so the lines stay visible.
+      tip.show(nodes, sr.left - cr.left + X(i) / W * sr.width, sr.top - cr.top + 6);
+    }
+    function off() { tip.hide(); cross.setAttribute('visibility', 'hidden'); }
+    svg.addEventListener('pointermove', function (e) {
+      var r = svg.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * W, b = 0;
+      for (var i = 1; i < n; i++) if (Math.abs(X(i) - x) < Math.abs(X(b) - x)) b = i;
+      at(b);
+    });
+    svg.addEventListener('pointerleave', off); svg.addEventListener('blur', off);
+    svg.addEventListener('focus', function () { at(cur); });
+    svg.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); at(Math.max(0, cur - 1)); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); at(Math.min(n - 1, cur + 1)); }
+    });
+    card.appendChild(dataTable(['Option'].concat(c.labels), series.map(function (q) { return [q.full].concat(q.values.map(function (v) { return fmtV(v, c.metric); })); })));
+    return true;
+  }
+
+  function drawFit(c, card) {
+    var rows = c.rows.filter(function (r) { return r && num(r.value) && /^(Reach|Likely|Safe)$/.test(r.chance); });
+    if (rows.length < 2 || !num(c.you)) return false;
+    var vals = rows.map(function (r) { return r.value; }).concat([c.you]);
+    var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals), pad = (hi - lo || 1) * 0.06; lo -= pad; hi += pad;
+    var rank = c.metric === 'rank';
+    function P(v) { var f = (v - lo) / (hi - lo) * 100; return (rank ? 100 - f : f).toFixed(2) + '%'; } // right = tougher
+    card.appendChild(tx('div', 'csai-vs', 'Vertical line = you (' + fmtV(c.you, c.metric) + '). Dots to its right closed tougher than your score.' + (c.note ? ' ' + c.note + '.' : '')));
+    var tip = null, pend = [];
+    ['Reach', 'Likely', 'Safe'].forEach(function (g) {
+      var set = rows.filter(function (r) { return r.chance === g; });
+      if (!set.length) return;
+      var h = el('div', 'csai-grp'); h.appendChild(tx('span', 'csai-pill ' + g.toLowerCase(), g)); card.appendChild(h);
+      set.forEach(function (r) {
+        var row = el('div', 'csai-row'), l = el('div', 'csai-rl'), t = el('div', 'csai-trk'), y = el('span', 'csai-you'), p = el('span', 'csai-pt ' + g.toLowerCase());
+        l.appendChild(tx('b', '', r.name)); l.appendChild(tx('small', '', r.sub || ''));
+        y.style.left = P(c.you); p.style.left = P(r.value); t.appendChild(y); t.appendChild(p);
+        row.appendChild(l); row.appendChild(t); row.appendChild(tx('div', 'csai-rv', fmtV(r.value, c.metric)));
+        card.appendChild(row); pend.push([row, r]);
+      });
+    });
+    tip = tipFor(card);
+    pend.forEach(function (x) { rowTip(tip, card, x[0], fmtV(x[1].value, c.metric), x[1].full + ' (' + x[1].chance + ')'); });
+    card.appendChild(dataTable(['Chance', 'Option', rank ? 'Closing rank' : 'Closing'], rows.map(function (r) { return [r.chance, r.full, fmtV(r.value, c.metric)]; })));
+    return true;
+  }
+
+  function drawBars(c, card) {
+    var rows = c.rows.filter(function (r) { return r && num(r.value) && r.value >= 0; });
+    var max = Math.max.apply(null, rows.map(function (r) { return r.value; }));
+    if (rows.length < 2 || !(max > 0)) return false;
+    function V(v) { return (c.prefix || '') + fmtV(v) + (c.unit || ''); }
+    if (c.note) card.appendChild(tx('div', 'csai-vs', c.note + '.'));
+    var box = el('div', 'csai-bar'), tip = null, pend = [];
+    rows.forEach(function (r) {
+      var row = el('div', 'csai-row'), l = el('div', 'csai-rl'), w = el('div', 'csai-bw'), b = el('i');
+      l.appendChild(tx('b', '', r.name));
+      b.style.width = 'calc((100% - 76px) * ' + (r.value / max).toFixed(4) + ')';
+      w.appendChild(b); w.appendChild(tx('b', '', V(r.value)));
+      row.appendChild(l); row.appendChild(w); box.appendChild(row); pend.push([row, r]);
+    });
+    card.appendChild(box);
+    tip = tipFor(card);
+    pend.forEach(function (x) { rowTip(tip, card, x[0], V(x[1].value), x[1].full); });
+    card.appendChild(dataTable(['Item', 'Value'], rows.map(function (r) { return [r.full, V(r.value)]; })));
+    return true;
+  }
+
+  // Returns a card, or null. A malformed spec must never break the chat.
+  function chartCard(c) {
+    try {
+      if (!c || typeof c !== 'object') return null;
+      var card = el('div', 'csai-viz');
+      card.appendChild(tx('div', 'csai-vt', c.title));
+      var ok = c.type === 'trend' ? drawTrend(c, card) : c.type === 'fit' ? drawFit(c, card) : c.type === 'bars' ? drawBars(c, card) : false;
+      return ok ? card : null;
+    } catch (e) { return null; }
+  }
+
   /* ───────── DOM ───────── */
   var root, fab, panel, bodyEl, input, sendBtn, quotaEl, hintEl;
+  var mount = null;      // set on ai-counsellor.html, where the chat is part of the page
   var history = [];      // [{role, content, tools?, gate?}]
   var busy = false, ctrl = null;
 
   function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
 
   function build() {
+    mount = document.getElementById('cs-ai-page');
     var st = el('style'); st.id = 'csai-style'; st.textContent = CSS; document.head.appendChild(st);
     root = el('div', 'csai-root');
     root.setAttribute('data-nosnippet', '');
@@ -244,15 +449,29 @@
       '</div>';
 
     root.appendChild(panel);
-    root.appendChild(fab);
-    document.body.appendChild(root);
+    var typed = '';
+    if (mount) {
+      // Replace the server-rendered frame, keeping anything already typed into it.
+      var early = mount.querySelector('textarea');
+      typed = early ? early.value : '';
+      root.classList.add('is-page');
+      panel.classList.add('is-open');
+      panel.setAttribute('role', 'region');
+      panel.querySelector('[data-act="close"]').remove();
+      mount.textContent = '';
+      mount.appendChild(root);
+    } else {
+      root.appendChild(fab);
+      document.body.appendChild(root);
+    }
 
     bodyEl = panel.querySelector('.csai-body');
     input = panel.querySelector('.csai-input');
     sendBtn = panel.querySelector('.csai-send');
     quotaEl = panel.querySelector('.csai-quota');
 
-    panel.querySelector('[data-act="close"]').addEventListener('click', function () { toggle(false); });
+    var closeBtn = panel.querySelector('[data-act="close"]');
+    if (closeBtn) closeBtn.addEventListener('click', function () { toggle(false); });
     panel.querySelector('[data-act="reset"]').addEventListener('click', resetChat);
     panel.querySelector('form').addEventListener('submit', function (e) { e.preventDefault(); if (busy) stop(); else ask(input.value); });
     input.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); if (!busy) ask(input.value); } });
@@ -265,9 +484,10 @@
 
     try { history = JSON.parse(sget('sessionStorage', K.chat) || '[]') || []; } catch (e) { history = []; }
     renderAll();
+    if (mount) { input.value = typed; updateQuota(); autosize(); }
 
     // One-time hint bubble so students discover the bot.
-    if (!sget('localStorage', K.hint)) {
+    if (!mount && !sget('localStorage', K.hint)) {
       setTimeout(function () {
         if (panel.classList.contains('is-open')) return;
         hintEl = el('div', 'csai-hint', 'Confused about cutoffs? <b>Ask AI Counsellor</b>');
@@ -293,6 +513,10 @@
   function scrollEnd() { bodyEl.scrollTop = bodyEl.scrollHeight; }
 
   function toggle(force) {
+    if (mount) { // always open here; "open" just brings it into view
+      if (force !== false) { mount.scrollIntoView({ block: 'nearest' }); input.focus({ preventScroll: true }); }
+      return;
+    }
     var open = typeof force === 'boolean' ? force : !panel.classList.contains('is-open');
     panel.classList.toggle('is-open', open);
     fab.classList.toggle('is-open', open);
@@ -324,6 +548,9 @@
     var frag = document.createDocumentFragment();
     frag.appendChild(wrap);
     if (m.gate === 'purchase') frag.appendChild(purchaseCard(m.url));
+    if (m.role !== 'user' && Array.isArray(m.charts)) {
+      m.charts.slice(0, 2).forEach(function (c) { var n = chartCard(c); if (n) frag.appendChild(n); });
+    }
     if (m.tools && m.tools.length) {
       var chips = el('div', 'csai-chips');
       m.tools.slice(0, 3).forEach(function (t) {
@@ -434,6 +661,7 @@
           var d; try { d = JSON.parse(data); } catch (e) { return; }
           if (ev === 'delta') { text += d.text || ''; if (!raf) raf = requestAnimationFrame(paint); }
           else if (ev === 'meta') { answer.tools = d.tools || []; }
+          else if (ev === 'charts') { if (Array.isArray(d.charts)) answer.charts = d.charts; }
           else if (ev === 'gate') {
             gated = true;
             if (d.gate === 'signin') { answer.gate = 'signin'; }
@@ -458,7 +686,8 @@
         return pump();
       })
       .catch(function (err) {
-        if (err && err.name === 'AbortError') { text += text ? '\n\n_(stopped)_' : '_(stopped)_'; return; }
+        if (err && err.name === 'AbortError') { if (!text) delete answer.charts; text += text ? '\n\n_(stopped)_' : '_(stopped)_'; return; }
+        if (!text) delete answer.charts;
         text = text || ('Sorry, I could not reach the counsellor right now. ' + (err && err.message ? '(' + err.message + ')' : '') + ' Please try again in a moment.');
         counts = false;
       })

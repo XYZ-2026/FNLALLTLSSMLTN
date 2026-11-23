@@ -3,6 +3,7 @@
 import * as D from './data.mjs';
 import { EXAMS, branchRegex, HOME_UNIS, MHT_REGION_WORDS } from './parse.mjs';
 import { matchColleges } from './colleges.mjs';
+import { addChart, trendChart, fitChart, barChart, shortCollege } from './charts.mjs';
 
 // "Which NITs/colleges can I get with rank X" is a shortlist request even if a
 // college-ish word appears; skip single-college lookup in that case.
@@ -70,11 +71,14 @@ export function mhtEligibility(p) {
   };
 }
 
-function chanceByPct(user, closing) {
+// `tail`: percentiles bunch up near 100 (98.8 vs 99.99 is rank ~3,900 vs ~70), so a
+// Reach must also be within 2x of the closing cutoff's distance from 100.
+// DSE scores are diploma percentages, not percentiles, so they skip it.
+function chanceByPct(user, closing, tail = true) {
   const m = user - closing;
   if (m >= 1.5) return 'Safe';
   if (m >= 0) return 'Likely';
-  if (m >= -1.5) return 'Reach';
+  if (m >= -1.5 && (!tail || 100 - user <= 2 * (100 - closing) + 1e-9)) return 'Reach';
   return null;
 }
 function chanceByRank(user, closing) {
@@ -107,7 +111,7 @@ function mhtProfileLine(p, estPct) {
   const score = p.percentile != null ? p.percentile + ' percentile' : estPct != null ? `~${estPct} percentile (estimated from ${p.marks} marks)` : p.rank != null ? 'rank ' + p.rank : 'score not given';
   return `Student: ${score}; category ${p.cat || 'not given (assumed OPEN)'}${p.special ? ' + ' + p.special : ''}; ` +
     `gender ${p.gender === 'F' ? 'female (eligible for G + L seats)' : p.gender === 'M' ? 'male' : 'not given (assumed male / gender-neutral G seats)'}; ` +
-    `home university ${p.homeUni || 'not given (assumed OTHER-than-home seats; home-university seats are usually easier)'}` +
+    `home university ${p.homeUni || 'not given (for seats ending in O/H, the O = other-than-home seats are assumed; seats ending in S are state-level and unaffected)'}` +
     (p.cat && p.cat !== 'OPEN' ? `. Note: a ${p.cat} student can claim both ${p.cat} seats and OPEN seats (seat codes like GOPENS/GOPENO/LOPENH are OPEN seats, not minority or special quotas); the table keeps whichever is easier per college-branch.` : '');
 }
 
@@ -138,8 +142,9 @@ function jeeConvert(p) {
 }
 
 /* ───────── Placements / rankings ───────── */
-function placementBlocks(colleges, exam) {
+function placementBlocks(colleges, exam, ctx) {
   const out = [];
+  const bars = [];
   if (!colleges.length) return out;
   // Placement files use short names ("COEP Technological University", "IIT Bombay"),
   // cutoff files use official ones, so match on distinctive words only.
@@ -163,18 +168,23 @@ function placementBlocks(colleges, exam) {
     if (national) {
       const n = best(c, D.nationalPlacements());
       if (n) out.push(`Placement (site data): ${n.college} (${[n.type, n.tier].filter(Boolean).join(', ')}) — avg ${n.avg}, median ${n.median}, highest ${n.highest}, placed ${n.placed}.`);
+      const lpa = n && String(n.avg).match(/([\d.]+)\s*LPA/i);
+      if (lpa) bars.push({ name: n.college, value: parseFloat(lpa[1]) });
     } else {
       const t = best(c, D.placementTier());
       if (t) out.push(`Placement (site data): ${t.college} — avg package ${t.avg} LPA, ${t.tier}.`);
+      if (t) bars.push({ name: shortCollege(t.college), full: t.college, value: t.avg });
     }
   }
+  addChart(ctx, () => barChart({ title: 'Average package', unit: ' LPA', rows: bars }));
   return out;
 }
-function regionRankingBlock(p) {
+function regionRankingBlock(p, out) {
   const map = { 6: 'PUNE', 3: 'MUMBAI', 4: 'NAGPUR', 5: 'NASHIK', 2: 'AURANGABAD', 1: 'AMRAVATI' };
   const regs = p.regions.length ? p.regions : [];
   if (!regs.length) {
     const tier = D.placementTier().slice(0, 15);
+    addChart(out, () => barChart({ title: 'Average package, top Maharashtra colleges', unit: ' LPA', rows: tier.map((t) => ({ name: shortCollege(t.college), full: t.college, value: t.avg })) }));
     return `Top Maharashtra colleges by average package (site placement-tier data):\n` + table(['#', 'College', 'Avg LPA', 'Tier'], tier.map((t, i) => [i + 1, t.college, t.avg, t.tier]));
   }
   return regs.map((d) => {
@@ -194,7 +204,11 @@ async function mhtcet(p, out) {
   const colleges = await lookup(p, names);
   const okBranch = branchFilter(p.branches);
   const elig = mhtEligibility(p);
-  out.blocks.push(mhtProfileLine(p, p.percentile == null ? conv.estPct : null));
+  // A plain cutoff lookup shows every OPEN gender-neutral seat pool, so no home-university assumption applies.
+  const plainLookup = colleges.length && !(p.cat || p.gender || p.homeUni);
+  out.blocks.push(plainLookup
+    ? 'No category, gender or home university given: rows below are OPEN gender-neutral seats. Read the seat suffix literally: S = state-level (open to all Maharashtra candidates), H = home-university, O = other-than-home-university.'
+    : mhtProfileLine(p, p.percentile == null ? conv.estPct : null));
 
   if (colleges.length) {
     out.matched = colleges;
@@ -222,20 +236,51 @@ async function mhtcet(p, out) {
       if (pct != null || p.rank != null) cells.push(base ? (pct != null ? chanceByPct(pct, base.pct) : chanceByRank(p.rank, base.rank)) || 'Unlikely' : '–');
       return cells;
     });
+    const useRank = pct == null && p.rank != null;
+    const score = useRank ? p.rank : pct;
+    const cutoffOf = (r) => (r ? (useRank ? r.rank : r.pct) : null);
+    if (rounds.length > 1) {
+      addChart(out, () => trendChart({
+        title: useRank ? 'Closing rank by CAP round' : 'Closing percentile by CAP round', metric: useRank ? 'rank' : 'pct',
+        rounds: rounds.map((n) => 'R' + n), you: score,
+        entries: list.map((e) => ({ college: e.college, branch: e.branch, seat: e.cat, values: rounds.map((n) => cutoffOf(e.rounds[n])) })),
+      }));
+    } else if (score != null) {
+      addChart(out, () => fitChart({
+        title: `Your score vs Round ${rounds[0]} cutoffs`, metric: useRank ? 'rank' : 'pct', you: score,
+        rows: list.filter((e) => cutoffOf(e.rounds[rounds[0]]) != null).map((e) => {
+          const v = cutoffOf(e.rounds[rounds[0]]);
+          return { college: e.college, branch: e.branch + ' · ' + e.cat, value: v, chance: useRank ? chanceByRank(score, v) : chanceByPct(score, v) };
+        }),
+      }));
+    }
     out.blocks.push(`MHT-CET 2026 CAP closing cutoffs for: ${colleges.join('; ')}${p.branches.length ? ' — branches: ' + p.branches.join(', ') : ''}. Seat codes: G=gender-neutral, L=ladies; suffix S=state-level, H=home-university, O=other-than-home-university.\n` + table(hdr, rowsOut));
     if (p.intents.includes('seats')) {
       const codes = new Set(list.map((e) => e.code));
       const typeOk = (t) => (p.special ? t === p.special || ['State Level', 'HU', 'OHU'].includes(t) : ['State Level', 'HU', 'OHU'].includes(t));
       const seats = D.mhtSeatMatrix().filter((s) => codes.has(s.code) && okBranch(s.branch) && typeOk(s.rowType)).slice(0, 25);
+      // A seat chart answers a seat question better than the cutoff trend.
+      if (seats.length) out.charts.length = 0;
+      if (seats.length === 1) {
+        const s = seats[0];
+        addChart(out, () => barChart({
+          title: `Seats by category: ${shortCollege(s.college)} ${s.branch} (${s.rowType})`, sort: false,
+          rows: [['OPEN', s.open], ['OBC', s.obc], ['SC', s.sc], ['ST', s.st], ['VJ/NT', s.vjnt], ['SEBC', s.sebc], ['EWS', s.ews]].map(([name, value]) => ({ name, value })),
+        }));
+      } else {
+        const per = [...new Map(seats.map((s) => [s.choice, s])).values()];
+        const multi = new Set(per.map((s) => s.code)).size > 1;
+        addChart(out, () => barChart({ title: 'CAP seats by course', rows: per.map((s) => ({ name: (multi ? shortCollege(s.college) + ' · ' : '') + s.branch, full: s.college + ' · ' + s.branch, value: s.cap })) }));
+      }
       out.blocks.push('MHT-CET 2026 seat matrix (Seat pool: State Level = open to all Maharashtra; HU = home-university candidates; OHU = other-university candidates; OPEN/OBC/... counts include ladies seats):\n' +
         table(['College', 'Branch', 'Seat pool', 'CAP seats (course)', 'OPEN', 'OBC', 'SC', 'ST', 'SEBC', 'EWS', 'TFWS', 'All-India'], seats.map((s) => [s.college, s.branch, s.rowType, s.cap, s.open, s.obc, s.sc, s.st, s.sebc, s.ews, s.tfws, s.allIndia])));
     }
-    out.blocks.push(...placementBlocks(colleges, 'MHTCET'));
+    out.blocks.push(...placementBlocks(colleges, 'MHTCET', out));
     return;
   }
 
   if (p.intents.includes('ranking') && pct == null && p.rank == null) {
-    out.blocks.push(regionRankingBlock(p));
+    out.blocks.push(regionRankingBlock(p, out));
     return;
   }
 
@@ -255,10 +300,14 @@ async function mhtcet(p, out) {
     out.blocks.push(`MHT-CET 2026 CAP Round ${round || 1} prediction (${list.length} of ${best.size} eligible college-branch options shown; Reach = needs cutoff to drop slightly, Likely = within 1.5 percentile above cutoff, Safe = 1.5+ above).` +
       `${p.regions.length ? ' Regions: ' + p.regions.map((d) => D.MHT_REGION_BY_DIGIT[d]).join(', ') + '.' : ''}${p.branches.length ? ' Branches: ' + p.branches.join(', ') + '.' : ''}\n` +
       table(['Chance', 'College (code)', 'Branch', 'Seat', 'Closing %ile', 'Closing rank', 'Status'], list.map((r) => [r.chance, `${r.college} (${r.code})`, r.branch, r.cat, fmt(r.pct, 2), fmt(r.rank), r.status])));
+    addChart(out, () => fitChart({
+      title: `Your ${pct != null ? 'percentile' : 'rank'} vs Round ${round || 1} cutoffs`, metric: pct != null ? 'pct' : 'rank', you: pct ?? p.rank,
+      rows: list.map((r) => ({ chance: r.chance, college: r.college, branch: r.branch, value: pct != null ? r.pct : r.rank })),
+    }));
     out.predicted = list.length;
     return;
   }
-  if (p.intents.includes('ranking')) out.blocks.push(regionRankingBlock(p));
+  if (p.intents.includes('ranking')) out.blocks.push(regionRankingBlock(p, out));
   else out.missing.push('percentile or rank', 'category', 'home university / district');
 }
 
@@ -272,6 +321,16 @@ async function mhtAllIndia(p, out) {
     const set = new Set(colleges);
     const rows = [];
     for (let n = 1; n <= 4; n++) for (const r of D.mhtAllIndia(n)) if (set.has(r.college) && okBranch(r.branch)) rows.push([`R${n}`, r.college, r.branch, fmt(r.rank), fmt(r.pct, 3)]);
+    addChart(out, () => {
+      const m = new Map();
+      for (let n = 1; n <= 4; n++) for (const r of D.mhtAllIndia(n)) {
+        if (!set.has(r.college) || !okBranch(r.branch)) continue;
+        const k = r.college + '|' + r.branch;
+        if (!m.has(k)) m.set(k, { college: r.college, branch: r.branch, values: [null, null, null, null] });
+        if (m.get(k).values[n - 1] == null) m.get(k).values[n - 1] = r.pct;
+      }
+      return trendChart({ title: 'Closing JEE percentile by round', metric: 'pct', rounds: ['R1', 'R2', 'R3', 'R4'], you: p.percentile, entries: [...m.values()] });
+    });
     out.blocks.push('MHT-CET 2026 All-India quota (JEE Main) closing merit by round:\n' + table(['Round', 'College', 'Branch', 'Closing JEE rank', 'JEE %ile'], rows.slice(0, 40)));
     out.matched = colleges;
     return;
@@ -280,6 +339,7 @@ async function mhtAllIndia(p, out) {
   const list = data.filter((r) => okBranch(r.branch)).map((r) => ({ ...r, chance: p.percentile != null ? (r.pct != null ? chanceByPct(p.percentile, r.pct) : null) : r.rank != null ? chanceByRank(p.rank, r.rank) : null })).filter((r) => r.chance);
   const shown = balance(list, p.percentile != null ? 'pct' : 'rank', p.percentile != null);
   out.blocks.push(`MHT-CET 2026 All-India quota Round ${round} prediction (JEE Main based, ${list.length} eligible):\n` + table(['Chance', 'College', 'Branch', 'Closing JEE rank', 'JEE %ile'], shown.map((r) => [r.chance, r.college, r.branch, fmt(r.rank), fmt(r.pct, 3)])));
+  addChart(out, () => fitChart({ title: `Your JEE ${p.percentile != null ? 'percentile' : 'rank'} vs Round ${round} cutoffs`, metric: p.percentile != null ? 'pct' : 'rank', you: p.percentile ?? p.rank, rows: shown.map((r) => ({ chance: r.chance, college: r.college, branch: r.branch, value: p.percentile != null ? r.pct : r.rank })) }));
   out.predicted = shown.length;
 }
 
@@ -296,6 +356,16 @@ async function dse(p, out) {
     const set = new Set(colleges);
     const rows = [];
     for (const n of [1, 2]) for (const r of D.dseRound(n)) if (set.has(r.college) && okBranch(r.branch) && (allowed.has(r.cat) || !p.cat)) rows.push([`CAP ${n}`, r.college, r.branch, r.cat, fmt(r.pct, 2), fmt(r.rank)]);
+    addChart(out, () => {
+      const m = new Map();
+      for (const n of [1, 2]) for (const r of D.dseRound(n)) {
+        if (!set.has(r.college) || !okBranch(r.branch) || !(p.cat ? allowed.has(r.cat) : r.cat === 'GOPEN')) continue;
+        const k = r.college + '|' + r.branch + '|' + r.cat;
+        if (!m.has(k)) m.set(k, { college: r.college, branch: r.branch, seat: r.cat, values: [null, null] });
+        if (m.get(k).values[n - 1] == null) m.get(k).values[n - 1] = r.pct;
+      }
+      return trendChart({ title: 'Closing diploma % by CAP round', metric: 'pct', rounds: ['CAP 1', 'CAP 2'], you: p.percentile, entries: [...m.values()] });
+    });
     out.blocks.push('DSE 2026 closing cutoffs:\n' + table(['Round', 'College', 'Branch', 'Seat', 'Closing %', 'Rank'], rows.slice(0, 40)));
     out.matched = colleges;
     return;
@@ -304,13 +374,14 @@ async function dse(p, out) {
   const best = new Map();
   for (const r of data) {
     if (!allowed.has(r.cat) || !okBranch(r.branch)) continue;
-    const chance = p.percentile != null ? (r.pct != null ? chanceByPct(p.percentile, r.pct) : null) : chanceByRank(p.rank, r.rank);
+    const chance = p.percentile != null ? (r.pct != null ? chanceByPct(p.percentile, r.pct, false) : null) : chanceByRank(p.rank, r.rank);
     if (!chance) continue;
     const k = r.college + '|' + r.branch;
     if (!best.has(k) || r.pct < best.get(k).pct) best.set(k, { ...r, chance });
   }
   const shown = balance([...best.values()], 'pct', true);
   out.blocks.push(`DSE 2026 CAP ${round} prediction (${best.size} eligible):\n` + table(['Chance', 'College', 'Branch', 'Seat', 'Closing %', 'Status'], shown.map((r) => [r.chance, r.college, r.branch, r.cat, fmt(r.pct, 2), r.status])));
+  addChart(out, () => fitChart({ title: `Your ${p.percentile != null ? 'diploma %' : 'rank'} vs CAP ${round} cutoffs`, metric: p.percentile != null ? 'pct' : 'rank', you: p.percentile ?? p.rank, rows: shown.map((r) => ({ chance: r.chance, college: r.college, branch: r.branch, value: p.percentile != null ? r.pct : r.rank })) }));
   out.predicted = shown.length;
 }
 
@@ -343,10 +414,14 @@ async function central(exam, p, out) {
     const set = new Set(colleges);
     const catFilter = p.cat || p.special ? (r) => r.cat === cat : (r) => r.cat === 'OPEN';
     const rows = data.filter((r) => set.has(r.college) && okBranch(r.branch) && catFilter(r) && gOk(r.gender)).slice(0, 40);
+    addChart(out, () => trendChart({
+      title: 'Closing rank by round', metric: 'rank', rounds: Array.from({ length: nRounds }, (_, i) => 'R' + (i + 1)), you: p.rank,
+      entries: rows.map((r) => ({ college: r.college, branch: shortBranch(r.branch), seat: [r.quota, r.cat, /female/i.test(r.gender) ? 'Female' : ''].filter(Boolean).join(' '), values: r.rounds })),
+    }));
     out.blocks.push(`${EXAMS[exam]} 2026 closing ranks by round for ${colleges.join('; ')}:\n` +
       table(['Institute', 'Program', 'Quota', 'Seat', 'Gender', ...Array.from({ length: nRounds }, (_, i) => `R${i + 1}`), ...(p.rank != null ? ['Your chance'] : [])],
         rows.map((r) => [r.college, shortBranch(r.branch), r.quota, r.cat, /female/i.test(r.gender) ? 'Female-only' : 'Neutral', ...r.rounds.map((x) => fmt(x)), ...(p.rank != null ? [r.closing ? chanceByRank(p.rank, r.closing) || 'Unlikely' : '–'] : [])])));
-    out.blocks.push(...placementBlocks(colleges, exam));
+    out.blocks.push(...placementBlocks(colleges, exam, out));
     out.matched = colleges;
     return;
   }
@@ -369,6 +444,7 @@ async function central(exam, p, out) {
   const cols = ['Chance', 'Institute', 'Program', 'Quota', 'Final closing rank', 'Round-1 closing'];
   const toRow = (r) => [r.chance, r.college, shortBranch(r.branch), r.quota, fmt(r.closing), fmt(r.rounds[0])];
   out.blocks.push(`${EXAMS[exam]} 2026 prediction vs final-round closing rank (${best.size} eligible options${typeWanted ? ', ' + typeWanted + 's only' : ''}${p.branches.length ? ', branches: ' + p.branches.join(', ') : ''}):\n` + table(cols, shown.map(toRow)));
+  addChart(out, () => fitChart({ title: 'Your rank vs final-round closing ranks', metric: 'rank', you: p.rank, rows: shown.map((r) => ({ chance: r.chance, college: r.college, branch: shortBranch(r.branch) + ' · ' + r.quota, value: r.closing })) }));
   if (!shown.length) {
     // Nothing reachable: show the closest misses and how many options exist in other branches.
     const near = pool.filter((r) => okBranch(r.branch)).sort((a, b) => b.closing - a.closing).slice(0, 8).map((r) => ({ ...r, chance: 'Out of reach (closest)' }));
@@ -390,10 +466,15 @@ async function comedk(p, out) {
   if (colleges.length) {
     const set = new Set(colleges);
     const rows = D.comedk().filter((r) => set.has(r.college) && okBranch(r.branch) && (p.cat === 'KKR' || r.quota === 'GM' || /kkr/i.test(p.lastMessage)));
+    addChart(out, () => trendChart({ title: 'COMEDK closing rank by round', metric: 'rank', rounds: ['R1', 'R2', 'R3', 'R4'], you: p.rank, entries: rows.map((r) => ({ college: r.college, branch: r.branch, seat: r.quota, values: r.rounds })) }));
     out.blocks.push('COMEDK 2026 closing ranks:\n' + table(['College', 'Branch', 'Quota', 'R1', 'R2', 'R3', 'R4', ...(p.rank != null ? ['Your chance'] : [])],
       rows.slice(0, 40).map((r) => [r.college, r.branch, r.quota, ...r.rounds.map((x) => fmt(x)), ...(p.rank != null ? [r.closing ? chanceByRank(p.rank, r.closing) || 'Unlikely' : '–'] : [])])));
     const firstWords = colleges.map((c) => c.split(/[-,]/)[0].toLowerCase().trim());
     const fees = D.comedkFees().filter((f) => firstWords.some((w) => f.college.toLowerCase().startsWith(w)) && okBranch(f.branch)).slice(0, 20);
+    if (p.intents.includes('fees')) {
+      const multi = new Set(fees.map((f) => f.college)).size > 1;
+      addChart(out, () => barChart({ title: 'COMEDK total fee per year', prefix: '₹', rows: fees.map((f) => ({ name: (multi ? shortCollege(f.college) + ' · ' : '') + f.branch, full: f.college + ' · ' + f.branch, value: f.fee })) }));
+    }
     if (fees.length) out.blocks.push('COMEDK fees & seats (site data):\n' + table(['College', 'Course', 'Total seats', 'GM', 'KKR', 'Total fee ₹/yr'], fees.map((f) => [f.college, f.branch, f.seats, f.gm, f.kkr, fmt(f.fee)])));
     out.matched = colleges;
     return;
@@ -407,14 +488,18 @@ async function comedk(p, out) {
   }
   const shown = balance([...best.values()], 'closing', false);
   out.blocks.push(`COMEDK 2026 ${quota} prediction vs last-round closing rank (${best.size} eligible):\n` + table(['Chance', 'College', 'Branch', 'Final closing', 'R1 closing'], shown.map((r) => [r.chance, r.college, r.branch, fmt(r.closing), fmt(r.rounds[0])])));
+  addChart(out, () => fitChart({ title: 'Your rank vs final COMEDK closing ranks', metric: 'rank', you: p.rank, rows: shown.map((r) => ({ chance: r.chance, college: r.college, branch: r.branch, value: r.closing })) }));
   out.predicted = shown.length;
 }
 
 async function manipalExam(p, out) {
   const data = D.manipal();
   const okBranch = branchFilter(p.branches);
-  const rows = data.filter((r) => okBranch(r.branch)).map((r) => ({ ...r, chance: p.rank != null && r.closing ? chanceByRank(p.rank, r.closing) || 'Unlikely' : '–' }));
+  const rows = data.filter((r) => okBranch(r.branch.replace(/^B\.?\s*Tech\s+in\s+/i, ''))).map((r) => ({ ...r, chance: p.rank != null && r.closing ? chanceByRank(p.rank, r.closing) || 'Unlikely' : '–' }));
   out.blocks.push(`Manipal (MET) 2026 closing ranks${p.rank != null ? ' vs your rank ' + p.rank : ''}:\n` + table(['Campus', 'Branch', 'R1', 'R2', 'R3', 'R4', 'Chance'], rows.slice(0, 40).map((r) => [r.college, r.branch, ...r.rounds.map((x) => fmt(x)), r.chance])));
+  addChart(out, () => (p.rank != null
+    ? fitChart({ title: 'Your MET rank vs final closing ranks', metric: 'rank', you: p.rank, rows: rows.slice(0, 40).sort((a, b) => a.closing - b.closing).map((r) => ({ chance: r.chance, college: r.college, branch: r.branch, value: r.closing })) })
+    : trendChart({ title: 'MET closing rank by round', metric: 'rank', rounds: ['R1', 'R2', 'R3', 'R4'], entries: rows.map((r) => ({ college: r.college, branch: r.branch, values: r.rounds })) })));
 }
 
 /* ───────── Entry ───────── */
@@ -447,10 +532,10 @@ export async function retrieve(p) {
     exam = 'MHTCET';
     p.examAssumed = true;
   }
-  const out = { exam, blocks: [], missing: [], matched: [], predicted: 0, tools: [] };
+  const out = { exam, blocks: [], missing: [], matched: [], predicted: 0, tools: [], charts: [] };
   if (!exam) {
     out.blocks.push('No exam identified yet. Available datasets: MHT-CET 2026 CAP R1–R4 (state + All-India), DSE 2026 CAP 1–2, JoSAA 2026 (NIT/IIIT/GFTI R1–R5, IIT R1–R6), CSAB 2026, COMEDK 2026, Manipal 2026, seat matrix, placements, region rankings.');
-    if (p.intents.includes('ranking') || p.intents.includes('placement')) out.blocks.push(regionRankingBlock(p));
+    if (p.intents.includes('ranking') || p.intents.includes('placement')) out.blocks.push(regionRankingBlock(p, out));
     return out;
   }
   out.examExplicit = p.examExplicit;
