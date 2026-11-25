@@ -2,35 +2,28 @@
 <html lang="en" data-theme="light">
 
 <head>
-    <!-- SEO Optimization Meta Tags -->
-    <title>DSE College Compare Tool — College Simplified</title>
-    <meta name="keywords" content="Counselling, dse, direct second year, engineering college compare, college simplified, dse compare, concept simplified, college comparison, cutoff difference, placement packages">
-    <meta name="description" content="Compare two Maharashtra engineering colleges side-by-side for DSE admissions. Analyze cutoff differences, average placements, rankings, total seat intakes, and tiers.">
-    <link rel="icon" type="image/png" href="favicon.png">
+<!--seo:head-->
+<meta charset="UTF-8">
+<title>Compare DSE Colleges | College Simplified</title>
+<meta name="description" content="Compare two Direct Second Year Engineering colleges side by side on 2026 cutoffs, placements and seat intake.">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<link rel="canonical" href="https://counselling.collegesimplified.in/dse_compare_colleges">
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta property="og:title" content="Compare DSE Colleges | College Simplified">
+<meta property="og:description" content="Compare two Direct Second Year Engineering colleges side by side on 2026 cutoffs, placements and seat intake.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://counselling.collegesimplified.in/dse_compare_colleges">
+<meta property="og:site_name" content="College Simplified">
+<meta property="og:locale" content="en_IN">
+<meta property="og:image" content="https://counselling.collegesimplified.in/og/dse.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebPage", "@id": "https://counselling.collegesimplified.in/dse_compare_colleges", "url": "https://counselling.collegesimplified.in/dse_compare_colleges", "name": "Compare DSE Colleges | College Simplified", "description": "Compare two Direct Second Year Engineering colleges side by side on 2026 cutoffs, placements and seat intake.", "inLanguage": "en-IN", "isPartOf": {"@id": "https://counselling.collegesimplified.in/#website"}, "publisher": {"@id": "https://counselling.collegesimplified.in/#organization"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://counselling.collegesimplified.in/"}, {"@type": "ListItem", "position": 2, "name": "DSE", "item": "https://counselling.collegesimplified.in/dse-landing"}, {"@type": "ListItem", "position": 3, "name": "Compare Colleges", "item": "https://counselling.collegesimplified.in/dse_compare_colleges"}]}]}</script>
+<link rel="stylesheet" href="/seo/seo.css">
+<!--/seo:head-->
     
-    <!-- Open Graph / Facebook Meta Tags -->
-    <meta property="og:title" content="DSE College Compare Tool — College Simplified">
-    <meta property="og:description" content="Compare two Maharashtra engineering colleges side-by-side for DSE admissions. Analyze cutoff differences, average placements, rankings, total seat intakes, and tiers.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://counselling.collegesimplified.in/dse_compare_colleges.html">
-    <meta property="og:site_name" content="College Simplified">
     
-    <!-- Structured Data (JSON-LD) for Search Engines -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "College Simplified",
-      "url": "https://counselling.collegesimplified.in/",
-      "sameAs": [
-        "https://play.google.com/store/apps/details?id=co.mark.vvzmn",
-        "https://apps.apple.com/in/app/myinstitute/id1472483563",
-        "https://www.instagram.com/college_simplified/",
-        "https://youtube.com/@conceptsimplified"
-      ]
-    }
-    </script>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -138,7 +131,7 @@
             box-shadow: var(--shadow);
         }
 
-        .compare-hero h2 {
+        .compare-hero h1 {
             font-family: 'Lexend', sans-serif;
             font-weight: 800;
             font-size: clamp(22px, 4vw, 30px);
@@ -776,15 +769,15 @@
 </head>
 
 <body>
-    <div class="wrap-md">
-        <a href="dse-landing.html" class="back-link">
+    <div class="wrap-md" id="toolArea">
+        <a href="/dse-landing" class="back-link">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
             Back to DSE Hub
         </a>
 
         <!-- HERO -->
         <div class="compare-hero">
-            <h2>DSE College Compare Tool (2026 Data)</h2>
+            <h1>Compare DSE Colleges (2026 Data)</h1>
             <p>Compare two engineering colleges in Maharashtra side-by-side. Analyze 2026 DSE Diploma cutoffs, intakes, and placement statistics.</p>
         </div>
 
@@ -1553,7 +1546,7 @@
 
         // ── BOOT ──
         function boot() {
-            if (!initAuth({ requireLogin: true, toolContainerId: 'loadingState' })) return;
+            if (!initAuth({ requireLogin: true, toolContainerId: 'toolArea' })) return;
             loadData();
         }
 

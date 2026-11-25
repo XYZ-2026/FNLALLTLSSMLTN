@@ -234,7 +234,7 @@ export function regionRanking(region) {
 }
 export function placementTier() {
   return memo('ptier', () =>
-    rows('ALL_CLG_PLACEMENT_TIER.json').map((r) => ({ college: clean(r['College Name']), avg: num(r['Avg Package (LPA)']), tier: r.Tier })),
+    rows('ALL_CLG_PLACEMENT_TIER.json').map((r) => ({ college: clean(r['College Name']), avg: num(r['Avg Package (LPA)']), avgText: clean(r['Avg Package (LPA)']), tier: r.Tier })),
   );
 }
 export function nationalPlacements() {

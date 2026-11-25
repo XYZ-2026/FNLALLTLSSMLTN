@@ -31,3 +31,159 @@
     "CUTOFFS 2026/mhtcet_round1.json",
     "JOSAA/JOSAA_CUTOFF_CONSOLIDATED_2026.json",
   ]
+
+# ── Files that live in the repo but are not part of the site ──
+[[redirects]]
+  from = "/EMAILJS_SETUP.md"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/package.json"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/package-lock.json"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/generate-blogs.js"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/export_for_cli.js"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/calendar_backend.gs"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/college_seo.txt"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/remaining%20data.xlsx"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/MHT%20CET%20SEAT%20MERTIC.pdf"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/convert_2026_csv_to_json.py"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/excel_to_json.py"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/parse_seat_matrix_2026.py"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/parse_seat_matrix_fast.py"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/process_remaining_data.py"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/MHT_CET_Seats_backup.csv"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/functions/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/test/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/scratch/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/seo/build_seo.py"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/seo/data_pages.py"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/seo/release.json"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/seo/lastmod.json"
+  to = "/404.html"
+  status = 404
+  force = true
+
+# ── Headers ──
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "frame-ancestors 'self' https://*.collegesimplified.in https://*.conceptsimplified.in"
+
+[[headers]]
+  for = "/COMMUNITY/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "/og/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "/CUTOFFS 2026/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, stale-while-revalidate=86400"

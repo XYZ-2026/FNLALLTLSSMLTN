@@ -1,0 +1,27 @@
+# College Simplified
+
+> Engineering admission predictors, cutoffs and counselling tools for India: MHT-CET, DSE, JoSAA, CSAB, COMEDK and Manipal MET.
+
+## Cutoffs and data
+
+- [Counselling 2027](https://counselling.collegesimplified.in/counselling-2027/): Guides for each exam
+- [MHT-CET cutoffs by college](https://counselling.collegesimplified.in/colleges/): CAP 2026 Rounds 1 to 4
+- [MHT-CET cutoffs by branch and region](https://counselling.collegesimplified.in/mht-cet-cutoff/): CAP 2026
+- [Colleges by MHT-CET percentile](https://counselling.collegesimplified.in/mht-cet-colleges/): CAP 2026
+- [JoSAA and CSAB closing ranks](https://counselling.collegesimplified.in/josaa-cutoff/): 2026
+- [COMEDK cutoffs and fees](https://counselling.collegesimplified.in/comedk-cutoff/): By college
+- [JoSAA Cutoff Checker 2027: Closing Ranks](https://counselling.collegesimplified.in/josaa_cutoff): Check JoSAA closing ranks for 2027 admission: 2026 round-wise ranks for IITs, NITs, IIITs and GFTIs by branch, category, quota and gender.
+- [IIT College Predictor 2027](https://counselling.collegesimplified.in/josaa_iit): IIT college predictor 2027: branches for your JEE Advanced rank, from JoSAA 2026 closing ranks for every round.
+- [CSAB College Predictor 2027](https://counselling.collegesimplified.in/csab): CSAB college predictor 2027: NIT, IIIT and GFTI seats in the special rounds for your JEE Main rank, category and quota.
+- [COMEDK Cutoff & Fee Explorer 2027](https://counselling.collegesimplified.in/comedk_cutoff): COMEDK UGET closing ranks for Rounds 1 to 4, with seats and fees, for students applying to Karnataka engineering colleges in 2027.
+- [DSE Cutoff Explorer 2027](https://counselling.collegesimplified.in/dse_cutoff_checker): DSE cutoffs for 2027 admission: Direct Second Year Engineering CAP 2026 cutoffs by college, branch and category.
+- [Manipal MET Cutoff Ranks for 2027 Admission](https://counselling.collegesimplified.in/manipal_cutoff): Manipal MET cutoff for 2027 admission: MET 2025 ranks for Manipal, Bengaluru, Jaipur, Sikkim and Dubai, Rounds 1 to 4 by branch.
+- [MHT-CET Marks vs Percentile 2027](https://counselling.collegesimplified.in/cet_marks): MHT-CET marks vs percentile 2027: estimated percentile for marks out of 200 on an easy, moderate or hard shift, with the full table.
+- [MHT-CET Percentile vs Rank 2027](https://counselling.collegesimplified.in/cet_rank): MHT-CET percentile vs rank 2027: convert a percentile into an estimated state merit rank, with the full percentile vs rank table.
+- [JEE Main Marks vs Percentile 2027](https://counselling.collegesimplified.in/josaa_marks): JEE Main marks vs percentile 2027: estimated percentile for marks out of 300 on an easy, moderate or difficult shift, with the full table.
+- [JEE Main Percentile vs Rank 2027](https://counselling.collegesimplified.in/josaa_rank): JEE Main percentile vs rank 2027: estimated All India Rank for each percentile, for JoSAA and CSAB planning.
+
+## About
+
+- [Methodology](https://counselling.collegesimplified.in/methodology): sources and limits
+- [About](https://counselling.collegesimplified.in/about): who we are and contact

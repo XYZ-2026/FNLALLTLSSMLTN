@@ -3170,7 +3170,7 @@ async function saveTemplateFromBuilder() {
     exitAdminTemplateEditingMode();
     const params = new URLSearchParams(window.location.search);
     if (params.has('editTemplate') || params.has('newTemplate')) {
-      window.location.href = 'admin.html?tab=templates';
+      window.location.href = '/admin?tab=templates';
     } else {
       goStep(0);
       openAdminTemplateManager();
@@ -3215,7 +3215,7 @@ function handleExitAdminMode() {
   exitAdminTemplateEditingMode();
   const params = new URLSearchParams(window.location.search);
   if (params.has('editTemplate') || params.has('newTemplate')) {
-    window.location.href = 'admin.html?tab=templates';
+    window.location.href = '/admin?tab=templates';
   } else {
     goStep(0);
     openAdminTemplateManager();

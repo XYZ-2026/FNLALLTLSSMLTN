@@ -1,4 +1,4 @@
-// Server-rendered page: https://counselling.collegesimplified.in/ai-counsellor.html
+// Server-rendered page: https://counselling.collegesimplified.in/ai-counsellor
 // The full document (metadata, copy, cutoff tables, links, chat frame) is built here,
 // so crawlers and no-JS visitors get everything in the first response. The chat itself
 // (cs-assistant-widget.js) attaches to #cs-ai-page in the browser.
@@ -8,9 +8,9 @@ import { shortCollege } from '../cs-assistant/lib/charts.mjs';
 
 export const config = { path: ['/ai-counsellor.html', '/ai-counsellor'] };
 
-const URL_CANONICAL = 'https://counselling.collegesimplified.in/ai-counsellor.html';
-const TITLE = 'AI Engineering Admission Counsellor | College Simplified';
-const DESCRIPTION = 'Ask an AI counsellor about MHT-CET, JoSAA, CSAB, COMEDK, DSE and Manipal admissions. Get 2026 cutoffs, college chances and seat details with charts.';
+const URL_CANONICAL = 'https://counselling.collegesimplified.in/ai-counsellor';
+const TITLE = 'AI Counsellor for Engineering Admission 2027';
+const DESCRIPTION = 'Ask an AI counsellor about MHT-CET, JoSAA, CSAB, COMEDK, DSE and Manipal admissions. For 2027 applicants, with 2026 cutoffs and charts.';
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const tidy = (name) => shortCollege(name).replace(/\s+,/g, ',').replace(/,(?=\S)/g, ', ');
@@ -46,9 +46,9 @@ function dataSection() {
 
 /* ───────── Static copy ───────── */
 const TOOLS = [
-  ['mht_cet_college_predictor.html', 'MHT-CET College Predictor'], ['college_explorer.html', 'College Explorer & Cutoffs'], ['cet_marks.html', 'MHT-CET Marks vs Percentile'],
-  ['josaa.html', 'JoSAA College Predictor'], ['josaa_cutoff.html', 'JoSAA Cutoff Checker'], ['josaa_iit.html', 'IIT Predictor'], ['csab.html', 'CSAB Predictor'],
-  ['comedk_predictor.html', 'COMEDK Predictor'], ['dse_college_predictor.html', 'DSE College Predictor'], ['manipal_cutoff.html', 'Manipal MET Cutoffs'],
+  ['mht_cet_college_predictor', 'MHT-CET College Predictor'], ['college_explorer', 'College Explorer & Cutoffs'], ['cet_marks', 'MHT-CET Marks vs Percentile'],
+  ['josaa', 'JoSAA College Predictor'], ['josaa_cutoff', 'JoSAA Cutoff Checker'], ['josaa_iit', 'IIT Predictor'], ['csab', 'CSAB Predictor'],
+  ['comedk_predictor', 'COMEDK Predictor'], ['dse_college_predictor', 'DSE College Predictor'], ['manipal_cutoff', 'Manipal MET Cutoffs'],
 ];
 const FAQ = [
   ['Which exams does the AI counsellor cover?', 'MHT-CET CAP (state and All-India seats), Direct Second Year (DSE), JoSAA for IITs, NITs, IIITs and GFTIs, CSAB, COMEDK and Manipal MET.'],
@@ -62,7 +62,7 @@ const EXAMPLES = ['Which colleges can I get with 95 percentile, OBC, from Pune?'
 const JSON_LD = JSON.stringify({
   '@context': 'https://schema.org',
   '@graph': [
-    { '@type': 'WebPage', '@id': URL_CANONICAL, url: URL_CANONICAL, name: TITLE, description: DESCRIPTION, inLanguage: 'en-IN', isPartOf: { '@type': 'WebSite', name: 'College Simplified', url: 'https://counselling.collegesimplified.in/' } },
+    { '@type': 'WebPage', '@id': URL_CANONICAL, url: URL_CANONICAL, name: TITLE, description: DESCRIPTION, inLanguage: 'en-IN', isPartOf: { '@id': 'https://counselling.collegesimplified.in/#website' }, publisher: { '@id': 'https://counselling.collegesimplified.in/#organization' } },
     { '@type': 'BreadcrumbList', itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://counselling.collegesimplified.in/' },
       { '@type': 'ListItem', position: 2, name: 'AI Counsellor', item: URL_CANONICAL },
@@ -116,8 +116,8 @@ export function renderPage() {
 <meta property="og:type" content="website">
 <meta property="og:url" content="${URL_CANONICAL}">
 <meta property="og:site_name" content="College Simplified">
-<meta property="og:image" content="https://counselling.collegesimplified.in/logo.png">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://counselling.collegesimplified.in/og/home.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">${JSON_LD}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -127,7 +127,7 @@ export function renderPage() {
 <body>
 <script>/* reserve the drawer space before first paint; the CSS limits it to desktop */try{var p=localStorage.getItem("cs_sidebar_pref");if(p==="true"||p===null)document.body.classList.add("sidebar-visible")}catch(e){}</script>
 <main>
-<nav class="crumb" aria-label="Breadcrumb"><a href="/index.html">Home</a> › AI Counsellor</nav>
+<nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> › AI Counsellor</nav>
 <h1>AI Admission <span>Counsellor</span></h1>
 <p class="lead">Ask about engineering cutoffs, college chances, seats, fees and packages. Answers use 2026 counselling data and include charts.</p>
 <div id="cs-ai-page"><div class="shell">
@@ -157,7 +157,7 @@ export default async function handler(req) {
   if (req.method !== 'GET' && req.method !== 'HEAD') return new Response('Method not allowed', { status: 405, headers: { Allow: 'GET, HEAD' } });
   const url = new URL(req.url);
   // One indexable address only.
-  if (url.pathname === '/ai-counsellor') return new Response(null, { status: 301, headers: { Location: '/ai-counsellor.html' } });
+  if (url.pathname === '/ai-counsellor.html') return new Response(null, { status: 301, headers: { Location: '/ai-counsellor' + url.search } });
   const page = cached || renderPage();
   if (page.complete) cached = page;
   return new Response(req.method === 'HEAD' ? null : page.html, {

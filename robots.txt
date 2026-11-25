@@ -1,10 +1,7 @@
 User-agent: *
 Allow: /
-
-# Disallow administrative and utility files
-Disallow: /admin.html
-Disallow: /seed.html
-Disallow: /coming-soon.html
 Disallow: /api/
+
+# admin, seed, auth, results and coming-soon carry a noindex tag, which crawlers must be able to read.
 
 Sitemap: https://counselling.collegesimplified.in/sitemap.xml

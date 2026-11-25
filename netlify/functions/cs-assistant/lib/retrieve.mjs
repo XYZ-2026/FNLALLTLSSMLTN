@@ -172,7 +172,7 @@ function placementBlocks(colleges, exam, ctx) {
       if (lpa) bars.push({ name: n.college, value: parseFloat(lpa[1]) });
     } else {
       const t = best(c, D.placementTier());
-      if (t) out.push(`Placement (site data): ${t.college} — avg package ${t.avg} LPA, ${t.tier}.`);
+      if (t) out.push(`Placement (site data): ${t.college} — avg package ${t.avgText} LPA, ${t.tier}.`);
       if (t) bars.push({ name: shortCollege(t.college), full: t.college, value: t.avg });
     }
   }
@@ -185,7 +185,7 @@ function regionRankingBlock(p, out) {
   if (!regs.length) {
     const tier = D.placementTier().slice(0, 15);
     addChart(out, () => barChart({ title: 'Average package, top Maharashtra colleges', unit: ' LPA', rows: tier.map((t) => ({ name: shortCollege(t.college), full: t.college, value: t.avg })) }));
-    return `Top Maharashtra colleges by average package (site placement-tier data):\n` + table(['#', 'College', 'Avg LPA', 'Tier'], tier.map((t, i) => [i + 1, t.college, t.avg, t.tier]));
+    return `Top Maharashtra colleges by average package (site placement-tier data):\n` + table(['#', 'College', 'Avg LPA', 'Tier'], tier.map((t, i) => [i + 1, t.college, t.avgText, t.tier]));
   }
   return regs.map((d) => {
     const r = D.regionRanking(map[d]).slice(0, 15);

@@ -10,8 +10,8 @@
 var AUTH_CONFIG = {
   SESSION_KEY: 'cs_unified_session',
   THEME_KEY: 'cs_theme',
-  AUTH_PAGE: 'auth.html',
-  HOME_PAGE: 'index.html'
+  AUTH_PAGE: '/auth',
+  HOME_PAGE: '/'
 };
 
 /* ══════════════════════════════════════════
@@ -662,7 +662,7 @@ function injectGlobalUI() {
         justify-content: space-between;
         padding: 12px 20px 4px;
       }
-      .cs-mobile-greeting .csmg-left h2 {
+      .cs-mobile-greeting .csmg-left .csmg-name {
         font-family: 'Lexend', sans-serif;
         font-size: 20px;
         font-weight: 800;
@@ -827,7 +827,7 @@ function injectGlobalUI() {
           <button class="burger" onclick="toggleSidebar()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
-          <a class="logo" href="index.html">College <span>Simplified</span></a>
+          <a class="logo" href="/">College <span>Simplified</span></a>
         </div>
         <div class="header-right">
           <div id="notifBellWrap"></div>
@@ -840,7 +840,7 @@ function injectGlobalUI() {
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
     <aside class="sidebar" id="sidebar">
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <a class="logo" href="index.html">College <span>Simplified</span></a>
+        <a class="logo" href="/">College <span>Simplified</span></a>
         <button onclick="closeSidebar()" style="background:none;border:none;cursor:pointer;color:var(--muted)">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
@@ -851,8 +851,8 @@ function injectGlobalUI() {
       </div>
       <nav style="display:flex;flex-direction:column;gap:4px;overflow-y:auto;padding-right:4px">
         <div class="sidebar-label">Navigation</div>
-        <a href="index.html" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Home</a>
-        <a href="ai-counsellor.html" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5A8 8 0 1 1 21 12Z"/><path d="M9 12h.01M13 12h.01M17 12h.01"/></svg> AI Counsellor</a>
+        <a href="/" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Home</a>
+        <a href="/ai-counsellor" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5A8 8 0 1 1 21 12Z"/><path d="M9 12h.01M13 12h.01M17 12h.01"/></svg> AI Counsellor</a>
         
         <div class="sidebar-label">Counselling</div>
         <div class="sidebar-dropdown">
@@ -862,19 +862,19 @@ function injectGlobalUI() {
             <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="dropdown-content" id="drop-cet">
-            <a href="cet-landing.html" class="sidebar-sub-link">Hub Overview</a>
-            <a href="cet_marks.html" class="sidebar-sub-link">Marks vs Percentile</a>
-            <a href="cet_rank.html" class="sidebar-sub-link">Percentile vs Rank</a>
-            <a href="mht_cet_college_predictor.html" class="sidebar-sub-link">MHT CET College Predictor</a>
-            <a href="college_explorer.html" class="sidebar-sub-link">College Explorer & Cutoffs</a>
-            <a href="cet_colleges.html" class="sidebar-sub-link">Top Colleges</a>
-            <a href="compare_colleges.html" class="sidebar-sub-link">Compare Colleges</a>
-            <a href="Branch.html" class="sidebar-sub-link">Branch Prediction Test</a>
-            <a href="career_library.html" class="sidebar-sub-link">Career Library</a>
-            <a href="cet_chatbot.html" class="sidebar-sub-link">MHT CET Chatbot</a>
-            <a href="preference-builder.html" class="sidebar-sub-link">CET Preference Builder</a>
-            <a href="percentile_vs_college_predictor.html" class="sidebar-sub-link">JEE ALL INDIA Predictor</a>
-            <a href="document_checklist.html" class="sidebar-sub-link">Document Checklist</a>
+            <a href="/cet-landing" class="sidebar-sub-link">Hub Overview</a>
+            <a href="/cet_marks" class="sidebar-sub-link">Marks vs Percentile</a>
+            <a href="/cet_rank" class="sidebar-sub-link">Percentile vs Rank</a>
+            <a href="/mht_cet_college_predictor" class="sidebar-sub-link">MHT CET College Predictor</a>
+            <a href="/college_explorer" class="sidebar-sub-link">College Explorer & Cutoffs</a>
+            <a href="/cet_colleges" class="sidebar-sub-link">Top Colleges</a>
+            <a href="/compare_colleges" class="sidebar-sub-link">Compare Colleges</a>
+            <a href="/branch" class="sidebar-sub-link">Branch Prediction Test</a>
+            <a href="/career_library" class="sidebar-sub-link">Career Library</a>
+            <a href="/cet_chatbot" class="sidebar-sub-link">MHT CET Chatbot</a>
+            <a href="/preference-builder" class="sidebar-sub-link">CET Preference Builder</a>
+            <a href="/percentile_vs_college_predictor" class="sidebar-sub-link">JEE ALL INDIA Predictor</a>
+            <a href="/document_checklist" class="sidebar-sub-link">Document Checklist</a>
           </div>
         </div>
 
@@ -885,13 +885,13 @@ function injectGlobalUI() {
             <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="dropdown-content" id="drop-dse">
-            <a href="dse-landing.html" class="sidebar-sub-link">Hub Overview</a>
-            <a href="dse_cutoff_checker.html" class="sidebar-sub-link">Cutoff Checker</a>
-            <a href="dse_college_predictor.html" class="sidebar-sub-link">College Predictor</a>
-            <a href="dse_compare_colleges.html" class="sidebar-sub-link">Compare Colleges</a>
-            <a href="Branch.html" class="sidebar-sub-link">Branch Prediction Test</a>
-            <a href="career_library.html" class="sidebar-sub-link">Career Library</a>
-            <a href="dse-preference-builder.html" class="sidebar-sub-link">DSE Preference Builder</a>
+            <a href="/dse-landing" class="sidebar-sub-link">Hub Overview</a>
+            <a href="/dse_cutoff_checker" class="sidebar-sub-link">Cutoff Checker</a>
+            <a href="/dse_college_predictor" class="sidebar-sub-link">College Predictor</a>
+            <a href="/dse_compare_colleges" class="sidebar-sub-link">Compare Colleges</a>
+            <a href="/branch" class="sidebar-sub-link">Branch Prediction Test</a>
+            <a href="/career_library" class="sidebar-sub-link">Career Library</a>
+            <a href="/dse-preference-builder" class="sidebar-sub-link">DSE Preference Builder</a>
           </div>
         </div>
 
@@ -902,14 +902,14 @@ function injectGlobalUI() {
             <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="dropdown-content" id="drop-josaa">
-            <a href="josaa-landing.html" class="sidebar-sub-link">Hub Overview</a>
-            <a href="josaa_marks.html" class="sidebar-sub-link">JEE Marks vs Rank</a>
-            <a href="josaa_rank.html" class="sidebar-sub-link">JEE Percentile vs Rank</a>
-            <a href="josaa.html" class="sidebar-sub-link">JOSAA Predictor</a>
-            <a href="josaa_cutoff.html" class="sidebar-sub-link">JOSAA Cutoff Checker</a>
-            <a href="Branch.html" class="sidebar-sub-link">Branch Prediction Test</a>
-            <a href="career_library.html" class="sidebar-sub-link">Career Library</a>
-            <a href="josaa-preference-builder.html" class="sidebar-sub-link">JOSAA Pref Builder</a>
+            <a href="/josaa-landing" class="sidebar-sub-link">Hub Overview</a>
+            <a href="/josaa_marks" class="sidebar-sub-link">JEE Marks vs Rank</a>
+            <a href="/josaa_rank" class="sidebar-sub-link">JEE Percentile vs Rank</a>
+            <a href="/josaa" class="sidebar-sub-link">JOSAA Predictor</a>
+            <a href="/josaa_cutoff" class="sidebar-sub-link">JOSAA Cutoff Checker</a>
+            <a href="/branch" class="sidebar-sub-link">Branch Prediction Test</a>
+            <a href="/career_library" class="sidebar-sub-link">Career Library</a>
+            <a href="/josaa-preference-builder" class="sidebar-sub-link">JOSAA Pref Builder</a>
           </div>
         </div>
 
@@ -920,10 +920,10 @@ function injectGlobalUI() {
             <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="dropdown-content" id="drop-csab">
-            <a href="csab-landing.html" class="sidebar-sub-link">Hub Overview</a>
-            <a href="csab.html" class="sidebar-sub-link">CSAB Predictor</a>
-            <a href="Branch.html" class="sidebar-sub-link">Branch Prediction Test</a>
-            <a href="career_library.html" class="sidebar-sub-link">Career Library</a>
+            <a href="/csab-landing" class="sidebar-sub-link">Hub Overview</a>
+            <a href="/csab" class="sidebar-sub-link">CSAB Predictor</a>
+            <a href="/branch" class="sidebar-sub-link">Branch Prediction Test</a>
+            <a href="/career_library" class="sidebar-sub-link">Career Library</a>
           </div>
         </div>
 
@@ -934,16 +934,16 @@ function injectGlobalUI() {
             <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="dropdown-content" id="drop-comedk">
-            <a href="comedk-landing.html" class="sidebar-sub-link">Hub Overview</a>
-            <a href="comedk_predictor.html" class="sidebar-sub-link">COMEDK Predictor</a>
-            <a href="comedk_cutoff.html" class="sidebar-sub-link">Cutoff Checker & Explorer</a>
-            <a href="Branch.html" class="sidebar-sub-link">Branch Prediction Test</a>
-            <a href="career_library.html" class="sidebar-sub-link">Career Library</a>
-            <a href="comedk-preference-builder.html" class="sidebar-sub-link">COMEDK Preference Builder</a>
+            <a href="/comedk-landing" class="sidebar-sub-link">Hub Overview</a>
+            <a href="/comedk_predictor" class="sidebar-sub-link">COMEDK Predictor</a>
+            <a href="/comedk_cutoff" class="sidebar-sub-link">Cutoff Checker & Explorer</a>
+            <a href="/branch" class="sidebar-sub-link">Branch Prediction Test</a>
+            <a href="/career_library" class="sidebar-sub-link">Career Library</a>
+            <a href="/comedk-preference-builder" class="sidebar-sub-link">COMEDK Preference Builder</a>
           </div>
         </div>
 
-        <a href="manipal_cutoff.html" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg> Manipal MET</a>
+        <a href="/manipal_cutoff" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg> Manipal MET</a>
         
         <div class="sidebar-label">Utility Tools</div>
         <div class="sidebar-dropdown">
@@ -953,36 +953,36 @@ function injectGlobalUI() {
             <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
           <div class="dropdown-content" id="drop-utiltools">
-            <a href="tools.html" class="sidebar-sub-link" style="font-weight:700;color:var(--ink)">All Tools</a>
-            <a href="tools.html#img-compress" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','compress')">Image Compressor</a>
-            <a href="tools.html#img-resize" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','resize')">Image Resizer</a>
-            <a href="tools.html#img-crop" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','crop')">Image Cropper</a>
-            <a href="tools.html#img-convert" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','jpg2png')">JPG → PNG</a>
-            <a href="tools.html#img-convert" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','png2jpg')">PNG → JPG</a>
-            <a href="tools.html#img-convert" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','webp')">WebP Converter</a>
-            <a href="tools.html#img-pdf" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','img2pdf')">Image → PDF</a>
-            <a href="tools.html#img-passport" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','passport')">Passport / ID Photo</a>
-            <a href="tools.html#pdf-maker" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','pdfmaker')">PDF Maker</a>
-            <a href="tools.html#pdf-imgs" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','imgs2pdf')">Images → PDF</a>
-            <a href="tools.html#pdf-merge" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','mergepdf')">Merge PDF</a>
-            <a href="tools.html#pdf-split" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','splitpdf')">Split PDF</a>
-            <a href="tools.html#pdf-extract" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','extractpdf')">Extract Pages</a>
-            <a href="tools.html#pdf-delete" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','deletepdf')">Delete Pages</a>
-            <a href="tools.html#pdf-compress" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','compresspdf')">Compress PDF</a>
-            <a href="tools.html#pdf-reorder" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','reorderpdf')">Reorder & Rotate Pages</a>
+            <a href="/tools" class="sidebar-sub-link" style="font-weight:700;color:var(--ink)">All Tools</a>
+            <a href="/tools#img-compress" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','compress')">Image Compressor</a>
+            <a href="/tools#img-resize" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','resize')">Image Resizer</a>
+            <a href="/tools#img-crop" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','crop')">Image Cropper</a>
+            <a href="/tools#img-convert" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','jpg2png')">JPG → PNG</a>
+            <a href="/tools#img-convert" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','png2jpg')">PNG → JPG</a>
+            <a href="/tools#img-convert" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','webp')">WebP Converter</a>
+            <a href="/tools#img-pdf" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','img2pdf')">Image → PDF</a>
+            <a href="/tools#img-passport" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','passport')">Passport / ID Photo</a>
+            <a href="/tools#pdf-maker" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','pdfmaker')">PDF Maker</a>
+            <a href="/tools#pdf-imgs" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','imgs2pdf')">Images → PDF</a>
+            <a href="/tools#pdf-merge" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','mergepdf')">Merge PDF</a>
+            <a href="/tools#pdf-split" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','splitpdf')">Split PDF</a>
+            <a href="/tools#pdf-extract" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','extractpdf')">Extract Pages</a>
+            <a href="/tools#pdf-delete" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','deletepdf')">Delete Pages</a>
+            <a href="/tools#pdf-compress" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','compresspdf')">Compress PDF</a>
+            <a href="/tools#pdf-reorder" class="sidebar-sub-link" onclick="localStorage.setItem('openTool','reorderpdf')">Reorder & Rotate Pages</a>
           </div>
         </div>
 
         <div class="sidebar-label">Tools</div>
-        <a href="Branch.html" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg> Branch Prediction Test</a>
-        <a href="career_library.html" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> Career Library</a>
-        <a href="document_checklist.html" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Document Checklist</a>
-        <a href="calendar.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Event Calendar</a>
-        <a href="index.html#latest-notices" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Latest Updates</a>
+        <a href="/branch" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg> Branch Prediction Test</a>
+        <a href="/career_library" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> Career Library</a>
+        <a href="/document_checklist" class="sidebar-link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Document Checklist</a>
+        <a href="/calendar" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Event Calendar</a>
+        <a href="/#latest-notices" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Latest Updates</a>
 
         <div class="sidebar-label">Legal</div>
-        <a href="terms.html" class="sidebar-link" target="_blank"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Terms & Conditions</a>
-        <a href="privacy.html" class="sidebar-link" target="_blank"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Privacy Policy</a>
+        <a href="/terms" class="sidebar-link" target="_blank"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Terms & Conditions</a>
+        <a href="/privacy" class="sidebar-link" target="_blank"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Privacy Policy</a>
       </nav>
     </aside>
     <div id="global-ui-injected" style="display:none"></div>
@@ -1060,7 +1060,7 @@ function injectGlobalUI() {
         <div class="cs-terms-checkbox-container" onclick="window.toggleTermsCheckbox(event)">
           <input type="checkbox" id="cs-terms-checkbox" onchange="window.updateTermsButtonState()">
           <label class="cs-terms-checkbox-label" for="cs-terms-checkbox">
-            I have read and agree to the <a href="terms.html" target="_blank" onclick="event.stopPropagation()">Terms & Conditions</a> and <a href="privacy.html" target="_blank" onclick="event.stopPropagation()">Privacy Policy</a>.
+            I have read and agree to the <a href="/terms" target="_blank" onclick="event.stopPropagation()">Terms & Conditions</a> and <a href="/privacy" target="_blank" onclick="event.stopPropagation()">Privacy Policy</a>.
           </label>
         </div>
 
@@ -1077,19 +1077,19 @@ function injectGlobalUI() {
   // 3. Inject Mobile Bottom Nav (persistent across all pages)
   var mobileBottomNavHtml = `
     <nav class="cs-mobile-bottom-nav" id="cs-mobile-bottom-nav">
-      <a href="index.html" data-tab="home">
+      <a href="/" data-tab="home">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         Home
       </a>
-      <a href="tools.html" data-tab="tools">
+      <a href="/tools" data-tab="tools">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
         Tools
       </a>
-      <a href="career_library.html" data-tab="careers">
+      <a href="/career_library" data-tab="careers">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
         Careers
       </a>
-      <a href="auth.html" data-tab="profile" id="cs-mobile-tab-profile">
+      <a href="/auth" data-tab="profile" id="cs-mobile-tab-profile">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         Profile
       </a>
@@ -1099,12 +1099,12 @@ function injectGlobalUI() {
 
   // Auto-detect active tab from current URL
   try {
-    var curPage = (window.location.pathname.split('/').pop() || 'index.html').split('?')[0];
+    var curPage = csPageSlug();
     var tabMap = {
-      'index.html': 'home',
-      'tools.html': 'tools',
-      'career_library.html': 'careers',
-      'auth.html': 'profile'
+      'index': 'home',
+      'tools': 'tools',
+      'career_library': 'careers',
+      'auth': 'profile'
     };
     // Landing pages → Home tab
     if (curPage.indexOf('-landing') > -1) tabMap[curPage] = 'home';
@@ -1120,7 +1120,7 @@ function injectGlobalUI() {
     if (!document.querySelector('.mobile-app-greeting') && !document.querySelector('.cs-mobile-greeting')) {
       var heroEl = document.querySelector('.hero');
       if (heroEl) {
-        var greetingHtml = '<div class="cs-mobile-greeting"><div class="csmg-left"><h2 id="cs-mobile-greeting-name">Hi there! 👋</h2><p>Find your dream college</p></div></div>';
+        var greetingHtml = '<div class="cs-mobile-greeting"><div class="csmg-left"><p id="cs-mobile-greeting-name" class="csmg-name">Hi there! 👋</p><p>Find your dream college</p></div></div>';
         heroEl.insertAdjacentHTML('beforebegin', greetingHtml);
       }
     }
@@ -1149,14 +1149,13 @@ function injectGlobalUI() {
 
   // Dynamic Sidebar Link Activation based on current page pathname
   try {
-    var path = window.location.pathname.split('/').pop() || 'index.html';
-    path = path.split('?')[0]; // strip query parameters
+    var path = csPageSlug();
 
     // 1. Activate and highlight dropdown sub-links
     var subLinks = document.querySelectorAll('.sidebar-sub-link');
     subLinks.forEach(function (link) {
       var href = link.getAttribute('href');
-      if (href && href.split('?')[0] === path) {
+      if (href && csSlugOf(href) === path) {
         link.style.color = 'var(--brand)';
         link.style.background = 'var(--brand-soft)';
         link.classList.add('active');
@@ -1175,7 +1174,7 @@ function injectGlobalUI() {
     var mainLinks = document.querySelectorAll('.sidebar-link:not(.dropdown-toggle)');
     mainLinks.forEach(function (link) {
       var href = link.getAttribute('href');
-      if (href && href.split('?')[0] === path) {
+      if (href && csSlugOf(href) === path) {
         link.style.color = 'var(--brand)';
         link.style.background = 'var(--brand-soft)';
         link.classList.add('active');
@@ -1301,7 +1300,7 @@ function populateSidebar() {
 
     if (user.role === 'admin') {
       var aLink = document.createElement('a');
-      aLink.href = 'admin.html'; aLink.className = 'sidebar-link';
+      aLink.href = '/admin'; aLink.className = 'sidebar-link';
       aLink.style.background = 'var(--brand-soft)'; aLink.style.color = 'var(--brand)';
       aLink.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg> Admin Panel';
       prof.after(aLink);
@@ -1365,14 +1364,89 @@ async function authApi(action, payload) {
    INITIALIZATION
    ══════════════════════════════════════════ */
 
+/* ══════════════════════════════════════════
+   PAGE NAME HELPERS  (/cet-landing and /cet-landing.html are the same page)
+   ══════════════════════════════════════════ */
+function csSlugOf(href) {
+  var p = String(href).split(/[?#]/)[0].replace(/\/+$/, '').split('/').pop() || 'index';
+  return p.replace(/\.html$/i, '').toLowerCase();
+}
+function csPageSlug() { return csSlugOf(window.location.pathname); }
+
+/* ══════════════════════════════════════════
+   SIGN-IN GATE
+   The page stays readable for signed-out visitors (and search engines);
+   using the tool asks them to sign in.
+   ══════════════════════════════════════════ */
+function csGateContent(container) {
+  if (!container || container.classList.contains('cs-gated')) return;
+  if (getComputedStyle(container).display === 'none') container = document.querySelector('main, .wrap') || container;
+  container.classList.add('cs-gated');
+
+  if (!document.getElementById('cs-gate-style')) {
+    var st = document.createElement('style');
+    st.id = 'cs-gate-style';
+    st.textContent = '.cs-gate-card{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:16px auto 24px;padding:18px 20px;border:1px solid var(--brand-ring,rgba(220,38,38,.2));border-radius:18px;background:var(--card,#fff);color:var(--ink,#111827);box-shadow:0 8px 24px rgba(17,24,39,.06);max-width:min(1100px,calc(100% - 16px));width:100%;box-sizing:border-box;text-align:left;scroll-margin-top:90px}' +
+      '.cs-gate-card p{margin:0;font:600 15px/1.5 Inter,system-ui,sans-serif;flex:1 1 220px}' +
+      '.cs-gate-card a{display:inline-block;padding:12px 22px;border-radius:12px;background:#dc2626;color:#fff;text-decoration:none;font:800 14px/1.2 Inter,system-ui,sans-serif;white-space:nowrap}' +
+      '.cs-gate-card.cs-gate-ping{outline:3px solid #dc2626;outline-offset:2px}' +
+      '.cs-gated #dataLoader,.cs-gated #loadingState,.cs-gated .loading-state,.cs-gated .loader,.cs-gated .loader-container,.cs-gated .spinner,.cs-gated #dbLoader{display:none!important}';
+    document.head.appendChild(st);
+  }
+
+  var back = window.location.pathname + window.location.search;
+  var card = document.createElement('div');
+  card.className = 'cs-gate-card';
+  card.setAttribute('role', 'note');
+  var p = document.createElement('p');
+  p.textContent = 'Sign in to use this tool.';
+  var a = document.createElement('a');
+  a.href = AUTH_CONFIG.AUTH_PAGE + '?redirect=' + encodeURIComponent(back);
+  a.textContent = 'Sign in or register';
+  card.appendChild(p); card.appendChild(a);
+
+  // Directly under the page heading
+  var h1 = container.querySelector('h1');
+  // Some pages keep their first screen hidden until data loads, which a signed-out visit never does
+  for (var n = h1; n && n !== container; n = n.parentElement) {
+    if (getComputedStyle(n).display === 'none') {
+      n.classList.remove('hidden');
+      n.style.removeProperty('display');
+      if (getComputedStyle(n).display === 'none') n.style.display = 'block';
+    }
+  }
+  var hero = h1 && h1.closest('[class*="hero"],[class*="hdr"],[class*="header"]');
+  if (/flex|grid/.test(getComputedStyle(container).display)) container.insertAdjacentElement('beforebegin', card);
+  else if (hero && container.contains(hero) && hero !== container) hero.insertAdjacentElement('afterend', card);
+  else container.insertBefore(card, container.firstChild);
+  // Some layouts hide that spot on phones
+  if (!card.offsetParent) container.insertBefore(card, container.firstChild);
+
+  function block(e) {
+    var t = e.target;
+    if (!t || !t.closest || t.closest('.cs-gate-card') || t.closest('a[href]:not([href^="#"])') || t.closest('summary')) return;
+    if (!t.closest('button,input,select,textarea,label,form,[onclick],[role="button"],[draggable="true"]')) return;
+    if (e.type === 'keydown' && (e.key === 'Tab' || e.key === 'Shift' || e.key === 'Escape' || e.ctrlKey || e.metaKey)) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    if (e.type === 'mousedown') return; // the click that follows shows the prompt
+    card.classList.add('cs-gate-ping');
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(function () { card.classList.remove('cs-gate-ping'); }, 1600);
+  }
+  ['mousedown', 'click', 'keydown', 'input', 'change', 'submit', 'dragstart'].forEach(function (ev) {
+    container.addEventListener(ev, block, true);
+  });
+}
+
 function initAuth(opts) {
   opts = opts || {};
 
   // Handle reset redirection if params are present in URL of any page
   var params = new URLSearchParams(window.location.search);
   if (params.has('reset') && params.has('email')) {
-    if (!window.location.pathname.endsWith('auth.html')) {
-      window.location.href = 'auth.html' + window.location.search;
+    if (csPageSlug() !== 'auth') {
+      window.location.href = '/auth' + window.location.search;
       return null;
     }
   }
@@ -1485,15 +1559,7 @@ function initAuth(opts) {
 
   if (opts.requireLogin && !session) {
     var container = opts.toolContainerId ? document.getElementById(opts.toolContainerId) : null;
-    if (container) {
-      container.innerHTML = `
-        <div style="text-align:center;padding:100px 20px">
-          <div style="color:var(--brand);margin-bottom:24px"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-          <h2 style="font-family:Lexend,sans-serif;font-weight:800;font-size:28px;margin-bottom:12px">Access Restricted</h2>
-          <p style="color:var(--muted);max-width:400px;margin:0 auto 32px;line-height:1.6">Please sign in to your account to access our premium counselling tools and predictions.</p>
-          <a href="${AUTH_CONFIG.AUTH_PAGE}" style="display:inline-flex;align-items:center;gap:10px;padding:16px 32px;background:var(--brand);color:#fff;text-decoration:none;border-radius:14px;font-weight:800;box-shadow:0 8px 20px var(--brand-ring)">Sign In Now →</a>
-        </div>`;
-    }
+    csGateContent(container || document.querySelector('main, .wrap'));
     return null;
   }
 
@@ -1529,8 +1595,9 @@ function initAuth(opts) {
 
   // Trace page view in background
   try {
-    var pName = window.location.pathname.split('/').pop() || 'index.html';
-    if (pName !== 'admin.html' && pName !== 'auth.html') {
+    var pSlug = csPageSlug();
+    var pName = (pSlug === 'branch' ? 'Branch' : pSlug) + '.html'; // keep the names used in past analytics
+    if (pSlug !== 'admin' && pSlug !== 'auth') {
       setTimeout(function () {
         if (typeof logUserPortalActivity === 'function') {
           logUserPortalActivity('page_view', pName);

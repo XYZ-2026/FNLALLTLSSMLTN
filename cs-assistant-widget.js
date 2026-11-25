@@ -12,7 +12,7 @@
   'use strict';
   if (window.CSAssistant) return;
 
-  var EXCLUDED = /(^|\/)(admin|seed|auth|coming-soon|cet_chatbot)\.html$/i;
+  var EXCLUDED = /(^|\/)(admin|seed|auth|coming-soon|cet_chatbot)(\.html)?\/?$/i;
   if (EXCLUDED.test(location.pathname)) return;
 
   var ENDPOINT = '/api/cs-assistant';
@@ -173,7 +173,7 @@
   function safeHref(u) {
     u = String(u || '').trim();
     if (/^https?:\/\//i.test(u)) return u;
-    if (/^\/?[a-z0-9_\-./]+\.html([#?][^\s]*)?$/i.test(u)) return u.replace(/^\/+/, '/');
+    if (/^\/?[a-z0-9_\-./]+\.html([#?][^\s]*)?$/i.test(u)) return '/' + u.replace(/^\/+/, '').replace(/\.html(?=$|[#?])/i, '').replace(/^index(?=$|[#?])/i, '').replace(/^Branch(?=$|[#?])/, 'branch');
     return null;
   }
   function inline(s) {
@@ -571,7 +571,7 @@
     var back = location.pathname.replace(/^\//, '') + location.search;
     c.innerHTML = '<div class="csai-ci">' + ICON.lock + '</div><div class="csai-card-t">Sign in to keep chatting</div>' +
       '<div class="csai-card-d">You\'ve used your ' + GUEST_LIMIT + ' free answers. Sign in (it\'s free) for unlimited cutoff, college and rank answers.</div>' +
-      '<a class="csai-cta" href="auth.html?redirect=' + encodeURIComponent(back || 'index.html') + '">Sign in / Create free account</a>';
+      '<a class="csai-cta" href="/auth?redirect=' + encodeURIComponent(back || '/') + '">Sign in / Create free account</a>';
     return c;
   }
   function purchaseCard(url) {
@@ -582,7 +582,7 @@
       '<a class="csai-cta gold" href="' + esc(h) + '" target="_blank" rel="noopener">Purchase Counselling →</a>' +
       (authState().signedIn
         ? (typeof window.openClaimPremiumModal === 'function' ? '<button type="button" class="csai-cta ghost" data-act="claim">Already purchased? Link your purchase</button>' : '')
-        : '<a class="csai-cta ghost" href="auth.html?redirect=' + encodeURIComponent(location.pathname.replace(/^\//, '')) + '">Already purchased? Sign in</a>');
+        : '<a class="csai-cta ghost" href="/auth?redirect=' + encodeURIComponent(location.pathname.replace(/^\//, '')) + '">Already purchased? Sign in</a>');
     var claim = c.querySelector('[data-act="claim"]');
     if (claim) claim.addEventListener('click', function () { toggle(false); window.openClaimPremiumModal(); });
     return c;
@@ -605,8 +605,8 @@
     if (a.signedIn) { quotaEl.hidden = true; return; }
     var left = Math.max(0, GUEST_LIMIT - guestCount());
     quotaEl.hidden = false;
-    var back = encodeURIComponent(location.pathname.replace(/^\//, '') || 'index.html');
-    quotaEl.innerHTML = '<span>' + (left ? left + ' free answer' + (left === 1 ? '' : 's') + ' left' : 'Free answers used') + '</span><a href="auth.html?redirect=' + back + '">Sign in for unlimited →</a>';
+    var back = encodeURIComponent(location.pathname.replace(/^\//, '') || '/');
+    quotaEl.innerHTML = '<span>' + (left ? left + ' free answer' + (left === 1 ? '' : 's') + ' left' : 'Free answers used') + '</span><a href="/auth?redirect=' + back + '">Sign in for unlimited →</a>';
   }
 
   function setBusy(b) {

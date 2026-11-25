@@ -18,7 +18,7 @@ const EXAM_PATTERNS = [
 
 export const PAGE_EXAM = [
   [/dse/i, 'DSE'], [/csab/i, 'CSAB'], [/comedk/i, 'COMEDK'], [/manipal/i, 'MANIPAL'],
-  [/josaa_iit/i, 'IIT'], [/josaa|jee/i, 'JOSAA'], [/air\.html/i, 'MHT_AI'],
+  [/josaa_iit/i, 'IIT'], [/josaa|jee/i, 'JOSAA'], [/\/air(\.html)?$/i, 'MHT_AI'],
   [/cet|mht|preference-builder|college_explorer|compare_colleges|results/i, 'MHTCET'],
 ];
 
