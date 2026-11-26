@@ -346,7 +346,7 @@
     <script src="shared_auth.js"></script>
     <script>
         'use strict';
-        if (initAuth({ requireLogin: true, toolContainerId: 'toolArea' })) {
+        if (initAuth({ requireLogin: false, toolContainerId: 'toolArea' })) {
             const raw = localStorage.getItem("dse_results");
             let results = [];
             try { if (raw) results = JSON.parse(raw); } catch (e) { results = []; }

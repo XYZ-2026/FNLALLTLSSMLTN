@@ -1512,7 +1512,7 @@
     }
 
     function boot() {
-      if (!initAuth({ requireLogin: true, toolContainerId: 'toolArea' })) return;
+      if (!initAuth({ requireLogin: false, toolContainerId: 'toolArea' })) return;
 
       loadAllData().then(() => {
         renderBranchPanel();

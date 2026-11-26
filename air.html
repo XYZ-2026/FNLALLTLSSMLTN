@@ -484,7 +484,7 @@
     }
 
     function boot() {
-      if (!initAuth({ requireLogin: true, toolContainerId: 'toolArea' })) return;
+      if (!initAuth({ requireLogin: false, toolContainerId: 'toolArea' })) return;
 
       const banner = document.getElementById('helloBanner');
       const user = getSession();

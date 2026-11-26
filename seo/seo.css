@@ -22,7 +22,22 @@ body{overflow-x:clip}
 .seo-d .seo-tw{margin:0 12px 12px}
 body.seo-page,.seo-page *{box-sizing:border-box}
 html:has(body.seo-page),body.seo-page{overflow-x:hidden;width:100%}
-body.seo-page{margin:0;padding-top:72px;background:var(--bg,#fafafa)}
+body.seo-page{margin:0;padding-top:72px;background:var(--bg,#fafafa);font-family:'Inter',sans-serif;color:var(--ink,#111827);line-height:1.5}
 .seo-page .seo-section{margin-top:0}
 @media(max-width:640px){.seo-links{columns:1}.seo-section{padding:20px 16px 90px}}
 @media(min-width:1025px){body.seo-page.sidebar-visible{padding-left:280px}}
+.seo-review{margin:36px 0 12px;padding:22px 22px 10px;border:1px solid var(--stroke,rgba(0,0,0,.1));border-radius:16px;background:var(--card,#fff)}
+.seo-review h2{margin-top:0}
+.seo-review h3{font:700 1.05rem/1.35 Lexend,Inter,sans-serif;margin:22px 0 8px;color:var(--ink,#111827)}
+.seo-review ul{padding-left:20px;margin:6px 0 12px}.seo-review li{margin:0 0 6px}
+.seo-verdict{font-size:16px}
+.seo-tag{display:inline-block;font:700 12px/1 Inter,sans-serif;letter-spacing:.02em;padding:6px 10px;margin-right:6px;border-radius:999px;background:#fef2f2;color:#991b1b;vertical-align:2px}
+.seo-pc{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0 4px}
+.seo-pc>div{padding:6px 18px 4px;border-radius:12px;border:1px solid var(--stroke,rgba(0,0,0,.08))}
+.seo-pc h3{margin-top:10px}
+.seo-pro{border-left:4px solid #15803d!important}.seo-con{border-left:4px solid #b45309!important}
+.seo-review .seo-d{margin:10px 0}
+.seo-review .seo-d summary{padding:14px 18px;line-height:1.45}
+.seo-review .seo-d>p{margin:0!important;padding:0 18px 16px}
+.seo-review>.seo-src{margin-top:16px}
+@media(max-width:640px){.seo-pc{grid-template-columns:1fr}.seo-review{padding:18px 14px 6px}.seo-review .seo-d summary{padding:12px 14px}.seo-review .seo-d>p{padding:0 14px 14px}}

@@ -228,7 +228,7 @@
   <script src="shared_auth.js"></script>
   <script>
     async function renderResults() {
-      if (!initAuth({ requireLogin: true, toolContainerId: 'toolArea' })) return;
+      if (!initAuth({ requireLogin: false, toolContainerId: 'toolArea' })) return;
 
       const tbody = document.querySelector("#resultsTable tbody");
       tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:30px; color:var(--muted)">

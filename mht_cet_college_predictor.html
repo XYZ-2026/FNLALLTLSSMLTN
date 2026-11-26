@@ -883,7 +883,7 @@
     }
 
     async function boot() {
-      if (!initAuth({ requireLogin: true, toolContainerId: 'toolArea' })) return;
+      if (!initAuth({ requireLogin: false, toolContainerId: 'toolArea' })) return;
       const user = getSession();
       if (user) { 
         const banner = document.getElementById('helloBanner');
