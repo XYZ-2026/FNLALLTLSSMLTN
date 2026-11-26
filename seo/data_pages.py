@@ -4,6 +4,7 @@
 Returns [(path, file, indexable, priority)]. With dry=True nothing is written.
 """
 import difflib, glob, os, re
+import reviews
 from types import SimpleNamespace
 
 NEXT, DATA = 2027, 2026
@@ -96,6 +97,7 @@ def build(ctx, dry=False):
     REGION = {'1': 'Amravati', '2': 'Chhatrapati Sambhajinagar', '3': 'Mumbai', '4': 'Nagpur', '5': 'Nashik', '6': 'Pune'}
     region_of = lambda code: REGION.get(code.lstrip('0')[1] if len(code.lstrip('0')) == 5 else code.lstrip('0')[0], 'Other')
     order = {c: i for i, c in enumerate(g.top)}
+    n_ranked = sum(1 for c in g.top if open_rows(c) and any(g.open_val(e) for _, e in open_rows(c)))
     hub_trail = [home, ('Colleges', BASE + '/colleges/')]
     for code in g.top:
         nm, facts = g.name_of(code), g.inst[code]
@@ -133,6 +135,7 @@ def build(ctx, dry=False):
         if code in g.seats:
             inner += [f'<h2>Seats, {DATA}</h2>', table(f'{nm}: seat matrix, MHT-CET {DATA}', ['Branch', 'Sanctioned intake', 'CAP seats', 'All India seats', 'TFWS seats'], sorted(g.seats[code].values()))]
         i = order[code]
+        inner.append(reviews.mhtcet(g, code, nm, region_of(code), i + 1, max(n_ranked, i + 1), code in dse, link))
         near = [c for c in g.top[max(0, i - 4):i + 5] if c != code]
         inner += ['<h2>Colleges with similar cutoffs</h2>' + ul(g.college_link(c) for c in near),
                   '<h2>Next steps</h2>' + ul([link('/mht_cet_college_predictor', f'MHT-CET {NEXT} college predictor'), link('/mht-cet-cutoff/', f'MHT-CET cutoffs by branch and region'), link('/counselling-2027/mht-cet', f'MHT-CET counselling {NEXT} guide'), link('/compare_colleges', 'Compare two colleges')]
@@ -250,6 +253,17 @@ def build(ctx, dry=False):
     jl = lambda i: link(f'/josaa-cutoff/{jslug[i]}', i)
     kinds = {}
     CATS = ['OPEN', 'EWS', 'OBC-NCL', 'SC', 'ST']
+    num_ = lambda v: int(v) if str(v).isdigit() else None
+    jbest = {}  # institute -> best open, gender-neutral final-round rank (B.Tech-type programmes)
+    for inst, e in J.items():
+        last = 6 if e['kind'] == 'IIT' else 5
+        v = sorted(num_(r[4].get(last)) for r in e['rows'] if r[2] == 'OPEN' and r[3] == 'Gender-neutral' and not paper2(r[0]) and num_(r[4].get(last)))
+        if v: jbest[inst] = v[min(2, len(v) - 1)]  # third-best seat, so one outlier does not decide the position
+    jpos = {}
+    for k in {e['kind'] for e in J.values()}:
+        ins = sorted((i for i in jbest if J[i]['kind'] == k), key=jbest.get)
+        for n, i in enumerate(ins): jpos[i] = (n + 1, len(ins))
+    jplace = reviews.josaa_placements(load, {i: (J[i]['kind'] if i in J else CS[i][0][7]) for i in jslug})
     for inst in sorted(jslug):
         e = J.get(inst); kind = e['kind'] if e else CS[inst][0][7]
         kinds.setdefault(kind, []).append(inst)
@@ -286,6 +300,10 @@ def build(ctx, dry=False):
             inner.append(f'<h2>CSAB special round cutoff, {DATA}</h2>')
             if rows: inner.append(table(f'{inst}: CSAB {DATA}, OPEN, gender-neutral', ['Branch', 'Quota', 'Round 1', 'Round 2'], [[strip(r[0]), r[1], rank(r[4]), rank(r[5])] for r in rows]))
             if m: inner.append('<details class="seo-d"><summary>CSAB ranks for all categories</summary>' + table(f'{inst}: CSAB {DATA} latest round closing ranks', ['Branch', 'Quota', 'Seats'] + CATS, [[strip(p), q, gd] + [rank(v.get(c, '')) for c in CATS] for (p, q, gd), v in sorted(m.items())]) + '</details>')
+        if e:
+            p_, n_ = jpos.get(inst, (None, 0))
+            csab_n = sum(1 for r in CS.get(inst, []) if r[2] == 'OPEN' and r[3] == 'Gender-neutral' and 'DASA' not in r[1])
+            inner.append(reviews.josaa(esc, g.num, inst, kind, e['state'], opn, e['rows'], last, p_, n_, csab_n, jplace.get(inst), AKA.get(inst), paper2, strip))
         inner.append('<h2>Next steps</h2>' + ul([link('/josaa_iit', f'IIT predictor {NEXT}') if kind == 'IIT' else link('/josaa', f'JoSAA {NEXT} college predictor'), link('/josaa-cutoff/', 'All JoSAA institutes'), link('/josaa_rank', 'JEE Main percentile to rank'), link('/counselling-2027/josaa', f'JoSAA counselling {NEXT} guide')]))
         emit('josaa-cutoff', jslug[inst], fit(inst, [f'Cutoff for JoSAA {NEXT}', f'JoSAA Cutoff {NEXT}', f'Cutoff {NEXT}'] if e else [f'CSAB Cutoff {NEXT}']), desc, 'josaa', jt + [(inst, f'{BASE}/josaa-cutoff/{jslug[inst]}')], inner, src, index=n_rows >= 2, prio={'IIT': 0, 'NIT': 1, 'IIIT': 2}.get(kind, 3))
     jb = []
@@ -339,6 +357,12 @@ def build(ctx, dry=False):
     KNOTE = f'There are no {NEXT} cutoffs yet. These are the latest round-wise ranks in our COMEDK data.'
     KS = 'Source: COMEDK UGET round-wise cutoff and seat lists.'
     thin = []
+    kbest = {}
+    for nm in ks:
+        # each branch by its Round 1 rank (first round it appears otherwise); the third-best branch places the college
+        v = sorted(int(x['GM'][r]) for x in CK.get(nm, {}).values() if 'GM' in x for r in [next((r for r in (1, 2, 3, 4) if x['GM'].get(r, '').isdigit()), None)] if r)
+        if v: kbest[nm] = v[min(2, len(v) - 1)]
+    kpos = {nm: n + 1 for n, nm in enumerate(sorted(kbest, key=kbest.get))}
     for nm in ks:
         br = CK.get(nm, {})
         fmt = lambda v: [rank(v.get(n, '')) if v.get(n, '').isdigit() else '–' for n in (1, 2, 3, 4)]
@@ -349,6 +373,7 @@ def build(ctx, dry=False):
         else: inner.append(f'<p>{KNOTE}</p>')
         if kk: inner.append('<h2>Kalyana Karnataka (KKR) cutoff ranks</h2>' + table(f'{nm}: COMEDK KKR closing ranks', ['Branch', 'Round 1', 'Round 2', 'Round 3', 'Round 4'], [[b] + fmt(v) for b, v in kk]))
         if nm in fees: inner.append('<h2>Seats and fees</h2>' + table(f'{nm}: COMEDK seats and yearly fees (₹)', ['Branch', 'Total seats', 'GM seats', 'KKR seats', 'Tuition fee', 'Total fee'], fees[nm]))
+        inner.append(reviews.comedk(esc, g.num, nm, gm, kk, fees.get(nm, []), kpos.get(nm, 0), len(kpos)))
         inner.append('<h2>Next steps</h2>' + ul([link('/comedk_predictor', f'COMEDK {NEXT} college predictor'), link('/comedk-cutoff/', 'All COMEDK colleges'), link('/counselling-2027/comedk', f'COMEDK counselling {NEXT} guide')]))
         emit('comedk-cutoff', ks[nm], fit(re.sub(r'-(?=\S)', ', ', nm, count=1), [f'COMEDK Cutoff {NEXT}', f'COMEDK {NEXT}']),
              f'{nm}: COMEDK cutoff ranks for {NEXT} admission by branch and round' + (', with seats and fees.' if nm in fees else '.'), 'comedk', kt + [(nm, f'{BASE}/comedk-cutoff/{ks[nm]}')], inner, KS, index=len(gm) + len(fees.get(nm, [])) >= 2, prio=min((int(y) for _, v in gm for y in v.values() if y.isdigit()), default=10**9))
